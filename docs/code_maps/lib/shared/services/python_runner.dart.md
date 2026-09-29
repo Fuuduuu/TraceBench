@@ -93,7 +93,7 @@ Qualified member references, not literal dotted source strings:
 | `lib/shared/services/project_creator.dart` | production caller | Discovers Python, invokes the known-facts materializer, hydrates the result, and owns cleanup/safe result mapping. |
 | `lib/shared/services/project_exporter.dart` | production caller/re-exporter | Invokes projection and Project ZIP tools and re-exports process/platform test seams. |
 | V2 component, placement, and measurement writers | protected production callers | Invoke accepted canonical writer and projection commands through this shared execution boundary. |
-| `lib/features/photos/services/photo_event_writer.dart` | protected V1 production caller | Discovers Python and invokes the accepted `photo_added` writer command; owns its event envelope, readback, and durability classification. |
+| `lib/features/photos/services/photo_event_writer.dart` | protected V1 production caller | Dispatches `photo_added` and `photo_to_board_alignment_confirmed` through the same tool; owns primary-photo reuse, both envelopes, durable-history reconciliation, readback, and durability classification. |
 
 ## Write and protected boundaries
 
@@ -104,7 +104,7 @@ Qualified member references, not literal dotted source strings:
 | ProjectCreator/ProjectExporter materializer command | `PROJECTION_STATE` | Caller chooses the materializer and projection paths; this adapter must preserve the command unchanged. |
 | ProjectExporter archive command | `NONCANONICAL_FILE` | Caller owns ZIP generation and the Project ZIP contract. |
 | Accepted V2 writer commands | `CANONICAL_EVENT` | Caller owns protected event/fact semantics; the shared environment repair grants no writer authority. |
-| Accepted V1 `photo_added` writer command | `CANONICAL_EVENT` | `PhotoEventWriterService` owns the exact candidate, path guards, readback, and durability; this runner only preserves launch inputs and returns process evidence. |
+| Accepted V1 photo and alignment writer commands | `CANONICAL_EVENT` | `PhotoEventWriterService` owns the exact candidate, path guards, readback, and durability; this runner only preserves launch inputs and returns process evidence. |
 | Accepted V2 materializer commands | `PROJECTION_STATE` | Caller owns rebuildable projection behavior and command selection. |
 | `PythonDiscoveryException` mapping | `ZERO_WRITE` | Converts execution detail only; caller-specific cleanup and UI sanitization remain outside this file. |
 
@@ -150,8 +150,9 @@ Primary suite: `test/unit/python_runner_test.dart`.
 - Caller suites for ProjectExporter and accepted component, placement, and
   measurement writers continue to prove their own command/result contracts.
 - `test/unit/photo_event_writer_test.dart` uses `_FakeProcessRunner` to prove
-  Python discovery, exact V1 writer dispatch, missing-interpreter handling,
-  launched-command uncertainty, and readback recovery without transferring
+  Python discovery, exact V1 photo/alignment dispatch, primary-photo reuse
+  without launching Python, missing-interpreter handling, launched-command
+  uncertainty, and readback recovery without transferring
   event semantics into this adapter.
 
 The focused suite still has no dedicated timeout regression. Most downstream

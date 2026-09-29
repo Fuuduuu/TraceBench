@@ -10,8 +10,9 @@
 
 Builds the single application route graph. It keeps `/` and `/new-project`
 outside one pathless `ShellRoute`, places only the existing `/project` subtree
-inside that shell, and composes its builder as `ProjectGate` outside
-`WorkbenchShell` outside the matched destination. All 15 real project targets,
+inside that shell, and keeps `ProjectGate` outside the matched navigator.
+When `state.topRoute?.name` is `board-canvas`, a transparent `Material` wraps
+the child; other project targets retain `WorkbenchShell` around the child. All 15 real project targets,
 their paths and names, and both compatibility redirects remain registered. The
 file owns route construction and navigation topology only; provider reads,
 project recovery, destination behavior, and canonical writes remain outside.
@@ -23,7 +24,7 @@ project recovery, destination behavior, and canonical writes remain outside.
 | Route factory contract | `buildTraceBenchRouter`, `initialLocation`, `homeBuilder`, `newProjectBuilder` | Exposes initial-route, required root-Home, and optional Wizard-construction seams. |
 | Root Home route | `path: '/'`, `name: 'home'`, `homeBuilder` | Builds only the caller-supplied canonical root surface. |
 | New Project Wizard route | `path: 'new-project'`, `name: 'new-project'`, `NewProjectWizardScreen` | Builds the injected Wizard when supplied or the unchanged const default. |
-| Shared project shell and gate | `ShellRoute`, `ProjectGate`, `WorkbenchShell`, `child: WorkbenchShell(child: child)` | Wraps only the project subtree in one gate-outside-shell composition. |
+| Project gate and conditional chrome | `ShellRoute`, `ProjectGate`, `state.topRoute?.name`, `MaterialType.transparency`, `WorkbenchShell` | Gates every project target; primary Canvas bypasses shared chrome while secondary targets retain it. |
 | Canonical Board Canvas route | `path: 'project'`, `name: 'board-canvas'`, `BoardCanvasScreen` | Keeps `/project` as the canonical Canvas destination and parent of its existing child routes. |
 | Overview and component routes | `project-overview`, `component-list`, `add-component`, `edit-component` | Registers four unchanged project destinations as bare matched children. |
 | Measurement and pin routes | `measurement-list`, `measure-sheet`, `not-populated`, `pin-list` | Registers four unchanged measurement/population/pin destinations. |
@@ -47,21 +48,25 @@ exact substring in committed source. The map uses no line-number anchors.
    builder or `const NewProjectWizardScreen()`.
 4. One pathless `ShellRoute` contains only the `project` route and its existing
    descendants; it introduces no public path or name.
-5. The shell builder creates `ProjectGate(child: WorkbenchShell(child: child))`.
-   A null project is stopped by the gate before the shell or destination is
-   mounted; loaded state reveals both.
-6. The 15 real destinations are bare destination widgets beneath the shared
-   composition rather than 15 repeated gate wrappers.
-7. Moving among project leaves with `go` retains the shared shell element/state;
-   the nested route navigator also preserves the tested `push` then `pop`
-   return from Overview to canonical Canvas.
+5. The shell builder checks the top matched route name inside `ProjectGate`.
+   Canonical Canvas receives transparent `Material`; secondary targets receive
+   `WorkbenchShell`. Null state mounts neither destination nor shared chrome.
+   The Material ancestor also supports outgoing secondary-page rebuilds during
+   an unsettled transition back to Canvas.
+6. The 15 real destinations remain bare widgets beneath one gated navigator;
+   only their primary-versus-secondary chrome composition differs.
+7. Moving among secondary leaves retains shared shell element/state.
+   Canvas-to-Overview `push` mounts that shell; `pop` returns to Canvas without
+   it, preserving the loaded project. Shell identity is not promised across
+   a primary/secondary boundary.
 8. `/project/measurements/new` and `/project/board-canvas` remain redirect-only
    aliases and settle on their unchanged canonical URI strings.
 9. Unresolved routes render the existing generic error text.
 
 ## Project target inventory
 
-The shared gate and shell cover exactly these real targets:
+The shared gate covers exactly these real targets; only the first bypasses
+`WorkbenchShell`:
 
 1. `/project`
 2. `/project/overview`
@@ -90,10 +95,10 @@ The two compatibility aliases are not additional real targets.
 | caller-supplied `homeBuilder` | required inbound contract | Keeps canonical launcher ownership in `app.dart`. |
 | `NewProjectWizardScreen` | default outbound destination | Preserves default Wizard construction. |
 | `ProjectGate` | outer project wrapper | Applies loaded-project recovery before shared chrome mounts. |
-| `WorkbenchShell` | inner project wrapper | Supplies shared project navigation and chrome around the matched child. |
+| `WorkbenchShell` | inner project wrapper | Supplies shared navigation/chrome only for secondary project targets. |
 | Project destination screens | outbound destinations | Implement behavior behind the unchanged route inventory. |
 | `lib/app/app.dart` | production caller | Supplies Home and Wizard builders and owns router lifetime. |
-| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves null/loaded matrices, all 15 targets, both aliases, shell identity, nested back behavior, provider identity, and zero mutation. |
+| `test/widget/project_gate_test.dart` | direct route/gate evidence | Proves null/loaded matrices, all 15 targets, both aliases, secondary-shell identity, unsettled Material transition, nested back behavior, provider identity, and zero mutation. |
 | `test/widget/workbench_shell_test.dart` | direct shell evidence | Proves destination selection, navigation, responsive shell state, and Home/provider survival. |
 
 ## Write and protected boundaries
@@ -134,12 +139,13 @@ electrical-semantic mutation here.
 ## Relevant tests and helpers
 
 - `test/widget/project_gate_test.dart` is the focused route-layer owner for
-  shell-free null recovery, loaded all-15 coverage, one gate/shell, same shell
-  identity, both aliases, nested push/pop, Home recovery, provider identity,
+  shell-free null recovery, loaded all-15 coverage, one gate, Canvas bypass,
+  secondary-shell identity, unsettled Material transition, both aliases, nested
+  push/pop, Home recovery, provider identity,
   and byte-level zero-mutation checks.
 - `test/widget/workbench_shell_test.dart` covers the shared destination model,
-  leaf navigation, workflow-parent selection, responsive cutover, Home round
-  trip, and no-write navigation.
+  secondary leaf navigation/cutover, all-12 Canvas popup destinations, mode and
+  Home behavior, workflow-parent selection, and no-write navigation.
 - `test/widget/benchbeep_home_screen_test.dart` retains the real app lifetime,
   Wizard handoff, canonical Home, and provider-survival contract.
 - Overview, Board Canvas, edit-component, Wizard, and freshness harnesses remain
@@ -150,7 +156,7 @@ electrical-semantic mutation here.
 - Moving `ProjectGate` inside `WorkbenchShell` would expose shared chrome during
   null recovery and contradict the focused null matrix.
 - Replacing the one pathless shell with per-leaf wrappers would lose the proven
-  shared element/state identity.
+  secondary-to-secondary element/state identity.
 - Reparenting routes, adding a parent navigator key, or changing `go`/`push`
   assumptions can alter nested back-stack behavior without changing public URI
   text.
@@ -178,7 +184,8 @@ electrical-semantic mutation here.
 ## Freshness and review triggers
 
 Review for `SYMBOL_DRIFT` when factory parameters, route paths/names,
-`ShellRoute`, `ProjectGate`, `WorkbenchShell`, or screen constructors change;
+`ShellRoute`, `ProjectGate`, `WorkbenchShell`, top-route selection, transparent
+`Material`, or screen constructors change;
 `FLOW_DRIFT` when wrapper order, null/loaded reveal, redirect, or nested stack
 behavior changes; `BOUNDARY_DRIFT` if provider/write ownership enters;
 `TEST_DRIFT` when route matrices or shell identity evidence move; and

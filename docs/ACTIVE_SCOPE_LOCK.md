@@ -2,10 +2,24 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
-Next: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current docs-only route closeout
+## Completed combined Code Map refresh
+
+The combined Photo Alignment and Single Shell Code Map refresh is complete.
+Independent map audit accepted the refreshed maps for SNIPER use;
+`docs/CURRENT_STATE.md` owns the result and final registry counts.
+
+The map-refresh write authority is spent. `NEEDS_USER_DECISION` is
+non-executable; no further maintenance or product implementation is armed.
+New work requires a human decision.
+
+All following predecessor sections are historical and non-authorizing. Their
+route labels, allowlists and validation instructions cannot reactivate spent
+authority.
+
+## Completed Single Shell closeout and refresh reservation (historical)
 
 Lane A / `DOCS_ROUTE_CLOSEOUT_AND_MAP_REFRESH_ARMING_ONLY`. Current identifies
 this exceptional closeout of the completed implementation, with no renewed

@@ -8,211 +8,189 @@
 
 ## File purpose
 
-Owns the Visual First Board Canvas destination: responsive local Workbench,
-selection/navigation, rendering, inspection, UI-local drafts, read-only Wizard
-intake, freshness presentation, four host-owned V2 writer call paths, and the
-host seam for existing-project canonical photo import. Photo selection,
-preview, copy, event write, session application, and event-derived list
-presentation are delegated to `PhotoWorkbenchPanel` and its service owners;
-this host supplies wide, compact, and zero-component entry points. It does not
-confirm alignment or render a confirmed aligned-photo background.
+Owns the primary Board Canvas workbench shell, rendering/interaction, inspection,
+UI-local drafts, Wizard intake and freshness presentation. Four direct V2
+writer actions remain host-owned; additional-photo import and explicit primary
+alignment confirmation are delegated to `PhotoWorkbenchPanel` and its writers.
+The host loads the Wizard primary asset, selects event-derived alignments and
+composes provisional/confirmed photo rendering without promoting visual evidence.
 
-The file imports normal pure libraries for measurement projection and placement
-geometry, immutable `BoardCanvasPalette`, and two same-library parts:
-`wizard_intake_overlay.part.dart` owns Wizard fit/photo/painter declarations,
-while `component_navigator.part.dart` owns the private Stateless navigator.
-Mutable state, callbacks, non-Wizard painters, routes, session handoffs, and
-canonical writer orchestration stay host-owned or explicitly delegated.
+Pure measurement/placement libraries and two same-library parts retain their
+existing ownership. The instrument bar replaces shared outer chrome only on
+the primary route; secondary pages still use the router's `WorkbenchShell`.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Screen orchestration | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_WorkbenchContextPanelMode`, `_buildScaffold` | Watches project state, derives presentation inputs, and composes all Canvas branches. |
-| 2. Typed selection and preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Owns volatile selection, hover preview, and clearing behavior. |
-| 3. Navigator and filtering | `_ComponentCategory`, `_ComponentNavigatorPanel`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Owns host callbacks/filter state while consuming delegated navigator and pure measurement projection. |
-| 4. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `applyCanonicalEvent` | Builds human-entered measurement drafts, calls the existing writer, and hands back the returned event with captured generation. |
-| 5. Component create/edit | `_confirmRightPanelComponentCreation`, `_confirmRightPanelMetadataEdit`, `_RightPanelComponentCreationSection`, `_RightPanelMetadataEditSection` | Validates explicit identity creation and metadata edits before existing writer calls. |
-| 6. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_confirmAddComponentTemplatePlacement`, `_PlacementSaveTarget` | Owns template/ghost/editor drafts, normalized guards, explicit placement save, and session result handoff. |
-| 7. Canvas interaction and Wizard state | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile` | Keeps intake usable with zero components and owns pan/zoom/tap/fit behavior around read-only Wizard input. |
-| 8. Rendering and geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Consumes delegated Wizard rendering and pure placement geometry while retaining Board painters/drawing/semantics. |
-| 9. Inspector and evidence | `_InspectorPanel`, `_PhotoAlignmentReadinessPanel`, `_BoardCanvasSafetyEvidenceDisclosure`, `_MeasurementSummaryCard`, `_VisualTraceMetadataCard` | Presents accepted placement, measurement, alignment-readiness, safety, and trace metadata without promotion. |
-| 10. Canonical photo-import host | `photoEventItemsFromEvents`, `_buildPhotoWorkbenchPanel`, `PhotoWorkbenchPanel`, `board_canvas_zero_component_photo_entry` | Derives event-backed photo rows and mounts the delegated import panel for directory-backed zero-component projects and normal Canvas layouts. |
-| 11. Local rail, focus, and responsive chrome | `constraints.maxWidth >= 900`, `_WorkbenchToolRail`, `_CompactPhotoPanelButton`, `board_canvas_rail_photos_tool`, `board_canvas_compact_photos_action`, `_CanvasFocusRestoreBar` | Keeps the 900 rich-layout cutover, six retained panel tools including Fotod, compact entry, and focus hide/restore. |
-| 12. Projection freshness | `ProjectionFreshness`, `ProjectionStaleBanner`, `_buildScaffold` | Inserts one authoritative nonblocking banner above project-backed Canvas branches. |
+| 1. Screen and freshness | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_buildScaffold`, `ProjectionStaleBanner` | Watches project state, composes branches and inserts freshness directly below the instrument bar. |
+| 2. Selection/preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Volatile selection/hover/clear behavior. |
+| 3. Navigator/filter | `_ComponentCategory`, `_ComponentNavigatorPanel`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host callbacks/filter state and delegated navigator/projection. |
+| 4. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `applyCanonicalEvent` | Human draft, existing writer and captured-generation result. |
+| 5. Component create/edit | `_confirmRightPanelComponentCreation`, `_confirmRightPanelMetadataEdit`, `_RightPanelComponentCreationSection`, `_RightPanelMetadataEditSection` | Explicit identity/metadata guards and existing writes. |
+| 6. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_confirmAddComponentTemplatePlacement`, `_PlacementSaveTarget` | Template/ghost/editor draft, normalized guards and explicit save. |
+| 7. Interaction/Wizard | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile` | Zero-component intake, pan/zoom/tap/fit and read-only Wizard input. |
+| 8. General rendering/geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Delegated Wizard/pure geometry plus host Board painters and semantics. |
+| 9. Inspector/evidence | `_InspectorPanel`, `_PhotoAlignmentReadinessPanel`, `_BoardCanvasSafetyEvidenceDisclosure`, `_MeasurementSummaryCard`, `_VisualTraceMetadataCard` | Reads accepted fact metadata without electrical/evidence promotion. |
+| 10. Photo workflow/primary asset | `_buildPhotoWorkbenchPanel`, `PhotoWorkbenchPanel`, `photoEventItemsFromEvents`, `_reconcilePrimaryPhotoAsset`, `_loadPrimaryPhotoAsset` | Import/align child seam, sole Wizard primary asset load and guarded result callbacks. |
+| 11. Instrument bar/local chrome | `board_canvas_instrument_bar`, `board_canvas_project_menu`, `workbenchDestinations`, `beginnerModeProvider`, `_WorkbenchToolRail`, `_CompactPhotoPanelButton`, `_CanvasFocusRestoreBar` | Home, transient global navigation, labelled mode, safety status, local rail/context and focus. |
+| 12. Alignment selection/render/capture | `_reconcileAlignmentState`, `primaryPhotoAlignmentEventItemsFromEvents`, `_activeAlignment`, `_requestAlignmentBoardPoint`, `_acceptAlignmentBoardPoint`, `AlignedPhotoLayer`, `_PhotoAlignmentReferencePainter` | Primary-only bounded alignment selection, host preview/layer state and normalized board capture. |
 
 ## Anchor inventory and verification
 
-Every backtick-delimited stable anchor resolves as an exact host substring.
-`_ComponentNavigatorPanel` and the three `_WizardIntake*` types resolve as host
-consumer references while declarations live in their named parts. Pure
-measurement and geometry names resolve as call sites while declarations live
-in imported normal libraries. `PhotoWorkbenchPanel` and
-`photoEventItemsFromEvents` likewise resolve as host consumers of delegated
-photo owners. Key-name anchors resolve as exact key literals. No line-number
-anchors are used.
+Every anchor resolves as a host substring. Wizard/navigator part types and
+imported geometry, photo, mode and destination-model names are consumer
+references; their declarations remain in the named dependency owners.
+No line-number anchors are maintained.
 
-## Local Workbench contract
+## Single-shell and local Workbench contract
 
-- `_WorkbenchContextPanelMode` contains `hidden`, `inspector`, `placements`,
-  `measure`, `addComponentTemplates`, `safetyEvidence`, and `photos`.
-- Rich layout starts hidden. Measure, Add, Inspector, Placements, Safety, and
-  Fotod are the six retained local tools; project-wide navigation remains in
-  the outer shared Workbench shell.
-- Canvas focus hides local rail/context chrome and restores the selected mode,
-  including Fotod.
-- `constraints.maxWidth >= 900` remains the destination-local rich cutover;
-  the shared shell owns its independent 1228 navigation threshold.
-- Compact Canvas exposes `board_canvas_compact_photos_action`; rich Canvas
-  exposes `board_canvas_rail_photos_tool`. Both open the same delegated panel.
+- `_buildScaffold` owns one 44 px toolbar, a 1 px bottom rule, Home, project
+  identity/menu, renderer/write-safety presentation and `Algaja`/`Edasijõudnu`.
+- Home calls session `closeProject` before `go('/')`. The popup reuses the
+  exact `workbenchDestinations` inventory and navigates through `go`.
+- Title-layout width below 900 abbreviates identity/safety copy; full safety
+  meaning remains in Tooltip/Semantics. This is distinct from Canvas layout.
+- Canvas content retains `constraints.maxWidth >= 900` after body padding
+  (936 viewport pixels in the tested routed fixture).
+- Measure, Add, Inspector, Placements, Safety and Fotod are six retained local
+  tools. Global destinations are transient; shared outer navigation is absent.
+- Rich context starts hidden. Focus hides local rail/context and restores mode;
+  the instrument bar and bottom renderer/status surfaces remain.
+- Compact and zero-component Fotod entry use the same delegated photo panel.
+- A stale/unknown banner remains immediately below the bar and nonblocking.
 
 ## State and data flow
 
-- `[D]` `projectStateProvider` supplies `ProjectState`; components, placements,
-  pins, measurements, traces, alignments, Wizard intake, warnings, freshness,
-  and `photoEventItemsFromEvents(projectState.events)` become presentation
-  inputs.
-- `[D]` A directory-backed project with zero components, no Wizard intake, and
-  no accepted photo event receives the explicit
-  `board_canvas_zero_component_photo_entry`. A successful import adds an event,
-  so the next rebuild enters the normal Canvas even while components remain
-  empty.
-- `[D]` `_buildPhotoWorkbenchPanel` supplies current state, current
-  `ProjectSession`, event-derived photo rows, optional injected picker/preview/
-  import services, and a callback that reopens Fotod after accepted application.
-- `[D]` Photo picker/preview/draft state stays in the panel. Explicit import
-  delegates safe copy and event writing; the panel applies the exact returned
-  event using a captured session generation. This host creates no parallel
-  photo canonical state.
-- `[D]` Host-owned category, typed selection, filter, preview keys, and local
-  placement drafts flow into the Stateless navigator through callbacks.
-- `[D]` Measurement and placement inputs cross pure normal-library boundaries;
-  results return to unchanged host consumers with no write transfer.
-- `[D]` Wizard fit/photo/painter inputs remain read-only beneath canonical Board
-  placements. Accepted photo-import events do not enter that old Wizard layer.
-- `[D]` Four direct host writer invocations remain split `3 + 1` between
-  `_BoardCanvasScreenState` and `_IntegratedMeasurePanelState`; the photo writer
-  is behind the delegated panel/service chain.
-- `[D]` Every returned canonical event flows through current
-  `ProjectSession.applyCanonicalEvent`, which rejects stale/duplicate outcomes
-  and promotes accepted projection stale.
+1. [D] Session state supplies facts, events, Wizard intake and freshness.
+   Accepted photo rows come directly from events.
+2. [D] Primary loading uses only Wizard background relative path plus current
+   project ID/directory and injected-loader identity. Context changes cancel
+   pending capture, reset asset state and schedule a fresh read; late results
+   are ignored unless mounted and load identity still matches.
+3. [D] Current primary path, digest and intrinsic dimensions filter event-derived
+   alignments through `primaryPhotoAlignmentEventItemsFromEvents`. Additional
+   photos and out-of-bounds reopened alignments cannot become the active layer.
+4. [D] Project changes reset selection, preview, visibility and opacity (0.65).
+   A still-valid selected alignment remains; otherwise highest sequence wins.
+5. [D] `_buildPhotoWorkbenchPanel` passes current session, primary load state,
+   accepted rows and injectable writer/loader/image seams. Its callbacks update
+   host preview/active/layer state and reopen Fotod after accepted application.
+6. [D] Leaving Photos, hiding context or focus clears provisional preview and
+   completes pending board capture with null in host build reconciliation.
+7. [D] Capture intercepts a board tap before placement selection, normalizes
+   coordinates into 0..1 and suppresses pan/zoom while awaiting the point.
+8. [D] Stack order is Board background, optional Wizard photo, aligned preview
+   or confirmed primary photo, Wizard contour/candidates, alignment markers,
+   canonical placements, then later cues/warnings. Preview takes precedence.
+9. [D] `AlignedPhotoLayer` owns clipping, pointer ignoring, intrinsic raster
+   sizing and matrix application. The host uses the already-loaded asset
+   directly, not `ProjectAlignedPhotoLayer`'s alternate loading wrapper.
+10. [D] Missing/unsafe primary data gives warning; reflected affine geometry
+    and provisional solutions have separate visual badges. None append events.
+11. [D] Existing four direct writer calls remain split 3+1 between screen State
+    and measurement State. Photo copy/ensure/confirm and their result application
+    remain delegated; host callbacks do not create parallel canonical rows.
+12. [D] Exact canonical results use session generation/dedup/stale handling.
+    Read-only Known Facts alignment summaries remain distinct from the live
+    event-derived photo layer while the projection is stale.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `projectStateProvider`, `ProjectSession`, `ProjectState`, `ProjectionFreshness` | input / projection update | Supplies accepted state and owns generation-guarded event application, dedup, and stale promotion. |
-| `photo_event_read_model.dart` | imported pure read model | Derives accepted V1 `photo_added` presentation rows from event history. |
-| `photo_import_service.dart` | injected type boundary | Allows Board tests/host construction to supply the delegated import workflow. |
-| `photo_workbench_panel.dart` | child workflow owner | Owns picker/preview/draft/confirmation/import/session handoff and photo list. |
-| `measurement_projection.dart` | imported pure helper | Owns endpoint/count/badge/caution presentation derivation. |
-| `placement_geometry.dart` | imported pure helper | Owns center/body/visual sizing, classification, envelopes, and upright hit testing. |
-| `BoardCanvasPalette` | immutable presentation input | Supplies exact static Canvas colors without state/theme/writer ownership. |
-| `wizard_intake_overlay.part.dart` | same-library render dependency | Owns Wizard fit transform, background-photo layer, and painter. |
-| `component_navigator.part.dart` | same-library child | Owns the private Stateless navigator while callbacks/state remain here. |
-| BoardFact facts and `WizardIntake` | read inputs | Supply projected canonical facts and optional noncanonical intake presentation. |
-| Four V2 writer providers | outbound canonical boundaries | Existing component-create/edit, placement, and measurement writes. |
-| `dart:io` | local read input | Reads only a validated optional Wizard background photo. |
-| Flutter/GoRouter | UI and route output | Owns rendering/interaction and Measure Sheet navigation only. |
+| `ProjectSession`, `projectStateProvider`, `ProjectState` | input / projection | State, close, generation, event application and freshness. |
+| `workbench_shell.dart`, `beginner_mode_provider.dart` | model / UI state | Shared destination inventory and independent mode provider. |
+| `photo_event_read_model.dart` | pure input | Accepted photos, exact primary identity and bounded alignments. |
+| `photo_workbench_panel.dart` | child workflow | Additional import, point draft, explicit ensure/confirm and session handoff. |
+| `photo_event_writer.dart`, `photo_import_service.dart` | injected seams | Delegated canonical/file workflow types. |
+| `aligned_photo_layer.dart`, `photo_alignment_transform.dart` | read/render/value seams | Primary asset loading, matrix renderer, typed points and solution data. |
+| `measurement_projection.dart`, `placement_geometry.dart` | pure helpers | Counts/badges/caution and geometry/hit tests. |
+| `wizard_intake_overlay.part.dart`, `component_navigator.part.dart` | same-library parts | Wizard rendering and Stateless navigator declarations. |
+| `BoardCanvasPalette`, facts, `WizardIntake` | read input | Static colors, canonical projection and noncanonical intake. |
+| Four V2 writer providers | canonical output | Component create/edit, placement and measurement. |
+| Flutter/GoRouter, `dart:async`, `dart:io` | framework/read | Widgets/navigation, capture completion and legacy Wizard image read. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| component create/edit, placement save, measurement save | `CANONICAL_EVENT` | `[D]` Four explicit host-owned writer actions retain existing guards. |
-| four host `applyCanonicalEvent` calls | `PROJECTION_STATE` | `[D]` Captured generation delegates dedup/current-state composition/stale promotion to session. |
-| `_buildPhotoWorkbenchPanel` child flow | delegated `NONCANONICAL_FILE` + `CANONICAL_EVENT` + `PROJECTION_STATE` | `[D]` The panel/service owners enforce explicit confirmation, safe copy, writer, and generation guard. |
-| photo list and Wizard photo layer | `ZERO_WRITE` | `[D]` Event-derived rows and noncanonical Wizard background are separate read-only presentation sources. |
-| selection, drafts, panels, focus, filters | `UI_LOCAL` | `[D]` Transient host state only. |
-| painters, inspectors, readiness, summaries | `ZERO_WRITE` | `[D]` Derive/render accepted inputs without promotion. |
+| four direct save/confirm methods | `CANONICAL_EVENT` | [D] Existing explicit host writer calls. |
+| four host event applications | `PROJECTION_STATE` | [D] Captured-generation handoff to session. |
+| delegated photo panel | `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child/service owners enforce import or explicit primary ensure/confirm. |
+| Home | `PROJECTION_STATE` + `UI_LOCAL` | [D] Existing close before root navigation, no canonical write. |
+| mode/menu/selection/layer/focus/capture | `UI_LOCAL` | [D] Transient providers, callbacks and navigation. |
+| asset read, renderer, inspector, freshness | `ZERO_WRITE` | [D] Read/presentation only, no event/file mutation. |
 
-Canonical meaning remains writer/schema/materializer-owned. Photo evidence does
-not prove components, pins, nets, measurements, electrical function, damage,
-suspect state, traces, or alignment.
+Photo geometry does not prove electrical identity, connectivity, measurements,
+damage or repair state. Host rendering does not establish a canonical alignment;
+that evidence comes only from the explicit delegated confirmation writer.
 
 ## Zero-write zones
 
-- Navigation, panel choice, focus, selection, filters, previews, painter output,
-  inspectors, readiness, and accepted-photo rows are noncanonical.
-- Wizard background presentation and canonical imported-photo presentation are
-  distinct; neither is a confirmed aligned Canvas background in this source.
-- Pure measurement/geometry helpers and same-library rendering parts own no
-  provider, mutable State, event append, or project-file mutation.
-- The host does not reopen `ProjectSession`, schema, materializer, Project ZIP,
-  camera, EXIF, homography, alignment math, or alignment confirmation.
+- Primary asset loading, alignment filtering, transform rendering and warnings.
+- Wizard photo/contour, Board painters, markers, inspectors and summaries.
+- Draft preview/cancel, navigation, mode, focus and layer controls are
+  noncanonical; Home separately clears only in-memory session state.
+- No schema, materializer, Project ZIP, homography, EXIF or camera owner enters.
 
 ## Impact matrix
 
-| Change zone | Coupling / risk | Write class | Relevant evidence |
-| --- | --- | --- | --- |
-| Photo host/entry | zero-component gate, wide/compact modes, panel lifecycle | UI + delegated writes | canonical photo-import widget group + service/writer suites |
-| Navigator/filter | visibility, hits, targets, badges | `UI_LOCAL` / `ZERO_WRITE` | navigator/filter and helper families |
-| Four host writers | selection, generation, dedup, freshness | canonical + projection | exact writer families + session unit suite |
-| Canvas/geometry/Wizard | transforms, hits, z-order, semantics | `UI_LOCAL` / `ZERO_WRITE` | pure geometry and Wizard overlay groups |
-| Inspector/evidence | projected summaries and protected wording | `ZERO_WRITE` | inspector/readiness/safety cases |
-| Responsive/focus | 900 cutover, six tools, compact Fotod action | `UI_LOCAL` | routed-width and panel/focus cases |
-| Freshness | both project-backed scaffold branches | `ZERO_WRITE` presentation | stale/unknown cases |
+| Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| --- | --- | --- | --- | --- |
+| Instrument/navigation | [D] one bar and shared inventory popup | router, shell model, mode/session | `UI_LOCAL` / Home `PROJECTION_STATE` | shell, gate and Single Shell Board cases |
+| Primary asset/selection | [D] path/hash/dimensions and guarded load | read model / loader | `ZERO_WRITE` / `UI_LOCAL` | reopen, changed-byte and unavailable cases |
+| Photo confirmation seam | [D] child callbacks and injected writer | panel, durable writer, session | delegated `CANONICAL_EVENT` / `PROJECTION_STATE` | confirm/retry/stale groups |
+| Preview/capture/render | [D] host state and stack | solver / raster / Wizard | `UI_LOCAL` / `ZERO_WRITE` | exit, raster and composite cases |
+| Existing four writers | [D] named direct calls | session and respective writer | `CANONICAL_EVENT` / `PROJECTION_STATE` | exact writer families |
+| Navigator/geometry | [D] helper/part consumers | pure owners and painter hits | `UI_LOCAL` / `ZERO_WRITE` | navigator and geometry families |
+| Responsive/freshness | [D] separate bar/content thresholds | router/body padding/banner | `ZERO_WRITE` / `UI_LOCAL` | width matrix, focus and banner cases |
 
 ## Relevant tests and helpers
 
-| Family | Stable anchors | Representative coverage |
-| --- | --- | --- |
-| Canonical photo import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService` | Wide/compact entry, cancel/success, zero components, single-shot/uncertain result, read-only session, project switch, unsupported platform. |
-| Local panels/responsive | `_routerHarness`, `_openWideContextMode`, `_tapWidgetByKey` | Six widths, hidden default, six retained tools, focus restoration. |
-| Writer/session | fake V2 writers, event builders, `SeededProjectSession` | Explicit guards, request values, event application, stale promotion, duplicate no-op. |
-| Rendering/Wizard | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_boardCanvasPainter`, `_compositedPixelColor` | Gate, fit, z-order, background photo, rotation, footprints, and semantics. |
-| Pure helpers | placement geometry and measurement read-model groups | Direct deterministic geometry/count/badge/caution contracts. |
-| Boundaries | `board canvas source keeps read-only data-path boundaries` | Host/part/library ownership and absent aligned-photo authoring. |
+- `test/widget/board_canvas_screen_test.dart` owns Single Shell area/width/banner,
+  import, alignment, existing writer, rendering, pure-helper and boundary families.
+- The routed area case compares measured Canvas area to pre-edit literals;
+  it is fixture evidence, not a runtime layout requirement.
+- `test/widget/workbench_shell_test.dart` covers all 12 popup destinations,
+  modes, Home, secondary shells and byte-level navigation guards.
+- `test/widget/project_gate_test.dart` covers gate/bypass, secondary identity,
+  aliases, push/pop and unsettled Material transitions.
+- Photo writer/read-model/transform unit suites own delegated contracts.
+- `SeededProjectSession` and injected photo/V2 fakes bound widget observations.
 
 ## Dangerous combinations
 
-- Removing the zero-component photo entry makes the accepted product flow
-  unreachable before component creation.
-- Showing an imported event row from widget-local state instead of events can
-  hide failed/stale session application.
-- Applying an in-flight photo result to a captured notifier rather than current
-  session/generation can mutate a newer project.
-- Confusing Wizard background with canonical import can reuse an intake path
-  instead of creating the required collision-safe project-local copy/event.
-- Adding aligned-photo rendering or confirmation here would cross this host's
-  current read/presentation ownership into a separate write/transform design.
-- Shared responsive tests must pair shell keys with local Canvas layout keys;
-  otherwise one cutover can mask another.
+- Shared-shell counts cannot stand in for primary Canvas composition.
+- Import rows, Wizard input and canonical primary identity are distinct.
+- Preview/capture must not survive departure from the Photos context.
+- Reopened selection needs current digest and intrinsic bounds, not just ALN ID.
+- Normalized board geometry, intrinsic raster sizing and Wizard fit have
+  separate coordinate bases; altering one can hide a visual regression in another.
+- Async results must not mutate a newer project or become local canonical rows.
 
 ## Safe SNIPER slices
 
-| One outcome | Primary anchors | Inspect only | Focused evidence |
-| --- | --- | --- | --- |
-| Photo entry | zero-component key, compact/rail keys | `_buildPhotoWorkbenchPanel` and mode switch | six photo-workbench widget cases |
-| Photo session application | panel construction/callback | current notifier and project rebuild | project-switch case + session suite |
-| One host writer | matching confirm/save method | captured generation/result branch | matching family + session suite |
-| One panel/focus behavior | `_WorkbenchContextPanelMode`, rail/focus helpers | six retained modes | panel/focus/routed cases |
-| One Wizard render behavior | Wizard consumer anchors | named part and painter order | exact overlay case |
-| One pure projection/geometry behavior | imported helper call | exact helper owner and consumers | direct helper case |
+- Instrument bar: `_buildScaffold` plus routing/menu/mode/status tests.
+- Primary loading: reconcile/load identity plus changed-byte/reopen cases.
+- Preview exit/capture: host clear/completer plus exit/capture cases.
+- One delegated photo result: child callback and matching session case.
+- One existing writer or pure helper: exact method/owner and its focused family.
+- Rendering: one stack layer plus raster/composite evidence.
 
 ## Future extraction seams
 
-- `[S]` Photo workflow remains correctly delegated; an aligned-background
-  renderer would require its own locked pure-transform/render seam.
-- `[S]` Other cohesive host panels may be extracted only without moving
-  writer, session, route, or protected semantic ownership.
+[S] Pure math, primary asset/rendering, photo authoring, Wizard parts and host
+state already form distinct review boundaries. No extraction is prescribed.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for photo entry/panel/service injection, event-derived
-photo inputs, zero-component gate, context modes/tools/keys, session handoff,
-writer count, responsive cutovers, helper/part ownership, painters, routes,
-freshness, linked production maps, or Board test-family changes. Recheck six
-photo-workbench widget cases, `184 = 161 testWidgets + 23 test`, three owning
-groups, six retained local tools, and absence of alignment-confirm/background
-symbols after related changes. Formatting and line movement alone do not stale
-the map.
+Review instrument/menu/Home/mode, primary source/identity, event selection,
+capture/layer/preview lifecycle, z-order, write/session ownership, thresholds,
+freshness, helper/part contracts and linked test evidence.
 
 ## Known uncertainty
 
-- `[D]` Board Canvas hosts the photo panel but does not own its filesystem or
-  canonical writer semantics; those maps must be consulted for write review.
-- `[P]` Private painter/source-string tests are more structure-sensitive than
-  public widget behavior.
-- `[D]` Existing Wizard background rendering is noncanonical intake and must
-  not be inferred to render newly imported canonical photos.
+- [D] Host integration does not prove native picker or real Python atomicity.
+- [P] Private painter/source-string assertions are structure-sensitive.
+- [D] Known Facts summaries can lag event-derived render state while stale.

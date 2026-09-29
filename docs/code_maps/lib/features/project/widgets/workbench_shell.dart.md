@@ -8,11 +8,13 @@
 
 ## File purpose
 
-Owns the reusable loaded-project Workbench chrome around a router-supplied
-destination child and the presentation-only dark surface used by simple
+Owns the reusable loaded-project Workbench chrome around secondary project
+destinations supplied by the router and the presentation-only dark surface used by simple
 read-only destinations. It is the sole ordered owner of the 12 top-level
 project destinations, active-parent selection, dark shared visual vocabulary,
-Home and beginner-mode controls, breadcrumb, and compact/persistent navigation.
+Home and beginner-mode controls, breadcrumb, and compact/persistent navigation
+for those secondary pages. Primary Board Canvas bypasses this widget and reuses
+`workbenchDestinations` for its own transient project menu.
 Its Home action explicitly closes `ProjectSession` before routing to `/`, while
 beginner mode remains separate and survives. It owns no destination business
 logic, writer, persistent file, freshness, or route declaration.
@@ -66,8 +68,10 @@ than becoming additional entries.
    `WorkbenchDestinationSurface`; the wrapper derives a local Theme from the
    ambient theme, applies only existing Workbench colors, and renders the
    supplied child inside one keyed Material surface.
-2. The router constructs one `WorkbenchShell(child: matchedDestination)` after
-   `ProjectGate` has admitted loaded state.
+2. After `ProjectGate` admits loaded state, the router constructs
+   `WorkbenchShell` only when the top route is not `board-canvas`. Its shared
+   element/state persists between secondary pages; returning to Canvas removes
+   this chrome. Canvas independently supplies its Home/mode instrument bar.
 3. `GoRouterState.of(context).uri.path` supplies the current path;
    `activeWorkbenchDestination` normalizes workflow paths and returns one of
    the 12 immutable entries.
@@ -92,7 +96,8 @@ than becoming additional entries.
 | `beginnerModeProvider` from `shared/session` | UI-local read/write | Supplies and toggles the separate existing presentation mode only. |
 | `projectStateProvider` / `ProjectSession` | projection-state command | Clears the active loaded project on explicit Workbench Home. |
 | router-provided `child` | inbound destination | Renders the matched destination without inspecting or changing it. |
-| `lib/app/router.dart` | construction owner | Places one shell inside the loaded-project gate for the project subtree. |
+| `lib/app/router.dart` | construction owner | Places this shell inside the loaded-project gate for secondary targets only. |
+| `BoardCanvasScreen` | destination-model consumer | Reuses `workbenchDestinations` in its own popup without mounting this shell or copying the inventory. |
 | Project Overview | visual-token consumer | Reuses the same dark vocabulary without owning shell chrome. |
 | Six Batch-1 read-only destination owners | outbound consumers | Reuse the destination surface around their unchanged loaded bodies. |
 
@@ -128,10 +133,10 @@ into the shell.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Destination surface | `[D]` one local Theme/Material wrapper with a child slot | six loaded read-only destination bodies and global theme | `ZERO_WRITE` | seven-case routed Batch-1 regression |
-| Destination inventory | `[D]` one const ordered list | router paths/names and destination availability | `ZERO_WRITE` | inventory and all-route matrices |
+| Destination inventory | `[D]` one const ordered list | router paths/names, Canvas popup and destination availability | `ZERO_WRITE` | inventory and all-route matrices |
 | Active selection | `[D]` exact path normalization | Add/Edit/Measure workflows and aliases | `ZERO_WRITE` | workflow/alias selection case |
 | Router/provider shell identity | `[D]` stateful wrapper receives changing child | ShellRoute and provider scope | `ZERO_WRITE` | shell and gate identity tests |
-| Responsive cutover | `[D]` 1228 threshold and 244 rail | Board 900, Overview 960, outer framing | `ZERO_WRITE` | six-width shell/Board/Overview cases |
+| Responsive cutover | `[D]` 1228 threshold and 244 rail | secondary-page framing and Overview 960; Canvas now bypasses this rail | `ZERO_WRITE` | six-width shell/Board/Overview cases |
 | Home navigation | `[D]` `closeProject` precedes AppBar `go('/')` | launcher, session generation/dedup, beginner mode | `PROJECTION_STATE` + `UI_LOCAL` | Home clears project/mode-survives cases |
 | Beginner mode | `[D]` one provider assignment | other mode consumers | `UI_LOCAL` | leaf and Home round-trip survival |
 | Shared colors | `[D]` public constants used by Overview | Overview cards/preview/actions | `ZERO_WRITE` | shell-copy/color assertions |
@@ -148,15 +153,19 @@ into the shell.
   signatures, both Events modes, and stable project/fact/event identities plus
   recursive file-listing observation.
 - `test/widget/project_gate_test.dart` proves the gate remains outside the
-  shell, null recovery is shell-free, and one shell identity spans all 15 real
-  loaded destinations plus nested push/pop.
+  shell, null recovery is shell-free, Canvas has no shared shell, and secondary
+  leaves retain shell identity. Nested push/pop restores the primary bypass; an
+  unsettled secondary-to-Canvas transition retains a Material ancestor.
 - Routed Board Canvas and Overview suites cover `959`, `960`, `1227`, `1228`,
-  `1229`, and `1500` without destination responsive inversion.
+  `1229`, and `1500`: Overview still exercises this shell; Canvas exercises
+  its own shell-free layout. The shell suite also traverses all 12 Canvas popup
+  destinations at 390 and 1500 and tests both labelled modes plus Canvas Home.
 
 ## Dangerous combinations
 
-- Changing the shell cutover without both retained destination thresholds and
-  framing can reintroduce rich-to-compact inversion.
+- Changing the shell cutover without secondary destination thresholds and
+  framing can reintroduce rich-to-compact inversion. Canvas
+  does not consume this rail or breakpoint.
 - Duplicating the destination list in a destination screen can drift order,
   paths, active semantics, or zero-write evidence.
 - Turning Home into a list entry or adding workflow leaves as top-level entries
@@ -204,6 +213,6 @@ navigation or destination-surface ownership splits.
 
 - `[D]` The shell proves navigation calls no writer in this owner; downstream
   destination behavior remains outside its boundary.
-- `[D]` The threshold is derived from current destination framing; future
-  framing changes require a fresh joint calculation.
+- `[D]` The threshold applies to shared secondary chrome. Canvas maintains
+  separate instrument-bar and content thresholds.
 - `[S]` Extraction seams are descriptive only and authorize no refactor.

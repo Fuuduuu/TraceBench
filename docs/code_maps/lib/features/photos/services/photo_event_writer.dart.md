@@ -8,150 +8,156 @@
 
 ## File purpose
 
-Owns the canonical V1 `photo_added` writer boundary for directory-backed
-projects. It validates the accepted request vocabulary, allocates the next V1
-sequence and global event ID from live event history, invokes the existing
-Python append service, reads back the exact event, and classifies durability so
-the caller can apply conservative copy rollback. It does not copy photo files,
-mutate `ProjectSession`, materialize Known Facts, or authorize alignment.
+Owns the directory-backed canonical V1 photo and alignment writer boundary.
+`writePhotoAdded` accepts an import request; `ensurePrimaryPhotoAdded`
+reconciles an existing Wizard photo's identity; `confirmAlignment` appends
+explicit geometric alignment evidence. Shared Python dispatch and exact
+readback distinguish append, recovery, reuse, proven-none and uncertain
+outcomes. It does not copy images, mutate sessions or materialize Known Facts.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Public contract | `PhotoEventWriter`, `PhotoEventWriteRequest`, `PhotoEventWriteResult` | Defines the injectable write seam and exact request/result data. |
-| 2. Outcome vocabulary | `PhotoEventWriteStatus`, `PhotoEventDurability`, `PhotoEventWriteFailureKind`, `PhotoEventWriteException` | Separates appended/recovered success from proven-none, uncertain, and durable failure outcomes. |
-| 3. Construction | `PhotoEventWriterService`, `_pythonRunner`, `_repoRootPath`, `_now` | Accepts injectable process/platform/time dependencies and builds the default shared Python runner. |
-| 4. Request and path validation | `_validateRequest`, `_resolvedEventsPath`, `_isAbsolute`, `_containsDotSegment`, `_isContained` | Restricts IDs, mode/layer, SHA-256, relative event path, directory backing, and containment before launch. |
-| 5. Envelope allocation | `_allocateEnvelope`, `_EnvelopeAllocation`, `_eventIdPattern` | Validates V1 history and independently chooses the next sequence and global event identity. |
-| 6. Canonical append | `writePhotoAdded`, `_discoverPython`, `tools/event_writer_service.py` | Builds the exact schema-1.0 accepted `photo_added` envelope and delegates atomic append/validation to Python. |
-| 7. Readback and recovery | `_readExactEvent`, `_ReadbackResult`, `_canonicalJson`, `_canonicalValue` | Finds the exact candidate after launch and distinguishes durable recovery, proven absence, and ambiguity. |
-| 8. Failure classification | `PhotoEventWriteException`, `PhotoEventDurability.uncertain`, `PhotoEventDurability.provenNoEvent` | Converts validation, discovery, lock, append, and readback failures into caller-actionable durability. |
+| Public contracts | `PhotoEventWriter`, `PhotoAlignmentEventWriter`, `PhotoEventWriteRequest`, `PrimaryPhotoEventWriteRequest`, `PhotoAlignmentEventWriteRequest` | Separates additional import from primary ensure and alignment confirmation. |
+| Outcomes | `PhotoEventWriteResult`, `PhotoEventWriteStatus`, `PhotoEventDurability`, `PhotoEventWriteFailureKind`, `PhotoEventWriteException` | Distinguishes appended/recovered/reused durability and failure classes. |
+| Dependencies | `PhotoEventWriterService`, `_pythonRunner`, `_repoRootPath`, `_now` | Injects process/platform/root/clock inputs. |
+| Validation and containment | `_validateRequest`, `_validatePrimaryPhotoRequest`, `_validateAlignmentRequest`, `_resolvedEventsPath`, `_isContained` | Checks request vocabulary, primary path/hash, source/board side, geometry and directory/events containment. |
+| Durable history | `_readDurableEventHistory`, `_DurableEventHistory`, `_validateEventHistory` | Reconciles typed/raw same-project history and rejects malformed/duplicate identities. |
+| Independent allocation | `_allocateEnvelope`, `_allocatePrimaryPhotoId`, `_allocateAlignmentId` | Allocates global event IDs, V1 sequences, unused primary photo IDs and ALN IDs independently. |
+| Import append | `writePhotoAdded` | Builds an accepted photo envelope from the supplied projected state/request. |
+| Primary handoff | `ensurePrimaryPhotoAdded`, `primaryPhotoEventItemFromEvents`, `reusedDurable` | Reuses the lowest matching durable photo sequence or appends normal-mode primary evidence without layer. |
+| Alignment append | `confirmAlignment`, `solvePhotoAlignment`, `manual_preview_confirmed` | Validates bounded geometry and builds the fixed-label alignment payload. |
+| Dispatch and recovery | `_appendCanonicalCandidate`, `_discoverPython`, `_readExactEvent`, `_canonicalJson`, `_canonicalValue` | Uses temporary candidate JSON, Python append, exact readback and durability classification. |
 
 ## Anchor inventory and verification
 
-Every backtick-delimited stable anchor in the responsibility table resolves as
-an exact source substring. `tools/event_writer_service.py` is the literal tool
-argument passed by `writePhotoAdded`; it is a dependency anchor, not a Dart
-declaration. No line-number anchors are used.
+Table anchors resolve literally in this source. Imported read-model and solver
+names are call-site anchors. No line-number anchors are maintained.
 
 ## State and data flow
 
-1. `[D]` The caller supplies current `ProjectState` and a
-   `PhotoEventWriteRequest` produced only after the project-local copy exists.
-2. `[D]` `_validateRequest` rejects invalid photo IDs, modes, optional layers,
-   paths, digests, duplicate photo IDs, and non-directory project state.
-3. `[D]` `_allocateEnvelope` scans all projected events, requiring valid V1
-   sequences and global event IDs, then allocates each counter independently.
-4. `[D]` `writePhotoAdded` builds schema version `1.0`, actor
-   `user/local_operator`, status `accepted`, and the exact `photo_added`
-   payload.
-5. `[D]` `_discoverPython` selects an available command through
-   `PythonRunner`; the candidate is passed to `event_writer_service.py`.
-6. `[D]` After any launched outcome, `_readExactEvent` parses `events.jsonl`
-   and compares canonical JSON for the exact event identity and body.
-7. `[D]` Exact readback returns `appended` or `recoveredDurable`; absence after
-   a completed lock conflict is proven no-event; launch/readback ambiguity is
-   uncertain.
-8. `[D]` The returned event remains a plain map. The UI owner passes it to
-   `ProjectSession.applyCanonicalEvent`; this writer never mutates projection
-   state.
+1. [D] Import validates the supplied projected state/request, allocates from
+   that history and builds the existing V1 `photo_added` envelope.
+2. [D] Primary ensure validates safe path/hash and resolves the events file.
+   It reads live durable JSONL; a missing events file is treated as empty.
+3. [D] Durable reconciliation retains raw maps for exact reuse and parsed
+   events for validation/allocation. Cross-project rows, malformed JSON,
+   invalid/duplicate global IDs and invalid/duplicate V1 sequences fail.
+4. [D] Exact path plus case-normalized digest selects the lowest positive
+   matching photo sequence. The raw event returns as `reusedDurable` before
+   Python discovery, without another append.
+5. [D] Otherwise ensure allocates an unused `photo_primary_` ID and appends
+   `photo_added` with normal mode, lowercase digest and no layer field.
+6. [D] Alignment confirmation independently reloads durable history, validates
+   a prior accepted source photo and board side, solves bounded point pairs,
+   then allocates an independent `ALN` identity.
+7. [D] The alignment envelope is schema `1.0`, user/local_operator, accepted,
+   `photo_local` to `board_normalized`, ordered photo/board points,
+   similarity/affine type and fixed `manual_preview_confirmed` label.
+   Matrix coefficients and computed residuals are not persisted.
+8. [D] All append paths use `_appendCanonicalCandidate`: discover Python,
+   create temporary candidate JSON, invoke `tools/event_writer_service.py`,
+   then compare exact canonical JSON at the events path after launch.
+9. [D] Exact readback wins over a process error. Completed lock conflict with
+   readable absent event is proven-none; ambiguous launch/readback is uncertain.
+   Temporary-candidate cleanup never rolls back a photo file or event.
+10. [D] Returned maps leave session application to callers. Ensure and confirm
+    are separate calls, not an atomic two-event transaction.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `ProjectState` and projected events | input | Supplies manifest ID, directory root, existing photo IDs, V1 sequences, and global event IDs. |
-| `photo_event_read_model.dart` | imported pure helper | Supplies accepted photo-event parsing used for duplicate-photo checks. |
-| `PythonRunner`, `ProcessRunner`, `PlatformInfo` | outbound adapter | Discovers Python and launches the existing canonical writer tool with injectable process behavior. |
-| `tools/event_writer_service.py` | canonical append dependency | Validates and appends the supplied event under the existing lock/write contract. |
-| `dart:io` | local read/process boundary | Resolves directory/events paths and reads event history after launch. |
-| `dart:convert` | encoding/readback | Produces canonical compact JSON and parses JSONL readback. |
-| `PhotoImportService` | protected caller | Supplies a completed project-local copy and consumes durability for rollback policy. |
+| `ProjectState`, `TraceBenchEvent` | input / parsed history | Manifest/backing and projected or reconciled events. |
+| `photo_event_read_model.dart` | pure imported helper | Accepted-photo parsing and primary path/hash selection. |
+| `photo_alignment_transform.dart` | pure imported solver | Intrinsic bounds and geometry validation before alignment. |
+| `PythonRunner`, `ProcessRunner`, `PlatformInfo` | outbound adapter | Discovery and canonical-tool launch. |
+| `tools/event_writer_service.py` | canonical append owner | Existing validation/lock/append contract. |
+| `dart:io`, `dart:convert` | file / encoding boundary | JSONL reads, containment and temporary candidate JSON. |
+| `PhotoImportService` | import caller | Supplies a completed image copy and consumes durability for rollback. |
+| `_PhotoAlignmentWorkbenchState` | explicit-confirm caller | Ensures primary identity, confirms alignment and applies returned events. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `writePhotoAdded` -> Python writer tool | `CANONICAL_EVENT` | `[D]` The only product mutation is the explicit accepted `photo_added` append delegated to the canonical tool. |
-| `events.jsonl` readback | `ZERO_WRITE` | `[D]` Reads and compares the exact candidate after launch; it does not repair or rewrite history. |
-| validation and allocation | `ZERO_WRITE` | `[D]` Derives request validity and identities from immutable inputs. |
-| returned event map | `ZERO_WRITE` | `[D]` Projection mutation belongs to `ProjectSession`, outside this file. |
+| three public methods -> shared append | `CANONICAL_EVENT` | [D] Delegates accepted V1 photo/alignment append to Python. |
+| matching primary reuse | `ZERO_WRITE` | [D] Returns existing raw event before process discovery. |
+| temporary candidate setup/cleanup | `NONCANONICAL_FILE` | [D] System-temp request artifact only. |
+| history/readback reads | `ZERO_WRITE` | [D] Never repair or rewrite history. |
+| validation and allocation | `ZERO_WRITE` | [D] Derives inputs; append is the delegated mutation. |
+| returned event map | `ZERO_WRITE` | [D] Session projection application is caller-owned. |
 
-The writer preserves the existing V1 envelope. It does not add V2 `sequence`,
-change schemas, create components/nets/measurements, or write
-`photo_to_board_alignment_confirmed`.
+No V2 sequence is introduced. Photo/alignment evidence does not establish
+components, electrical nets, measurements, damage or repair conclusions.
+The service trusts supplied image path/hash/dimensions; the panel/asset loader
+owns fresh image-byte validation before confirmation.
 
 ## Zero-write zones
 
-- Request validation, path normalization, containment checks, ID allocation,
-  canonical JSON comparison, and failure classification are derivation only.
-- Python discovery and post-launch readback do not themselves authorize or
-  create canonical facts.
-- No photo byte copy/delete, Known Facts materialization, session replacement,
-  UI state, alignment math, or alignment confirmation exists here.
+- Request/path validation, solver calls, identity selection and JSON comparison.
+- Durable history reads, primary reuse and retry reconciliation.
+- No image copy/delete, Known Facts materialization or session replacement.
+- Preparing a request does not itself append an event.
 
 ## Impact matrix
 
-| Change zone | Coupling / risk | Write class | Required evidence |
-| --- | --- | --- | --- |
-| Request vocabulary | schema/runtime validator parity and UI draft values | `ZERO_WRITE` guard | writer unit suite + validator suite |
-| ID allocation | every V1 event family sharing global IDs | `ZERO_WRITE` derivation | malformed/collision and independent-counter cases |
-| Candidate envelope | protected event semantics | `CANONICAL_EVENT` | exact-envelope unit case + Python validator tests |
-| Python dispatch | shared runner and writer tool protocol | `CANONICAL_EVENT` adapter | fake-runner outcomes + tool validation |
-| Readback/durability | import rollback safety | `ZERO_WRITE` classification | proven-none, uncertain, and recovered-durable cases |
-| Directory/path guards | project containment | `ZERO_WRITE` guard | invalid-directory/path cases |
+| Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| --- | --- | --- | --- | --- |
+| Import envelope | [D] existing request candidate | import rollback / validator | `CANONICAL_EVENT` | original writer and import families |
+| Primary ensure/reuse | [D] live path/hash lookup | panel confirm and read model | conditional `CANONICAL_EVENT` / reuse `ZERO_WRITE` | primary writer family |
+| Alignment envelope | [D] fixed geometric payload | solver, validator, point draft | `CANONICAL_EVENT` | alignment writer and validator families |
+| History/allocation | [D] raw/typed reconciliation | mixed event history | `ZERO_WRITE` | stale-state and independent-ID cases |
+| Dispatch/readback | [D] one shared tool path | runner and caller retention | `CANONICAL_EVENT` / readback `ZERO_WRITE` | recovery/uncertainty cases |
+| Image inputs | [D] caller supplies dimensions/hash | asset reload | `ZERO_WRITE` guard | changed-primary Board case |
 
 ## Relevant tests and helpers
 
-| Evidence owner | Stable anchors | Coverage |
-| --- | --- | --- |
-| `test/unit/photo_event_writer_test.dart` | `_FakeProcessRunner`, `_appendCandidate`, `_isWriterCommand` | Exact envelope, allocation, invalid history, duplicate IDs, lock failure, durable recovery, uncertainty, Python discovery, and directory rejection. |
-| `tests/test_validate_events_jsonl.py` | `photo_added` cases | Existing schema-1.0 event acceptance and rejection. |
-| `tools/validate_events_jsonl.py` | V1 event validation | Runtime validator invoked by the canonical Python writer. |
-| `test/unit/photo_import_service_test.dart` | `_FakePhotoEventWriter` | Consumes writer durability without re-testing process internals. |
+- `test/unit/photo_event_writer_test.dart`: 18 cases across import, primary
+  and alignment; `_FakeProcessRunner`, `_appendCandidate`, `_primaryRequest`,
+  `_alignmentRequest` and `_writeExistingEvents`.
+- `test/unit/photo_event_read_model_test.dart`: exact primary identity and
+  lowest-sequence reuse.
+- `test/unit/photo_alignment_transform_test.dart`: bounded geometry.
+- `test/widget/board_canvas_screen_test.dart`: explicit confirm, durable
+  primary retention, retry, single-shot and stale-session handoff.
+- `test/unit/photo_import_service_test.dart`: real copy/hash/rollback policy.
+- `tests/test_validate_events_jsonl.py`: real Python envelope validation;
+  fake Dart processes do not establish actual append atomicity.
 
 ## Dangerous combinations
 
-- Changing the envelope, validator, or event tool together can conceal a
-  contract regression; compare the exact candidate independently.
-- Treating every nonzero process exit as proven no-event can delete a copy
-  whose event is already durable.
-- Treating an absent readback after launch as universally safe ignores launch
-  and filesystem ambiguity.
-- Sequence and global event-ID counters are independent; deriving one from the
-  other is invalid.
-- Path hardening changes must not silently expand accepted schema vocabulary.
+- Process failure is not evidence that a durable event is absent.
+- Stale projected allocation in ensure/confirm defeats durable reconciliation.
+- Sequence, event ID, primary photo ID and ALN ID are independent.
+- Path-only or hash-only matching can select the wrong primary event.
+- A primary event can remain durable after alignment failure; retry reuses it.
+- Envelope validation does not replace the caller's pre-confirmation image read.
 
 ## Safe SNIPER slices
 
-| One outcome | Primary anchors | Inspect only | Focused evidence |
-| --- | --- | --- | --- |
-| Exact envelope | `writePhotoAdded`, candidate literal | accepted schema/tool owner | exact-envelope test + Python validator test |
-| Allocation | `_allocateEnvelope`, `_EnvelopeAllocation` | event-history scan | independent-counter and malformed/collision tests |
-| Durability | `_readExactEvent`, `PhotoEventDurability` | process outcome/readback branches | lock, recovery, uncertainty tests |
-| Path guard | `_resolvedEventsPath`, `_isContained` | project-directory validation | invalid-directory test |
-| Python launch | `_discoverPython`, `_pythonRunner.run` | shared runner call | fake-runner command assertions |
+- Import envelope: `writePhotoAdded`, original eight cases and import caller.
+- Primary identity: ensure, durable read and primary four-case family.
+- Alignment payload: confirm, bounded solve and alignment six-case family.
+- One allocator: exact history and collision fixtures.
+- Durability: shared append/readback and matching process outcome cases.
 
 ## Future extraction seams
 
-- `[S]` Canonical JSON comparison could become a shared pure helper only if
-  other writer owners need byte-equivalent readback semantics.
-- `[S]` V1 envelope allocation could become shared only under a separately
-  locked event-writer contract; it currently stays local to avoid widening
-  protected semantics.
+[S] Import, primary reconciliation and alignment candidate construction are
+separate review boundaries around shared dispatch/readback. No extraction or
+ownership transfer is prescribed.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for request/envelope vocabulary, actor/status, V1
-sequence or event-ID allocation, Python command/arguments, directory/path
-guards, readback comparison, durability/failure classification, or direct
-caller/test changes. Formatting and line movement alone do not stale the map.
+Review contracts, live-versus-projected history, raw reuse, independent IDs,
+image-input assumptions, envelopes, solver bounds, dispatch, durability and
+caller/session coupling. Physical movement alone does not stale these claims.
 
 ## Known uncertainty
 
-- `[D]` Readback proves only whether the exact candidate is present at the
-  observed path; an I/O failure after process launch remains intentionally
-  uncertain.
-- `[P]` Process-level lock diagnostics are tool-protocol coupling and require
-  coordinated review if the Python writer changes its messages or exit codes.
+- [D] Readback proves exact-event presence only at the observed path/time.
+- [D] External concurrency is mediated by the Python tool; Dart does not wrap
+  ensure plus confirm in one transaction.
+- [P] Failure classification depends on the tool's diagnostic protocol.

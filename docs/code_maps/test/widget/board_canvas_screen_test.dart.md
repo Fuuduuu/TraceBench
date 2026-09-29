@@ -8,191 +8,177 @@
 
 ## File purpose
 
-Owns the comprehensive Board Canvas widget, route, painter, pure-helper, writer
-boundary, and responsive regression suite. The committed source contains 184
-declarations: 161 `testWidgets` plus 23 `test`. Three explicit groups own
-canonical photo import, placement geometry, and Wizard overlay behavior; the
-remaining families are derived from stable harness helpers and exact titles.
+Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary
+and responsive evidence. The file has 203 declarations: 180 `testWidgets` and
+23 `test`. Four explicit groups cover import, alignment, placement geometry
+and Wizard overlays. Parameterized declarations generate multiple cases;
+declaration counts are not executed-test totals.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Fixtures and session harness | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Builds state, mounts direct/routed screens, observes current session, and performs generation-valid fixture replacement. |
-| 2. Theme, shell, route, and responsive baseline | `buildTheme exposes BenchBeep semantic visual tokens`, `/project is the named canonical board canvas route`, `routed Board Canvas stays rich across the shell cutover` | Verifies canonical routes, shared shell modes, and local rich Canvas continuity. |
-| 3. Navigator, selection, hover, and filtering | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Exercises category drill-down, typed selection, ordering, preview, counts, and hide-unmeasured behavior. |
-| 4. Measurement entry/read model | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Covers drafts/targets/save/session result and pure endpoint/count/badge/caution contracts. |
-| 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Verifies guards, request values, returned events, errors, and idempotency. |
-| 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Exercises template selection, local ghost/editor state, normalized bounds, explicit save, and duplicate result behavior. |
-| 7. Canvas/Wizard/placement geometry | `_wizardIntakePainter`, `_wizardPhotoLayer`, `initial fit runs once for each active project and intake`, `placement geometry read model`, `_geometryPlacement` | Verifies pan/zoom, fit, optional Wizard photo/contour/candidates, and nine pure geometry contracts. |
-| 8. Painter, footprint, and semantics | `_boardCanvasPainter`, `_compositedPixelColor`, `_canvasSemanticsLabels`, `geometrySource` | Inspects composite order/pixels, Board/Wizard rotation separation, footprints/pins, cues, fallbacks, and source ownership. |
-| 9. Inspector, readiness, and evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Verifies projected inspector content, alignment-readiness metadata, safety wording, measurements, and trace metadata. |
-| 10. Local panels, focus, and protected boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `events.jsonl`, `event_writer_service.py` | Proves hidden default, retained modes/focus, volatile state, and absent unintended writer/file behavior. |
-| 11. Canonical photo import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Covers wide/compact/zero-component entry, cancel/success, single-shot uncertainty, read-only session, project switch, and unsupported picker. |
-| 12. Freshness and structural guards | `unknown freshness warning keeps Board Canvas usable`, `ProjectionStaleBanner.unknownPrimaryText`, `board canvas source keeps read-only data-path boundaries`, `hostSource` | Proves freshness presentation, accepted-event stale promotion, and physical owner/forbidden-symbol boundaries. |
+| 1. Fixtures/session | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Direct/routed state, dependency injection and generation-valid replacement. |
+| 2. Single-shell layout/freshness | `single shell measures routed canvas area`, `single shell responsive chrome preserves tools and status`, `single shell keeps $freshness banner below the bar with long identity`, `routed Board Canvas stays rich across former shell cutovers` | Area, responsive controls, no duplicate shell, banner placement and project identity. |
+| 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Drill-down, typed selection, order, preview, counts and hide-unmeasured behavior. |
+| 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Draft/target/save/session and pure measurement read contracts. |
+| 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Guards, requests, errors, exact results and idempotency. |
+| 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
+| 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
+| 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Projected metadata, safety wording, measurement and trace inspection. |
+| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries` | Hidden default, tools/focus, volatile state and physical owner checks. |
+| 10. Additional import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Existing entry/cancel/success, uncertainty, read-only, switch and unsupported-platform cases. |
+| 11. Primary alignment authoring | `canonical photo alignment workbench`, `_FakePhotoAlignmentWriter`, `_FakeAlignedPhotoAssetLoader`, `_primaryPhotoWriteResult` | Primary-only source, point draft, ensure/confirm/retry, single-shot and stale-result boundaries. |
+| 12. Alignment rendering/lifecycle | `intrinsic raster basis survives ${fixture.name} Canvas layout`, `reopen selects newest alignment and keeps layer controls UI-local with Wizard coexistence`, `missing canonical photo shows warning without canonical write` | Intrinsic raster, exit/capture, reopen, layer controls, missing/non-directory/bounds and dark-theme evidence. |
 
 ## Anchor inventory and verification
 
-Every stable anchor resolves as an exact committed test substring. Source-title
-anchors may be arguments split across lines, but their literal words remain
-contiguous in the source. The map uses no line-number anchors.
+Table anchors resolve in committed test source. Interpolated titles are literal
+source anchors, not claims about generated case counts. No line-number anchors.
 
-## Responsive and photo-entry contract
+## Single-shell fixture contract
 
-The routed case resizes one loaded Board Canvas through `959`, `960`, `1227`,
-`1228`, `1229`, and `1500`. Each width pairs shared-shell navigation keys with
-the local rich Canvas key and identical project state.
-
-Photo-import cases separately prove:
-
-1. wide `board_canvas_rail_photos_tool` and compact
-   `board_canvas_compact_photos_action` open the same Fotod panel;
-2. a directory-backed zero-component project exposes
-   `board_canvas_zero_component_photo_entry`;
-3. cancel creates no preview/request, explicit confirmation returns one event,
-   and the zero-component Canvas remains usable afterward;
-4. an in-flight request is single-shot and writer uncertainty preserves the
-   safe-copy warning;
-5. a non-directory session lists event-derived photos but disables import;
-6. switching projects rejects the old captured generation without mutating the
-   newer session; and
-7. unsupported platforms do not claim a working picker.
+- `single shell measures routed canvas area` mounts the same routed fresh
+  component fixture with focus off, context hidden and rail present at
+  `1440×860` and `1500×900`.
+- It measures `board_canvas_workbench_canvas_zone` width/height and logs area,
+  then compares against pre-edit literals `707292` and `792132` respectively.
+  These are recorded comparison baselines, not measurements of the old layout
+  reproduced by the current test. The assertion requires greater area; it does
+  not assert a percentage gain or a fixed final area.
+- The responsive case covers 13 widths from 360 through 1500, including
+  935/936/937 around the padded 900-content threshold. It checks no outer
+  shell/breadcrumb, one bar, Home/mode/status, reachable local tools/context,
+  focus restore and no captured layout exception.
+- Stale and unknown generated cases use long project identity at 390/1500.
+  Banner top must match bar bottom; menu has 12 transient entries and project
+  state remains identical.
+- The retained six-width routed case now checks absent shared shell at every
+  width and rich Canvas continuity across the former outer-shell cutovers.
+- The fixed-pixel placement/Wizard composite fixture uses 800×608, preserving
+  Canvas geometry after the toolbar grew by eight pixels. It is not an area
+  baseline or a product viewport requirement.
 
 ## State and data flow
 
-- `[D]` `_inlineProjectState` defaults freshness explicitly; `_harness` and
-  `_routerHarness` seed `SeededProjectSession` and injected writer/photo seams.
-- `[D]` `_replaceProjectState` uses generation-current `replaceWithReloaded` for
-  intentional fixture switches; no external notifier assignment remains.
-- `[D]` Photo picker/preview/import fakes record calls. The success helper
-  returns an exact `photo_added` event, which the panel applies through the
-  seeded session and the harness then observes via `_readProjectState`.
-- `[D]` Project-switch photo coverage completes an old request after replacing
-  the session state and asserts the newer project's state/event list remains
-  unchanged.
-- `[D]` Existing four V2 writer fakes continue to observe explicit component,
-  placement, and measurement actions and session stale promotion/dedup.
-- `[D]` Wizard/painter helpers inspect noncanonical intake and composite output;
-  canonical imported photos are listed but never rendered as aligned
-  backgrounds.
-- `[D]` Direct measurement and placement-geometry `test` declarations exercise
-  pure libraries without mounting widgets or invoking writers.
-- `[D]` The structural guard reads host, Wizard part, and geometry library
-  separately and asserts absent alignment-write/overlay ownership in the host.
+1. [D] Direct/routed harnesses seed session and inject existing V2 writer and
+   photo picker/import/alignment/asset/image seams.
+2. [D] Import fakes record requests and return exact photo events; session
+   observation proves immediate event-derived presentation and stale promotion.
+3. [D] Alignment fakes separate primary ensure requests from confirmation.
+   First success, retained-primary failure/retry and later confirmation
+   distinguish two-event, one-event and zero-write outcomes.
+4. [D] Deferred loaders/writers allow replacement before first write, during
+   primary handoff or before alignment result. Newer session state stays intact.
+5. [D] Changed primary digest refreshes the displayed asset and clears draft
+   before canonical calls; pending old board capture is discarded.
+6. [D] Pair add/remove/reorder/type/cancel exercises provisional state only.
+   Exit cases restore confirmed alignment and cancel board capture across
+   panel switch, focus or compact-panel closure.
+7. [D] Intrinsic raster cases inspect real layout around an injected image,
+   ensuring the photo-sized child is not squeezed to the board before transform.
+8. [D] Reopen selects newest valid primary alignment; additional-photo
+   alignment is excluded. Visibility/opacity/history controls remain local.
+9. [D] Missing assets, non-directory state and intrinsic out-of-bounds reopened
+   points fail safely without rendering an invalid layer or calling a writer.
+10. [D] Existing V2 fakes, pure helper cases, Wizard/Board composites and source
+    guards retain their own boundaries; event-derived photo rendering need not
+    wait for refreshed Known Facts.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `BoardCanvasScreen` and production map | system under test / map input | Supplies destination behavior and host responsibilities. |
-| `PhotoWorkbenchPanel`, photo read model, import public types | child system / injected seams | Exercises event-derived presentation and explicit photo-import workflow through Board integration. |
-| `ProjectSession`, `projectStateProvider`, `ProjectState` | fixture / observation | Seeds current state and proves guarded event application, replacement, dedup, and freshness. |
-| measurement projection and placement geometry | direct pure systems | Characterizes deterministic helper behavior without widget writes. |
-| Wizard overlay part | child/source-read input | Supplies optional noncanonical fit/photo/painter declarations. |
-| `WorkbenchShell`, router, GoRouter | routed composition | Verifies canonical routes and independent shared/local responsive thresholds. |
-| Four V2 writer interfaces plus three photo fakes | test doubles | Capture existing canonical actions and delegated picker/preview/import results. |
-| BoardFact models, `TraceBenchEvent`, `WizardIntake` | fixture/assertion input | Build canonical facts/events and noncanonical intake. |
-| Flutter gesture/semantics/painter APIs | driver/observation | Controls viewports, input, rendering, semantics, and private painter state. |
-| `dart:io` temporary roots/source reads | harness-only file boundary | Supports isolated image fixtures and static owner guards. |
+| `BoardCanvasScreen` | system under test | Host layout, interaction and orchestration. |
+| Photo panel/read model/writer/import types | child / injected seam | Explicit import and primary alignment workflow. |
+| `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
+| `ProjectSession`, provider and project models | fixture / observation | Generation, events, freshness, dedup and replacement. |
+| Measurement/placement libraries | direct pure systems | Deterministic read/geometry contracts. |
+| Wizard part, BoardFact models, `WizardIntake` | render/fixture input | Noncanonical intake and canonical projection. |
+| Router, `WorkbenchShell`, GoRouter | routed harness | Canvas bypass and stable secondary navigation boundary. |
+| Four V2 and photo doubles | observations | Exact requests and returned-event application. |
+| Flutter gestures, semantics, painter/layout APIs | driver | Input, viewport, private painter, pixel and geometry checks. |
+| `dart:io` | harness boundary | Temporary image fixtures and static source reads. |
 
 ## Write and protected boundaries
 
 | Test flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| four V2 fake request lists | exercised `CANONICAL_EVENT` | `[D]` Observe public writer requests without proving persistence internals. |
-| `_FakePhotoImportService` request/result | exercised delegated file/event boundary | `[D]` Verifies UI gating and result handling; real copy/writer behavior stays in unit owners. |
-| returned events -> `_readProjectState` | observed `PROJECTION_STATE` | `[D]` Separates session application/dedup/stale promotion from fixtures. |
-| `_replaceProjectState` | observed `PROJECTION_STATE` | `[D]` Generation-valid test-only project transition. |
-| selections, preview, filters, drafts, panels, focus | `UI_LOCAL` | `[D]` No request before explicit save/import confirmation. |
-| Wizard/painter/route/freshness/source guards | `ZERO_WRITE` | `[D]` Render, navigate, or inspect without canonical mutation. |
-| temp setup/teardown | `NONCANONICAL_FILE` | `[D]` Test-owned isolated files only. |
+| V2 and photo writer doubles | exercised `CANONICAL_EVENT` | [D] UI request protocol, not production persistence internals. |
+| import fake | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` boundaries | [D] Gating/result handling; real copy belongs to service units. |
+| event application/replacement | observed `PROJECTION_STATE` | [D] Session generation, dedup and stale promotion. |
+| pair/layer/panel/focus/selection | `UI_LOCAL` | [D] No canonical call from preview/edit/cancel. |
+| route/layout/painter/freshness/source observation | `ZERO_WRITE` | [D] Presentation/read evidence. |
+| temporary fixture setup/teardown | `NONCANONICAL_FILE` | [D] Test-owned files only. |
 
-Canonical event meaning, photo copy atomicity, real writer/tool behavior,
-schemas, materialization, Project ZIP, and alignment stay production-owner
-responsibilities.
+Fake writer returns do not prove Python validation/locking. Pixel and geometry
+tests do not turn a provisional transform into canonical alignment evidence.
 
 ## Zero-write zones
 
-- Picker cancel, read-only listing, unsupported-platform state, panel/focus,
-  routes, responsive layout, theme, painters, Wizard, inspectors, and freshness
-  observations invoke no real writer.
-- Negative aligned-background and alignment-confirm assertions protect the
-  current owner boundary but do not design or authorize that work.
-- Static source reads and pure measurement/geometry declarations are
-  `ZERO_WRITE`.
-- All filesystem fixtures are temporary and outside product persistence.
+- Picker cancel, pair drafts, preview/cancel, local layer and focus controls.
+- Read-only/unavailable guidance, routes, responsive layout, theme and painters.
+- Static ownership reads and direct pure-helper tests.
+- The harness deliberately applies returned events only in explicit workflow
+  or seeded-state cases; those projection updates are distinguished above.
 
 ## Impact matrix
 
-| Family | Coupling / risk | Write class | Escalation |
-| --- | --- | --- | --- |
-| Photo import | panel, import service, writer, session, zero-component gate | UI + exercised event/projection | photo service/writer/read-model suites + session suite |
-| Route/responsive | shell 1228 and Canvas 900 thresholds | `ZERO_WRITE` | routed case + shell suite |
-| Local panels/focus | context enum, six tools, compact action | `UI_LOCAL` | panel/focus + photo entry cases |
-| Existing writers/session | selection/generation/dedup/freshness | exercised event/projection | exact writer family + session suite |
-| Canvas/geometry/Wizard | z-order, hits, semantics, owner boundaries | `UI_LOCAL` / `ZERO_WRITE` | exact pure/render cases + structural guard |
-| Inspector/evidence | projected wording and selection | `ZERO_WRITE` | exact inspector/readiness/safety cases |
-| Freshness/boundaries | provider/scaffold/source owners | `ZERO_WRITE` / observed projection | full target + integration |
+| Family | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| --- | --- | --- | --- | --- |
+| Single shell | [D] routed measurements/width/banner assertions | router/bar/padding/status | `ZERO_WRITE` / `UI_LOCAL` | three declaration families + gate/shell suites |
+| Primary confirmation | [D] separate ensure/confirm observations | panel/writer/session/read model | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | confirm, failure/retry and switch cases |
+| Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
+| Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
+| Existing writers | [D] four fake boundaries | respective writers/session | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | exact writer families |
+| Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
+| Inspector/boundaries | [D] metadata/source assertions | fact summaries and host owners | `ZERO_WRITE` | readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
-| Family | Stable anchors | Representative coverage |
-| --- | --- | --- |
-| Photo import | canonical photo group and three fakes | Six widget cases covering entry, cancel/success, uncertainty, read-only, switch, unsupported platform. |
-| Shared/local responsive | `_routerHarness`, routed six-width case | Shell cutover, rich Canvas continuity, state identity. |
-| Harness/session | `_inlineProjectState`, `SeededProjectSession`, `_readProjectState`, `_replaceProjectState` | Project lifecycle and post-write observation. |
-| Rendering/Wizard | `_wizardIntakePainter`, `_wizardPhotoLayer`, `_compositedPixelColor` | Fit, z-order, optional photo, rotation, source ownership. |
-| Interaction/geometry | `_selectPlacement`, `_tapCanvasAtNormalized`, placement geometry group | Selection, hit alignment, geometry contracts, semantics. |
-| Measurement | direct helper anchors and fake writer | Endpoint/count/badges/caution plus explicit save/session result. |
-| Boundaries | source guard, `events.jsonl`, `event_writer_service.py` | Volatile-only state and absent unintended/alignment writes. |
+- Four explicit groups: import, alignment, placement geometry and Wizard.
+- `_FakePhotoAlignmentWriter` records ensure/confirm independently.
+- `_FakeAlignedPhotoAssetLoader` and `_fakeAlignedPhotoImage` bound image I/O.
+- `_primaryPhotoWriteResult` and alignment fixtures model exact returned events.
+- `_routerHarness`, `_readProjectState` and `_replaceProjectState` expose context.
+- `_wizardIntakePainter`, `_wizardPhotoLayer` and `_compositedPixelColor` preserve
+  separate intake and canonical-placement evidence.
+- Photo writer/read-model/transform units verify delegated non-widget contracts.
+- Shell tests own all-12 popup navigation, mode/Home and file-byte guards;
+  gate tests own the all-15 route matrix and unsettled transition.
 
 ## Dangerous combinations
 
-- Completing the fake import before a project switch cannot prove stale
-  protection; the result must resolve after replacement.
-- A fake import service does not prove copy/hash/atomicity/rollback and cannot
-  substitute for both unit suites.
-- Checking only a photo row without current session state can hide local-only
-  presentation drift.
-- Canonical import and Wizard background overlay are different sources; tests
-  must not merge their ownership.
-- Shared-shell keys alone can miss a local rich/compact inversion.
-- Source-string guards are structure-sensitive and should remain owner-specific.
+- Completing a fake before replacement cannot prove stale-result rejection.
+- UI fakes cannot replace real copy/hash/rollback and Python tool tests.
+- Baseline literals are historical fixture inputs, not freshly measured output.
+- Altering viewport and expected pixels together can conceal geometry drift.
+- Primary source, additional photo rows and Wizard presentation are distinct.
+- Source-string/private-painter assertions are structure-sensitive.
 
 ## Safe SNIPER slices
 
-| One outcome | Primary anchors | Inspect only | Focused evidence |
-| --- | --- | --- | --- |
-| Photo entry/cancel | first two photo cases, picker/preview fakes | Board host keys and panel pick flow | matching widget case |
-| Photo success/session | zero-component success case, `_photoImportResult` | panel application and read model | case + read-model/session unit suites |
-| Photo uncertainty | in-flight case | single-shot and error copy | case + import rollback/writer durability tests |
-| Project switch | stale-generation photo case | session generation branch | case + session suite |
-| One existing writer | matching fake/event title | result/freshness path | exact family + session suite |
-| One Wizard/geometry result | named helper/group | physical owner and consumers | exact test + structural guard |
-| One responsive result | routed six-width case | shell source/test and Canvas cutover | routed case + shell suite |
+- One shell assertion: exact area/width/banner title and bar/router coupling.
+- One confirmation await: fake completion, replacement and session observation.
+- One primary retry outcome: ensure versus alignment calls and event counts.
+- One raster/exit outcome: matching fixture plus host/renderer lifecycle.
+- One retained V2 or pure-helper case: named family and direct owner.
+- One source boundary: exact host/part/imported-owner string checks.
 
 ## Future extraction seams
 
-- `[S]` Photo-workbench fakes could move to a focused panel test after the Board
-  entry/session integration remains explicitly covered here.
-- `[S]` Shared six-width values may become a fixture only if shell and Board
-  retain separate geometry assertions.
+[S] Routed layout, primary authoring, pure geometry and composite rendering
+are distinct test families. This map prescribes no test reorganization.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for helper/title/count/group drift, harness/session/route,
-photo fakes or six photo cases, writer/filesystem boundaries, source ownership,
-responsive/focus behavior, linked map ownership, or family movement. Recheck
-`184 = 161 testWidgets + 23 test`, all three groups, six photo-import widget
-cases, nine placement-geometry tests, four measurement-helper contracts, six
-routed widths, six retained local tools, and aligned-photo/confirmation absence
-after related changes. Formatting and line movement alone do not stale the map.
+Review titles/declarations/generated loops, fixture baselines/viewports, seams,
+session generation, primary source/digest, point/preview/layer behavior, matrix
+layout, current source guards, writer boundaries and route composition.
 
 ## Known uncertainty
 
-- `[D]` Widget fakes prove UI orchestration and session handoff, not real picker,
-  filesystem atomicity, Python append, or Windows link/junction behavior.
-- `[P]` Dynamic private-painter and static source-string assertions are more
-  structure-sensitive than public behavior.
-- `[S]` Routed shell coverage does not transfer shell metadata ownership into
-  this destination test.
+- [D] Widget fakes do not prove native picker, Python atomicity or OS link rules.
+- [D] Area assertions prove improvement over recorded literals in this fixture;
+  they do not establish a universal gain or a minimum percentage.
+- [P] Private painter and static source assertions are structure-sensitive.

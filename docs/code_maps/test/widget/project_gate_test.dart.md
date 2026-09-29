@@ -3,16 +3,16 @@
 - Source: `test/widget/project_gate_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 7/12 — 12 tests spanning recovery, open outcomes, shared-shell identity, route inventory, provider/file boundaries, and nested navigation`
+- Qualification: `SCORE 7/12 — 13 tests spanning recovery, open outcomes, shared-shell identity, route inventory, provider/file boundaries, and nested navigation`
 - Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Verifies the shared loaded-project gate and shell composition through the
-production router. The 12-test suite supplies a controlled seeded ProjectSession,
+production router. The 13-test suite supplies a controlled seeded ProjectSession,
 directory-picker/loader seams, a writer double, exact 15-destination inventory,
-and file snapshots. It proves shell-free null recovery, loaded one-gate/one-
-shell presentation, same shell element/state across all leaves, both aliases,
+and file snapshots plus an asset-backed unsettled-transition fixture. It proves shell-free null recovery, one loaded gate, primary Canvas bypass,
+same shell element/state across secondary leaves, both aliases,
 nested push/pop, session/project identity, canonical Home, and byte-level
 zero mutation.
 
@@ -27,7 +27,7 @@ and repeated-whole-file-analysis dimensions remain zero.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Guarded destination inventory | `_projectDestinations` | Defines exact 15 path/destination-type pairs expected beneath one shared gate/shell. |
+| Guarded destination inventory | `_projectDestinations` | Defines 15 path/type pairs under one gate with a primary Canvas bypass. |
 | Loaded project fixture | `_loadedProject`, `projectDirectory` | Builds explicit-fresh project state with configurable directory and empty canonical collections. |
 | Canonical root fixture | `_buildCanonicalHome`, `BenchBeepHomeScreen` | Supplies the required canonical launcher surface with inert callbacks. |
 | Router/session harness | `_RouterSession`, `_pumpRouter`, `SeededProjectSession`, `homeBuilder` | Builds the production router, seeds null/loaded ProjectSession, overrides seams/writer, mounts theme, and exposes URI/session observations. |
@@ -35,8 +35,9 @@ and repeated-whole-file-analysis dimensions remain zero.
 | Representative writer double | `_RecordingAddComponentWriter`, `requests` | Records component-write requests so recovery/reveal/navigation can prove zero calls. |
 | Null recovery family | `null project keeps requested URI and shows shared recovery`, `all 15 real project destinations keep null recovery shell-free` | Verifies exact URI, one gate, no shell/destination, recovery UI, and all 15 null routes. |
 | Loaded and open outcome family | `preloaded project renders the requested child immediately`, `successful load reveals child without changing original URI` | Verifies loaded/success reveal inside one gate/shell while cancel/failure cases retain recovery and URI. |
-| Loaded all-route identity matrix | `all 15 loaded project destinations retain one gate and shell identity`, `WorkbenchShell` | Proves every exact destination, one gate/shell, same element/state, same project, and zero event/fact/file/writer/freshness mutation. |
-| Root, aliases, and nested stack | `home recovery action resolves to the root route`, `legacy project redirects settle on their frozen destinations`, `project shell preserves nested push and pop behavior` | Covers canonical Home, both shell-free null aliases, and loaded push/pop with shell identity. |
+| Loaded all-route identity matrix | `all 15 loaded project destinations retain one gate and secondary shell identity`, `WorkbenchShell` | Proves every destination and one gate, no Canvas shell, secondary-shell identity, same project and zero canonical/file/writer/freshness mutation. |
+| Root, aliases, and nested stack | `home recovery action resolves to the root route`, `legacy project redirects settle on their frozen destinations`, `project shell preserves nested push and pop behavior` | Covers canonical Home, shell-free null aliases and loaded push/pop across the primary/secondary boundary. |
+| Unsettled secondary transition | `single shell retains Material during an unsettled secondary transition`, `ProjectLoader.loadFromAssets` | Routes an asset-backed stale Overview to Canvas before outgoing rebuilds settle; checks Material safety and preserved project/freshness. |
 | Write-capable reveal guard | `write-capable child reveal issues zero component writes`, `AddComponentScreen` | Proves gate success and shell/destination mounting do not submit the representative writer. |
 
 ## Anchor inventory and verification
@@ -52,20 +53,20 @@ exact substring in committed test source. The map uses no line-number anchors.
    `SeededProjectSession(projectState)` plus optional deterministic picker,
    loader, and writer overrides.
 2. `buildTraceBenchRouter` selects the real route. One route-layer
-   `ProjectGate` is outside the shared `WorkbenchShell`.
+   `ProjectGate` is outside the conditional primary/secondary composition.
 3. Null state renders recovery at the requested URI without mounting shell or
    destination. The 15-route null matrix repeats that contract for every real
    target; both redirect aliases settle on their canonical recovery URI.
 4. Cancel and typed/generic failure retain null state and URI; successful load
    opens the session and reveals shell plus requested child without a
    default redirect to `/project`.
-5. The loaded 15-route loop records the initial shell element/state and asserts
-   both identities remain the same while `go` moves among every leaf.
+5. The loaded loop first checks Canvas without a shell, then captures the first
+   secondary shell element/state and compares them across secondary leaves.
 6. That loop also preserves the exact project object, events/facts identities
    and values, freshness, recursive file bytes, and empty writer requests.
-7. `push('/project/overview')` displays Overview inside the same shell;
-   `pop()` returns canonical `/project` and Board Canvas with the same shell and
-   loaded project.
+7. `push('/project/overview')` mounts shared chrome; `pop()` returns canonical
+   Canvas without it and retains the loaded project. A separate unsettled
+   transition test verifies outgoing secondary rebuilds keep Material support.
 8. Home recovery resolves to `/`, renders `BenchBeepHomeScreen`, and excludes
    the legacy Viewer strings.
 
@@ -75,7 +76,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | --- | --- | --- |
 | `buildTraceBenchRouter`, `GoRouter` | system under test / harness | Supplies production tree, canonical URIs, aliases, `go`, `push`, and `pop`. |
 | `ProjectGate` and seam providers | system under test / overrides | Own null/loaded selection and deterministic project opening. |
-| `WorkbenchShell` | route-layer observation | Supplies shared loaded-project chrome whose absence/identity is asserted. |
+| `WorkbenchShell` | route-layer observation | Supplies secondary chrome; its absence on Canvas and secondary identity are asserted. |
 | `projectStateProvider`, `SeededProjectSession`, `ProviderContainer` | fixture/observation | Seeds null/loaded state and proves guarded replacement or identity preservation. |
 | `ProjectState`, `ProjectManifest`, `KnownFacts` | fixture models | Build valid minimal loaded state. |
 | `ProjectDirectoryOpenAction` behavior | indirect dependency | Supplies picker/loader/error/state-assignment flow through the gate. |
@@ -113,7 +114,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | Destination inventory | `[D]` exact 15 tuples in null/loaded loops | router and destination types | `UI_LOCAL` / `ZERO_WRITE` | both 15-route matrices |
 | Recovery presentation | `[D]` exact copy/tokens and shell absence | ProjectGate/source/theme | `ZERO_WRITE` | null case + null matrix |
 | Open lifecycle | `[D]` picker/loader outcomes | open action/ProjectSession | observed `PROJECTION_STATE` | cancel, two failures, success |
-| Shared shell identity | `[D]` same element/state across loaded leaves | ShellRoute/WorkbenchShell | `ZERO_WRITE` | loaded matrix |
+| Shared shell identity | `[D]` same element/state across secondary leaves | ShellRoute/WorkbenchShell | `ZERO_WRITE` | loaded matrix |
 | Nested stack | `[D]` push Overview, pop Canvas | GoRouter shell navigator | `UI_LOCAL` | push/pop case |
 | Aliases/Home | `[D]` exact canonical paths and root | router redirects/launcher | `UI_LOCAL` | alias and Home cases |
 | Mutation guards | `[D]` identities/values/file bytes/writer requests | protected writers/files/providers | `ZERO_WRITE` | loaded matrix + write-capable reveal |
@@ -126,9 +127,9 @@ exact substring in committed test source. The map uses no line-number anchors.
   Navigator transitions.
 - `_snapshotFiles` supplies recursive byte-level fixture evidence.
 - `_loadedProject` supplies explicit-fresh valid state.
-- The 12 widget tests cover one direct null case, preloaded reveal, four open
+- The 13 widget tests cover one direct null case, preloaded reveal, four open
   outcomes, Home recovery, null all-15, loaded all-15 identity/mutation, both
-  aliases, nested push/pop, and representative write-capable reveal.
+  aliases, nested push/pop, unsettled Material transition, and write-capable reveal.
 
 ## Dangerous combinations
 
@@ -167,7 +168,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 Review for `SYMBOL_DRIFT` when inventory/harness/test-name/shell anchors change;
 `FLOW_DRIFT` when null/loaded/open/route-settle/nested-stack behavior changes;
 `BOUNDARY_DRIFT` when session/file/writer ownership changes; `TEST_DRIFT` when
-any of the 12 cases move; and `STRUCTURE_DRIFT` when route/gate/shell ownership
+any of the 13 cases move; and `STRUCTURE_DRIFT` when route/gate/shell ownership
 splits.
 
 ## Known uncertainty

@@ -13,6 +13,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/board_canvas/geometry/placement_geometry.dart` | `docs/code_maps/lib/features/board_canvas/geometry/placement_geometry.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/logic/measurement_projection.dart` | `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/logic/measurement_projection.part.dart` | `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md` | production | `RETIRED` |
+| `lib/features/board_canvas/rendering/aligned_photo_layer.dart` | `docs/code_maps/lib/features/board_canvas/rendering/aligned_photo_layer.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` | `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/screens/board_canvas_screen.dart` | `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/component_navigator.part.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` | production | `MAINTAINED` |
@@ -22,6 +23,8 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measure_sheet/screens/measure_sheet_screen.dart` | `docs/code_maps/lib/features/measure_sheet/screens/measure_sheet_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/measurements/screens/measurement_record_screen.dart` | `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md` | production | `RETIRED` |
+| `lib/features/photos/logic/photo_alignment_transform.dart` | `docs/code_maps/lib/features/photos/logic/photo_alignment_transform.dart.md` | production | `MAINTAINED` |
+| `lib/features/photos/logic/photo_event_read_model.dart` | `docs/code_maps/lib/features/photos/logic/photo_event_read_model.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/services/photo_event_writer.dart` | `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/services/photo_import_service.dart` | `docs/code_maps/lib/features/photos/services/photo_import_service.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/widgets/photo_workbench_panel.dart` | `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md` | production | `MAINTAINED` |
@@ -39,6 +42,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |
 | `lib/shared/session/project_session.dart` | `docs/code_maps/lib/shared/session/project_session.dart.md` | production | `MAINTAINED` |
+| `test/unit/photo_event_read_model_test.dart` | `docs/code_maps/test/unit/photo_event_read_model_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/photo_event_writer_test.dart` | `docs/code_maps/test/unit/photo_event_writer_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/photo_import_service_test.dart` | `docs/code_maps/test/unit/photo_import_service_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/project_creator_test.dart` | `docs/code_maps/test/unit/project_creator_test.dart.md` | test | `MAINTAINED` |

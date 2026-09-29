@@ -2,10 +2,25 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
-Next: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Current: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Single Shell closeout and one combined maintenance pass
+## Completed combined maintenance sequence
+
+The combined Photo Alignment and Single Shell Code Map refresh is complete.
+Independent map audit accepted the refreshed maps for SNIPER use; the final
+registry counts and deferred observations are recorded in
+`docs/CURRENT_STATE.md`.
+
+The map-refresh write authority is spent. `NEEDS_USER_DECISION` is
+non-executable. No further maintenance pass or product implementation is
+queued or armed; the next work requires the human's decision.
+
+All following predecessor queues are historical and non-authorizing. Their
+route labels, allowlists and execution instructions cannot reactivate spent
+authority.
+
+## Completed Single Shell closeout and refresh reservation (historical)
 
 Current is the exceptional docs-only closeout of the completed Single Shell
 implementation. Its implementation allowlist/freeze is spent; only the three

@@ -8,152 +8,161 @@
 
 ## File purpose
 
-Owns the Board Canvas photo-workbench panel for existing-project canonical
-photo import. It adapts the desktop picker, loads UI-local preview metadata,
-collects mode/layer draft values, gates explicit import, calls the safe import
-service, applies the returned event through the supplied `ProjectSession` with
-a captured generation, and lists event-derived photos immediately. It does not
-align photos or render a confirmed photo background.
+Owns additional-photo import and primary-project-photo alignment authoring in
+the Canvas photo panel. Import retains its desktop picker and copy service.
+Alignment uses only the host-supplied Wizard photo, transient ordered point
+pairs and geometric preview. Explicit `Kinnita joondus` ensures canonical
+primary identity, confirms alignment and applies returned events with session
+guards. Canvas owns active alignment and rendered layer presentation.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Picker abstraction | `PhotoSourcePicker`, `DesktopPhotoSourcePicker`, `pickSingleImage` | Exposes an injectable single-image picker and restricts the production picker to supported desktop platforms/extensions. |
-| 2. Preview abstraction | `PhotoSourcePreviewLoader`, `LocalPhotoSourcePreviewLoader`, `PhotoSourcePreview` | Validates a selected regular file and returns filename, extension, size, and source path for transient presentation. |
-| 3. Preview failures | `PhotoSourcePreviewException` | Keeps picker/preview errors noncanonical and user-presentable. |
-| 4. Panel contract | `PhotoWorkbenchPanel`, `projectState`, `projectSession`, `photos`, `onCanonicalEventApplied` | Receives current projection/session, event-derived photo items, injected services, and an optional host callback. |
-| 5. Dependency lifecycle | `_PhotoWorkbenchPanelState`, `initState`, `didUpdateWidget`, `_refreshDependencies` | Refreshes default/injected picker, preview loader, import service, and draft state when project identity changes. |
-| 6. Selection flow | `_pickPhoto`, `_selectionInFlight`, `_preview` | Makes picker selection single-shot, loads preview metadata, handles cancel/error, and performs no project write. |
-| 7. Draft and confirmation | `_mode`, `_layer`, `_confirmImport`, `_confirmationInFlight` | Holds accepted draft vocabulary and requires explicit confirmation before invoking import. |
-| 8. Session handoff | `generation`, `applyCanonicalEvent`, `onCanonicalEventApplied` | Captures the session generation before await, applies the returned exact event, and refuses stale-session mutation. |
-| 9. Result presentation | `_feedback`, `build`, `_formatByteSize` | Presents readiness, errors, residual-copy warnings, and event-derived imported-photo rows. |
+| Import adapters | `PhotoSourcePicker`, `DesktopPhotoSourcePicker`, `PhotoSourcePreviewLoader`, `LocalPhotoSourcePreviewLoader`, `PhotoSourcePreview`, `PhotoSourcePreviewException` | Desktop additional-photo selection and regular-file metadata preview. |
+| Panel contract | `PhotoWorkbenchPanel`, `primaryPhotoRelativePath`, `primaryPhotoAsset`, `alignments`, `boardPointPicker` | Current state/session, primary asset, event lists and host/injected seams. |
+| Import lifecycle | `_PhotoWorkbenchPanelState`, `_refreshDependencies`, `didUpdateWidget` | Refreshes import dependencies and resets draft on project change. |
+| Import confirmation | `_pickPhoto`, `_confirmImport`, `_selectionInFlight`, `_confirmationInFlight` | Single-shot picker/import and generation-guarded result application. |
+| Local presentation | `build`, `_buildContent`, `BoardCanvasPalette`, `_formatByteSize` | Local dark Theme, readable/disabled controls, lists and embedded alignment UI. |
+| Alignment lifecycle | `PhotoAlignmentPreview`, `_PhotoAlignmentPair`, `_PhotoAlignmentWorkbench`, `_PhotoAlignmentWorkbenchState`, `_clearDraft` | Primary-only draft state and path/digest reset. |
+| Point capture | `_capturePhotoPoint`, `_photoPreviewKey`, `_captureBoardPoint` | Display-to-intrinsic photo conversion and awaited normalized host board point. |
+| Draft math | `_removePair`, `_movePair`, `_setTransformType`, `_recomputeSolution`, `_cancelDraft` | Ordered-pair solve, residual/reflection preview and zero-write cancellation. |
+| Explicit alignment | `_confirmAlignment`, `ensurePrimaryPhotoAdded`, `confirmAlignment` | Fresh image validation, primary ensure/reuse and alignment append. |
+| Context isolation | `_capturedContextIsCurrent`, `_showStaleConfirmationFeedback`, `applyCanonicalEvent` | Guards session/generation/project/directory/path across awaits. |
+| Host layer controls | `onActiveAlignmentChanged`, `onLayerVisibleChanged`, `onLayerOpacityChanged`, `onPrimaryPhotoAssetChanged` | Delegates layer presentation and refreshed primary asset to Canvas. |
 
 ## Anchor inventory and verification
 
-Every stable anchor resolves as an exact source substring. `generation` and
-`applyCanonicalEvent` identify call sites on the injected `ProjectSession`, not
-declarations owned by this widget. No line-number anchors are used.
+Table anchors resolve literally. Writer/session names identify calls, not owned
+declarations. Separate State classes own import and alignment confirmation.
 
 ## State and data flow
 
-1. `[D]` Board Canvas passes current `ProjectState`, `ProjectSession`, and
-   `photoEventItemsFromEvents(projectState.events)`.
-2. `[D]` `DesktopPhotoSourcePicker` returns a local source path or cancel;
-   unsupported platforms expose a disabled/nonclaiming state.
-3. `[D]` `LocalPhotoSourcePreviewLoader` verifies the selected supported
-   regular file and returns UI-local metadata. Cancel and preview errors create
-   no import request.
-4. `[D]` The user may choose accepted mode and optional layer. These values and
-   the preview stay widget-local until `_confirmImport`.
-5. `[D]` Explicit confirmation captures `projectSession.generation`, then calls
-   `PhotoImportService.importPhoto` with the current projected project.
-6. `[D]` On success, the exact returned event enters
-   `applyCanonicalEvent(capturedGeneration: ...)`; stale generation leaves the
-   newer session unchanged and produces explicit feedback.
-7. `[D]` Accepted application triggers the host callback and the parent rebuild
-   presents the photo from event-derived `photos`; the widget does not append a
-   parallel local canonical row.
-8. `[D]` Writer-uncertain/import cleanup errors are displayed, including when a
-   safe copy was intentionally preserved.
+1. [D] Canvas supplies current state/session, event-derived rows and the sole
+   Wizard primary-photo path/asset.
+2. [D] Additional import retains picker, metadata, mode/layer and explicit
+   `_confirmImport`. Its service owns copy/hash/finalize and photo durability;
+   the panel applies the returned event with captured generation.
+3. [D] Alignment has no second picker or additional-photo source selector.
+   Missing/unreadable primary input gives guidance while Canvas remains usable.
+4. [D] Photo taps scale the displayed RenderBox into intrinsic pixels. Board
+   capture awaits a host point; project/path change, unmount or null completion
+   prevents adding that pair.
+5. [D] Pair add/remove/reorder/type edits recompute a bounded similarity/affine
+   solution. Residual and reflection are preview evidence. Immutable points and
+   an optional solution are published through `PhotoAlignmentPreview`.
+6. [D] Cancel and path/digest changes clear provisional state; host panel exit
+   also clears preview/capture. Active selection/opacity/visibility are UI-local.
+7. [D] Explicit confirm captures session, generation, project ID/directory,
+   primary path, points, type and side. Busy state rejects duplicate submits.
+8. [D] Fresh image loading precedes canonical calls. Digest change clears
+   draft, reports feedback, refreshes the host asset and returns without writes.
+   Current dimensions are used to validate captured points again.
+9. [D] Ensure returns a new or reused durable primary event. If absent from
+   captured events, the exact event is applied to the captured session with
+   generation and included in working state for the alignment request.
+10. [D] Context is checked after each await and before continuation.
+    Alignment uses the returned primary photo ID; stale results do not update
+    a newer project or proceed to the next canonical operation.
+11. [D] Successful alignment application clears draft, selects its returned ID
+    and notifies Canvas. Failure retains retryable draft; a durable primary
+    remains available for reuse rather than rollback.
+12. [D] First success may append two events; existing primary plus confirmation
+    appends one. Preview/cancel and pre-write changed/stale exits append none.
+    These are workflow outcomes, not an atomic multi-event transaction.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| `file_picker` | desktop input adapter | Opens one jpg/jpeg/png/webp path without loading bytes into picker memory. |
-| `dart:io`, `kIsWeb` | platform/read input | Gates desktop support and reads regular-file stat metadata for preview. |
-| `ProjectState` | input | Supplies live backing identity and projected events to the import service. |
-| `ProjectSession` | outbound projection boundary | Applies the exact returned event with generation and duplicate guards. |
-| `photo_event_read_model.dart` | presentation input | Supplies immutable event-derived photo rows; owns no write. |
-| `PhotoEventWriterService` | default dependency | Used only to construct the production import service. |
-| `LocalPhotoImportService` | outbound file/event workflow | Performs safe copy/hash/finalize and canonical writer handoff. |
-| `BoardCanvasScreen` | host | Chooses wide/compact/zero-component entry and supplies current dependencies. |
+| `file_picker`, `dart:io`, `kIsWeb` | additional-import input | Desktop selection and regular-file metadata. |
+| `ProjectState`, `ProjectSession`, `TraceBenchEvent` | input / projection | Current context and exact returned-event application. |
+| `photo_event_read_model.dart` | presentation input | Immutable photo/alignment records. |
+| `LocalPhotoImportService` | delegated import | Safe additional-photo copy and event handoff. |
+| `PhotoEventWriterService`, `PhotoAlignmentEventWriter` | canonical boundary | Default and injectable ensure/confirm writer. |
+| `photo_alignment_transform.dart` | pure math | Points, bounded solve, residual and reflection. |
+| `aligned_photo_layer.dart` | read-only asset/image seam | Fresh bytes/hash/dimensions and preview image builder. |
+| `BoardCanvasPalette` | presentation input | Local dark theme and control colors. |
+| `BoardCanvasScreen` | host / callbacks | Primary loading, board capture, preview/confirmed layer and controls. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| picker, preview, mode, layer, busy flags, feedback | `UI_LOCAL` | `[D]` Transient widget state only; cancel/error does not call import. |
-| `_confirmImport` -> import service | exercised `NONCANONICAL_FILE` + `CANONICAL_EVENT` | `[D]` Explicit human confirmation is the sole transition into the delegated persistence workflow. |
-| returned event -> `applyCanonicalEvent` | `PROJECTION_STATE` | `[D]` Session owner enforces generation, duplicate, current-state composition, and stale promotion. |
-| event-derived photo list | `ZERO_WRITE` | `[D]` Renders accepted event projection only. |
+| picker, pairs, feedback, busy state, preview | `UI_LOCAL` | [D] No persistence before explicit confirmation. |
+| import -> service | `NONCANONICAL_FILE` + `CANONICAL_EVENT` | [D] Delegated additional-image copy and photo append. |
+| alignment -> asset reload | `ZERO_WRITE` | [D] Reads image before canonical calls. |
+| ensure then confirm | delegated `CANONICAL_EVENT` | [D] Explicit human intent; primary reuse can perform no append. |
+| exact event -> session | `PROJECTION_STATE` | [D] Generation, dedup and stale promotion remain session-owned. |
+| accepted list / residual display | `ZERO_WRITE` | [D] Presents evidence or provisional math only. |
 
-The panel cannot create canonical events directly. It cannot confirm
-alignment, generate components, classify damage, author visual traces, or
-promote photo evidence into electrical/measurement truth.
+The panel calls canonical writers but never directly appends JSONL. Alignment
+is geometric visual evidence, not electrical identity/net, measurement,
+damage, repair or component truth. Alignment copies no image; additional
+import does not replace the primary source.
 
 ## Zero-write zones
 
-- Picker cancel, unsupported-platform copy, preview metadata, dropdown changes,
-  list rows, byte-size formatting, and feedback presentation are noncanonical.
-- Default dependency construction does not write until explicit confirmation.
-- Read-only/non-directory sessions may list accepted events but keep import
-  unavailable.
-- There is no background overlay, alignment point draft, transform math, or
-  `photo_to_board_alignment_confirmed` path.
+- Picker cancel, metadata preview, pair edits/reorder/type switch and cancel.
+- Residual/reflection, lists, theme and layer-control presentation.
+- Host board-point capture and missing/read-only/unavailable guidance.
+- Opening the panel and solving points never ensure or confirm an event.
 
 ## Impact matrix
 
-| Change zone | Coupling / risk | Write class | Required evidence |
-| --- | --- | --- | --- |
-| Picker/platform | desktop UX and package API | `UI_LOCAL` | cancel/unsupported widget cases |
-| Preview | source validation and user feedback | `UI_LOCAL` / read | cancel, invalid preview, retained draft cases |
-| Confirmation gating | duplicate clicks and canonical intent | delegated writes | in-flight single-shot case |
-| Import result handling | rollback copy message and event identity | delegated writes | success/uncertain widget cases + service suite |
-| Session generation | project-switch isolation | `PROJECTION_STATE` | stale-generation widget case + session suite |
-| Photo list | event read model and parent rebuild | `ZERO_WRITE` | immediate event-derived presentation case |
+| Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| --- | --- | --- | --- | --- |
+| Additional import | [D] existing service/session chain | import and writer units | delegated `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` | import group |
+| Primary source | [D] host path/asset only | Wizard, loader, host identity | `ZERO_WRITE` / `UI_LOCAL` | changed-byte and unavailable cases |
+| Draft/preview | [D] intrinsic taps and bounded solve | host capture and solver | `UI_LOCAL` | pair/reorder/cancel and exit cases |
+| Confirm/retry | [D] ensure before confirm | durable writer/read model | `CANONICAL_EVENT` / `PROJECTION_STATE` | single-shot, retained-primary, retry |
+| Async isolation | [D] captured-context checks | session and host replacement | `ZERO_WRITE` guard / `PROJECTION_STATE` application | switch cases at each await boundary |
+| Theme | [D] local Theme/Builder and disabled icon resolution | app theme / ListTile | `ZERO_WRITE` | dark text/control regression |
 
 ## Relevant tests and helpers
 
-| Evidence owner | Stable anchors | Coverage |
-| --- | --- | --- |
-| `test/widget/board_canvas_screen_test.dart` | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService` | Wide/compact entry, cancel, success, single-shot, uncertain copy, read-only session, project switch, unsupported platform. |
-| `test/unit/photo_import_service_test.dart` | `LocalPhotoImportService` | Real filesystem/copy/hash/finalize/rollback behavior delegated by the panel. |
-| `test/unit/photo_event_writer_test.dart` | `PhotoEventWriterService` | Exact canonical envelope and durability behavior behind the default dependency chain. |
+- `test/widget/board_canvas_screen_test.dart` owns import and alignment groups,
+  fake picker/preview/import, `_FakePhotoAlignmentWriter` and asset loader.
+- Alignment cases cover first confirm, retained-primary retry, subsequent
+  confirm, changed bytes, invalidated capture and stale results.
+- Panel exit/focus/compact switch, intrinsic raster, reopen, missing asset and
+  local dark-theme cases exercise host/child presentation coupling.
+- `test/unit/photo_event_writer_test.dart` owns envelopes/durability.
+- `test/unit/photo_import_service_test.dart` owns real copy/rollback.
+- Transform/read-model suites own pure geometry and event-selection contracts.
 
 ## Dangerous combinations
 
-- Applying the result through a notifier captured before await can mutate the
-  wrong project; the current session plus captured generation is required.
-- Treating picker selection as confirmation would violate the human-write
-  boundary.
-- Adding a local canonical photo row before session acceptance can diverge from
-  event-derived presentation.
-- Reusing preview state across project identity changes can import a source
-  under unintended context.
-- A preserved-copy warning must not claim that canonical event absence is
-  proven when writer durability is uncertain.
+- Additional import is not primary-source selection.
+- Skipping fresh-byte checks can confirm geometry against a changed photograph.
+- Treating ensure/confirm as atomic hides a retained durable primary.
+- Project ID alone does not establish session/generation/directory/path identity.
+- A local canonical row before session acceptance hides failed application.
+- Teardown callbacks can race host rendering; host preview/capture reconciliation
+  is part of the tested panel-exit boundary.
 
 ## Safe SNIPER slices
 
-| One outcome | Primary anchors | Inspect only | Focused evidence |
-| --- | --- | --- | --- |
-| Picker/cancel | `DesktopPhotoSourcePicker`, `_pickPhoto` | supported-platform/preview branches | cancel + unsupported cases |
-| Preview metadata | `LocalPhotoSourcePreviewLoader`, `PhotoSourcePreview` | regular-file/extension checks | preview widget case |
-| Explicit import | `_confirmImport` | busy guard and request values | success + single-shot cases |
-| Project switch | captured `generation`, `applyCanonicalEvent` | post-await branch | stale-generation case + session unit suite |
-| Result list | `photos`, event row keys | read-model consumer only | immediate presentation case |
+- Import picker/cancel: adapter, `_pickPhoto` and original import cases.
+- One draft action: capture/edit/solve plus preview callback.
+- Confirmation guard: `_confirmAlignment` and matching await-boundary test.
+- Session result: context check, exact event and session evidence.
+- Layer presentation: callbacks plus reopen/focus cases.
+- Local theme: `build`/`_buildContent` and readable/disabled-control test.
 
 ## Future extraction seams
 
-- `[S]` Picker and preview adapters may move to a platform-services package if
-  camera/mobile support is separately designed; that is outside this owner.
-- `[S]` The event-derived photo list could become a stateless child after its
-  UX stabilizes, without moving confirmation or session ownership.
+[S] Import and alignment State classes separate point editing, confirmation and
+host rendering review surfaces. No refactor is prescribed.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for picker platform/extensions, preview validation,
-draft vocabulary, project-change reset, confirmation/busy guards, default
-service composition, result/error copy, session generation/application, photo
-row behavior, or Board Canvas integration/test changes. Formatting and line
-movement alone do not stale the map.
+Review primary source rules, injections/callbacks, resets, point conversion,
+preview, ensure/confirm/retry, byte checks, session guards, theme and tests.
 
 ## Known uncertainty
 
-- `[D]` The production desktop picker is not exercised by widget automation;
-  fakes verify UI control flow while human desktop smoke verifies native picker
-  behavior.
-- `[P]` OS-level source readability may change between preview and explicit
-  confirmation; the import service revalidates the source.
+- [D] Widget fakes do not exercise native picker or Python atomicity.
+- [D] Already-issued writes may finish in an old project; guards protect
+  application and continuation rather than cancelling durable operations.
+- [P] OS readability can change; import and alignment revalidate their inputs.

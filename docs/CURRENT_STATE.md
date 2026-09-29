@@ -1,9 +1,29 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS`
-Next recommended pass: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Completed Single Shell UI implementation and route closeout
+## Completed combined Code Map refresh
+
+The combined Photo Alignment and Single Shell Code Map refresh is complete.
+It reconciles both committed product changes without changing product or
+runtime behavior. Fourteen accepted maps were restored to `MAINTAINED`.
+
+The human-supplied independent map audit returned
+`MAP_VERDICT: ACCEPT_WITH_NITS` and `SAFE_FOR_SNIPER_USE: YES`.
+F1/F2 are closed. N1-N4 remain non-blocking deferred observations and create
+no new task or pass.
+
+The final registry contains 54 map files and 54 index rows: 52 `MAINTAINED`,
+zero `REVIEW_REQUIRED`, and two unchanged `RETIRED` maps.
+
+The map-refresh write authority is spent. The route ends at non-executable
+`NEEDS_USER_DECISION`; no further maintenance or product work is armed.
+
+All following predecessor sections are historical and non-authorizing. Their
+route and authority wording does not override this completed handoff.
+
+## Completed Single Shell UI implementation and route closeout (historical)
 
 `TRACEBENCH_BOARD_CANVAS_SINGLE_SHELL_UI_IMPL_PASS` is complete. Verified Git
 state is `main` at `HEAD == origin/main ==

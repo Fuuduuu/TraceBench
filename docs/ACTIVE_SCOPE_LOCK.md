@@ -2,8 +2,76 @@
 
 ## Route
 
-Current: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+
+## Current Measurement M0 scope reservation
+
+Lane A / `DOCS_SCOPE_LOCK`. The human approved gradual Board Canvas
+modularization, Measurement as the first pilot, and M0 characterization tests
+only. No production refactor is authorized. Verified scope baseline:
+`main`, `HEAD == origin/main == 6d379f3f5d6d58b334be44a627def8ebe60cb1ea`,
+subject `docs: complete combined code map refresh`, divergence `0 / 0`.
+
+The binding contract is
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+Current write authority is exactly these five docs:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`
+
+No sixth path. All production/test/tool/schema/asset/package/map/index,
+historical-audit, platform, Windows generated-plugin, and scratch bytes are
+frozen. Preserve completed route history and unrelated ledger rows. The audit
+contract permits only the artifact's designated verdict block and the matching
+ledger Status cell for the subsequent bounded recording; all other Phase 1
+bytes stay frozen. Staging, commit, and push require explicit human authority.
+
+## Reserved future M0 test authority
+
+Only `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS` is
+reserved. Its exact future writable allowlist is:
+
+1. `test/widget/board_canvas_screen_test.dart`
+
+Activation requires independent scope acceptance, bounded verdict recording,
+and the human's exact scope-doc commit/push with aligned `HEAD` and
+`origin/main`. The future pass verifies live route/authority against that
+committed scope. No routine active-lock sync is required by this sequence.
+This reservation does not permit test edits during the current docs pass.
+
+M0 characterizes current `_IntegratedMeasurePanel` behavior only, within the
+maintained test map's existing Measurement zone. Minimal local helpers/fakes
+are allowed only inside that test file for these cases; unrelated zones and
+existing static source checks stay frozen. BEFORE behavior == AFTER behavior.
+The artifact owns the eleven targets and exact lifetime/save-order/copy/guard,
+timestamped operation-ID, provider fallback, draft, and 900-content-width
+freezes. ProjectSession, Measure Sheet, all writer semantics, production
+ownership, rendering, responsive behavior, and protected contracts stay fixed.
+
+Both applicable source/test maps are `MAINTAINED`, inspected with current
+scope disposition `REVIEWED_NO_CHANGE`, and frozen with `CODE_MAP_INDEX.md`.
+M0 re-evaluates map disposition after its accepted test diff: material mapped
+evidence drift needs separately scoped committed-source maintenance;
+otherwise no map edit. Test declaration count alone does not require refresh.
+No maintenance PASS_ID is reserved. A second independent zone requires
+`DECOMPOSE_REQUIRED`; no override or allowlist expansion is authorized.
+
+L1 presentation seam, M1 physical extraction, M2 projection performance,
+component create/edit, Inspector, and Placement are non-authorizing later
+work requiring further human decisions. Stop on live baseline/route/authority
+conflict, nonallowlisted edits, protected-semantic changes, required stale or
+conflicting maps, independent-zone expansion, or out-of-scope validation
+failure. Use the artifact's exact docs/M0 validation and audit contracts.
+
+## Preserved predecessor history
+
+All following completed sections are historical and non-authorizing. Their
+route labels, allowlists, freezes, and instructions cannot override the
+current reservation above or reactivate spent authority.
 
 ## Completed combined Code Map refresh
 

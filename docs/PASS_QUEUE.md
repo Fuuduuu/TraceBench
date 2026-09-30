@@ -2,8 +2,56 @@
 
 ## Current route
 
-Current: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+
+## Reserved Measurement M0 sequence
+
+The human approved gradual modularization with Measurement first and M0
+characterization tests only. Baseline: `main`, `HEAD == origin/main ==
+6d379f3f5d6d58b334be44a627def8ebe60cb1ea`, subject
+`docs: complete combined code map refresh`, divergence `0 / 0`.
+The completed combined map-refresh write authority remains spent.
+
+The current scope writes only the five docs listed by
+`docs/ACTIVE_SCOPE_LOCK.md`. The binding artifact is
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+1. Reserve this docs-only scope; independent `scope-lock-post-audit` review.
+2. Record the returned verdict only in the designated artifact block and
+   matching ledger Status cell; prove all other Phase 1 bytes frozen.
+3. Human commits/pushes the exact accepted scope-doc set. Scope acceptance
+   and aligned Git activate the single reserved M0 test pass without a
+   separate routine active-lock sync.
+4. Execute `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+   only in `test/widget/board_canvas_screen_test.dart`, within its existing
+   Measurement zone, preserving current runtime behavior and static checks.
+5. Validate the characterization evidence, independently audit the exact
+   test diff, and use exact human commit/push for the accepted test file.
+6. Re-evaluate map disposition after the accepted diff. Material mapped
+   evidence drift requires separately scoped committed-source maintenance;
+   otherwise no map edit. No maintenance PASS_ID is named or armed here.
+   Later product/refactor work requires another human decision.
+
+The future writable allowlist contains exactly one test file; local helpers
+and fakes are limited to its Measurement cases. All production, other tests,
+independent test zones, existing static source checks, maps/index, schemas,
+tools, assets, packages, platform files, and scratch are frozen. A second
+independent zone stops with `DECOMPOSE_REQUIRED`. No production refactor,
+writer/operation-ID change, copy/responsive/rendering change, or projection
+optimization is part of M0. The artifact owns all eleven targets, behavior
+freezes, validation, and stop conditions.
+
+L1 read-only presentation seam, M1 physical Measurement library extraction,
+and M2 projection performance are non-authorizing future directions only.
+Component create/edit, Inspector, and Placement require later human decisions.
+No later pass is armed by this scope except the conditional M0 reservation.
+
+## Preserved predecessor history
+
+All following completed queues are historical and non-authorizing. Their
+route labels, allowlists, and instructions cannot override this reservation
+or reactivate spent authority.
 
 ## Completed combined maintenance sequence
 

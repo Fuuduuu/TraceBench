@@ -1,7 +1,44 @@
 # Current State
 
-Current pass: `TRACEBENCH_PHOTO_ALIGNMENT_SINGLE_SHELL_CODE_MAP_REFRESH_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+
+## Human-selected Measurement M0 route
+
+The human approved gradual Board Canvas modularization, Measurement as the
+first pilot, and M0 characterization tests only. No production refactor is
+authorized. The source-verified panel already owns Measurement drafts, save
+state, writer invocation, captured session generation, and returned-event
+application; M0 pins that behavior before any physical extraction.
+
+Verified scope baseline: `main` at `HEAD == origin/main ==
+6d379f3f5d6d58b334be44a627def8ebe60cb1ea`, subject
+`docs: complete combined code map refresh`, divergence `0 / 0`.
+The combined refresh remains complete and its write authority spent.
+
+`docs/ACTIVE_SCOPE_LOCK.md` owns the exact five-doc current write set. Binding
+scope and characterization targets:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+Exactly one future pass is reserved, with writable path
+`test/widget/board_canvas_screen_test.dart` only, conditional on independent
+scope acceptance, bounded verdict recording, and exact human commit/push.
+BEFORE behavior == AFTER behavior; production, other tests, static source
+checks, schemas, tools, assets, maps/index, platform, and scratch stay frozen.
+
+Both applicable Board Canvas source/test maps are `MAINTAINED` and inspected
+as `REVIEWED_NO_CHANGE` for this docs scope. Future M0 stays in the existing
+Measurement zone and re-evaluates map disposition after the accepted test
+diff; material mapped evidence drift requires separately scoped committed-
+source maintenance, otherwise no map edit. Declaration count alone does not
+trigger refresh. No maintenance PASS_ID or later extraction is reserved.
+L1, M1, M2, component create/edit, Inspector, and Placement remain future
+non-authorizing directions requiring further human decisions.
+
+## Preserved predecessor history
+
+All following completed sections are historical and non-authorizing. Their
+route and authority wording does not override the current human-selected
+reservation above.
 
 ## Completed combined Code Map refresh
 

@@ -1337,9 +1337,17 @@ class _FakePlacementWriter implements V2PlacementWriter {
 }
 
 class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
-  _FakeSaveMeasurementWriter();
+  _FakeSaveMeasurementWriter({
+    this.error,
+    this.completion,
+    this.status = V2SaveMeasurementWriteStatus.appended,
+    Map<String, dynamic>? event,
+  }) : event = event ?? _measurementRecordedEventJson();
 
-  final Map<String, dynamic> event = _measurementRecordedEventJson();
+  final Object? error;
+  final Completer<void>? completion;
+  final V2SaveMeasurementWriteStatus status;
+  final Map<String, dynamic> event;
   final List<V2SaveMeasurementRequest> requests = <V2SaveMeasurementRequest>[];
 
   @override
@@ -1348,30 +1356,38 @@ class _FakeSaveMeasurementWriter implements V2SaveMeasurementWriter {
     required V2SaveMeasurementRequest request,
   }) async {
     requests.add(request);
+    if (completion != null) {
+      await completion!.future;
+    }
+    if (error != null) {
+      throw error!;
+    }
     return V2SaveMeasurementResult(
-      status: V2SaveMeasurementWriteStatus.appended,
-      event: {
-        ...event,
-        'client_operation_id': request.clientOperationId,
-        'payload': {
-          ...(event['payload'] as Map<String, dynamic>),
-          'target': {
-            'target_kind': request.targetKind,
-            'target_key': request.targetKey,
-            'display_label': request.displayLabel,
-            if (request.componentId != null)
-              'component_id': request.componentId,
-            if (request.pinId != null) 'pin_id': request.pinId,
-          },
-          'reading': {
-            'mode': request.mode,
-            'value': request.value,
-            'unit': request.schemaUnit,
-            'display_value': request.displayValue,
-          },
-        },
-      },
-      appended: true,
+      status: status,
+      event: status == V2SaveMeasurementWriteStatus.existing
+          ? event
+          : {
+              ...event,
+              'client_operation_id': request.clientOperationId,
+              'payload': {
+                ...(event['payload'] as Map<String, dynamic>),
+                'target': {
+                  'target_kind': request.targetKind,
+                  'target_key': request.targetKey,
+                  'display_label': request.displayLabel,
+                  if (request.componentId != null)
+                    'component_id': request.componentId,
+                  if (request.pinId != null) 'pin_id': request.pinId,
+                },
+                'reading': {
+                  'mode': request.mode,
+                  'value': request.value,
+                  'unit': request.schemaUnit,
+                  'display_value': request.displayValue,
+                },
+              },
+            },
+      appended: status == V2SaveMeasurementWriteStatus.appended,
     );
   }
 }
@@ -7026,6 +7042,481 @@ void main() {
     expect(find.text('Measure Sheet'), findsNothing);
     expect(find.text('Koht → Väärtus → Ühik → Salvesta'), findsNothing);
     expect(state.events, isEmpty);
+  });
+
+  group('M0 Measurement characterization', () {
+    final panel =
+        find.byKey(const Key('board_canvas_integrated_measure_panel'));
+    final save = find.byKey(const Key('board_canvas_measure_save_button'));
+
+    ProjectState measurementState({
+      String? projectDirectory,
+      String? designator = 'R101',
+      List<TraceBenchEvent> events = const [],
+    }) =>
+        _inlineProjectState(
+          components: [
+            ComponentFact(componentId: 'cmp_r101', designator: designator)
+          ],
+          placements: const [boardPlacement],
+          projectDirectory: projectDirectory,
+          events: events,
+        );
+
+    Future<ProjectState> mountMeasure(
+      WidgetTester tester,
+      _FakeSaveMeasurementWriter writer, {
+      ProjectState? state,
+      double width = 1400,
+    }) async {
+      await tester.binding.setSurfaceSize(Size(width, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      if (state == null) {
+        final directory = Directory.systemTemp.createTempSync('tracebench-m0-');
+        addTearDown(() => directory.deleteSync(recursive: true));
+        state = measurementState(projectDirectory: directory.path);
+      }
+      await tester
+          .pumpWidget(_harness(projectState: state, measurementWriter: writer));
+      await tester.pumpAndSettle();
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_measure_sheet_button'));
+      await tester.pumpAndSettle();
+      expect(panel, findsOneWidget);
+      return state;
+    }
+
+    Finder valueInput([String target = 'cmp_r101']) =>
+        find.byKey(Key('board_canvas_measure_row_value_input_$target'));
+
+    String copy(WidgetTester tester, String key) =>
+        tester.widget<Text>(find.byKey(Key(key))).data!;
+
+    OutlinedButton saveButton(WidgetTester tester) =>
+        tester.widget<OutlinedButton>(save);
+
+    Future<void> enterDraft(WidgetTester tester, String value,
+        {String unit = 'V'}) async {
+      await tester.ensureVisible(valueInput());
+      await tester.enterText(valueInput(), value);
+      await tester.pumpAndSettle();
+      if (unit != 'V') {
+        final select = find
+            .byKey(const Key('board_canvas_measure_row_unit_select_cmp_r101'));
+        await tester.ensureVisible(select);
+        await tester.tap(select);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(unit).last);
+        await tester.pumpAndSettle();
+      }
+    }
+
+    Future<void> tapSave(WidgetTester tester) async {
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pump();
+    }
+
+    final failures = <({String name, Object error, String copy})>[
+      for (final failure in <V2SaveMeasurementFailureKind, String>{
+        V2SaveMeasurementFailureKind.noProjectDirectory:
+            'Mõõtmise salvestamiseks ava projekt kohalikust kaustast.',
+        V2SaveMeasurementFailureKind.invalidProjectDirectory:
+            'Projektikaust ei sobi mõõtmise salvestamiseks.',
+        V2SaveMeasurementFailureKind.pythonUnavailable:
+            'Mõõtmise kirjutaja pole saadaval.',
+        V2SaveMeasurementFailureKind.lockConflict:
+            'Mõõtmise kirjutaja on hetkel hõivatud.',
+        V2SaveMeasurementFailureKind.validation:
+            'Mõõtmist ei salvestatud: sisestus ei läbinud valideerimist.',
+        V2SaveMeasurementFailureKind.append:
+            'Mõõtmise salvestamine ebaõnnestus: writer detail',
+      }.entries)
+        (
+          name: failure.key.name,
+          error: V2SaveMeasurementException(failure.key, 'writer detail'),
+          copy: failure.value
+        ),
+      (
+        name: 'unexpected',
+        error: StateError('unexpected writer failure'),
+        copy:
+            'Mõõtmise salvestamine ebaõnnestus: Bad state: unexpected writer failure'
+      ),
+    ];
+    for (final failure in failures) {
+      testWidgets(
+          'failure ${failure.name} preserves current copy and permits retry',
+          (tester) async {
+        final writer = _FakeSaveMeasurementWriter(error: failure.error);
+        final state = await mountMeasure(tester, writer);
+        await enterDraft(tester, '1.23');
+        await tapSave(tester);
+        await tester.pumpAndSettle();
+
+        expect(writer.requests, hasLength(1));
+        expect(copy(tester, 'board_canvas_measure_save_error'), failure.copy);
+        expect(find.byKey(const Key('board_canvas_measure_save_status')),
+            findsNothing);
+        expect(saveButton(tester).onPressed, isNotNull);
+        expect(find.descendant(of: save, matching: find.text('Salvesta')),
+            findsOneWidget);
+        expect(_readProjectState(tester), same(state));
+        expect(state.events, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    for (final alreadyInSession in [false, true]) {
+      testWidgets(
+          'existing writer event with session duplicate=$alreadyInSession',
+          (tester) async {
+        final event = _measurementRecordedEventJson(
+          targetKey: 'cmp_r101',
+          displayLabel: 'R101',
+          pinId: null,
+          unit: 'V',
+          displayValue: '1.23 V',
+        );
+        final writer = _FakeSaveMeasurementWriter(
+          status: V2SaveMeasurementWriteStatus.existing,
+          event: event,
+        );
+        final directory =
+            Directory.systemTemp.createTempSync('tracebench-m0-existing-');
+        addTearDown(() => directory.deleteSync(recursive: true));
+        final state = measurementState(
+          projectDirectory: directory.path,
+          events: [if (alreadyInSession) TraceBenchEvent.fromJson(event)],
+        );
+        await mountMeasure(tester, writer, state: state);
+        await enterDraft(tester, '1.23');
+        await tapSave(tester);
+        await tester.pumpAndSettle();
+
+        expect(writer.requests, hasLength(1));
+        final updated = _readProjectState(tester);
+        expect(updated.events, hasLength(1));
+        expect(updated.events.single.toJson(),
+            TraceBenchEvent.fromJson(event).toJson());
+        expect(updated.isProjectionStale, !alreadyInSession);
+        if (alreadyInSession) {
+          expect(updated, same(state));
+        }
+        expect(copy(tester, 'board_canvas_measure_save_status'),
+            'Mõõtmine oli juba salvestatud. Projektsioon vajab värskendamist.');
+        expect(copy(tester, 'board_canvas_measure_save_guard'),
+            'Mõõtmine on salvestatud. Projektsioon vajab värskendamist.');
+        expect(saveButton(tester).onPressed, isNull);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets(
+        'identical successful form on the same panel issues no repeat request',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      await mountMeasure(tester, writer);
+      final mountedPanel = tester.element(panel);
+      await enterDraft(tester, '1.23');
+      await tapSave(tester);
+      await tester.pumpAndSettle();
+      expect(copy(tester, 'board_canvas_measure_save_status'),
+          'Mõõtmine salvestatud. Projektsioon vajab värskendamist.');
+      expect(copy(tester, 'board_canvas_measure_save_guard'),
+          'Mõõtmine on salvestatud. Projektsioon vajab värskendamist.');
+      expect(saveButton(tester).onPressed, isNull);
+
+      await tapSave(tester);
+      await tester.pumpAndSettle();
+      expect(tester.element(panel), same(mountedPanel));
+      expect(writer.requests, hasLength(1));
+      expect(_readProjectState(tester).events, hasLength(1));
+    });
+
+    testWidgets(
+        'pending save disables repeat and completion restores post-save UI',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakeSaveMeasurementWriter(completion: completion);
+      final state = await mountMeasure(tester, writer);
+      await enterDraft(tester, '1.23');
+      await tapSave(tester);
+      expect(writer.requests, hasLength(1));
+      expect(find.descendant(of: save, matching: find.text('Salvestan...')),
+          findsOneWidget);
+      expect(copy(tester, 'board_canvas_measure_save_status'),
+          'Salvestan mõõtmist...');
+      expect(saveButton(tester).onPressed, isNull);
+      expect(_readProjectState(tester), same(state));
+      await tapSave(tester);
+      expect(writer.requests, hasLength(1));
+
+      completion.complete();
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: save, matching: find.text('Salvesta')),
+          findsOneWidget);
+      expect(copy(tester, 'board_canvas_measure_save_status'),
+          'Mõõtmine salvestatud. Projektsioon vajab värskendamist.');
+      expect(_readProjectState(tester).events, hasLength(1));
+      await enterDraft(tester, '2.34');
+      expect(saveButton(tester).onPressed, isNotNull);
+      expect(tester.takeException(), isNull);
+    });
+
+    for (final directory in <String?>[null, '   ']) {
+      testWidgets(
+          'missing project directory ${directory == null ? 'null' : 'blank'} blocks locally',
+          (tester) async {
+        final writer = _FakeSaveMeasurementWriter();
+        final state = measurementState(projectDirectory: directory);
+        await mountMeasure(tester, writer, state: state);
+        await enterDraft(tester, '1.23');
+        expect(copy(tester, 'board_canvas_measure_save_guard'),
+            'Mõõtmise salvestamiseks ava projekt kohalikust kaustast.');
+        expect(saveButton(tester).onPressed, isNull);
+        await tapSave(tester);
+        expect(writer.requests, isEmpty);
+        expect(_readProjectState(tester), same(state));
+      });
+    }
+
+    testWidgets(
+        'empty Canvas selection keeps Measure mounted with component guard',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = await mountMeasure(tester, writer);
+      final mountedPanel = tester.element(panel);
+      await enterDraft(tester, '1.23');
+      await _tapCanvasAtNormalized(tester, x: 0.95, y: 0.95);
+      await tester.pumpAndSettle();
+
+      expect(tester.element(panel), same(mountedPanel));
+      expect(find.text('Select a component on Canvas.'), findsOneWidget);
+      expect(copy(tester, 'board_canvas_measure_save_guard'),
+          'Vali mõõtmise Koht plaadil.');
+      expect(saveButton(tester).onPressed, isNull);
+      await tapSave(tester);
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+    });
+
+    testWidgets(
+        'deferred result rejects the captured generation after session replacement',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakeSaveMeasurementWriter(completion: completion);
+      final original = await mountMeasure(tester, writer);
+      final session = ProviderScope.containerOf(
+              tester.element(find.byType(BoardCanvasScreen)))
+          .read(projectStateProvider.notifier);
+      final generation = session.generation;
+      await enterDraft(tester, '1.23');
+      await tapSave(tester);
+      expect(writer.requests, hasLength(1));
+      final newer = _inlineProjectState(
+        projectId: 'proj_newer',
+        components: const [
+          ComponentFact(componentId: 'cmp_r101', designator: 'R101')
+        ],
+        placements: const [boardPlacement],
+        projectDirectory: original.projectDirectory,
+      );
+      _replaceProjectState(tester, newer);
+      await tester.pumpAndSettle();
+      expect(session.generation, greaterThan(generation));
+      expect(_readProjectState(tester), same(newer));
+
+      completion.complete();
+      await tester.pumpAndSettle();
+      expect(_readProjectState(tester), same(newer));
+      expect(newer.events, isEmpty);
+      expect(newer.isProjectionStale, isFalse);
+      expect(original.events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'panel unmount mid-save still applies returned event before UI mounted check',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakeSaveMeasurementWriter(completion: completion);
+      await mountMeasure(tester, writer);
+      final mountedPanel = tester.element(panel);
+      await enterDraft(tester, '1.23');
+      await tapSave(tester);
+      expect(writer.requests, hasLength(1));
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_rail_inspector_tool'));
+      await tester.pumpAndSettle();
+      expect(panel, findsNothing);
+      expect(mountedPanel.mounted, isFalse);
+      expect(_readProjectState(tester).events, isEmpty);
+
+      completion.complete();
+      await tester.pumpAndSettle();
+      final updated = _readProjectState(tester);
+      expect(updated.events, hasLength(1));
+      expect(updated.events.single.eventId, writer.event['event_id']);
+      expect(updated.events.single.payload['reading'], {
+        'mode': 'voltage',
+        'value': 1.23,
+        'unit': 'V',
+        'display_value': '1.23 V',
+      });
+      expect(updated.isProjectionStale, isTrue);
+      expect(panel, findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'draft follows same mounted panel across selection and resets after mode exit',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = _inlineProjectState(
+        components: const [
+          ComponentFact(componentId: 'cmp_r101', designator: 'R101'),
+          ComponentFact(componentId: 'cmp_u1'),
+        ],
+        placements: const [boardPlacement, boardPlacementWidthHeight],
+      );
+      await mountMeasure(tester, writer, state: state);
+      final mountedPanel = tester.element(panel);
+      await enterDraft(tester, 'OL_probe-open', unit: 'Diode');
+      await _tapCanvasAtNormalized(tester, x: 0.52, y: 0.61);
+      await tester.pumpAndSettle();
+      expect(tester.element(panel), same(mountedPanel));
+      expect(valueInput('cmp_u1'), findsOneWidget);
+      expect(tester.widget<TextFormField>(valueInput('cmp_u1')).initialValue,
+          isEmpty);
+      await _tapCanvasAtNormalized(tester, x: 0.25, y: 0.45);
+      await tester.pumpAndSettle();
+      expect(tester.element(panel), same(mountedPanel));
+      expect(tester.widget<TextFormField>(valueInput()).initialValue,
+          'OL_probe-open');
+      expect(
+          tester
+              .widget<DropdownButton<String>>(find.byKey(
+                  const Key('board_canvas_measure_row_unit_select_cmp_r101')))
+              .value,
+          'Diode');
+
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_rail_inspector_tool'));
+      await tester.pumpAndSettle();
+      expect(mountedPanel.mounted, isFalse);
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_measure_sheet_button'));
+      await tester.pumpAndSettle();
+      expect(tester.element(panel), isNot(same(mountedPanel)));
+      expect(tester.widget<TextFormField>(valueInput()).initialValue, isEmpty);
+      expect(
+          tester
+              .widget<DropdownButton<String>>(find.byKey(
+                  const Key('board_canvas_measure_row_unit_select_cmp_r101')))
+              .value,
+          'V');
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+    });
+
+    for (final reading in [
+      (
+        name: 'numeric',
+        input: ' 1.23 ',
+        value: 1.23,
+        text: '1.23',
+        unit: 'V',
+        schemaUnit: 'V',
+        mode: 'voltage',
+        operation:
+            r'^op_board_canvas_measurement_cmp_r101_V_1_23_human_entered_[0-9]+$'
+      ),
+      (
+        name: 'text',
+        input: ' OL_probe-open ',
+        value: 'OL_probe-open',
+        text: 'OL_probe-open',
+        unit: 'Diode',
+        schemaUnit: 'diode',
+        mode: 'diode',
+        operation:
+            r'^op_board_canvas_measurement_cmp_r101_Diode_OL_probe_open_human_entered_[0-9]+$'
+      ),
+    ]) {
+      testWidgets(
+          '${reading.name} request preserves current form fields and operation pattern',
+          (tester) async {
+        final writer = _FakeSaveMeasurementWriter();
+        await mountMeasure(tester, writer);
+        await enterDraft(tester, reading.input, unit: reading.unit);
+        await tapSave(tester);
+        await tester.pumpAndSettle();
+        final request = writer.requests.single;
+        expect(request.value, reading.value);
+        expect(request.valueText, reading.text);
+        expect(request.displayValue, '${reading.text} ${reading.unit}');
+        expect(request.unitLabel, reading.unit);
+        expect(request.schemaUnit, reading.schemaUnit);
+        expect(request.mode, reading.mode);
+        expect(request.targetKey, 'cmp_r101');
+        expect(request.componentId, 'cmp_r101');
+        expect(request.pinId, isNull);
+        expect(request.valueProvenance, 'human_entered');
+        expect(request.clientOperationId, matches(RegExp(reading.operation)));
+      });
+    }
+
+    for (final designator in <String?>['R101', null]) {
+      testWidgets('header and preferred label with designator=$designator',
+          (tester) async {
+        final writer = _FakeSaveMeasurementWriter();
+        final state = measurementState(designator: designator);
+        await mountMeasure(tester, writer, state: state);
+        final header =
+            find.byKey(const Key('board_canvas_measure_panel_header'));
+        expect(
+            find.descendant(
+                of: header,
+                matching: find.text(
+                  designator == null ? 'cmp_r101' : 'R101 (cmp_r101)',
+                )),
+            findsOneWidget);
+        expect(
+            find.descendant(
+                of: panel,
+                matching: find.text(
+                  '${designator ?? 'cmp_r101'} footprint preview',
+                )),
+            findsOneWidget);
+        expect(writer.requests, isEmpty);
+        expect(_readProjectState(tester), same(state));
+      });
+    }
+
+    testWidgets(
+        '900 content-width cutover unmounts Measure and resets draft on return',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = await mountMeasure(tester, writer, width: 936);
+      final mountedPanel = tester.element(panel);
+      await enterDraft(tester, '1.23');
+      // The host has 36 px total horizontal padding before its 900 px branch.
+      await tester.binding.setSurfaceSize(const Size(935, 900));
+      await tester.pumpAndSettle();
+      expect(panel, findsNothing);
+      expect(mountedPanel.mounted, isFalse);
+      await tester.binding.setSurfaceSize(const Size(936, 900));
+      await tester.pumpAndSettle();
+      expect(panel, findsOneWidget);
+      expect(tester.element(panel), isNot(same(mountedPanel)));
+      expect(tester.widget<TextFormField>(valueInput()).initialValue, isEmpty);
+      expect(copy(tester, 'board_canvas_measure_save_guard'),
+          'Sisesta Väärtus enne salvestamist.');
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+      expect(tester.takeException(), isNull);
+    });
   });
 
   testWidgets(

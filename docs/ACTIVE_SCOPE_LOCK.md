@@ -2,10 +2,50 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Measurement M0 scope reservation
+## Current Measurement M0 Code Map maintenance
+
+Lane A / `DOCS_MAPS_ONLY` / Phase 1. The human authorizes immediate
+committed-source maintenance after accepted M0 characterization; no new scope
+reservation is needed. Baseline: `main`, `HEAD == origin/main ==
+93514f92905b2ee027737c01611910913410751a`, subject
+`test: characterize board canvas measurement m0`, divergence `0 / 0`.
+
+Exact Phase-1 write set, with no eighth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+7. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`
+
+Binding maintenance record and bounded Phase-2 coordinates:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`.
+The test map is `UPDATE_REQUIRED` for `TEST_DRIFT` / `STRUCTURE_DRIFT` in its
+explicit group inventory and Measurement evidence. Update its body from
+committed source only; retain 12 zones and 54 map files / 54 registry rows.
+Phase 1 sets only that map header and matching index row to `REVIEW_REQUIRED`.
+The production Board Canvas map is `REVIEWED_NO_CHANGE`, `MAINTAINED` and frozen.
+
+Independent map audit under the Code Map Standard and Audit Contract precedes
+any promotion. Accepted Phase 2 may change only this map header, its matching
+index Status, the unique artifact verdict interior and this PASS_ID's ledger
+Status cell. Freeze map bodies, route owners and all other bytes. A map-body
+finding requires a bounded patch and delta audit, not a Phase-2 correction.
+
+The M0 implementation and earlier scope-write authority are spent. Production,
+all tests, tools, schemas, assets, packages, platform files, historical audit
+artifacts, unrelated/retired maps and index rows, and scratch remain frozen.
+No staging, commit or push is authorized by this task. Completion returns to
+non-executable `NEEDS_USER_DECISION`; L1, M1, M2, Components, Inspector and
+Placement remain future human decisions only. The reservation below is
+preserved as historical, non-authorizing evidence.
+
+## Historical Measurement M0 scope reservation
 
 Lane A / `DOCS_SCOPE_LOCK`. The human approved gradual Board Canvas
 modularization, Measurement as the first pilot, and M0 characterization tests

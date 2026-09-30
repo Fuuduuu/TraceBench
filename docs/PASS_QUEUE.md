@@ -2,10 +2,37 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Reserved Measurement M0 sequence
+## Immediate Measurement M0 Code Map maintenance sequence
+
+The accepted M0 implementation is committed at
+`93514f92905b2ee027737c01611910913410751a`; its one-test-file write authority is
+spent. The human authorizes this immediate seven-path maintenance, without
+another scope-lock pass. `docs/ACTIVE_SCOPE_LOCK.md` owns the exact set;
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`
+owns the evidence, validation and bounded Phase-2 coordinates.
+
+1. Refresh only the committed Board Canvas test map's stale group inventory
+   and Measurement evidence; retain 12 zones and 54 maps / 54 index rows.
+2. Set its header and matching index row to `REVIEW_REQUIRED`; add exactly
+   one neutral maintenance ledger row and one artifact with an empty verdict block.
+3. Independently audit the complete seven-path material set and map against
+   committed source. A map-body finding requires a bounded patch and delta audit.
+4. Only after acceptance, promote the exact map-header/index Status pair to
+   `MAINTAINED`, record the returned verdict/safety/exact set in the artifact,
+   and mechanically mirror it in this PASS_ID's ledger Status cell. Freeze
+   map bodies, route owners and all other rows/bytes during Phase 2.
+5. Exact human commit/push of accepted material closes M0 and its maintenance
+   at non-executable `NEEDS_USER_DECISION`.
+
+No product/test/source change or further maintenance pass is armed. L1, M1,
+M2, Components, Inspector and Placement require future human decisions.
+Production, unrelated/retired maps, historical artifacts, Windows residue
+and scratch remain frozen. The previous reservation below is completed history.
+
+## Historical Measurement M0 sequence
 
 The human approved gradual modularization with Measurement first and M0
 characterization tests only. Baseline: `main`, `HEAD == origin/main ==

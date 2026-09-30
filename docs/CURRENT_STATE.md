@@ -1,9 +1,32 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Human-selected Measurement M0 route
+## Completed Measurement M0 and immediate map maintenance
+
+M0 characterization is accepted, committed and pushed at
+`93514f92905b2ee027737c01611910913410751a`, subject
+`test: characterize board canvas measurement m0`. Git confirms exactly
+`test/widget/board_canvas_screen_test.dart` in that implementation commit.
+The independent implementation result supplied by the human is
+`AUDIT_VERDICT: ACCEPT_AS_IS` / `SAFE_FOR_STAGING: YES`; this is attributed
+predecessor evidence, not a newly fabricated M0 audit artifact.
+
+The human selected immediate one-map maintenance because the committed five-
+group inventory and Measurement evidence materially stale the test map:
+`UPDATE_REQUIRED`, `TEST_DRIFT` / `STRUCTURE_DRIFT`. Production source and its
+Board Canvas map remain `REVIEWED_NO_CHANGE`. `docs/ACTIVE_SCOPE_LOCK.md` owns
+exactly seven docs/map/index/artifact paths; the maintenance artifact owns the
+accepted validation evidence and bounded recording/promotion contract.
+Phase 1 retains 54 maps / 54 rows and sets only the test-map/index pair to
+`REVIEW_REQUIRED`. Independent map audit and bounded Phase 2 close this sequence;
+Next is non-executable `NEEDS_USER_DECISION`. No product/refactor pass is armed.
+
+The earlier M0 scope and implementation write authority are spent. The
+reservation below is historical and grants no current test or docs writes.
+
+## Historical Measurement M0 scope reservation
 
 The human approved gradual Board Canvas modularization, Measurement as the
 first pilot, and M0 characterization tests only. No production refactor is

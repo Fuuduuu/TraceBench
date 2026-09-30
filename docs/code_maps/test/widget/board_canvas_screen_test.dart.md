@@ -4,15 +4,15 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary
-and responsive evidence. The file has 203 declarations: 180 `testWidgets` and
-23 `test`. Four explicit groups cover import, alignment, placement geometry
-and Wizard overlays. Parameterized declarations generate multiple cases;
-declaration counts are not executed-test totals.
+and responsive evidence. The file has 215 declarations: 192 `testWidgets` and
+23 `test`. Five explicit groups cover import, alignment, placement geometry,
+Wizard overlays and `M0 Measurement characterization`. Parameterized declarations
+generate multiple cases; declaration counts are not executed-test totals.
 
 ## Responsibility zones
 
@@ -21,7 +21,7 @@ declaration counts are not executed-test totals.
 | 1. Fixtures/session | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Direct/routed state, dependency injection and generation-valid replacement. |
 | 2. Single-shell layout/freshness | `single shell measures routed canvas area`, `single shell responsive chrome preserves tools and status`, `single shell keeps $freshness banner below the bar with long identity`, `routed Board Canvas stays rich across former shell cutovers` | Area, responsive controls, no duplicate shell, banner placement and project identity. |
 | 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Drill-down, typed selection, order, preview, counts and hide-unmeasured behavior. |
-| 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Draft/target/save/session and pure measurement read contracts. |
+| 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Draft/target/save/session, failure/result/guard/lifetime/request characterization and pure measurement read contracts. |
 | 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Guards, requests, errors, exact results and idempotency. |
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
@@ -84,6 +84,16 @@ source anchors, not claims about generated case counts. No line-number anchors.
 10. [D] Existing V2 fakes, pure helper cases, Wizard/Board composites and source
     guards retain their own boundaries; event-derived photo rendering need not
     wait for refreshed Known Facts.
+11. [D] Measurement request capture, six typed failures and one unexpected error
+    preserve exact copy. Existing results exercise application/dedup; local
+    directory/selection, repeat-save and in-flight guards bound writer calls.
+12. [D] Deferred Measurement completion proves stale-generation rejection and
+    event application after panel unmount without a post-unmount UI exception.
+    Drafts survive same-panel selection, reset after mode exit, and reset across
+    the 935/936 viewport cutover around 900 content width.
+13. [D] Numeric/text requests retain current value/unit fields and operation-ID
+    normalization, unit/provenance segments and timestamp-pattern suffix.
+    Header/preferred-label cases cover components with and without a designator.
 
 ## Direct dependencies
 
@@ -131,12 +141,16 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
 | Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
 | Existing writers | [D] four fake boundaries | respective writers/session | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | exact writer families |
+| Measurement characterization | [D] exact copy/requests, guards and deferred result/lifetime observations | panel, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
 | Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
 | Inspector/boundaries | [D] metadata/source assertions | fact summaries and host owners | `ZERO_WRITE` | readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
-- Four explicit groups: import, alignment, placement geometry and Wizard.
+- Five explicit groups: import, alignment, placement geometry, Wizard and
+  `M0 Measurement characterization`.
+- `_FakeSaveMeasurementWriter` retains default appended behavior and adds
+  optional failure, existing-event and deferred completion controls.
 - `_FakePhotoAlignmentWriter` records ensure/confirm independently.
 - `_FakeAlignedPhotoAssetLoader` and `_fakeAlignedPhotoImage` bound image I/O.
 - `_primaryPhotoWriteResult` and alignment fixtures model exact returned events.
@@ -163,6 +177,8 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - One primary retry outcome: ensure versus alignment calls and event counts.
 - One raster/exit outcome: matching fixture plus host/renderer lifecycle.
 - One retained V2 or pure-helper case: named family and direct owner.
+- One Measurement case: parameterized copy/request/result or one deferred
+  completion plus captured session and panel-lifetime observation.
 - One source boundary: exact host/part/imported-owner string checks.
 
 ## Future extraction seams
@@ -182,3 +198,7 @@ layout, current source guards, writer boundaries and route composition.
 - [D] Area assertions prove improvement over recorded literals in this fixture;
   they do not establish a universal gain or a minimum percentage.
 - [P] Private painter and static source assertions are structure-sensitive.
+- [D] The fallback-row guard `Vali Koht enne salvestamist.` has no direct M0
+  case because the current panel supplies a row through the supported UI.
+- [D] The M0 935/936 case proves panel lifetime; it does not itself assert
+  narrow Measure Sheet button availability.

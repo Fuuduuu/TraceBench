@@ -1,9 +1,63 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
 
-## Completed Measurement M0 and immediate map maintenance
+## Measurement M1 extraction reservation
+
+The human selected direct M1 physical Measurement extraction and rejected
+separate L1 shared-presentation extraction. Verified entry: `main`,
+`HEAD == origin/main == ecc4bc316de311e98a451a9f0d74d29afb8c692e`,
+subject `docs: maintain measurement m0 code map`, divergence `0 / 0`.
+The accepted M0 characterization and map maintenance are committed predecessors;
+their write authority is spent.
+
+`docs/ACTIVE_SCOPE_LOCK.md` owns exactly five current docs, distinct from the
+three-path future implementation allowlist. Binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+The single reserved child is `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`;
+it becomes executable only after independent scope acceptance, bounded verdict
+recording, and exact human stage/commit/push of the accepted five docs.
+
+M1 moves the complete Measurement widget/ConsumerState and writer/session
+caller workflow into one normal Dart library. BoardCanvasScreen retains
+mount/lifetime, selection, responsive/navigation/focus decisions, Inspector and
+Board rendering. Two one-way host builders supply existing advanced-details
+children and the existing footprint-render subtree; no shared widget/painter
+library, injected writer/session, private placement API or new abstraction.
+
+BEFORE behavior == AFTER behavior. Preserve M0 lifetime/save order/guards/copy,
+request fields, timestamped operation IDs, drafts/rows/labels and rendering.
+Before production movement, three advanced-details cases plus one
+component-selected/no-placement Measurement write-safety case must PASS
+on unchanged production and pass unchanged after extraction.
+The human-authorized combined zones are host 4 + construction-only 1 and
+test 4 + static-owner-retarget-only 9; no independent cleanup is authorized.
+
+All source/tests/tools/schemas/assets/packages/maps/index/platform/residue and
+historical audit artifacts remain frozen in this scope. During M1, maps/index
+also stay frozen; after accepted committed M1, host/test/projection maps are
+forecast UPDATE_REQUIRED while projection source stays byte-identical. Map
+maintenance and new-library qualification require a separate later human decision against
+committed source. No map-maintenance PASS_ID/material set or post-M1 product
+pass is armed. M2, Components, Inspector and Placement remain future decisions.
+The artifact owns validation, the exact deferred analyzer baseline and stops;
+manual smoke is not mandatory absent a concrete automated visual/lifecycle
+conflict.
+
+## Completed Measurement M0 map-maintenance handoff (historical)
+
+Maintenance is committed and pushed at `ecc4bc316de311e98a451a9f0d74d29afb8c692e`,
+subject `docs: maintain measurement m0 code map`. Git verifies six final
+docs/map/artifact paths; CODE_MAP_INDEX was substantively net zero after
+Phase-2 promotion. Its existing artifact retains the independent
+`ACCEPT_AS_IS` map/audit result, SNIPER/staging safety and human final-set
+amendment. The registry is 54 maps / 54 rows: 52 `MAINTAINED`, zero
+`REVIEW_REQUIRED`, two `RETIRED`.
+The retained M0 scope/maintenance text below is historical, spent authority;
+its earlier current/future wording grants no writes.
+
+## Historical completed Measurement M0 and immediate map maintenance
 
 M0 characterization is accepted, committed and pushed at
 `93514f92905b2ee027737c01611910913410751a`, subject
@@ -16,7 +70,7 @@ predecessor evidence, not a newly fabricated M0 audit artifact.
 The human selected immediate one-map maintenance because the committed five-
 group inventory and Measurement evidence materially stale the test map:
 `UPDATE_REQUIRED`, `TEST_DRIFT` / `STRUCTURE_DRIFT`. Production source and its
-Board Canvas map remain `REVIEWED_NO_CHANGE`. `docs/ACTIVE_SCOPE_LOCK.md` owns
+Board Canvas map remained `REVIEWED_NO_CHANGE`. `docs/ACTIVE_SCOPE_LOCK.md` owned
 exactly seven docs/map/index/artifact paths; the maintenance artifact owns the
 accepted validation evidence and bounded recording/promotion contract.
 Phase 1 retains 54 maps / 54 rows and sets only the test-map/index pair to
@@ -29,8 +83,8 @@ reservation below is historical and grants no current test or docs writes.
 ## Historical Measurement M0 scope reservation
 
 The human approved gradual Board Canvas modularization, Measurement as the
-first pilot, and M0 characterization tests only. No production refactor is
-authorized. The source-verified panel already owns Measurement drafts, save
+first pilot, and M0 characterization tests only. No production refactor was
+authorized in M0. The source-verified panel already owns Measurement drafts, save
 state, writer invocation, captured session generation, and returned-event
 application; M0 pins that behavior before any physical extraction.
 
@@ -39,17 +93,17 @@ Verified scope baseline: `main` at `HEAD == origin/main ==
 `docs: complete combined code map refresh`, divergence `0 / 0`.
 The combined refresh remains complete and its write authority spent.
 
-`docs/ACTIVE_SCOPE_LOCK.md` owns the exact five-doc current write set. Binding
+`docs/ACTIVE_SCOPE_LOCK.md` owned the former five-doc scope-write set. Historical binding
 scope and characterization targets:
 `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
-Exactly one future pass is reserved, with writable path
+Exactly one M0 test pass was reserved, with former writable path
 `test/widget/board_canvas_screen_test.dart` only, conditional on independent
 scope acceptance, bounded verdict recording, and exact human commit/push.
 BEFORE behavior == AFTER behavior; production, other tests, static source
 checks, schemas, tools, assets, maps/index, platform, and scratch stay frozen.
 
 Both applicable Board Canvas source/test maps are `MAINTAINED` and inspected
-as `REVIEWED_NO_CHANGE` for this docs scope. Future M0 stays in the existing
+as `REVIEWED_NO_CHANGE` for this docs scope. The M0 reservation stayed in the existing
 Measurement zone and re-evaluates map disposition after the accepted test
 diff; material mapped evidence drift requires separately scoped committed-
 source maintenance, otherwise no map edit. Declaration count alone does not
@@ -60,8 +114,7 @@ non-authorizing directions requiring further human decisions.
 ## Preserved predecessor history
 
 All following completed sections are historical and non-authorizing. Their
-route and authority wording does not override the current human-selected
-reservation above.
+route and authority wording does not override the live M1 scope above.
 
 ## Completed combined Code Map refresh
 

@@ -2,14 +2,61 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
 
-## Immediate Measurement M0 Code Map maintenance sequence
+## Measurement M1 scope and implementation sequence
+
+The human selected direct M1 physical extraction with two host builders;
+separate L1 shared-presentation extraction is rejected. M0 characterization and
+its map maintenance are completed committed predecessors at the verified entry
+`ecc4bc316de311e98a451a9f0d74d29afb8c692e`.
+`docs/ACTIVE_SCOPE_LOCK.md` owns the exact five current docs and separate
+three-path future allowlist. The binding contract is
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+1. Reserve this docs-only scope and independently review its five-doc diff
+   under `scope-lock-post-audit`.
+2. Record the returned independent verdict only in the designated artifact
+   block interior and this PASS_ID's ledger Status cell; prove all other
+   Phase-1 bytes frozen.
+3. Human stages/commits/pushes the exact accepted five-doc set. The executor
+   verifies that committed scope and aligned Git before the one reserved
+   `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`;
+   no routine active-lock sync or separate characterization pass is required.
+4. In the reserved test file, add three advanced-details cases plus one
+   component-selected/no-placement Measurement write-safety case against
+   unchanged production and obtain PASS for all four before production movement.
+5. Physically move Measurement State/workflow/writer ownership into the one
+   normal library; construct it at the same host site with only stable inputs
+   and the advanced-details/footprint builders. Preserve behavior and retarget
+   only physically moved static source guards; the same characterization must
+   PASS unchanged afterward.
+6. Run the exact automated acceptance contract, independently audit the
+   three-path implementation diff, and use exact human stage/commit/push for
+   accepted material. Known baseline analyzer debt is allowed only as the exact
+   three deferred infos, with zero warnings/errors and no changed-file finding.
+
+No product/refactor pass after M1 is armed. Required committed-source Code Map
+maintenance is a separate later human decision; no maintenance PASS_ID or exact
+set is reserved. Maps/index remain frozen during M1. M2, Components, Inspector
+and Placement remain future decisions. No shared-widget/painter extraction,
+projection optimization, semantic change or independent cleanup is authorized.
+Manual smoke is `AUTOMATED_ONLY_OK / NOT_APPLICABLE` unless automation exposes
+a concrete visual/lifecycle conflict.
+
+## Completed Measurement M0 handoff (historical)
+
+The M0 scope/test/maintenance reservations below are completed, spent evidence.
+Maintenance is committed/pushed at the entry baseline; its artifact preserves
+the independent results and final six-path staging amendment. No retained
+historical step reactivates those allowlists.
+
+## Historical completed Measurement M0 Code Map maintenance sequence
 
 The accepted M0 implementation is committed at
 `93514f92905b2ee027737c01611910913410751a`; its one-test-file write authority is
-spent. The human authorizes this immediate seven-path maintenance, without
+spent. The human authorized that immediate seven-path maintenance, without
 another scope-lock pass. `docs/ACTIVE_SCOPE_LOCK.md` owns the exact set;
 `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`
 owns the evidence, validation and bounded Phase-2 coordinates.
@@ -40,7 +87,7 @@ characterization tests only. Baseline: `main`, `HEAD == origin/main ==
 `docs: complete combined code map refresh`, divergence `0 / 0`.
 The completed combined map-refresh write authority remains spent.
 
-The current scope writes only the five docs listed by
+The former M0 scope wrote only the five docs listed by
 `docs/ACTIVE_SCOPE_LOCK.md`. The binding artifact is
 `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
 
@@ -60,7 +107,7 @@ The current scope writes only the five docs listed by
    otherwise no map edit. No maintenance PASS_ID is named or armed here.
    Later product/refactor work requires another human decision.
 
-The future writable allowlist contains exactly one test file; local helpers
+The former M0 writable allowlist contained exactly one test file; local helpers
 and fakes are limited to its Measurement cases. All production, other tests,
 independent test zones, existing static source checks, maps/index, schemas,
 tools, assets, packages, platform files, and scratch are frozen. A second
@@ -72,12 +119,12 @@ freezes, validation, and stop conditions.
 L1 read-only presentation seam, M1 physical Measurement library extraction,
 and M2 projection performance are non-authorizing future directions only.
 Component create/edit, Inspector, and Placement require later human decisions.
-No later pass is armed by this scope except the conditional M0 reservation.
+That reservation armed only the conditional M0 test pass; its authority is now spent.
 
 ## Preserved predecessor history
 
 All following completed queues are historical and non-authorizing. Their
-route labels, allowlists, and instructions cannot override this reservation
+route labels, allowlists, and instructions cannot override the live M1 scope
 or reactivate spent authority.
 
 ## Completed combined maintenance sequence

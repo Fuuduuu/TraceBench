@@ -2,12 +2,127 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
 
-## Current Measurement M0 Code Map maintenance
+## Current Measurement M1 extraction scope lock
 
-Lane A / `DOCS_MAPS_ONLY` / Phase 1. The human authorizes immediate
+Lane B / `DOCS_SCOPE_LOCK`. The human selected direct physical Measurement
+extraction and rejected the separate L1 shared-presentation extraction.
+Baseline: `main`, `HEAD == origin/main ==
+ecc4bc316de311e98a451a9f0d74d29afb8c692e`, subject
+`docs: maintain measurement m0 code map`, divergence `0 / 0`.
+M0 characterization and its committed map maintenance are complete; their
+implementation, scope and maintenance write authorities are spent.
+
+Exact current write set, with no sixth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+This pass reserves scope only. All lib/test/tests/tools/schema/asset/package,
+Code Map/index, historical-audit, platform, Windows-residue and scratch bytes
+are frozen. The only historical wording cleanup is the accepted M0 reservation
+NIT in these three route owners; retain its factual content and unrelated bytes.
+No staging, commit or push is authorized.
+
+Binding architectural, behavior-freeze, validation and audit contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+## Reserved future M1 implementation authority
+
+Reserve exactly `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`.
+Its future writable allowlist contains exactly three paths:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/widgets/integrated_measure_panel.dart` — NEW normal Dart library.
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path. Activation requires independent scope acceptance, bounded
+verdict recording, and exact human staging/commit/push of the five accepted
+scope docs with aligned Git. The implementation executor verifies the committed
+scope, live route and entry baseline before any source/test write. No separate
+routine active-lock sync or characterization pass is required.
+
+The new library owns the complete Measurement widget/ConsumerState, drafts,
+targets/rows, units/parsing, guards/form key/operation ID, exact V2 request,
+writer-provider call and captured-generation ProjectSession application.
+The writer call moves with State, never through a shell save callback.
+The host retains mount/lifetime, Measure activation and auto-selection,
+Canvas selection/placement lookup, >=900-content-width branching, compact
+Measure Sheet routing, focus/context visibility, Inspector and Board painters.
+
+Only stable project/component/fact-list inputs, the existing navigation
+callback, and two one-way host builders cross the constructor:
+advanced-details children and footprint-preview rendering. The module is not
+a `part`, imports no host, and receives no private placement/painter type,
+CanvasSelection, shell mode/focus, writer, session or ProviderContainer.
+No controller/provider/repository/service, DTO or module-interface abstraction.
+
+Advanced details retain host-private Inspector/provenance tiles; the module
+owns the existing ExpansionTile frame/key/copy/location. The host builder
+returns the current children using the panel BuildContext, preferably
+`List<Widget> Function(BuildContext context)`, without wrappers or tile
+duplication, with traces before measurements. The footprint builder retains
+the host's existing Semantics/CustomPaint/painter subtree and private geometry;
+the module keeps the 82 px slot, gutters, controls, labels and visual-only copy.
+The artifact owns the exact frozen seams and selected-component replacement.
+
+All M0 behavior stays fixed, especially provider-state fallback, generation
+capture before await, exact request/operation ID/guard/copy, event application
+before the mounted guard, ignored application bool and panel lifetime.
+Before production movement, add three advanced-details cases plus one
+component-selected/no-placement Measurement write-safety case in the allowed
+test file; all four must PASS unchanged production and unchanged after extraction.
+Preserve all static source assertions; retarget only physically moved ownership
+to host versus module.
+
+The human explicitly authorizes one cohesive multi-zone extraction:
+host map zone 4 plus zone 1 only at construction/two builders; test map zone 4
+plus zone 9 only for static source-owner retargeting. This satisfies the
+Code Map Standard's explicit-human-decision exception, not independent cleanup.
+Any additional independent zone stops with `DECOMPOSE_REQUIRED`.
+
+Explicitly forbidden: `measurement_projection.dart`,
+`board_canvas_palette.dart`, ProjectSession, writer implementation/provider
+owner, `placement_geometry.dart`, `component_navigator.part.dart`,
+`wizard_intake_overlay.part.dart`, all other source/tests/maps/index,
+pubspec/package changes, painter movement/public statics, shared widgets,
+projection optimization and canonical/protected semantic changes.
+
+Current host/test/projection maps are verified `MAINTAINED` and unchanged
+for this docs pass. After accepted committed M1, host/test/projection maps are
+`UPDATE_REQUIRED` expected. Requalify the new library from committed source.
+Projection SOURCE remains byte-identical; its MAP gains a new direct consumer
+and stale host-save ownership prose: DEPENDENCY / CONSUMER / OWNERSHIP drift.
+Later committed-source maintenance decides exact body edits and map lifecycle.
+All map/index bytes remain frozen during implementation. Later committed-source
+maintenance requires a separate human decision; no maintenance PASS_ID or exact
+material set is named or authorized here.
+
+The artifact reserves exact automated validation, the known three-info analyzer
+baseline, exclusions and stop conditions. Manual smoke is
+`AUTOMATED_ONLY_OK / NOT_APPLICABLE` unless automation exposes a concrete
+visual/lifecycle conflict. M2, Components, Inspector and Placement remain future
+human decisions. No product/refactor pass after M1 is armed.
+
+## Scope audit and bounded recording
+
+Independent `scope-lock-post-audit` reviews this complete five-doc material.
+Phase 1 uses one neutral `REVIEW_REQUIRED` ledger row and one unique empty
+`MEASUREMENT_M1_SCOPE_VERDICT_BEGIN` / `MEASUREMENT_M1_SCOPE_VERDICT_END`
+block in the binding artifact. After the returned independent audit, Phase 2
+may change only that block interior and this PASS_ID's ledger Status cell,
+mechanically mirroring verdict/safety/exact set. Freeze every other byte and
+prove the bounded delta. Exact human stage/commit/push is required before
+future implementation authority becomes active.
+
+## Historical completed Measurement M0 Code Map maintenance
+
+Historical Lane A / `DOCS_MAPS_ONLY` / Phase 1. The human authorized immediate
 committed-source maintenance after accepted M0 characterization; no new scope
 reservation is needed. Baseline: `main`, `HEAD == origin/main ==
 93514f92905b2ee027737c01611910913410751a`, subject
@@ -47,15 +162,15 @@ preserved as historical, non-authorizing evidence.
 
 ## Historical Measurement M0 scope reservation
 
-Lane A / `DOCS_SCOPE_LOCK`. The human approved gradual Board Canvas
+Historical Lane A / `DOCS_SCOPE_LOCK`. The human approved gradual Board Canvas
 modularization, Measurement as the first pilot, and M0 characterization tests
-only. No production refactor is authorized. Verified scope baseline:
+only. No production refactor was authorized in M0. Verified scope baseline:
 `main`, `HEAD == origin/main == 6d379f3f5d6d58b334be44a627def8ebe60cb1ea`,
 subject `docs: complete combined code map refresh`, divergence `0 / 0`.
 
-The binding contract is
+The historical binding contract is
 `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
-Current write authority is exactly these five docs:
+The former scope-write authority was exactly these five docs:
 
 1. `docs/ACTIVE_SCOPE_LOCK.md`
 2. `docs/CURRENT_STATE.md`
@@ -70,10 +185,10 @@ contract permits only the artifact's designated verdict block and the matching
 ledger Status cell for the subsequent bounded recording; all other Phase 1
 bytes stay frozen. Staging, commit, and push require explicit human authority.
 
-## Reserved future M0 test authority
+## Historical spent M0 test reservation
 
-Only `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS` is
-reserved. Its exact future writable allowlist is:
+Only `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CHARACTERIZATION_TEST_PASS` was
+reserved. Its exact historical writable allowlist was:
 
 1. `test/widget/board_canvas_screen_test.dart`
 
@@ -81,7 +196,7 @@ Activation requires independent scope acceptance, bounded verdict recording,
 and the human's exact scope-doc commit/push with aligned `HEAD` and
 `origin/main`. The future pass verifies live route/authority against that
 committed scope. No routine active-lock sync is required by this sequence.
-This reservation does not permit test edits during the current docs pass.
+That spent reservation permits no current test or docs writes.
 
 M0 characterizes current `_IntegratedMeasurePanel` behavior only, within the
 maintained test map's existing Measurement zone. Minimal local helpers/fakes
@@ -111,7 +226,7 @@ failure. Use the artifact's exact docs/M0 validation and audit contracts.
 
 All following completed sections are historical and non-authorizing. Their
 route labels, allowlists, freezes, and instructions cannot override the
-current reservation above or reactivate spent authority.
+live M1 scope above or reactivate spent authority.
 
 ## Completed combined Code Map refresh
 

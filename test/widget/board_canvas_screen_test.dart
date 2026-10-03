@@ -7517,6 +7517,186 @@ void main() {
       expect(_readProjectState(tester), same(state));
       expect(tester.takeException(), isNull);
     });
+    Future<void> settleCharacterization(WidgetTester tester) async {
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 100),
+        EnginePhase.sendSemanticsUpdate,
+        const Duration(seconds: 5),
+      );
+    }
+
+    Future<Finder> openAdvancedDetails(WidgetTester tester) async {
+      final advanced =
+          find.byKey(const Key('board_canvas_measure_advanced_section'));
+      final title = find.descendant(
+          of: advanced, matching: find.text('Tehnilised detailid'));
+      await tester.ensureVisible(title);
+      await tester.tap(title);
+      await settleCharacterization(tester);
+      return advanced;
+    }
+
+    ProjectState advancedDetailsState() {
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-m1-details-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      return _inlineProjectState(
+        components: const [
+          ComponentFact(componentId: 'cmp_r101', designator: 'R101')
+        ],
+        placements: const [boardPlacement],
+        projectDirectory: directory.path,
+        visualTraces: const [
+          VisualTraceFact(
+            traceId: 'tr_m1_details',
+            photoId: 'ph_m1_details',
+            evidenceType: 'visual_trace',
+            fromComponent: 'cmp_r101',
+            toComponent: 'cmp_u1',
+            fromPin: 'cmp_r101.2',
+            toPin: 'cmp_u1.2',
+          ),
+        ],
+        measurements: const [
+          MeasurementFact(
+            measurementId: 'M_m1_details',
+            mode: 'dc_voltage',
+            from: 'cmp_r101.1',
+            to: 'GND',
+            reading: 'numeric',
+            validityStatus: 'active',
+            powerState: 'on',
+            value: 5.01,
+            unit: 'V',
+          ),
+        ],
+      );
+    }
+
+    testWidgets('M1 pre-move advanced details preserve empty children',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = await mountMeasure(tester, writer);
+      final advanced = await openAdvancedDetails(tester);
+      expect(
+          find.descendant(
+              of: advanced,
+              matching: find.text('No advanced details for selected component.')),
+          findsOneWidget);
+      expect(find.descendant(of: advanced, matching: find.text('READ')),
+          findsNothing);
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('M1 pre-move advanced details preserve both READ provenance tiles',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = advancedDetailsState();
+      await mountMeasure(tester, writer, state: state);
+      final advanced = await openAdvancedDetails(tester);
+      for (final text in [
+        'Visual trace provenance',
+        'Existing measurement provenance',
+        'Trace ID: tr_m1_details',
+        'Measurement ID: M_m1_details',
+      ]) {
+        expect(find.descendant(of: advanced, matching: find.text(text)),
+            findsOneWidget);
+      }
+      expect(find.descendant(of: advanced, matching: find.text('READ')),
+          findsNWidgets(2));
+      expect(
+          find.descendant(
+              of: advanced,
+              matching: find.text('No advanced details for selected component.')),
+          findsNothing);
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('M1 pre-move advanced details keep traces before measurements',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = advancedDetailsState();
+      await mountMeasure(tester, writer, state: state);
+      final advanced = await openAdvancedDetails(tester);
+      final traceHeader = find.descendant(
+          of: advanced, matching: find.text('Visual trace provenance'));
+      final trace = find.descendant(
+          of: advanced, matching: find.text('Trace ID: tr_m1_details'));
+      final measurementHeader = find.descendant(
+          of: advanced, matching: find.text('Existing measurement provenance'));
+      final measurement = find.descendant(
+          of: advanced, matching: find.text('Measurement ID: M_m1_details'));
+      expect(trace, findsOneWidget);
+      expect(measurement, findsOneWidget);
+      await tester.ensureVisible(measurement);
+      await settleCharacterization(tester);
+      expect(tester.getTopLeft(trace).dy,
+          lessThan(tester.getTopLeft(measurement).dy));
+      expect(tester.getTopLeft(traceHeader).dy,
+          lessThan(tester.getTopLeft(trace).dy));
+      expect(tester.getTopLeft(trace).dy,
+          lessThan(tester.getTopLeft(measurementHeader).dy));
+      expect(tester.getTopLeft(measurementHeader).dy,
+          lessThan(tester.getTopLeft(measurement).dy));
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('M1 pre-move component-only selection cannot authorize a save',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-m1-unplaced-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final writer = _FakeSaveMeasurementWriter();
+      final state = _inlineProjectState(
+        components: const [
+          ComponentFact(
+              componentId: 'cmp_r101', designator: 'R101', type: 'resistor')
+        ],
+        placements: const [],
+        projectDirectory: directory.path,
+      );
+      expect(Directory(state.projectDirectory!).existsSync(), isTrue);
+      await tester
+          .pumpWidget(_harness(projectState: state, measurementWriter: writer));
+      await settleCharacterization(tester);
+      expect(panel, findsNothing);
+      for (final key in [
+        const Key('board_canvas_rail_placements_tool'),
+        const Key('board_canvas_component_category_resistors'),
+        const Key('board_canvas_component_row_cmp_r101'),
+      ]) {
+        await _tapWidgetByKey(tester, key);
+        await settleCharacterization(tester);
+      }
+      expect(find.byKey(const Key('board_canvas_component_inspector')),
+          findsOneWidget);
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_measure_sheet_button'));
+      await settleCharacterization(tester);
+      expect(panel, findsOneWidget);
+      final mountedPanel = tester.element(panel);
+      expect(find.text('Select a component on Canvas.'), findsOneWidget);
+      expect(copy(tester, 'board_canvas_measure_save_guard'),
+          'Vali mõõtmise Koht plaadil.');
+      expect(saveButton(tester).onPressed, isNull);
+      await tapSave(tester);
+      await settleCharacterization(tester);
+      expect(tester.element(panel), same(mountedPanel));
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(state));
+      expect(state.events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
   });
 
   testWidgets(
@@ -14304,6 +14484,9 @@ void main() {
     final hostSource = File(
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
     ).readAsStringSync();
+    final measurementSource = File(
+      'lib/features/board_canvas/widgets/integrated_measure_panel.dart',
+    ).readAsStringSync();
     final wizardOverlaySource = File(
       'lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart',
     ).readAsStringSync();
@@ -14371,13 +14554,26 @@ void main() {
     expect(hostSource, isNot(contains('_drawFallbackPads')));
     expect(hostSource, contains('_drawSelectionRing'));
     expect(hostSource, contains('_drawDashedRRect'));
-    expect(hostSource, contains('selectedEntry: widget.selectedEntry'));
+    expect(
+      hostSource,
+      contains('selectedComponentId: selectedEntry?.placement.componentId,'),
+    );
+    expect(hostSource, contains('selectedComponent: selectedEntry?.component,'));
+    expect(
+      measurementSource,
+      contains('selectedComponentId: widget.selectedComponentId,'),
+    );
+    expect(measurementSource, contains('if (widget.selectedComponentId == null)'));
+    expect(hostSource, contains('advancedDetailsBuilder:'));
+    expect(hostSource, contains('footprintPreviewBuilder:'));
+    expect(measurementSource, contains('widget.advancedDetailsBuilder(context)'));
+    expect(measurementSource, contains('widget.footprintPreviewBuilder'));
     expect(hostSource, contains('_FootprintPreviewPainter'));
-    expect(hostSource, contains('_reservedPinControlGutterWidth'));
+    expect(measurementSource, contains('_reservedPinControlGutterWidth'));
     expect(hostSource, contains('_kPreviewFootprintVerticalCenterOffset'));
-    expect(hostSource, contains('board_canvas_measure_component_left_gutter'));
-    expect(hostSource, contains('board_canvas_measure_component_center_slot'));
-    expect(hostSource, contains('board_canvas_measure_component_right_gutter'));
+    expect(measurementSource, contains('board_canvas_measure_component_left_gutter'));
+    expect(measurementSource, contains('board_canvas_measure_component_center_slot'));
+    expect(measurementSource, contains('board_canvas_measure_component_right_gutter'));
     expect(hostSource, contains('_previewFootprintBodyRect'));
     expect(hostSource, contains('fixedSlotBodyRect'));
     expect(hostSource,
@@ -14399,16 +14595,16 @@ void main() {
     expect(hostSource, contains('FootprintVisualKind.testPoint'));
     expect(hostSource, contains('transistor 3-terminal footprint'));
     expect(hostSource, contains('test point / ground footprint'));
-    expect(hostSource, contains('Visual only; contacts not added.'));
+    expect(measurementSource, contains('Visual only; contacts not added.'));
     expect(hostSource, contains('contacts not added'));
-    expect(hostSource, contains('Visual only; no connectivity proof.'));
+    expect(measurementSource, contains('Visual only; no connectivity proof.'));
     expect(hostSource,
         isNot(contains('Visual only; pin locations not verified.')));
     expect(hostSource, isNot(contains('visual package pads are decorative')));
     expect(hostSource, isNot(contains('logical pin token')));
     expect(hostSource, contains('_templatePinMatchesTarget'));
     expect(
-      hostSource,
+      measurementSource,
       contains(
         'Component visual editing entry is deferred to a later explicit scope.',
       ),
@@ -14464,9 +14660,9 @@ void main() {
     expect(hostSource, contains('board_canvas_safety_evidence_disclosure'));
     expect(hostSource, contains('board_canvas_inspector_toggle_button'));
     expect(hostSource, isNot(contains('MeasurementEventWriter')));
-    expect(hostSource, contains('v2_save_measurement_' 'writer'));
-    expect(hostSource, contains('V2SaveMeasurementRequest'));
-    expect(hostSource, contains('v2SaveMeasurementWriterProvider'));
+    expect(measurementSource, contains('v2_save_measurement_' 'writer'));
+    expect(measurementSource, contains('V2SaveMeasurementRequest'));
+    expect(measurementSource, contains('v2SaveMeasurementWriterProvider'));
     expect(hostSource, isNot(contains('ProjectExporter')));
     expect(hostSource, isNot(contains('ProjectCreator')));
     expect(hostSource, isNot(contains('ProjectOverviewScreen')));
@@ -14575,5 +14771,58 @@ void main() {
     expect(hostSource, isNot(contains('Show photo')));
     expect(hostSource, isNot(contains('Render overlay')));
     expect(hostSource, isNot(contains('Compute transform')));
+    expect(
+      measurementSource,
+      contains('class IntegratedMeasurePanel extends ConsumerStatefulWidget'),
+    );
+    expect(measurementSource, contains('class _IntegratedMeasurePanelState'));
+    for (final symbol in [
+      '_MeasureTargetRowData',
+      '_MeasureUnitSelection',
+      '_MeasureContextRowData',
+      '_MeasurePanelDivider',
+      '_MeasurePanelPill',
+      '_MeasureComponentPreview',
+      '_MeasureVisualPadColumn',
+      '_MeasureVisualPad',
+      '_MeasureTargetRow',
+      '_MeasureContextRow',
+      '_MeasureInlineReadonlyBox',
+      'board_canvas_integrated_measure_panel',
+      'board_canvas_measure_save_guard',
+      'board_canvas_measure_advanced_section',
+    ]) {
+      expect(measurementSource, contains(symbol));
+    }
+    for (final forbidden in [
+      'MeasurementEventWriter',
+      'event_writer_service.py',
+      'jsonDecode(',
+      'known_facts.json',
+      'events.jsonl',
+      'board_graph.json',
+      'view_state.json',
+      'board_canvas_screen.dart',
+      '_PlacementEntry',
+      '_BoardPlacementPainter',
+      '_FootprintPreviewPainter',
+      'CanvasSelection',
+      'placement_geometry.dart',
+      'workbench_shell.dart',
+      'part of ',
+      '_focusMode',
+      '_contextPanelMode',
+      'board_canvas_component_visual_edit_button',
+      'Visual only; pin locations not verified.',
+      'visual package pads are decorative',
+      'logical pin token',
+    ]) {
+      expect(measurementSource, isNot(contains(forbidden)));
+    }
+    expect(hostSource, isNot(contains('_IntegratedMeasurePanelState')));
+    expect(hostSource, isNot(contains('V2SaveMeasurementRequest')));
+    expect(hostSource, isNot(contains('v2SaveMeasurementWriterProvider')));
+    expect(hostSource, isNot(contains('v2_save_measurement_writer.dart')));
+
   });
 }

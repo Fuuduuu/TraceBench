@@ -4,12 +4,12 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_NORMAL_LIBRARY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Owns the deterministic measurement read model used by Board Canvas as a normal
-feature-internal Dart library. It converts `MeasurementFact` inputs into
+Owns the deterministic measurement read model used by the Board Canvas host
+and its Measurement module as a normal feature-internal Dart library. It converts `MeasurementFact` inputs into
 endpoint display values, component counts, ordered value-badge lists and text,
 and presentation-only validity caution. The complete file is `ZERO_WRITE` and
 owns no mutable state, canonical semantics, or persistence boundary. Source,
@@ -48,7 +48,7 @@ MeasurementFact inputs and requested component IDs
 -> pure endpoint grammar, association, filtering, comparison, and formatting
 -> immutable display parts, counts, non-growable badge lists, exact text,
    or presentation-caution booleans
--> Board Canvas host and focused pure-helper tests
+-> Board Canvas host, Measurement endpoint association and focused pure-helper tests
 ```
 
 - `[D]` All collections are locally allocated from caller-owned inputs.
@@ -67,7 +67,8 @@ MeasurementFact inputs and requested component IDs
 | --- | --- | --- |
 | `../../../shared/models/known_facts.dart` | one explicit model import | Supplies `MeasurementFact`, including endpoints, ID, value, unit, and validity status. |
 | Dart core collections, strings, and numbers | local transformation | Supplies iteration, trimming, finite-number checks, maps/lists, and comparison. |
-| `board_canvas_screen.dart` | importing consumer | Consumes the public feature-internal functions and display value without exporting them. |
+| `board_canvas_screen.dart` | importing consumer | Directly calls `measurementEndpointMatchesComponent` through `_measurementsForComponent` for selected-component related-measurement selection; also consumes endpoint display, counts, badges and validity caution without exporting them. |
+| `integrated_measure_panel.dart` | importing consumer | Calls `measurementEndpointMatchesComponent` for target/component identity and existing endpoint selection; owns its separate State/save workflow. |
 | `board_canvas_screen_test.dart` | direct test consumer | Imports this library for pure-helper contracts while retaining widget/system coverage through the screen. |
 
 This normal library has no `part`, `part of`, or `export` directive. It imports
@@ -81,7 +82,7 @@ owner.
 | Every top-level function in this library | `ZERO_WRITE` | `[D]` Reads arguments and returns derived values without provider, writer, State, filesystem, route, or event access. |
 | `EndpointDisplayParts`, `_IndexedMeasurement` | `ZERO_WRITE` | `[D]` Immutable local holders with final fields only. |
 | Host consumers of returned counts/badges/text | `ZERO_WRITE` | `[D]` Inspect-only coupling leaves rendering and UI-local filtering in the host. |
-| Host measurement save path | `CANONICAL_EVENT` | `[D]` Excluded `_IntegratedMeasurePanelState._saveMeasurement` and its writer invocation remain in the host. |
+| Measurement module save path | `CANONICAL_EVENT` / `PROJECTION_STATE` | `[D]` Excluded `_IntegratedMeasurePanelState._saveMeasurement` in `integrated_measure_panel.dart` invokes the existing V2 writer and applies its result through ProjectSession; this pure library owns neither action. |
 
 `measurementValidityNeedsCaution` is
 `READ_ONLY_PRESENTATION_CLASSIFICATION`. It is not evidence-lifecycle
@@ -102,7 +103,7 @@ mutation, or mutable instance state.
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Endpoint grammar | `[D]` exact/dot-prefix matching plus first-dot display parsing | host summary/inspector labels | `ZERO_WRITE` | endpoint matcher and component-count declarations |
+| Endpoint grammar | `[D]` exact/dot-prefix matching plus first-dot display parsing | host related-measurement selection, summary/inspector labels and module target/component association | `ZERO_WRITE` | endpoint matcher and component-count declarations |
 | Association/counting | `[D]` either endpoint counts and zero omission | host Navigator/filter/targets | `ZERO_WRITE` | count-helper declarations |
 | Badge association/order | `[D]` eligibility filter plus ID/index comparator | host Canvas badges | `ZERO_WRITE` | characterized ordering/fallback declaration |
 | Eligibility/text | `[D]` finite/nonblank rules and exact interpolation | host badge renderer | `ZERO_WRITE` | eligibility and exact-text declarations |
@@ -116,8 +117,9 @@ the `Q2` versus `Q20` boundary, zero omission and multi-endpoint counts,
 distinct-ID ordering with equal/empty-ID input-order fallback, scalar/unit
 eligibility, exact badge text, and stale/invalid/suspect caution.
 
-The wider widget families remain inspect-only evidence for unchanged host
-consumers. They do not transfer rendering, state, provider, writer, or
+The wider widget families remain inspect-only evidence for the host and
+Measurement module consumers. M0 exercises module endpoint use through host
+composition, including the component-only/no-placement guard. They do not transfer rendering, state, provider, writer, or
 protected semantic ownership into this library.
 
 ## Dangerous combinations
@@ -138,7 +140,7 @@ protected semantic ownership into this library.
 
 | One outcome | Primary anchors | Inspect only | Focused evidence |
 | --- | --- | --- | --- |
-| Endpoint grammar correction | `measurementEndpointMatchesComponent`, `endpointDisplayParts` | host display consumers | endpoint/count declarations plus summary widgets |
+| Endpoint grammar correction | `measurementEndpointMatchesComponent`, `endpointDisplayParts` | host `_measurementsForComponent` related-measurement selection and display consumers | endpoint/count declarations plus summary widgets |
 | Count correction | `measurementCountsByComponents`, `measurementCountForComponent` | host Navigator/filter consumers | count declarations |
 | Badge comparator correction | `measurementValueBadgesByComponents`, `_compareIndexedMeasurements` | host badge renderer | characterized ordering/fallback declaration |
 | Eligibility or text correction | `measurementHasScalarValueAndUnit`, `measurementValueBadgeText` | host display consumer | eligibility and exact-text declarations |
@@ -159,7 +161,8 @@ or protected-semantic change.
 
 Set `REVIEW_REQUIRED` for symbol, behavior, input/output, ordering,
 association, grammar, dependency, import, write-class, consumer, or direct-test
-drift. Recheck the host and focused-test maps when an API or consumer moves.
+drift. Recheck the host, Measurement module and focused-test maps when an API
+or consumer moves.
 Recheck protected owners before any validity/freshness/evidence interpretation
 or cross-feature reuse.
 

@@ -2,10 +2,59 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Measurement M1 extraction scope lock
+## Current Measurement M1 committed-source Code Map maintenance
+
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
+The human selected this exact maintenance after accepted M1 implementation at
+`f23efa355778d7adee07e2bc887e39fc1da180f7`,
+subject `refactor: extract board canvas measurement panel`.
+Verified `main`, `HEAD == origin/main`, divergence `0 / 0`.
+Git confirms exactly the host, new Measurement module and Board Canvas test.
+The completed M1 scope/implementation write authority is spent.
+
+Exact ten-path maintenance write set:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md`
+9. `docs/code_maps/lib/features/board_canvas/widgets/integrated_measure_panel.dart.md`
+10. `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
+
+Committed source is descriptive authority. The binding maintenance artifact is
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`.
+Refresh only host, test and projection maps; qualify and create the first
+Measurement module map. Keep host/test at twelve zones; preserve RETIRED maps.
+Three refreshed map headers plus the new map and their registry rows use
+`REVIEW_REQUIRED`; registry evidence is measured, not assumed.
+
+Freeze source/tests/tools/schemas/assets/packages, all other maps/index rows,
+historical artifacts and ledger rows, Windows residue and scratch.
+The accepted M1 construction-formatting and focus-token NITs remain unpatched.
+No Flutter/analyzer rerun is required absent a concrete source/evidence conflict.
+
+Phase 2 is reserved only after independent map/diff acceptance and explicit
+bounded recording authorization:
+- four map header Status values;
+- four matching CODE_MAP_INDEX Status cells;
+- the artifact's unique verdict-block interior;
+- this PASS_ID's AUDIT_INDEX Status cell, mechanically mirroring the result.
+Freeze all other Phase-1 bytes. The artifact names the exact coordinates.
+No staging, commit or push is authorized by this execution.
+
+Next is non-executable `NEEDS_USER_DECISION`. No M2, product, refactor,
+additional maintenance or implementation pass is armed.
+All retained M1 reservation sections below are completed historical evidence;
+their former current/future allowlists grant no active writes.
+
+## Historical completed Measurement M1 extraction scope lock
 
 Lane B / `DOCS_SCOPE_LOCK`. The human selected direct physical Measurement
 extraction and rejected the separate L1 shared-presentation extraction.

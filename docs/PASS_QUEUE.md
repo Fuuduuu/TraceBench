@@ -2,10 +2,38 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Measurement M1 scope and implementation sequence
+## Measurement M1 committed-source maintenance sequence
+
+Accepted M1 is committed and pushed at
+`f23efa355778d7adee07e2bc887e39fc1da180f7`,
+subject `refactor: extract board canvas measurement panel`.
+The completed scope/implementation reservations are spent. The human selected
+this immediate exact ten-path maintenance without another scope-lock pass.
+`docs/ACTIVE_SCOPE_LOCK.md` owns the set; evidence and recording coordinates:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Refresh the committed host/test/projection maps and qualify/create the first
+   normal Measurement module map. Keep host/test at twelve zones.
+2. Set exactly those four map-header/index pairs to `REVIEW_REQUIRED`; create
+   one maintenance artifact with a unique empty verdict block and exactly one
+   neutral ledger row. Measure anchor resolution and registry/file parity.
+3. Independently review the complete ten-path docs/map diff against committed
+   source. A map-body finding requires a bounded patch and delta audit.
+4. Only after acceptance and bounded recording authorization, change four map
+   header statuses, four registry status cells, the artifact block interior and
+   this PASS_ID's ledger Status cell. Freeze every other Phase-1 byte.
+5. Exact human handling of accepted material closes the maintenance sequence at
+   non-executable `NEEDS_USER_DECISION`.
+
+No source/test/runtime edit, accepted-NIT repair, M2 or later product/refactor
+pass is armed. Unrelated/RETIRED maps, historical evidence, Windows residue and
+scratch remain frozen. Existing M1 sections below are completed history and
+grant no active writes.
+
+## Historical completed Measurement M1 scope and implementation sequence
 
 The human selected direct M1 physical extraction with two host builders;
 separate L1 shared-presentation extraction is rejected. M0 characterization and

@@ -4,12 +4,12 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M0_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary
-and responsive evidence. The file has 215 declarations: 192 `testWidgets` and
+and responsive evidence. The file has 219 declarations: 196 `testWidgets` and
 23 `test`. Five explicit groups cover import, alignment, placement geometry,
 Wizard overlays and `M0 Measurement characterization`. Parameterized declarations
 generate multiple cases; declaration counts are not executed-test totals.
@@ -21,12 +21,12 @@ generate multiple cases; declaration counts are not executed-test totals.
 | 1. Fixtures/session | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Direct/routed state, dependency injection and generation-valid replacement. |
 | 2. Single-shell layout/freshness | `single shell measures routed canvas area`, `single shell responsive chrome preserves tools and status`, `single shell keeps $freshness banner below the bar with long identity`, `routed Board Canvas stays rich across former shell cutovers` | Area, responsive controls, no duplicate shell, banner placement and project identity. |
 | 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Drill-down, typed selection, order, preview, counts and hide-unmeasured behavior. |
-| 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution` | Draft/target/save/session, failure/result/guard/lifetime/request characterization and pure measurement read contracts. |
+| 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution`, `openAdvancedDetails`, `advancedDetailsState`, `M1 pre-move advanced details preserve empty children`, `M1 pre-move advanced details preserve both READ provenance tiles`, `M1 pre-move advanced details keep traces before measurements`, `M1 pre-move component-only selection cannot authorize a save` | Draft/target/save/session and pure read contracts; four provenance/order/empty/no-placement cases characterize the extracted Measurement workflow through the host. |
 | 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Guards, requests, errors, exact results and idempotency. |
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Projected metadata, safety wording, measurement and trace inspection. |
-| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries` | Hidden default, tools/focus, volatile state and physical owner checks. |
+| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource` | Hidden default, tools/focus, volatile state and guards split across host, Measurement module and existing read-only owners. |
 | 10. Additional import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Existing entry/cancel/success, uncertainty, read-only, switch and unsupported-platform cases. |
 | 11. Primary alignment authoring | `canonical photo alignment workbench`, `_FakePhotoAlignmentWriter`, `_FakeAlignedPhotoAssetLoader`, `_primaryPhotoWriteResult` | Primary-only source, point draft, ensure/confirm/retry, single-shot and stale-result boundaries. |
 | 12. Alignment rendering/lifecycle | `intrinsic raster basis survives ${fixture.name} Canvas layout`, `reopen selects newest alignment and keeps layer controls UI-local with Wizard coexistence`, `missing canonical photo shows warning without canonical write` | Intrinsic raster, exit/capture, reopen, layer controls, missing/non-directory/bounds and dark-theme evidence. |
@@ -94,12 +94,20 @@ source anchors, not claims about generated case counts. No line-number anchors.
 13. [D] Numeric/text requests retain current value/unit fields and operation-ID
     normalization, unit/provenance segments and timestamp-pattern suffix.
     Header/preferred-label cases cover components with and without a designator.
+14. [D] Four cases inspect empty advanced children, both READ provenance tiles,
+    laid-out trace-before-measurement rows and component-only selection without
+    placement. A valid directory prevents masking the selection guard; disabled
+    save, unchanged session and zero writer requests establish that boundary.
+15. [D] Source reads retain host painter/Inspector checks and every host negative,
+    retarget moved ownership to `measurementSource`, and add module data-path
+    negatives plus host absence of Measurement State/writer ownership.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `BoardCanvasScreen` | system under test | Host layout, interaction and orchestration. |
+| `IntegratedMeasurePanel` / `integrated_measure_panel.dart` | indirect child / direct source read | Measurement workflow through host composition and physical ownership via `measurementSource`. |
 | Photo panel/read model/writer/import types | child / injected seam | Explicit import and primary alignment workflow. |
 | `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
 | `ProjectSession`, provider and project models | fixture / observation | Generation, events, freshness, dedup and replacement. |
@@ -141,14 +149,16 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
 | Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
 | Existing writers | [D] four fake boundaries | respective writers/session | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | exact writer families |
-| Measurement characterization | [D] exact copy/requests, guards and deferred result/lifetime observations | panel, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
+| Measurement characterization | [D] copy/requests, result/lifetime, provenance/order and no-placement guards | module, two host builders, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
 | Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
-| Inspector/boundaries | [D] metadata/source assertions | fact summaries and host owners | `ZERO_WRITE` | readiness/safety/structural cases |
+| Inspector/boundaries | [D] metadata/source assertions | fact summaries, host and Measurement module owners | `ZERO_WRITE` | readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
 - Five explicit groups: import, alignment, placement geometry, Wizard and
-  `M0 Measurement characterization`.
+  `M0 Measurement characterization`, including the four added M1 cases.
+- `openAdvancedDetails` and `advancedDetailsState` bound provenance fixtures;
+  ordering compares rendered labelled rows by widget position, not source text.
 - `_FakeSaveMeasurementWriter` retains default appended behavior and adds
   optional failure, existing-event and deferred completion controls.
 - `_FakePhotoAlignmentWriter` records ensure/confirm independently.
@@ -202,3 +212,6 @@ layout, current source guards, writer boundaries and route composition.
   case because the current panel supplies a row through the supported UI.
 - [D] The M0 935/936 case proves panel lifetime; it does not itself assert
   narrow Measure Sheet button availability.
+- [D] The module negative list checks `_focusMode`, while the host field is
+  `_canvasFocusMode`. That token alone does not guard the actual spelling;
+  current module absence is source evidence, not a stronger test assertion.

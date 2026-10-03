@@ -4,13 +4,14 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibility categories`
-- Audit evidence: `docs/audit/TRACEBENCH_PHOTO_IMPORT_CANONICAL_WRITE_V1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the primary Board Canvas workbench shell, rendering/interaction, inspection,
-UI-local drafts, Wizard intake and freshness presentation. Four direct V2
-writer actions remain host-owned; additional-photo import and explicit primary
+UI-local drafts, Wizard intake and freshness presentation. Three direct V2
+writer actions remain host-owned. Measurement State/save/session workflow belongs
+to `IntegratedMeasurePanel`; additional-photo import and explicit primary
 alignment confirmation are delegated to `PhotoWorkbenchPanel` and its writers.
 The host loads the Wizard primary asset, selects event-derived alignments and
 composes provisional/confirmed photo rendering without promoting visual evidence.
@@ -26,7 +27,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | 1. Screen and freshness | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_buildScaffold`, `ProjectionStaleBanner` | Watches project state, composes branches and inserts freshness directly below the instrument bar. |
 | 2. Selection/preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Volatile selection/hover/clear behavior. |
 | 3. Navigator/filter | `_ComponentCategory`, `_ComponentNavigatorPanel`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host callbacks/filter state and delegated navigator/projection. |
-| 4. Measurement entry | `_IntegratedMeasurePanelState`, `_saveMeasurement`, `_MeasureTargetRow`, `applyCanonicalEvent` | Human draft, existing writer and captured-generation result. |
+| 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel` | Constructs the child from one resolved placement; supplies read-only provenance children and private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Component create/edit | `_confirmRightPanelComponentCreation`, `_confirmRightPanelMetadataEdit`, `_RightPanelComponentCreationSection`, `_RightPanelMetadataEditSection` | Explicit identity/metadata guards and existing writes. |
 | 6. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_confirmAddComponentTemplatePlacement`, `_PlacementSaveTarget` | Template/ghost/editor draft, normalized guards and explicit save. |
 | 7. Interaction/Wizard | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile` | Zero-component intake, pan/zoom/tap/fit and read-only Wizard input. |
@@ -39,7 +40,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 ## Anchor inventory and verification
 
 Every anchor resolves as a host substring. Wizard/navigator part types and
-imported geometry, photo, mode and destination-model names are consumer
+imported Measurement, geometry, photo, mode and destination-model names are consumer
 references; their declarations remain in the named dependency owners.
 No line-number anchors are maintained.
 
@@ -88,12 +89,21 @@ No line-number anchors are maintained.
    directly, not `ProjectAlignedPhotoLayer`'s alternate loading wrapper.
 10. [D] Missing/unsafe primary data gives warning; reflected affine geometry
     and provisional solutions have separate visual badges. None append events.
-11. [D] Existing four direct writer calls remain split 3+1 between screen State
-    and measurement State. Photo copy/ensure/confirm and their result application
-    remain delegated; host callbacks do not create parallel canonical rows.
+11. [D] Three direct writer calls remain in screen State for component
+    create/edit and placement. Measurement writer/result application belongs to
+    the normal child library. Photo copy/ensure/confirm and their result
+    application stay delegated; host callbacks create no parallel canonical rows.
 12. [D] Exact canonical results use session generation/dedup/stale handling.
     Read-only Known Facts alignment summaries remain distinct from the live
     event-derived photo layer while the projection is stale.
+13. [D] Both Measurement inputs derive from the same resolved visible
+    `selectedEntry`; no placement supplies two nulls even for component-only
+    selection. The child owns drafts/guards and reads writer/session providers.
+14. [D] The advanced builder uses panel context for Theme and returns existing
+    host tiles: trace provenance before measurements, both READ, or empty copy.
+    The child retains its ExpansionTile. The footprint builder captures private
+    entry/painter ownership and returns Semantics/CustomPaint; only target,
+    visual label and count arrive from the child, which retains the 82 px slot.
 
 ## Direct dependencies
 
@@ -108,15 +118,18 @@ No line-number anchors are maintained.
 | `measurement_projection.dart`, `placement_geometry.dart` | pure helpers | Counts/badges/caution and geometry/hit tests. |
 | `wizard_intake_overlay.part.dart`, `component_navigator.part.dart` | same-library parts | Wizard rendering and Stateless navigator declarations. |
 | `BoardCanvasPalette`, facts, `WizardIntake` | read input | Static colors, canonical projection and noncanonical intake. |
-| Four V2 writer providers | canonical output | Component create/edit, placement and measurement. |
+| Three V2 writer providers | canonical output | Component create/edit and placement only. |
+| `integrated_measure_panel.dart` | normal child library | Measurement widget/State/writer/session workflow; stable nullable component inputs, navigation callback and two one-way host builders. |
 | Flutter/GoRouter, `dart:async`, `dart:io` | framework/read | Widgets/navigation, capture completion and legacy Wizard image read. |
 
 ## Write and protected boundaries
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| four direct save/confirm methods | `CANONICAL_EVENT` | [D] Existing explicit host writer calls. |
-| four host event applications | `PROJECTION_STATE` | [D] Captured-generation handoff to session. |
+| three direct confirm methods | `CANONICAL_EVENT` | [D] Existing component create/edit and placement writer calls. |
+| three host event applications | `PROJECTION_STATE` | [D] Captured-generation handoff for the three host writers. |
+| delegated Measurement panel | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child owns drafts, explicit V2 writer and generation-guarded Session result; host supplies no save/session callback. |
+| Measurement provenance/footprint builders | `ZERO_WRITE` | [D] Host tiles/painter rendering only; no event or projection mutation. |
 | delegated photo panel | `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child/service owners enforce import or explicit primary ensure/confirm. |
 | Home | `PROJECTION_STATE` + `UI_LOCAL` | [D] Existing close before root navigation, no canonical write. |
 | mode/menu/selection/layer/focus/capture | `UI_LOCAL` | [D] Transient providers, callbacks and navigation. |
@@ -142,7 +155,8 @@ that evidence comes only from the explicit delegated confirmation writer.
 | Primary asset/selection | [D] path/hash/dimensions and guarded load | read model / loader | `ZERO_WRITE` / `UI_LOCAL` | reopen, changed-byte and unavailable cases |
 | Photo confirmation seam | [D] child callbacks and injected writer | panel, durable writer, session | delegated `CANONICAL_EVENT` / `PROJECTION_STATE` | confirm/retry/stale groups |
 | Preview/capture/render | [D] host state and stack | solver / raster / Wizard | `UI_LOCAL` / `ZERO_WRITE` | exit, raster and composite cases |
-| Existing four writers | [D] named direct calls | session and respective writer | `CANONICAL_EVENT` / `PROJECTION_STATE` | exact writer families |
+| Three host writers | [D] named direct calls | session and respective writer | `CANONICAL_EVENT` / `PROJECTION_STATE` | component/placement writer families |
+| Measurement composition | [D] placement-derived inputs and two host builders | module State/writer/session, Inspector tiles and preview painter | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; builders `ZERO_WRITE` | M0 group, four advanced-details/no-placement cases and source-owner guards |
 | Navigator/geometry | [D] helper/part consumers | pure owners and painter hits | `UI_LOCAL` / `ZERO_WRITE` | navigator and geometry families |
 | Responsive/freshness | [D] separate bar/content thresholds | router/body padding/banner | `ZERO_WRITE` / `UI_LOCAL` | width matrix, focus and banner cases |
 
@@ -175,7 +189,9 @@ that evidence comes only from the explicit delegated confirmation writer.
 - Primary loading: reconcile/load identity plus changed-byte/reopen cases.
 - Preview exit/capture: host clear/completer plus exit/capture cases.
 - One delegated photo result: child callback and matching session case.
-- One existing writer or pure helper: exact method/owner and its focused family.
+- One host writer or pure helper: exact method/owner and its focused family.
+- One Measurement input or host builder seam: inspect the module and exact
+  M0/advanced-details/no-placement/source-owner evidence.
 - Rendering: one stack layer plus raster/composite evidence.
 
 ## Future extraction seams
@@ -194,3 +210,5 @@ freshness, helper/part contracts and linked test evidence.
 - [D] Host integration does not prove native picker or real Python atomicity.
 - [P] Private painter/source-string assertions are structure-sensitive.
 - [D] Known Facts summaries can lag event-derived render state while stale.
+- [D] Measurement construction has accepted formatting debt; it does not change
+  the verified input/builder contract or authorize source cleanup.

@@ -17,6 +17,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart` | `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/screens/board_canvas_screen.dart` | `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/component_navigator.part.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` | production | `MAINTAINED` |
+| `lib/features/board_canvas/widgets/integrated_measure_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/integrated_measure_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_graph/screens/board_graph_screen.dart` | `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/add_component_screen.dart` | `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/edit_component_screen.dart` | `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md` | production | `MAINTAINED` |

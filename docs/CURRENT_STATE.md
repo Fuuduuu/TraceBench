@@ -1,9 +1,37 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Measurement M1 extraction reservation
+## Measurement M1 completed; committed-source map maintenance
+
+Accepted M1 implementation is committed and pushed at
+`f23efa355778d7adee07e2bc887e39fc1da180f7`,
+subject `refactor: extract board canvas measurement panel`.
+Git verifies exactly the host, new normal Measurement module and Board Canvas
+test; no projection source change. M1 scope/implementation authority is spent.
+
+The human selected immediate ten-path docs/map maintenance, owned by
+`docs/ACTIVE_SCOPE_LOCK.md` and
+`docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`.
+The committed host delegates Measurement State/writer/session workflow through
+stable placement-derived inputs and two one-way host builders.
+Refresh host/test/projection maps and qualify the new module from committed
+source. All four header/index pairs use `REVIEW_REQUIRED` in Phase 1;
+the artifact records measured qualification, anchors and registry parity.
+
+Source/tests, unrelated and RETIRED maps, historical audits/ledger rows,
+Windows residue and scratch remain frozen. The two accepted M1 NITs are
+non-blocking descriptive debt and are not patched.
+Independent map/diff review precedes bounded Phase 2, whose only exceptions are
+four header statuses, four registry status cells, the unique artifact verdict
+interior and this maintenance's ledger Status cell.
+
+Next is non-executable `NEEDS_USER_DECISION`; no later product/refactor pass
+or additional maintenance is armed. Retained M1 reservations below are
+historical, completed and non-authorizing.
+
+## Historical completed Measurement M1 extraction reservation
 
 The human selected direct M1 physical Measurement extraction and rejected
 separate L1 shared-presentation extraction. Verified entry: `main`,

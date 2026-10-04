@@ -2,10 +2,41 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Components C0 scope and single test-child sequence
+## Components C0 committed-source test-map maintenance sequence
+
+The human selected immediate one-map maintenance after committed Components C0
+at `c62994529238012eae0737c3ddda934e4d7c1c60`, subject
+`test: characterize board canvas components c0`.
+The completed C0 scope/test authority is spent. `docs/ACTIVE_SCOPE_LOCK.md`
+owns exactly seven docs/map/index/artifact paths; binding evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Refresh only the test map from the committed C0 diff/source. Verify 236
+   declarations and six explicit groups; retain twelve zones and update zone 5
+   for fake/lifetime/writer/session/selection/Placement-isolation/layout evidence.
+   Confirm the production host/map as REVIEWED_NO_CHANGE without editing them.
+2. Set only the test-map header and matching registry Status cell to
+   REVIEW_REQUIRED. Measure 55 maps / 55 rows: 52 MAINTAINED, one
+   REVIEW_REQUIRED and two RETIRED. Create one neutral ledger row and one
+   artifact with a unique empty verdict block.
+3. Run literal-anchor, declaration/group, route, exact-material and raw-byte
+   preservation checks, doctor, temporary-output validate_all and Git checks.
+4. Independently compare the complete seven-path diff and refreshed map against
+   committed source. A material map finding requires a bounded patch and review.
+5. After acceptance and explicit recording authorization, Phase 2 changes only
+   the test-map header Status, matching registry Status, verdict interior and
+   matching ledger Status cell. Preserve all other Phase-1 bytes.
+
+Next is non-executable NEEDS_USER_DECISION. No C1 scope, production extraction,
+later product/refactor pass or additional map maintenance is armed.
+Source/tests, host/unrelated/RETIRED maps, historical audits/ledger rows,
+Windows residue and scratch remain frozen; staging/commit/push is human-owned.
+All retained C0 and M1 sections below are completed non-authorizing history.
+
+## Historical completed Components C0 scope and single test-child sequence
 
 The human selected Components characterization after committed Measurement M1
 map maintenance at `9c23eb62efb4ad5e0fe0afa52449110297f4f704`, subject

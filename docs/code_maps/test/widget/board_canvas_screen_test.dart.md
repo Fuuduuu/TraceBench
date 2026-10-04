@@ -4,15 +4,15 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary
-and responsive evidence. The file has 219 declarations: 196 `testWidgets` and
-23 `test`. Five explicit groups cover import, alignment, placement geometry,
-Wizard overlays and `M0 Measurement characterization`. Parameterized declarations
-generate multiple cases; declaration counts are not executed-test totals.
+and responsive evidence. The file has 236 declarations: 213 `testWidgets` and
+23 `test`. Six explicit groups cover import, alignment, placement geometry,
+Wizard overlays, `M0 Measurement characterization` and `Components C0 characterization`.
+Parameterized declarations generate cases; counts are not executed-test totals.
 
 ## Responsibility zones
 
@@ -22,7 +22,7 @@ generate multiple cases; declaration counts are not executed-test totals.
 | 2. Single-shell layout/freshness | `single shell measures routed canvas area`, `single shell responsive chrome preserves tools and status`, `single shell keeps $freshness banner below the bar with long identity`, `routed Board Canvas stays rich across former shell cutovers` | Area, responsive controls, no duplicate shell, banner placement and project identity. |
 | 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Drill-down, typed selection, order, preview, counts and hide-unmeasured behavior. |
 | 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution`, `openAdvancedDetails`, `advancedDetailsState`, `M1 pre-move advanced details preserve empty children`, `M1 pre-move advanced details preserve both READ provenance tiles`, `M1 pre-move advanced details keep traces before measurements`, `M1 pre-move component-only selection cannot authorize a save` | Draft/target/save/session and pure read contracts; four provenance/order/empty/no-placement cases characterize the extracted Measurement workflow through the host. |
-| 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson` | Guards, requests, errors, exact results and idempotency. |
+| 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson`, `Components C0 characterization`, `mountComponents`, `createDraft`, `editDraft` | Guards/requests/results plus C0 screen-lived drafts/status, pending/retry, current repeat-save asymmetry, session safety, selection, Placement isolation and rendered create/Placement/edit order. |
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Projected metadata, safety wording, measurement and trace inspection. |
@@ -81,9 +81,9 @@ source anchors, not claims about generated case counts. No line-number anchors.
    alignment is excluded. Visibility/opacity/history controls remain local.
 9. [D] Missing assets, non-directory state and intrinsic out-of-bounds reopened
    points fail safely without rendering an invalid layer or calling a writer.
-10. [D] Existing V2 fakes, pure helper cases, Wizard/Board composites and source
-    guards retain their own boundaries; event-derived photo rendering need not
-    wait for refreshed Known Facts.
+10. [D] C0 pins screen-lived drafts/pending/retry/repeat, requests, session and
+    selection; existing V2/pure/Wizard/Board composites and source guards retain
+    boundaries; event-derived photo rendering need not wait for Known Facts.
 11. [D] Measurement request capture, six typed failures and one unexpected error
     preserve exact copy. Existing results exercise application/dedup; local
     directory/selection, repeat-save and in-flight guards bound writer calls.
@@ -125,7 +125,7 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | V2 and photo writer doubles | exercised `CANONICAL_EVENT` | [D] UI request protocol, not production persistence internals. |
 | import fake | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` boundaries | [D] Gating/result handling; real copy belongs to service units. |
 | event application/replacement | observed `PROJECTION_STATE` | [D] Session generation, dedup and stale promotion. |
-| pair/layer/panel/focus/selection | `UI_LOCAL` | [D] No canonical call from preview/edit/cancel. |
+| component drafts/pair/layer/panel/focus/selection | `UI_LOCAL` | [D] Draft input and preview/edit/cancel themselves call no canonical writer. |
 | route/layout/painter/freshness/source observation | `ZERO_WRITE` | [D] Presentation/read evidence. |
 | temporary fixture setup/teardown | `NONCANONICAL_FILE` | [D] Test-owned files only. |
 
@@ -148,19 +148,22 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Primary confirmation | [D] separate ensure/confirm observations | panel/writer/session/read model | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | confirm, failure/retry and switch cases |
 | Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
 | Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
-| Existing writers | [D] four fake boundaries | respective writers/session | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | exact writer families |
+| Existing writers / Components | [D] four fake boundaries; C0 lifetime/pending/retry/repeat, exact requests, session/selection and rendered order | host create/edit, session, selection and inspect-only Placement | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Components C0 characterization` and retained writer families |
 | Measurement characterization | [D] copy/requests, result/lifetime, provenance/order and no-placement guards | module, two host builders, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
 | Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
 | Inspector/boundaries | [D] metadata/source assertions | fact summaries, host and Measurement module owners | `ZERO_WRITE` | readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
-- Five explicit groups: import, alignment, placement geometry, Wizard and
-  `M0 Measurement characterization`, including the four added M1 cases.
+- Six explicit groups: import, alignment, placement geometry, Wizard,
+  `M0 Measurement characterization` (including four M1 cases), and
+  `Components C0 characterization`.
 - `openAdvancedDetails` and `advancedDetailsState` bound provenance fixtures;
   ordering compares rendered labelled rows by widget position, not source text.
 - `_FakeSaveMeasurementWriter` retains default appended behavior and adds
   optional failure, existing-event and deferred completion controls.
+- `_FakeAddComponentWriter` and `_FakeEditComponentWriter` keep appended defaults
+  and expose mutable errors for retry, optional completion and existing results.
 - `_FakePhotoAlignmentWriter` records ensure/confirm independently.
 - `_FakeAlignedPhotoAssetLoader` and `_fakeAlignedPhotoImage` bound image I/O.
 - `_primaryPhotoWriteResult` and alignment fixtures model exact returned events.
@@ -186,7 +189,7 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - One confirmation await: fake completion, replacement and session observation.
 - One primary retry outcome: ensure versus alignment calls and event counts.
 - One raster/exit outcome: matching fixture plus host/renderer lifecycle.
-- One retained V2 or pure-helper case: named family and direct owner.
+- One C0 or retained V2/pure case: named family, fake and direct owner/session.
 - One Measurement case: parameterized copy/request/result or one deferred
   completion plus captured session and panel-lifetime observation.
 - One source boundary: exact host/part/imported-owner string checks.

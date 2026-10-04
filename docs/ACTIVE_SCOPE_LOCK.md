@@ -2,10 +2,64 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Components C0 characterization scope lock
+## Current Components C0 committed-source test-map maintenance
+
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
+The human selected immediate maintenance after committed Components C0 at
+`c62994529238012eae0737c3ddda934e4d7c1c60`, subject
+`test: characterize board canvas components c0`.
+Git verifies exactly `test/widget/board_canvas_screen_test.dart` in that commit.
+The completed C0 scope/test authority is spent; all retained C0 and M1
+reservation text below is historical and grants no current writes.
+
+Exact current write set, with no eighth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+7. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`
+
+Binding maintenance evidence and recording coordinates:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`.
+Committed source owns code facts. Refresh only the test map:
+UPDATE_REQUIRED / TEST_DRIFT; retain twelve zones and add the sixth explicit
+group's fake, screen-lifetime, writer/session, selection and rendered-order
+evidence. Source verifies 236 declarations: 213 testWidgets and 23 test.
+The production host and its map are REVIEWED_NO_CHANGE and remain frozen.
+
+Registry parity remains 55 actual maps / 55 rows. Phase 1 sets only the test
+map/index pair to REVIEW_REQUIRED: 52 MAINTAINED, one REVIEW_REQUIRED and two
+RETIRED. No map is created or retired.
+
+Freeze source/tests/runtime/tools/schemas/assets/packages, every other map,
+RETIRED maps, historical audit artifacts/ledger rows, Windows residue and
+scratch. Do not patch C0 behavior or write a C1 scope. No staging, commit or
+push is authorized.
+
+Independent complete-diff and map/source review precedes explicitly authorized
+Phase 2, which may change only these four coordinates:
+
+1. Test-map header Status.
+2. Matching CODE_MAP_INDEX Status cell.
+3. The unique artifact verdict-block interior, preserving marker lines.
+4. Only this PASS_ID's AUDIT_INDEX Status cell, mirroring verdict/safety/set.
+
+Map bodies, qualifications, route owners, ledger Description, every other
+index/ledger cell and all historical content remain frozen in Phase 2.
+Validate declaration/group counts, literal anchors, registry parity, exact
+seven-path material, route agreement and raw source/test/frozen-file hashes.
+Run doctor, temporary-output validate_all and both Git diff checks.
+
+Next is non-executable NEEDS_USER_DECISION. No C1 or later product/refactor
+pass is armed by this maintenance. Retained C0 sections are completed history.
+
+## Historical completed Components C0 characterization scope lock
 
 Lane B / `DOCS_SCOPE_LOCK`. The human selected exactly one test-only
 Components child after committed Measurement M1 map maintenance at

@@ -1,9 +1,38 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Components C0 test-only characterization reservation
+## Components C0 committed-source test-map maintenance
+
+Components C0 is committed at `c62994529238012eae0737c3ddda934e4d7c1c60`,
+subject `test: characterize board canvas components c0`; Git verifies only
+`test/widget/board_canvas_screen_test.dart`, with +1302 / -5.
+The completed characterization scope/test authorities are spent. All retained
+C0 and M1 reservations below are historical and non-authorizing.
+
+The human selected this immediate Lane A docs/map maintenance, not another
+future implementation reservation. `docs/ACTIVE_SCOPE_LOCK.md` owns exactly
+seven docs/map/index/artifact paths. Binding measured evidence and recording:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`.
+
+Refresh only the Board Canvas test map for UPDATE_REQUIRED / TEST_DRIFT:
+236 declarations (213 testWidgets + 23 test), six explicit groups, and existing
+zone 5's C0 fake/lifetime/writer/session/selection/layout evidence.
+The host source and map remain REVIEWED_NO_CHANGE. No source/test changes,
+behavior repairs or C1 scope are authorized.
+
+Phase 1 retains 55 maps / 55 rows and twelve test zones; only the test-map
+header/index pair uses REVIEW_REQUIRED. Counts are 52 MAINTAINED, one
+REVIEW_REQUIRED and two RETIRED. Every unrelated/RETIRED map, source/test,
+historical audit/ledger row, Windows residue and scratch remains frozen.
+Independent review and explicit Phase-2 recording authorization govern only
+the four coordinates named in the active lock and maintenance artifact.
+
+Next is NEEDS_USER_DECISION. No C1 or later product/refactor pass is armed.
+All retained predecessor sections below grant no current writes.
+
+## Historical completed Components C0 test-only characterization reservation
 
 The human selected Components C0 after committed Measurement M1 map maintenance
 at `9c23eb62efb4ad5e0fe0afa52449110297f4f704`, subject

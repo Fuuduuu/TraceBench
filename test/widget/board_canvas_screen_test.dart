@@ -1248,11 +1248,14 @@ class _FakeAddComponentWriter implements V2AddComponentWriter {
   _FakeAddComponentWriter({
     this.error,
     this.event,
+    this.status = V2AddComponentWriteStatus.appended,
+    this.completion,
   });
 
-  final Object? error;
-  final V2AddComponentWriteStatus status = V2AddComponentWriteStatus.appended;
+  Object? error;
+  final V2AddComponentWriteStatus status;
   final Map<String, dynamic>? event;
+  final Completer<void>? completion;
   final List<V2AddComponentRequest> requests = <V2AddComponentRequest>[];
 
   @override
@@ -1261,6 +1264,9 @@ class _FakeAddComponentWriter implements V2AddComponentWriter {
     required V2AddComponentRequest request,
   }) async {
     requests.add(request);
+    if (completion != null) {
+      await completion!.future;
+    }
     final error = this.error;
     if (error != null) {
       throw error;
@@ -1281,8 +1287,15 @@ class _FakeAddComponentWriter implements V2AddComponentWriter {
 }
 
 class _FakeEditComponentWriter implements V2EditComponentWriter {
-  _FakeEditComponentWriter();
+  _FakeEditComponentWriter({
+    this.error,
+    this.status = V2EditComponentWriteStatus.appended,
+    this.completion,
+  });
 
+  Object? error;
+  final V2EditComponentWriteStatus status;
+  final Completer<void>? completion;
   final List<V2EditComponentRequest> requests = <V2EditComponentRequest>[];
 
   @override
@@ -1291,6 +1304,13 @@ class _FakeEditComponentWriter implements V2EditComponentWriter {
     required V2EditComponentRequest request,
   }) async {
     requests.add(request);
+    if (completion != null) {
+      await completion!.future;
+    }
+    final error = this.error;
+    if (error != null) {
+      throw error;
+    }
     final writtenEvent = _componentUpdatedEventJson(
       componentId: request.componentId,
       clientOperationId: request.clientOperationId,
@@ -1299,9 +1319,9 @@ class _FakeEditComponentWriter implements V2EditComponentWriter {
           .toList(growable: false),
     );
     return V2EditComponentResult(
-      status: V2EditComponentWriteStatus.appended,
+      status: status,
       event: writtenEvent,
-      appended: true,
+      appended: status == V2EditComponentWriteStatus.appended,
     );
   }
 }
@@ -8955,6 +8975,1283 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
     expect(find.text('1.00'), findsOneWidget);
     expect(state.events, isEmpty);
+  });
+
+  group('Components C0 characterization', () {
+    const createPrefix = 'board_canvas_create_component';
+    const editPrefix = 'board_canvas_metadata_edit';
+    const createSuccess = 'Komponent loodud. Projektsioon vajab värskendamist.';
+    const editSuccess =
+        'Komponendi andmed salvestatud. Projektsioon vajab värskendamist.';
+
+    String prefix(bool editing) => editing ? editPrefix : createPrefix;
+    Finder section(bool editing) =>
+        find.byKey(Key('${prefix(editing)}_section'));
+    Finder action(bool editing) => find.descendant(
+      of: find.byKey(Key('${prefix(editing)}_save')),
+      matching: find.byType(OutlinedButton),
+    );
+
+    String copy(WidgetTester tester, String key) =>
+        tester.widget<Text>(find.byKey(Key(key))).data!;
+    String field(WidgetTester tester, String key) => tester
+        .widget<EditableText>(
+          find.descendant(
+            of: find.byKey(Key(key)),
+            matching: find.byType(EditableText),
+          ),
+        )
+        .controller
+        .text;
+    String? kind(WidgetTester tester, bool editing) => tester
+        .state<FormFieldState<String>>(
+          find.byKey(Key('${prefix(editing)}_kind_dropdown')),
+        )
+        .value;
+
+    ProjectState componentState({
+      String? projectDirectory,
+      String? designator = 'R101',
+      String? storedKind = 'passive',
+      List<TraceBenchEvent> events = const [],
+    }) => _inlineProjectState(
+      components: [
+        ComponentFact(
+          componentId: 'cmp_r101',
+          designator: designator,
+          type: storedKind,
+        ),
+      ],
+      placements: const [boardPlacement],
+      projectDirectory: projectDirectory,
+      events: events,
+    );
+
+    Future<void> openAdd(WidgetTester tester) async {
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_rail_add_component_tool'),
+      );
+      await tester.pumpAndSettle();
+      expect(section(false), findsOneWidget);
+      expect(section(true), findsOneWidget);
+    }
+
+    Future<void> leaveAdd(WidgetTester tester) async {
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_rail_inspector_tool'),
+      );
+      await tester.pumpAndSettle();
+      expect(section(false), findsNothing);
+      expect(section(true), findsNothing);
+    }
+
+    Future<ProjectState> mountComponents(
+      WidgetTester tester, {
+      _FakeAddComponentWriter? createWriter,
+      _FakeEditComponentWriter? editWriter,
+      _FakePlacementWriter? placementWriter,
+      ProjectState? state,
+      bool selectPlacement = true,
+      double width = 1400,
+    }) async {
+      await tester.binding.setSurfaceSize(Size(width, 1000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      if (state == null) {
+        final directory = Directory.systemTemp.createTempSync(
+          'tracebench-components-c0-',
+        );
+        addTearDown(() => directory.deleteSync(recursive: true));
+        state = componentState(projectDirectory: directory.path);
+      }
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          addComponentWriter: createWriter ?? _FakeAddComponentWriter(),
+          editComponentWriter: editWriter ?? _FakeEditComponentWriter(),
+          placementWriter: placementWriter ?? _FakePlacementWriter(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      if (selectPlacement) {
+        final designator = state.knownFacts.components.first.designator?.trim();
+        final label = designator == null || designator.isEmpty
+            ? 'cmp_r101'
+            : designator;
+        await _selectPlacement(tester, '$label (cmp_r101)');
+      }
+      await openAdd(tester);
+      return state;
+    }
+
+    Future<void> enterField(
+      WidgetTester tester,
+      String key,
+      String value,
+    ) async {
+      final input = find.descendant(
+        of: find.byKey(Key(key)),
+        matching: find.byType(EditableText),
+      );
+      await tester.ensureVisible(input);
+      await tester.enterText(input, value);
+      await tester.pump();
+    }
+
+    Future<void> chooseKind(
+      WidgetTester tester,
+      bool editing,
+      String value,
+    ) async {
+      const labels = {
+        'unknown': 'Generic / unclassified',
+        'passive': 'Resistor / capacitor / diode / passive',
+        'ic': 'IC dual-side / quad-side / dense grid',
+        'connector': 'Connector / header',
+        'regulator': 'Regulator / relay / module',
+      };
+      final dropdown = find.byKey(Key('${prefix(editing)}_kind_dropdown'));
+      await tester.ensureVisible(dropdown);
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(labels[value]!).last);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> createDraft(
+      WidgetTester tester, {
+      String id = 'cmp_c900',
+      String label = 'Created component',
+      String componentKind = 'passive',
+    }) async {
+      await enterField(tester, '${createPrefix}_id_input', id);
+      await enterField(tester, '${createPrefix}_label_input', label);
+      await chooseKind(tester, false, componentKind);
+    }
+
+    Future<void> editDraft(
+      WidgetTester tester, {
+      String? label = 'R101 edited',
+      String? componentKind,
+    }) async {
+      if (label != null) {
+        await enterField(tester, '${editPrefix}_label_input', label);
+      }
+      if (componentKind != null) {
+        await chooseKind(tester, true, componentKind);
+      }
+    }
+
+    Future<void> save(WidgetTester tester, bool editing) async {
+      await tester.ensureVisible(action(editing));
+      await tester.pump();
+      await tester.tap(action(editing));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+
+    void expectSuccess(WidgetTester tester, bool editing, String expected) {
+      expect(copy(tester, '${prefix(editing)}_status'), expected);
+      expect(find.byKey(Key('${prefix(editing)}_error')), findsNothing);
+    }
+
+    // Families 1 and 11: screen-lived drafts, separate from panel State.
+    testWidgets('create and edit drafts survive Add panel removal and return', (
+      tester,
+    ) async {
+      final createWriter = _FakeAddComponentWriter();
+      final editWriter = _FakeEditComponentWriter();
+      await mountComponents(
+        tester,
+        createWriter: createWriter,
+        editWriter: editWriter,
+      );
+      final screenState = tester.state(find.byType(BoardCanvasScreen));
+      final oldCreate = tester.element(section(false));
+      final oldEdit = tester.element(section(true));
+      await createDraft(
+        tester,
+        id: 'cmp_local_draft',
+        label: 'Local identity draft',
+        componentKind: 'connector',
+      );
+      await editDraft(
+        tester,
+        label: 'Local metadata draft',
+        componentKind: 'ic',
+      );
+      await leaveAdd(tester);
+      expect(oldCreate.mounted, isFalse);
+      expect(oldEdit.mounted, isFalse);
+      expect(tester.state(find.byType(BoardCanvasScreen)), same(screenState));
+      await openAdd(tester);
+      expect(tester.element(section(false)), isNot(same(oldCreate)));
+      expect(tester.element(section(true)), isNot(same(oldEdit)));
+      expect(field(tester, '${createPrefix}_id_input'), 'cmp_local_draft');
+      expect(
+        field(tester, '${createPrefix}_label_input'),
+        'Local identity draft',
+      );
+      expect(kind(tester, false), 'connector');
+      expect(
+        field(tester, '${editPrefix}_label_input'),
+        'Local metadata draft',
+      );
+      expect(kind(tester, true), 'ic');
+      expect(createWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('900 px content cutover preserves the screen-lived drafts', (
+      tester,
+    ) async {
+      await mountComponents(tester, width: 936);
+      final screenState = tester.state(find.byType(BoardCanvasScreen));
+      final oldCreate = tester.element(section(false));
+      await createDraft(
+        tester,
+        id: 'cmp_resize',
+        label: 'Resize identity',
+        componentKind: 'regulator',
+      );
+      await editDraft(
+        tester,
+        label: 'Resize metadata',
+        componentKind: 'connector',
+      );
+      // The Canvas LayoutBuilder receives viewport width minus 36 px.
+      await tester.binding.setSurfaceSize(const Size(935, 1000));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_workbench_shell')),
+        findsNothing,
+      );
+      expect(section(false), findsNothing);
+      expect(section(true), findsNothing);
+      expect(oldCreate.mounted, isFalse);
+      expect(tester.state(find.byType(BoardCanvasScreen)), same(screenState));
+      await tester.binding.setSurfaceSize(const Size(936, 1000));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_workbench_shell')),
+        findsOneWidget,
+      );
+      expect(tester.state(find.byType(BoardCanvasScreen)), same(screenState));
+      expect(field(tester, '${createPrefix}_id_input'), 'cmp_resize');
+      expect(field(tester, '${createPrefix}_label_input'), 'Resize identity');
+      expect(kind(tester, false), 'regulator');
+      expect(field(tester, '${editPrefix}_label_input'), 'Resize metadata');
+      expect(kind(tester, true), 'connector');
+      expect(_readProjectState(tester).events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    // Family 2: preserve pending lock and completion across panel absence.
+    for (final editing in [false, true]) {
+      final operation = editing ? 'edit' : 'create';
+      testWidgets(
+        '$operation pending lock survives re-entry and away completion',
+        (tester) async {
+          final completion = Completer<void>();
+          final createWriter = _FakeAddComponentWriter(
+            completion: editing ? null : completion,
+          );
+          final editWriter = _FakeEditComponentWriter(
+            completion: editing ? completion : null,
+          );
+          await mountComponents(
+            tester,
+            createWriter: createWriter,
+            editWriter: editWriter,
+          );
+          if (editing) {
+            await editDraft(tester);
+          } else {
+            await createDraft(tester);
+          }
+          final oldCallback = tester
+              .widget<OutlinedButton>(action(editing))
+              .onPressed!;
+          await save(tester, editing);
+          oldCallback();
+          await tester.pump();
+          expect(
+            editing ? editWriter.requests.length : createWriter.requests.length,
+            1,
+          );
+          expect(
+            tester.widget<OutlinedButton>(action(editing)).onPressed,
+            isNull,
+          );
+          final pendingCopy = editing
+              ? 'Salvestan komponendi andmeid...'
+              : 'Salvestan komponendi identiteeti...';
+          expect(copy(tester, '${prefix(editing)}_status'), pendingCopy);
+          await leaveAdd(tester);
+          await openAdd(tester);
+          expect(copy(tester, '${prefix(editing)}_status'), pendingCopy);
+          expect(
+            tester.widget<OutlinedButton>(action(editing)).onPressed,
+            isNull,
+          );
+          await save(tester, editing);
+          expect(
+            editing ? editWriter.requests.length : createWriter.requests.length,
+            1,
+          );
+          await leaveAdd(tester);
+          completion.complete();
+          await tester.pumpAndSettle();
+          await openAdd(tester);
+          expectSuccess(tester, editing, editing ? editSuccess : createSuccess);
+          expect(_readProjectState(tester).events, hasLength(1));
+          expect(
+            editing ? editWriter.requests.length : createWriter.requests.length,
+            1,
+          );
+          expect(tester.takeException(), isNull);
+        },
+      );
+
+      // Families 3, 4 and 10: copy, repeat-save asymmetry and stable selection.
+      for (final existing in [false, true]) {
+        testWidgets(
+          '$operation ${existing ? 'existing' : 'appended'} result and same-form re-entry',
+          (tester) async {
+            final createWriter = _FakeAddComponentWriter(
+              status: existing
+                  ? V2AddComponentWriteStatus.existing
+                  : V2AddComponentWriteStatus.appended,
+            );
+            final editWriter = _FakeEditComponentWriter(
+              status: existing
+                  ? V2EditComponentWriteStatus.existing
+                  : V2EditComponentWriteStatus.appended,
+            );
+            await mountComponents(
+              tester,
+              createWriter: createWriter,
+              editWriter: editWriter,
+            );
+            final selected = copy(tester, '${editPrefix}_selected_component');
+            if (editing) {
+              await editDraft(tester);
+            } else {
+              await createDraft(tester);
+            }
+            await save(tester, editing);
+            await tester.pumpAndSettle();
+            final expected = editing
+                ? existing
+                      ? 'Komponendi andmed olid juba salvestatud. Projektsioon vajab värskendamist.'
+                      : editSuccess
+                : existing
+                ? 'Komponent oli juba salvestatud. Projektsioon vajab värskendamist.'
+                : createSuccess;
+            expectSuccess(tester, editing, expected);
+            expect(copy(tester, '${editPrefix}_selected_component'), selected);
+            final accepted = _readProjectState(tester);
+            expect(accepted.events, hasLength(1));
+            expect(
+              accepted.events.single.eventType,
+              editing ? 'component_updated' : 'component_created',
+            );
+            expect(accepted.isProjectionStale, isTrue);
+            expect(
+              accepted.knownFacts.components.single.componentId,
+              'cmp_r101',
+            );
+            await leaveAdd(tester);
+            await openAdd(tester);
+            expectSuccess(tester, editing, expected);
+            expect(copy(tester, '${editPrefix}_selected_component'), selected);
+            if (editing) {
+              expect(
+                tester.widget<OutlinedButton>(action(true)).onPressed,
+                isNull,
+              );
+              expect(
+                copy(tester, '${editPrefix}_guard'),
+                'Komponendi andmed on salvestatud. Projektsioon vajab värskendamist.',
+              );
+              await save(tester, true);
+              expect(editWriter.requests, hasLength(1));
+            } else {
+              expect(
+                tester.widget<OutlinedButton>(action(false)).onPressed,
+                isNotNull,
+              );
+              await save(tester, false);
+              await tester.pumpAndSettle();
+              expect(createWriter.requests, hasLength(2));
+            }
+            expect(tester.takeException(), isNull);
+          },
+        );
+      }
+    }
+
+    // Family 5: every typed mapping, both create validation branches and retry.
+    final createFailures = [
+      (
+        name: 'noProjectDirectory',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.noProjectDirectory,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi loomiseks ava projekt kohalikust kaustast.',
+      ),
+      (
+        name: 'invalidProjectDirectory',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.invalidProjectDirectory,
+          'C0 typed failure',
+        ),
+        message: 'Projektikaust ei sobi komponendi loomiseks.',
+      ),
+      (
+        name: 'pythonUnavailable',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.pythonUnavailable,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi kirjutaja pole saadaval.',
+      ),
+      (
+        name: 'lockConflict',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.lockConflict,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi kirjutaja on hetkel hõivatud.',
+      ),
+      (
+        name: 'duplicate validation',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.validation,
+          'DUPLICATE V2 COMPONENT_ID: cmp_c900',
+        ),
+        message: 'Komponendi ID on juba kasutusel. Vali uus Koht / ID.',
+      ),
+      (
+        name: 'other validation',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.validation,
+          'C0 typed failure',
+        ),
+        message: 'Komponenti ei loodud: sisestus ei läbinud valideerimist.',
+      ),
+      (
+        name: 'append',
+        error: const V2AddComponentException(
+          V2AddComponentFailureKind.append,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi loomine ebaõnnestus: C0 typed failure',
+      ),
+      (
+        name: 'generic',
+        error: StateError('C0 generic failure'),
+        message:
+            'Komponendi loomine ebaõnnestus: Bad state: C0 generic failure',
+      ),
+    ];
+    for (final failure in createFailures) {
+      testWidgets(
+        'create ${failure.name} copy survives re-entry and permits retry',
+        (tester) async {
+          final writer = _FakeAddComponentWriter(error: failure.error);
+          await mountComponents(tester, createWriter: writer);
+          await createDraft(tester);
+          await save(tester, false);
+          await tester.pumpAndSettle();
+          expect(copy(tester, '${createPrefix}_error'), failure.message);
+          expect(find.byKey(const Key('${createPrefix}_status')), findsNothing);
+          expect(writer.requests, hasLength(1));
+          expect(_readProjectState(tester).events, isEmpty);
+          expect(
+            tester.widget<OutlinedButton>(action(false)).onPressed,
+            isNotNull,
+          );
+          await leaveAdd(tester);
+          await openAdd(tester);
+          expect(copy(tester, '${createPrefix}_error'), failure.message);
+          expect(field(tester, '${createPrefix}_id_input'), 'cmp_c900');
+          expect(
+            field(tester, '${createPrefix}_label_input'),
+            'Created component',
+          );
+          writer.error = null;
+          await save(tester, false);
+          await tester.pumpAndSettle();
+          expect(writer.requests, hasLength(2));
+          expectSuccess(tester, false, createSuccess);
+          expect(_readProjectState(tester).events, hasLength(1));
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    final editFailures = [
+      (
+        name: 'noProjectDirectory',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.noProjectDirectory,
+          'C0 typed failure',
+        ),
+        message: 'Muudatuste salvestamiseks ava projekt kohalikust kaustast.',
+      ),
+      (
+        name: 'invalidProjectDirectory',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.invalidProjectDirectory,
+          'C0 typed failure',
+        ),
+        message: 'Projektikaust ei sobi komponendi muutmiseks.',
+      ),
+      (
+        name: 'pythonUnavailable',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.pythonUnavailable,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi muutmise kirjutaja pole saadaval.',
+      ),
+      (
+        name: 'lockConflict',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.lockConflict,
+          'C0 typed failure',
+        ),
+        message: 'Komponendi muutmise kirjutaja on hetkel hõivatud.',
+      ),
+      (
+        name: 'unknownComponent',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.unknownComponent,
+          'C0 typed failure',
+        ),
+        message:
+            'Vali plaadil olemasolev komponent. Mustandit ei saa siin muuta.',
+      ),
+      (
+        name: 'validation',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.validation,
+          'C0 typed failure',
+        ),
+        message:
+            'Komponendi andmeid ei salvestatud: sisestus ei läbinud valideerimist.',
+      ),
+      (
+        name: 'append',
+        error: const V2EditComponentException(
+          V2EditComponentFailureKind.append,
+          'C0 typed failure',
+        ),
+        message:
+            'Komponendi andmete salvestamine ebaõnnestus: C0 typed failure',
+      ),
+      (
+        name: 'generic',
+        error: StateError('C0 generic failure'),
+        message:
+            'Komponendi andmete muutmine ebaõnnestus: Bad state: C0 generic failure',
+      ),
+    ];
+    for (final failure in editFailures) {
+      testWidgets(
+        'edit ${failure.name} copy survives re-entry and permits retry',
+        (tester) async {
+          final writer = _FakeEditComponentWriter(error: failure.error);
+          await mountComponents(tester, editWriter: writer);
+          await editDraft(tester);
+          await save(tester, true);
+          await tester.pumpAndSettle();
+          expect(copy(tester, '${editPrefix}_error'), failure.message);
+          expect(find.byKey(const Key('${editPrefix}_status')), findsNothing);
+          expect(writer.requests, hasLength(1));
+          expect(_readProjectState(tester).events, isEmpty);
+          expect(
+            tester.widget<OutlinedButton>(action(true)).onPressed,
+            isNotNull,
+          );
+          await leaveAdd(tester);
+          await openAdd(tester);
+          expect(copy(tester, '${editPrefix}_error'), failure.message);
+          expect(field(tester, '${editPrefix}_label_input'), 'R101 edited');
+          writer.error = null;
+          await save(tester, true);
+          await tester.pumpAndSettle();
+          expect(writer.requests, hasLength(2));
+          expectSuccess(tester, true, editSuccess);
+          expect(_readProjectState(tester).events, hasLength(1));
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    // Family 7: guard locally, before invoking either writer.
+    for (final directory in <String?>[null, ' \t  ']) {
+      for (final editing in [false, true]) {
+        testWidgets(
+          '${editing ? 'edit' : 'create'} ${directory == null ? 'null' : 'blank'} directory blocks writer',
+          (tester) async {
+            final createWriter = _FakeAddComponentWriter();
+            final editWriter = _FakeEditComponentWriter();
+            final state = componentState(projectDirectory: directory);
+            await mountComponents(
+              tester,
+              state: state,
+              createWriter: createWriter,
+              editWriter: editWriter,
+            );
+            if (editing) {
+              await editDraft(tester);
+            } else {
+              await createDraft(tester);
+            }
+            expect(
+              copy(tester, '${prefix(editing)}_guard'),
+              editing
+                  ? 'Muudatuste salvestamiseks ava projekt kohalikust kaustast.'
+                  : 'Komponendi loomiseks ava projekt kohalikust kaustast.',
+            );
+            expect(
+              tester.widget<OutlinedButton>(action(editing)).onPressed,
+              isNull,
+            );
+            await save(tester, editing);
+            expect(createWriter.requests, isEmpty);
+            expect(editWriter.requests, isEmpty);
+            expect(_readProjectState(tester), same(state));
+            expect(tester.takeException(), isNull);
+          },
+        );
+      }
+    }
+
+    // Families 8 and 9: exact requests and current operation-ID normalization.
+    const createIds = [
+      (
+        name: 'trimmed identifier',
+        input: '  cmp_c900  ',
+        componentId: 'cmp_c900',
+        operationPattern:
+            r'^op_board_canvas_component_created_cmp_c900_[0-9]+$',
+      ),
+      (
+        name: 'punctuation and edge underscores',
+        input: '  !!cmp__c900??  ',
+        componentId: '!!cmp__c900??',
+        operationPattern:
+            r'^op_board_canvas_component_created__cmp_c900__[0-9]+$',
+      ),
+      (
+        name: 'underscore-only identifier',
+        input: '  ___  ',
+        componentId: '___',
+        operationPattern: r'^op_board_canvas_component_created___[0-9]+$',
+      ),
+    ];
+    for (final example in createIds) {
+      testWidgets('create request pins ${example.name}', (tester) async {
+        final writer = _FakeAddComponentWriter();
+        final placementWriter = _FakePlacementWriter();
+        await mountComponents(
+          tester,
+          createWriter: writer,
+          placementWriter: placementWriter,
+        );
+        await createDraft(
+          tester,
+          id: example.input,
+          label: '  Created label  ',
+        );
+        final before = DateTime.now().toUtc().microsecondsSinceEpoch;
+        await save(tester, false);
+        await tester.pumpAndSettle();
+        final after = DateTime.now().toUtc().microsecondsSinceEpoch;
+        final request = writer.requests.single;
+        expect(request.componentId, example.componentId);
+        expect(request.label, 'Created label');
+        expect(request.componentKind, 'passive');
+        expect(request.referenceDesignator, isNull);
+        expect(request.packageHint, isNull);
+        expect(request.footprintHint, isNull);
+        expect(request.templateIdHint, isNull);
+        expect(request.humanNote, isNull);
+        expect(request.clientOperationId, matches(example.operationPattern));
+        expect(
+          int.parse(request.clientOperationId.split('_').last),
+          inInclusiveRange(before, after),
+        );
+        expect(placementWriter.requests, isEmpty);
+        expectSuccess(tester, false, createSuccess);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    const editChanges = [
+      (
+        name: 'label-only replace trims observed and new labels',
+        designator: ' R101 ',
+        storedKind: ' PaSsIvE ',
+        label: '  R101 edited  ',
+        newKind: null,
+        expected: [
+          {
+            'field': 'label',
+            'old_value_observed': 'R101',
+            'new_value': 'R101 edited',
+            'change_kind': 'replace',
+          },
+        ],
+      ),
+      (
+        name: 'kind-only replace preserves label',
+        designator: 'R101',
+        storedKind: 'passive',
+        label: null,
+        newKind: 'ic',
+        expected: [
+          {
+            'field': 'component_kind',
+            'old_value_observed': 'passive',
+            'new_value': 'ic',
+            'change_kind': 'replace',
+          },
+        ],
+      ),
+      (
+        name: 'label precedes kind set from non-canonical stored kind',
+        designator: 'R101',
+        storedKind: 'resistor',
+        label: '  R101 edited  ',
+        newKind: 'ic',
+        expected: [
+          {
+            'field': 'label',
+            'old_value_observed': 'R101',
+            'new_value': 'R101 edited',
+            'change_kind': 'replace',
+          },
+          {
+            'field': 'component_kind',
+            'old_value_observed': 'unknown',
+            'new_value': 'ic',
+            'change_kind': 'set',
+          },
+        ],
+      ),
+      (
+        name: 'blank designator uses component-ID observed label',
+        designator: '   ',
+        storedKind: 'passive',
+        label: 'New label',
+        newKind: null,
+        expected: [
+          {
+            'field': 'label',
+            'old_value_observed': 'cmp_r101',
+            'new_value': 'New label',
+            'change_kind': 'replace',
+          },
+        ],
+      ),
+    ];
+    for (final example in editChanges) {
+      testWidgets('edit request pins ${example.name}', (tester) async {
+        final writer = _FakeEditComponentWriter();
+        final directory = Directory.systemTemp.createTempSync(
+          'tracebench-components-c0-edit-',
+        );
+        addTearDown(() => directory.deleteSync(recursive: true));
+        await mountComponents(
+          tester,
+          editWriter: writer,
+          state: componentState(
+            projectDirectory: directory.path,
+            designator: example.designator,
+            storedKind: example.storedKind,
+          ),
+        );
+        if (example.storedKind == 'resistor') {
+          expect(
+            _readProjectState(tester).knownFacts.components.single.type,
+            'resistor',
+          );
+          expect(kind(tester, true), 'unknown');
+        }
+        await editDraft(
+          tester,
+          label: example.label,
+          componentKind: example.newKind,
+        );
+        final before = DateTime.now().toUtc().microsecondsSinceEpoch;
+        await save(tester, true);
+        await tester.pumpAndSettle();
+        final after = DateTime.now().toUtc().microsecondsSinceEpoch;
+        final request = writer.requests.single;
+        expect(request.componentId, 'cmp_r101');
+        expect(request.editReason, 'board_canvas_right_panel_metadata_edit');
+        expect(
+          request.changes.map((change) => change.toJson()).toList(),
+          example.expected,
+        );
+        expect(
+          request.clientOperationId,
+          matches(r'^op_board_canvas_component_updated_cmp_r101_[0-9]+$'),
+        );
+        expect(
+          int.parse(request.clientOperationId.split('_').last),
+          inInclusiveRange(before, after),
+        );
+        expectSuccess(tester, true, editSuccess);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    // Family 6: capture the generation before await and compose current events.
+    for (final editing in [false, true]) {
+      final operation = editing ? 'edit' : 'create';
+      testWidgets(
+        '$operation pending completion cannot write into replacement session',
+        (tester) async {
+          final completion = Completer<void>();
+          final createWriter = _FakeAddComponentWriter(
+            completion: editing ? null : completion,
+          );
+          final editWriter = _FakeEditComponentWriter(
+            completion: editing ? completion : null,
+          );
+          final initial = await mountComponents(
+            tester,
+            createWriter: createWriter,
+            editWriter: editWriter,
+          );
+          final container = ProviderScope.containerOf(
+            tester.element(find.byType(BoardCanvasScreen)),
+            listen: false,
+          );
+          final session = container.read(projectStateProvider.notifier);
+          final generation = session.generation;
+          if (editing) {
+            await editDraft(tester);
+          } else {
+            await createDraft(tester);
+          }
+          await save(tester, editing);
+          expect(
+            editing ? editWriter.requests.length : createWriter.requests.length,
+            1,
+          );
+          final replacement = _inlineProjectState(
+            components: initial.knownFacts.components,
+            placements: const [boardPlacement],
+            projectDirectory: initial.projectDirectory,
+            projectId: 'proj_c0_replacement',
+          );
+          _replaceProjectState(tester, replacement);
+          await tester.pumpAndSettle();
+          expect(session.generation, generation + 1);
+          completion.complete();
+          await tester.pumpAndSettle();
+          expect(container.read(projectStateProvider), same(replacement));
+          expect(_readProjectState(tester).events, isEmpty);
+          expect(_readProjectState(tester).isProjectionStale, isFalse);
+          // The current caller reports its writer result even when handoff rejects it.
+          expectSuccess(tester, editing, editing ? editSuccess : createSuccess);
+          expect(tester.takeException(), isNull);
+        },
+      );
+
+      testWidgets(
+        '$operation applies returned event after the Canvas screen is disposed',
+        (tester) async {
+          final completion = Completer<void>();
+          final createWriter = _FakeAddComponentWriter(
+            completion: editing ? null : completion,
+          );
+          final editWriter = _FakeEditComponentWriter(
+            completion: editing ? completion : null,
+          );
+          await mountComponents(
+            tester,
+            createWriter: createWriter,
+            editWriter: editWriter,
+          );
+          final screenElement = tester.element(find.byType(BoardCanvasScreen));
+          final container = ProviderScope.containerOf(
+            screenElement,
+            listen: false,
+          );
+          final session = container.read(projectStateProvider.notifier);
+          final generation = session.generation;
+          if (editing) {
+            await editDraft(tester);
+          } else {
+            await createDraft(tester);
+          }
+          await save(tester, editing);
+          unawaited(
+            Navigator.of(screenElement).pushReplacement<void, void>(
+              MaterialPageRoute<void>(
+                builder: (_) => const Scaffold(body: Text('C0 route away')),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(screenElement.mounted, isFalse);
+          expect(find.byType(BoardCanvasScreen), findsNothing);
+          expect(container.read(projectStateProvider)!.events, isEmpty);
+          completion.complete();
+          await tester.pumpAndSettle();
+          final accepted = container.read(projectStateProvider)!;
+          expect(accepted.events, hasLength(1));
+          expect(
+            accepted.events.single.eventType,
+            editing ? 'component_updated' : 'component_created',
+          );
+          expect(accepted.isProjectionStale, isTrue);
+          expect(session.generation, generation);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    testWidgets(
+      'create and edit completions append in completion order without lost events',
+      (tester) async {
+        final createCompletion = Completer<void>();
+        final editCompletion = Completer<void>();
+        final createWriter = _FakeAddComponentWriter(
+          completion: createCompletion,
+        );
+        final editWriter = _FakeEditComponentWriter(completion: editCompletion);
+        await mountComponents(
+          tester,
+          createWriter: createWriter,
+          editWriter: editWriter,
+        );
+        await createDraft(tester);
+        await editDraft(tester);
+        await save(tester, false);
+        await save(tester, true);
+        expect(createWriter.requests, hasLength(1));
+        expect(editWriter.requests, hasLength(1));
+        expect(_readProjectState(tester).events, isEmpty);
+        editCompletion.complete();
+        await tester.pumpAndSettle();
+        expect(
+          _readProjectState(tester).events.map((event) => event.eventType),
+          ['component_updated'],
+        );
+        expectSuccess(tester, true, editSuccess);
+        createCompletion.complete();
+        await tester.pumpAndSettle();
+        expect(
+          _readProjectState(tester).events.map((event) => event.eventType),
+          ['component_updated', 'component_created'],
+        );
+        expectSuccess(tester, false, createSuccess);
+        expect(_readProjectState(tester).isProjectionStale, isTrue);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    // Family 10: observe selection through rendered metadata and placement context.
+    testWidgets(
+      'create without selection does not select its returned component',
+      (tester) async {
+        final writer = _FakeAddComponentWriter();
+        await mountComponents(
+          tester,
+          createWriter: writer,
+          selectPlacement: false,
+        );
+        expect(
+          copy(tester, '${editPrefix}_selected_component'),
+          'Metaandmete komponent: puudub',
+        );
+        await createDraft(tester);
+        await save(tester, false);
+        await tester.pumpAndSettle();
+        expectSuccess(tester, false, createSuccess);
+        expect(
+          copy(tester, '${editPrefix}_selected_component'),
+          'Metaandmete komponent: puudub',
+        );
+        expect(
+          _readProjectState(tester).knownFacts.components.any(
+            (component) => component.componentId == 'cmp_c900',
+          ),
+          isFalse,
+        );
+        expect(tester.widget<OutlinedButton>(action(true)).onPressed, isNull);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    for (final placeAction in [false, true]) {
+      testWidgets(
+        placeAction
+            ? 'Paiguta canvasele retains the unplaced component edit target'
+            : 'Add tool clears component-only selection',
+        (tester) async {
+          final directory = Directory.systemTemp.createTempSync(
+            'tracebench-components-c0-selection-',
+          );
+          addTearDown(() => directory.deleteSync(recursive: true));
+          final createWriter = _FakeAddComponentWriter();
+          final editWriter = _FakeEditComponentWriter();
+          final placementWriter = _FakePlacementWriter();
+          await mountComponents(
+            tester,
+            state: _componentNavigatorState(projectDirectory: directory.path),
+            selectPlacement: false,
+            createWriter: createWriter,
+            editWriter: editWriter,
+            placementWriter: placementWriter,
+          );
+          await _openWideContextMode(tester, placements: true);
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_component_category_resistors'),
+          );
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_component_row_R6'),
+          );
+          expect(
+            find.byKey(const Key('board_canvas_component_place_action')),
+            findsOneWidget,
+          );
+          if (placeAction) {
+            await _tapWidgetByKey(
+              tester,
+              const Key('board_canvas_component_place_action'),
+            );
+            await tester.pumpAndSettle();
+            expect(
+              copy(tester, '${editPrefix}_selected_component'),
+              'Metaandmete komponent: R6',
+            );
+            expect(field(tester, '${editPrefix}_label_input'), 'R6');
+            expect(kind(tester, true), 'unknown');
+            await editDraft(tester, label: 'R6 local draft');
+            expect(
+              tester.widget<OutlinedButton>(action(true)).onPressed,
+              isNotNull,
+            );
+            // The picker has not yet become a Placement builder.
+            expect(
+              find.byKey(
+                const Key('board_canvas_add_component_template_list_rows'),
+              ),
+              findsOneWidget,
+            );
+          } else {
+            await openAdd(tester);
+            expect(
+              copy(tester, '${editPrefix}_selected_component'),
+              'Metaandmete komponent: puudub',
+            );
+            expect(
+              tester.widget<OutlinedButton>(action(true)).onPressed,
+              isNull,
+            );
+          }
+          expect(createWriter.requests, isEmpty);
+          expect(editWriter.requests, isEmpty);
+          expect(placementWriter.requests, isEmpty);
+          expect(_readProjectState(tester).events, isEmpty);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    testWidgets('changing the selected component reseeds its edit draft', (
+      tester,
+    ) async {
+      final directory = Directory.systemTemp.createTempSync(
+        'tracebench-components-c0-target-',
+      );
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final writer = _FakeEditComponentWriter();
+      await mountComponents(
+        tester,
+        editWriter: writer,
+        state: _inlineProjectState(
+          components: const [
+            ComponentFact(
+              componentId: 'cmp_r101',
+              designator: 'R101',
+              type: 'passive',
+            ),
+            ComponentFact(
+              componentId: 'cmp_r202',
+              designator: 'R202',
+              type: 'ic',
+            ),
+          ],
+          placements: [
+            boardPlacement,
+            _geometryPlacement(
+              componentId: 'cmp_r202',
+              width: 0.2,
+              height: 0.1,
+            ),
+          ],
+          projectDirectory: directory.path,
+        ),
+      );
+      await editDraft(
+        tester,
+        label: 'R101 unsaved',
+        componentKind: 'connector',
+      );
+      await _selectPlacement(tester, 'R202 (cmp_r202)');
+      await openAdd(tester);
+      expect(
+        copy(tester, '${editPrefix}_selected_component'),
+        'Metaandmete komponent: R202 (cmp_r202)',
+      );
+      expect(field(tester, '${editPrefix}_label_input'), 'R202');
+      expect(kind(tester, true), 'ic');
+      expect(find.byKey(const Key('${editPrefix}_status')), findsNothing);
+      expect(find.byKey(const Key('${editPrefix}_error')), findsNothing);
+      await editDraft(tester, label: 'R202 unsaved');
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      await openAdd(tester);
+      expect(field(tester, '${editPrefix}_label_input'), 'R101');
+      expect(kind(tester, true), 'passive');
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester).events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+
+    Future<void> choosePlacementTemplate(WidgetTester tester) async {
+      final changeTemplate = find.byKey(
+        const Key('board_canvas_add_component_change_template'),
+      );
+      if (changeTemplate.evaluate().isNotEmpty) {
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_add_component_change_template'),
+        );
+      }
+      await _tapWidgetByKey(
+        tester,
+        const Key(
+          'board_canvas_add_component_template_template_family_rect_2_top_bottom',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_add_component_template_builder')),
+        findsOneWidget,
+      );
+    }
+
+    // Family 11: independent drafts while the sections are interleaved.
+    testWidgets(
+      'Component fields and Placement drafts do not mutate one another',
+      (tester) async {
+        final createWriter = _FakeAddComponentWriter();
+        final editWriter = _FakeEditComponentWriter();
+        final placementWriter = _FakePlacementWriter();
+        await mountComponents(
+          tester,
+          createWriter: createWriter,
+          editWriter: editWriter,
+          placementWriter: placementWriter,
+        );
+        await choosePlacementTemplate(tester);
+        const placementLabel =
+            'board_canvas_add_component_template_draft_label_input';
+        const widthValue = 'board_canvas_add_component_builder_width_value';
+        const heightValue = 'board_canvas_add_component_builder_height_value';
+        const rotationValue =
+            'board_canvas_add_component_builder_rotation_value';
+        await enterField(tester, placementLabel, 'Place local');
+        final width = copy(tester, widthValue);
+        final height = copy(tester, heightValue);
+        final rotation = copy(tester, rotationValue);
+        await createDraft(
+          tester,
+          id: 'cmp_isolated',
+          label: 'Identity local label',
+          componentKind: 'connector',
+        );
+        await editDraft(
+          tester,
+          label: 'Metadata local label',
+          componentKind: 'ic',
+        );
+        expect(field(tester, placementLabel), 'Place local');
+        expect(copy(tester, widthValue), width);
+        expect(copy(tester, heightValue), height);
+        expect(copy(tester, rotationValue), rotation);
+        await enterField(tester, placementLabel, 'Place changed');
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_add_component_builder_width_increment'),
+        );
+        expect(copy(tester, widthValue), isNot(width));
+        expect(copy(tester, heightValue), height);
+        expect(copy(tester, rotationValue), rotation);
+        expect(field(tester, '${createPrefix}_id_input'), 'cmp_isolated');
+        expect(
+          field(tester, '${createPrefix}_label_input'),
+          'Identity local label',
+        );
+        expect(kind(tester, false), 'connector');
+        expect(
+          field(tester, '${editPrefix}_label_input'),
+          'Metadata local label',
+        );
+        expect(kind(tester, true), 'ic');
+        expect(createWriter.requests, isEmpty);
+        expect(editWriter.requests, isEmpty);
+        expect(placementWriter.requests, isEmpty);
+        expect(_readProjectState(tester).events, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    // Family 12: compare laid-out section rectangles in the same rendered frame.
+    for (final builder in [false, true]) {
+      testWidgets(
+        'create Placement ${builder ? 'builder' : 'picker'} edit layout order',
+        (tester) async {
+          await mountComponents(tester, selectPlacement: false);
+          if (builder) {
+            await choosePlacementTemplate(tester);
+          }
+          final placement = find.byKey(
+            Key(
+              builder
+                  ? 'board_canvas_add_component_template_builder'
+                  : 'board_canvas_add_component_template_list_rows',
+            ),
+          );
+          expect(section(false), findsOneWidget);
+          expect(placement, findsOneWidget);
+          expect(section(true), findsOneWidget);
+          final createRect = tester.getRect(section(false));
+          final placementRect = tester.getRect(placement);
+          final editRect = tester.getRect(section(true));
+          expect(createRect.height, greaterThan(0));
+          expect(placementRect.height, greaterThan(0));
+          expect(editRect.height, greaterThan(0));
+          expect(createRect.bottom, lessThanOrEqualTo(placementRect.top));
+          expect(placementRect.bottom, lessThanOrEqualTo(editRect.top));
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
   });
 
   testWidgets(

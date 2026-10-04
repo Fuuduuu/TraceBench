@@ -2,10 +2,85 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
 
-## Current Measurement M1 committed-source Code Map maintenance
+## Current Components C0 characterization scope lock
+
+Lane B / `DOCS_SCOPE_LOCK`. The human selected exactly one test-only
+Components child after committed Measurement M1 map maintenance at
+`9c23eb62efb4ad5e0fe0afa52449110297f4f704`, subject
+`docs: refresh measurement m1 code maps`.
+Verified entry: `main`, `HEAD == origin/main`, divergence `0 / 0`.
+Completed M1 scope/implementation/maintenance authority is spent. All retained
+M1 sections below are historical; their former allowlists grant no writes.
+
+Exact current write set, with no sixth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`
+
+All source/tests/tools/schemas/assets/packages, maps/index, predecessor audit
+artifacts and ledger rows, platform/Windows residue and scratch are frozen.
+No C0 implementation, staging, commit or push is authorized in this scope.
+Binding characterization, validation and audit contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+### Exactly one reserved C0 test child
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`.
+Future writable allowlist contains exactly one path:
+
+- `test/widget/board_canvas_screen_test.dart`
+
+No second path or production/map/index path. The reservation becomes executable
+only after independent scope acceptance, explicitly bounded Phase-2 recording,
+and exact human commit/push of the accepted five docs with aligned Git.
+The child executor verifies that committed scope and this route before writes;
+no separate routine owner sync or test scope is required.
+
+C0 characterizes current create/edit behavior without changing it: lifetime,
+in-flight lock, successful-form repeat asymmetry, existing/non-appended results,
+all typed/generic failures and retry, captured-generation/session ordering,
+null/blank directory guards, exact requests/operation IDs, edit changes/order,
+selection/re-seeding, mutual Placement draft isolation and actual widget order.
+The twelve binding families and source anchors are specified in the artifact.
+
+Create/edit State currently lives in `_BoardCanvasScreenState`.
+Panel absence/re-entry and the 900 px Canvas content cutover must preserve the
+current screen-lived drafts/status/pending/repeat-save state where current
+selection and seeding permit; no lifetime design is selected.
+Only minimal same-file extensions of existing add/edit writer fakes are allowed,
+with current defaults unchanged and all existing tests/static guards preserved.
+
+Create's missing repeat-save guard, build-time edit seeding, operation-ID edge
+underscores, fallback target redundancy, copy/UX, Placement, real writers,
+ProjectSession and Add/Edit screens are explicit non-fixes.
+The read-only review's likely create+edit module and host-owned interleaved
+Placement seam are context only. No C1 path, controller/holder/provider or
+production extraction mechanics are authorized.
+
+Host/test maps remain MAINTAINED and frozen: REVIEWED_NO_CHANGE for this scope.
+Future committed C0 test-map disposition is UPDATE_REQUIRED / TEST_DRIFT;
+host remains REVIEWED_NO_CHANGE because production stays byte-identical.
+Later committed-source map maintenance requires a separate human decision;
+no maintenance PASS_ID is armed.
+
+Future C0 must pass the artifact's focused/full Flutter and repository checks;
+allow only the exact three committed deferred analyzer infos, no changed-file
+finding, zero errors/warnings. Manual smoke: NOT_APPLICABLE.
+After C0: `NEEDS_USER_DECISION`; no later pass is armed.
+
+Phase 2 is reserved only after independent scope acceptance and explicit
+recording authorization, for the artifact's verdict-block interior and this
+PASS_ID's AUDIT_INDEX Status cell. Freeze every other Phase-1 byte.
+Stop on baseline/route/map conflict, sixth current/second child path,
+new analyzer regression, out-of-scope failure or protected behavior change.
+
+## Historical completed Measurement M1 committed-source Code Map maintenance
 
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
 The human selected this exact maintenance after accepted M1 implementation at

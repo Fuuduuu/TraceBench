@@ -2,10 +2,42 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
 
-## Measurement M1 committed-source maintenance sequence
+## Components C0 scope and single test-child sequence
+
+The human selected Components characterization after committed Measurement M1
+map maintenance at `9c23eb62efb4ad5e0fe0afa52449110297f4f704`, subject
+`docs: refresh measurement m1 code maps`. M1 authorities are spent.
+`docs/ACTIVE_SCOPE_LOCK.md` owns five current docs; binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+1. Reserve this Lane B docs-only scope for exactly
+   `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`; create one neutral ledger row
+   and one unique empty verdict block.
+2. Independently review the exact five-doc diff under `scope-lock-post-audit`.
+   After acceptance and explicit recording authorization, Phase 2 changes only
+   the verdict-block interior and the matching ledger Status cell.
+3. The human commits/pushes the exact accepted five-doc set. The C0 executor
+   verifies the committed scope, live route, aligned baseline and empty
+   staged/unmerged sets before changing the sole reserved test file.
+4. Characterize all twelve current create/edit families, including screen-lived
+   drafts/status/pending/repeat-save state across panel absence and the 900 px
+   content-width cutover. Preserve production, existing tests/static guards and
+   default fake behavior; do not fix known asymmetries or choose an extraction.
+5. Run the artifact's focused/full Flutter, exact inherited-analyzer-debt,
+   doctor, temporary-output validator and byte/diff-integrity checks.
+   Independently audit the one-file test diff before exact human handling.
+
+After C0: `NEEDS_USER_DECISION`. No C1, production extraction or lifetime
+architecture is authorized. Maps/index remain frozen during scope and C0;
+future committed C0 test coverage is UPDATE_REQUIRED / TEST_DRIFT, while the
+host is REVIEWED_NO_CHANGE. Later maintenance needs a separate human decision;
+no maintenance PASS_ID is reserved. Manual smoke: NOT_APPLICABLE.
+All retained M1 reservation text is completed history and non-authorizing.
+
+## Historical completed Measurement M1 committed-source maintenance sequence
 
 Accepted M1 is committed and pushed at
 `f23efa355778d7adee07e2bc887e39fc1da180f7`,

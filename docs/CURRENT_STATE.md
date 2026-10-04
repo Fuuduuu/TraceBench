@@ -1,9 +1,42 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`
 
-## Measurement M1 completed; committed-source map maintenance
+## Components C0 test-only characterization reservation
+
+The human selected Components C0 after committed Measurement M1 map maintenance
+at `9c23eb62efb4ad5e0fe0afa52449110297f4f704`, subject
+`docs: refresh measurement m1 code maps`. The completed M1 scope,
+implementation and maintenance authorities are spent; retained sections below
+are historical and grant no current writes.
+
+Lane B / `DOCS_SCOPE_LOCK`. `docs/ACTIVE_SCOPE_LOCK.md` owns exactly
+five current docs, distinct from the one-file future test allowlist.
+Binding behavior, lifetime, validation and audit contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+Reserve exactly `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CHARACTERIZATION_TEST_PASS`.
+Only `test/widget/board_canvas_screen_test.dart` may change in that child,
+after independent scope acceptance, bounded Phase-2 recording and exact human
+commit/push of the accepted five docs with aligned Git. This scope changes no
+production/test/map bytes and authorizes no staging, commit or push.
+
+C0 observes all twelve create/edit behavior families on unchanged production.
+Create/edit drafts, status, pending locks and edit repeat-save state currently
+belong to `_BoardCanvasScreenState`; test panel absence/re-entry and the
+900 px Canvas content-width cutover without shortening that lifetime.
+Use only minimal same-file fake extensions with unchanged defaults; preserve
+all existing tests/guards and characterize the current create/edit asymmetry.
+
+The host/test maps are MAINTAINED at entry and frozen. This scope reviews both
+as REVIEWED_NO_CHANGE. Future committed C0 will require test-map TEST_DRIFT
+maintenance; production host remains REVIEWED_NO_CHANGE. A later human chooses
+that maintenance; no maintenance pass is armed.
+After C0, route is `NEEDS_USER_DECISION`. Production extraction, C1 paths
+and state-lifetime architecture are not authorized.
+
+## Historical completed Measurement M1 committed-source map maintenance
 
 Accepted M1 implementation is committed and pushed at
 `f23efa355778d7adee07e2bc887e39fc1da180f7`,

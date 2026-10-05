@@ -1,9 +1,47 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
 
-## Components C0 committed-source test-map maintenance
+## Components C1 extraction reservation
+
+The human selected one behavior-preserving create + edit extraction after
+committed C0 map maintenance at `3f191a1ea0aadf1b90049cfe8d0d06c0df3b7857`,
+subject `docs: refresh components c0 code map`. The completed C0 authorities
+are spent; all predecessor sections below this C1 block are historical.
+
+Lane B / `DOCS_SCOPE_LOCK`. `docs/ACTIVE_SCOPE_LOCK.md` owns exactly five
+current docs. Binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+Reserve only `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
+and its exact three host/new-module/test paths. Implementation remains
+conditional on scope acceptance, bounded recording and exact human commit/push.
+
+Committed C0 contains 17 declarations generating 47 cases across the twelve
+binding families. Those cases must PASS unchanged before and after C1.
+Create + edit drafts/workflow move into ComponentIdentityPanel and a single
+module-defined holder created/disposed by _BoardCanvasScreenState.
+The same holder survives Add removal, focus/mode changes and 935/936 cutover.
+
+Already-started writes retain capture writer/session/generation -> await ->
+generation-guarded event application -> holder/UI eligibility ordering.
+Holder disposal suppresses late local updates, not the captured session handoff;
+panel absence does not suppress completion. Module reads required providers
+before await; it must not use ref after panel disposal.
+
+Host keeps CanvasSelection resolution, Placement, Inspector, painters and panel
+frame/scroll. Only ProjectState, nullable metadata ComponentFact, holder and
+one Placement builder cross the seam; rendered order stays create/Placement/edit.
+Current repeat-save asymmetry, copy, IDs, selection/reseeding and draft isolation
+remain behavior. No cleanup, protected expansion or C2 work is authorized.
+
+Maps/index and all source/tests remain frozen in this docs pass. After committed
+C1, host/test maps are expected UPDATE_REQUIRED and the new module is requalified.
+Later maintenance needs a separate human decision. Phase 2 changes only the
+artifact verdict interior and matching ledger Status cell. After C1:
+NEEDS_USER_DECISION; no later product/refactor pass is armed.
+
+## Historical completed Components C0 committed-source test-map maintenance
 
 Components C0 is committed at `c62994529238012eae0737c3ddda934e4d7c1c60`,
 subject `test: characterize board canvas components c0`; Git verifies only

@@ -2,10 +2,49 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
 
-## Components C0 committed-source test-map maintenance sequence
+## Components C1 scope and single implementation-child sequence
+
+The human selected create + edit together after committed C0 map maintenance
+at `3f191a1ea0aadf1b90049cfe8d0d06c0df3b7857`,
+subject `docs: refresh components c0 code map`. C0 authority is spent.
+`docs/ACTIVE_SCOPE_LOCK.md` owns exactly five current docs; binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+1. Reserve only `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`,
+   with exactly the host, NEW component_identity_panel.dart and existing
+   Board Canvas test. Create one neutral REVIEW_REQUIRED ledger row and one
+   unique empty verdict block. GPT architecture/risk input is attributed input,
+   not independent Claude acceptance.
+2. Independently audit the complete five-doc scope under scope-lock-post-audit.
+   After acceptance and explicit recording authorization, Phase 2 changes only
+   the verdict interior and this ledger Status cell; all other bytes freeze.
+3. The human commits/pushes the accepted five docs. The child verifies that exact
+   accepted scope commit, aligned HEAD/origin, the Current/Next tuple and empty
+   staged/unmerged sets. No routine active-lock-sync or second child is reserved.
+4. Before production edits, run the unchanged 47-case Components C0 group.
+   Any failure stops. Then move create/edit widget/holder/writer workflow
+   together, retaining one holder for the whole screen State and the exact
+   capture/await/session-handoff/holder-disposal ordering.
+5. Host keeps selection resolution, Placement and Add frame/scroll behind one
+   placementSectionBuilder; module keeps create -> builder -> edit order.
+   Only explicitly named host/test zones and three implementation paths may
+   change. C0 cases remain behavior-identical; retarget/add only minimal static
+   ownership/data-path guards. No behavior, visual or architecture cleanup.
+6. Run focused C0, full Board Canvas test, full Flutter suite, analyzer with only
+   the exact three inherited infos, doctor, temporary-output validate_all and
+   diff/scope/preservation checks. Independently audit the three-path diff;
+   exact staging/commit/push remains human-owned.
+
+After C1: `NEEDS_USER_DECISION`. No C2, Placement/Inspector extraction,
+additional product/refactor pass or map maintenance is armed.
+Maps/index remain frozen during scope and C1; committed C1 is expected to
+require host/test maintenance and new-module qualification only after a
+separate human decision. All predecessor sections below are historical.
+
+## Historical completed Components C0 committed-source test-map maintenance sequence
 
 The human selected immediate one-map maintenance after committed Components C0
 at `c62994529238012eae0737c3ddda934e4d7c1c60`, subject

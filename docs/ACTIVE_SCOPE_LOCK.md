@@ -2,10 +2,109 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
 
-## Current Components C0 committed-source test-map maintenance
+## Current Components C1 extraction scope lock
+
+Lane B / `DOCS_SCOPE_LOCK`. The human selected create + edit together in one
+normal Dart module with a module-defined screen-lived holder. Entry:
+`HEAD == origin/main == 3f191a1ea0aadf1b90049cfe8d0d06c0df3b7857`,
+subject `docs: refresh components c0 code map`, divergence `0 / 0`.
+Committed C0 scope/test/map-maintenance authority is spent. All predecessor
+sections below this C1 block are historical and grant no current writes.
+
+Exact current write set, with no sixth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+Binding lifetime, async, seam, behavior, guard, validation and audit contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+### Exactly one conditional C1 child
+
+Reserve `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`,
+Lane B / `FLUTTER_REFACTOR`. Future writable allowlist, exactly three paths:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/widgets/component_identity_panel.dart` (NEW)
+3. `test/widget/board_canvas_screen_test.dart`
+
+No fourth path. This reservation changes no source/test/map bytes.
+Child activation requires independent scope acceptance, explicitly bounded
+Phase-2 recording and exact human commit/push of the accepted five docs.
+Verify the accepted scope's Current/Next tuple, aligned HEAD/origin at that
+scope commit and empty staged/unmerged sets. No routine active-lock-sync pass
+is reserved. Before any production edit, all 47 committed Components C0 cases
+must PASS unchanged; a failure stops before production.
+
+### Binding holder and async lifetime
+
+The module owns ComponentIdentityPanel, one module-defined ChangeNotifier/
+Listenable-style holder, create/edit drafts, status/error/in-flight state,
+edit repeat-save state, guards/change computation, operation IDs/failure copy,
+both sections, existing V2 add/edit providers/calls and ProjectSession handoff.
+The host creates one holder per _BoardCanvasScreenState, reuses it across Add
+unmount/remount, focus/mode changes and the 935/936 viewport cutover, and
+disposes it only with the whole screen State. No provider/repository/service/
+controller infrastructure or separate holder file is authorized.
+
+For an already-started write: capture writer/session/generation before await
+-> await writer -> applyCanonicalEvent(event, generation)
+-> only then decide whether holder/UI state may update.
+Holder disposal suppresses late holder/UI notification and status mutation,
+never the captured generation-guarded session handoff. A removed Add panel does
+not dispose the holder; completion updates its state and is visible on return.
+Do not use panel mounted as the completion guard or ref after panel disposal.
+
+### Exact host seam and multi-zone boundary
+
+Host resolves only ProjectState, nullable metadata-edit ComponentFact, the
+screen-lived holder and one placementSectionBuilder. The module renders
+create -> host Placement builder -> edit. CanvasSelection resolution,
+Placement drafts/template picker/builder/writer/ghost, Inspector, painters,
+panel lifetime/composition and Add frame/scroll remain host-owned.
+No host-private placement/painter type, CanvasSelection, writer/session/
+ProviderContainer or shell focus/context flag crosses the module API.
+
+Human-authorized changed zones are host 5 (create/edit), host 1 only for holder
+lifetime, and host 6 only for Placement/composition seam; test 5 (C0 evidence
+kept behavior-identical) and test 9 only for minimal static ownership guards.
+The private identical chip-button presentation copy is allowed in the module.
+No independent cleanup, behavior/protected-semantic change, other responsibility
+zone or fourth implementation path is authorized.
+
+Freeze the 47 C0 cases, current create repeat-save asymmetry, edit guard,
+exact requests/IDs/copy, session ordering, reseeding/selection, Component/
+Placement draft isolation and rendered order. Module must be a normal library:
+no host import, part, Placement/Inspector/painter ownership, generic writer/
+session abstraction, shared-widget library or merge with separate Add/Edit screens.
+
+Both maintained host/test maps remain REVIEWED_NO_CHANGE in this docs scope.
+After committed C1, both are expected UPDATE_REQUIRED; qualify the new module
+from committed source (expected AUTO: canonical writers + UI_LOCAL).
+No map/index edit or later maintenance/C2/Placement/Inspector pass is armed.
+
+### Validation and bounded recording
+
+Validate exact five-doc material, future three-path allowlist, route agreement,
+47 generated C0 cases, literal host/test anchors, source/test/maps/residue
+preservation, doctor, temporary-output validate_all and both Git diff checks.
+Child validation is the full focused/Board Canvas/Flutter/analyzer/doctor/
+temporary-output contract in the artifact; only the committed three-info
+analyzer debt is allowed, with no changed-file finding.
+
+Phase 2 after independent acceptance may change only the unique artifact
+verdict-block interior and this PASS_ID's AUDIT_INDEX Status cell.
+Freeze every other Phase-1 byte, including marker lines and ledger Description.
+Staging, commit and push remain human-owned. After C1: NEEDS_USER_DECISION;
+no later product/refactor or map-maintenance pass is reserved.
+
+## Historical completed Components C0 committed-source test-map maintenance
 
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
 The human selected immediate maintenance after committed Components C0 at

@@ -4,7 +4,7 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C0_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -26,7 +26,7 @@ Parameterized declarations generate cases; counts are not executed-test totals.
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel` | Projected metadata, safety wording, measurement and trace inspection. |
-| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource` | Hidden default, tools/focus, volatile state and guards split across host, Measurement module and existing read-only owners. |
+| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource`, `componentSource` | Hidden default, tools/focus, volatile state and ownership/data-path guards across host, Components and Measurement modules, and existing read-only owners. |
 | 10. Additional import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Existing entry/cancel/success, uncertainty, read-only, switch and unsupported-platform cases. |
 | 11. Primary alignment authoring | `canonical photo alignment workbench`, `_FakePhotoAlignmentWriter`, `_FakeAlignedPhotoAssetLoader`, `_primaryPhotoWriteResult` | Primary-only source, point draft, ensure/confirm/retry, single-shot and stale-result boundaries. |
 | 12. Alignment rendering/lifecycle | `intrinsic raster basis survives ${fixture.name} Canvas layout`, `reopen selects newest alignment and keeps layer controls UI-local with Wizard coexistence`, `missing canonical photo shows warning without canonical write` | Intrinsic raster, exit/capture, reopen, layer controls, missing/non-directory/bounds and dark-theme evidence. |
@@ -98,9 +98,8 @@ source anchors, not claims about generated case counts. No line-number anchors.
     laid-out trace-before-measurement rows and component-only selection without
     placement. A valid directory prevents masking the selection guard; disabled
     save, unchanged session and zero writer requests establish that boundary.
-15. [D] Source reads retain host painter/Inspector checks and every host negative,
-    retarget moved ownership to `measurementSource`, and add module data-path
-    negatives plus host absence of Measurement State/writer ownership.
+15. [D] Source reads retain host painter/Inspector and all prior negatives.
+    `measurementSource` / `componentSource` verify module holder/workflow/data-path ownership, host exclusions and retained Placement.
 
 ## Direct dependencies
 
@@ -108,6 +107,7 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | --- | --- | --- |
 | `BoardCanvasScreen` | system under test | Host layout, interaction and orchestration. |
 | `IntegratedMeasurePanel` / `integrated_measure_panel.dart` | indirect child / direct source read | Measurement workflow through host composition and physical ownership via `measurementSource`. |
+| `ComponentIdentityPanel` / `component_identity_panel.dart` | indirect child / direct source read | Create/edit behavior through host composition; `componentSource` verifies holder/workflow ownership and host/module boundaries. |
 | Photo panel/read model/writer/import types | child / injected seam | Explicit import and primary alignment workflow. |
 | `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
 | `ProjectSession`, provider and project models | fixture / observation | Generation, events, freshness, dedup and replacement. |
@@ -148,10 +148,10 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Primary confirmation | [D] separate ensure/confirm observations | panel/writer/session/read model | exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | confirm, failure/retry and switch cases |
 | Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
 | Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
-| Existing writers / Components | [D] four fake boundaries; C0 lifetime/pending/retry/repeat, exact requests, session/selection and rendered order | host create/edit, session, selection and inspect-only Placement | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Components C0 characterization` and retained writer families |
+| Existing writers / Components | [D] unchanged C0 oracle for lifetime/pending/retry/repeat, exact requests, session/selection and rendered order | Components module, host holder lifetime/selection/Placement and Session | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Components C0 characterization` and retained writer families |
 | Measurement characterization | [D] copy/requests, result/lifetime, provenance/order and no-placement guards | module, two host builders, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
 | Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
-| Inspector/boundaries | [D] metadata/source assertions | fact summaries, host and Measurement module owners | `ZERO_WRITE` | readiness/safety/structural cases |
+| Inspector/boundaries | [D] metadata/source assertions | fact summaries, host, Components and Measurement module owners | `ZERO_WRITE` | readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
@@ -189,7 +189,7 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - One confirmation await: fake completion, replacement and session observation.
 - One primary retry outcome: ensure versus alignment calls and event counts.
 - One raster/exit outcome: matching fixture plus host/renderer lifecycle.
-- One C0 or retained V2/pure case: named family, fake and direct owner/session.
+- One C0 or retained V2/pure case: named family, frozen fake, module/host lifetime/selection seam and direct writer/session owner.
 - One Measurement case: parameterized copy/request/result or one deferred
   completion plus captured session and panel-lifetime observation.
 - One source boundary: exact host/part/imported-owner string checks.

@@ -2,10 +2,39 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Components C1 scope and single implementation-child sequence
+## Components C1 committed-source maintenance sequence
+
+The human selected one nine-path maintenance after committed C1 at
+`225cc4941c902baef7c3b66320925cee42a2fafa`,
+subject `refactor: extract board canvas component identity panel`.
+Completed C1 authorities are spent. All predecessor sections below are historical.
+ACTIVE_SCOPE_LOCK owns the exact nine docs; binding maintenance evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Verify aligned baseline, empty staged/unmerged sets and exact accepted
+   three-path C1 commit; preserve foreign residue/scratch.
+2. Refresh host ownership/dependencies/boundaries and test static guards from
+   committed source; retain the C0 oracle and unrelated zones. Qualify/create
+   the first module map from add/edit writer plus screen-lived UI state evidence.
+3. Inspect ProjectSession, separate Add/Edit, Measurement/projection/geometry/
+   navigator and Wizard maps; stop on material stale-map work outside the set.
+4. Verify 56 maps/rows and 51 MAINTAINED / 3 REVIEW_REQUIRED / 2 RETIRED;
+   validate anchors, route, byte preservation, doctor, temporary-output
+   validate_all and both Git diff checks. No Flutter/analyzer absent conflict.
+5. Independently audit the full nine-path Phase-1 material. Keep the ledger
+   neutral REVIEW_REQUIRED and the unique verdict block empty until acceptance.
+6. With explicit Phase-2 authority, record only three map-header promotions,
+   three matching registry Status cells, artifact verdict interior and this
+   AUDIT_INDEX Status cell. Map bodies, route owners and all other bytes freeze.
+7. Exact staging/commit/push remains human-owned after accepted recording.
+
+Next is `NEEDS_USER_DECISION`, not an executable successor. No further
+Components/Placement/Inspector extraction, product or refactor pass is armed.
+
+## Historical completed Components C1 scope and single implementation-child sequence
 
 The human selected create + edit together after committed C0 map maintenance
 at `3f191a1ea0aadf1b90049cfe8d0d06c0df3b7857`,

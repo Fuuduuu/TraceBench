@@ -2,10 +2,66 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Components C1 extraction scope lock
+## Current Components C1 committed-source Code Map maintenance
+
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.
+The human selected this nine-path maintenance after committed C1 at
+`225cc4941c902baef7c3b66320925cee42a2fafa`,
+subject `refactor: extract board canvas component identity panel`.
+Entry: aligned HEAD/origin, divergence `0 / 0`, empty staged/unmerged sets.
+C1 scope and implementation authority is spent. All predecessor sections
+below this maintenance block are historical and grant no current writes.
+
+Exact current write set, with no tenth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/widgets/component_identity_panel.dart.md`
+9. `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS.md`
+
+Committed source is authority. Refresh the host and test maps and qualify/create
+the first ComponentIdentityPanel map; preserve all unrelated zones and maps.
+The explicit human decision authorizes this cohesive multi-map docs combination.
+Host drift is SYMBOL_DRIFT / STRUCTURE_DRIFT / BOUNDARY_DRIFT: create/edit moves
+to the module, host retains holder lifetime/target/Placement composition and
+one direct V2 Placement writer. Test drift is TEST_DRIFT / STRUCTURE_DRIFT /
+BOUNDARY_DRIFT in static ownership/data-path evidence; C0 behavior is unchanged.
+The new module qualifies AUTO from canonical add/edit writers plus UI-local state.
+
+Inspect-only: ProjectSession, separate Add/Edit screens, Measurement module/
+projection, geometry, navigator and Wizard maps. They remain REVIEWED_NO_CHANGE
+when committed C1 preserves their claims. If materially stale, STOP and name
+the required map; this allowlist does not expand.
+
+Phase-1 registry: 56 maps / 56 rows, 51 MAINTAINED / 3 REVIEW_REQUIRED / 2 RETIRED.
+Verify actual parity and anchor closure. Keep host/test at twelve zones maximum;
+new module map must satisfy the Standard. Preserve RETIRED maps byte-for-byte.
+
+Freeze lib/, test/, tests/, tools/, schemas/, runtime, assets, packages and
+foreign Windows residue/scratch. Do not patch accepted C1 NITs, C0 cases or
+another source responsibility. No product/refactor successor is armed.
+
+Validate the exact nine-path set, committed C1 evidence, qualification/anchors,
+registry, route, raw source/test/map preservation, both Git diff checks, doctor
+and temporary-output validate_all. Flutter/analyzer are not required absent conflict.
+
+Bounded Phase 2 requires independent acceptance and explicit recording authority.
+Only eight coordinates may then change: three map-header statuses, their three
+CODE_MAP_INDEX Status cells, the unique artifact verdict-block interior and
+this pass's AUDIT_INDEX Status cell. Freeze map bodies, route owners, marker
+lines, ledger Description and every other byte. No staging, commit or push.
+
+Next: `NEEDS_USER_DECISION`. No later extraction or implementation is reserved.
+
+## Historical completed Components C1 extraction scope lock
 
 Lane B / `DOCS_SCOPE_LOCK`. The human selected create + edit together in one
 normal Dart module with a module-defined screen-lived holder. Entry:

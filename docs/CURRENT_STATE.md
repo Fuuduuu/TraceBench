@@ -1,9 +1,42 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Components C1 extraction reservation
+## Components C1 committed-source map maintenance
+
+Committed C1: `225cc4941c902baef7c3b66320925cee42a2fafa`,
+`refactor: extract board canvas component identity panel`.
+The commit is exactly the accepted three host/new-module/test paths,
++1099 / -958. C1 implementation is complete; its prior authorities are spent.
+All predecessor sections below this maintenance block are historical.
+
+The human selected Lane A / DOCS_MAPS_ONLY Phase 1. ACTIVE_SCOPE_LOCK owns
+exactly nine docs: three route owners, AUDIT_INDEX, CODE_MAP_INDEX, refreshed
+host/test maps, first Components module map and the maintenance artifact:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+Host create/edit ownership is delegated; it retains holder lifetime, nullable
+edit-target resolution and Placement children construction, with one direct
+V2 Placement writer. Static test guards cover host plus both workflow modules;
+all C0 oracle code remains unchanged. New Components map qualifies AUTO.
+ProjectSession, separate Add/Edit, Measurement/projection/geometry/navigator
+and Wizard maps remain inspect-only; material drift outside the set stops.
+
+Expected verified Phase-1 registry: 56/56,
+51 MAINTAINED / 3 REVIEW_REQUIRED / 2 RETIRED. Host/test/new-module headers and
+matching rows remain REVIEW_REQUIRED pending independent map audit.
+
+Source/tests/tools/schemas/runtime/assets/packages and Windows residue/scratch
+remain frozen. Run doctor, temporary-output validate_all, anchor/count/route/
+preservation checks and both Git diff checks; no Flutter/analyzer absent conflict.
+Phase 2 is limited to three map-header statuses, three matching registry cells,
+artifact verdict interior and this ledger Status cell after explicit authority.
+
+After maintenance: `NEEDS_USER_DECISION`. No C2 or other refactor is armed.
+No staging, commit or push in this pass.
+
+## Historical completed Components C1 extraction reservation
 
 The human selected one behavior-preserving create + edit extraction after
 committed C0 map maintenance at `3f191a1ea0aadf1b90049cfe8d0d06c0df3b7857`,

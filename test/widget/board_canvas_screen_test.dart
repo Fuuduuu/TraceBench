@@ -15784,6 +15784,9 @@ void main() {
     final measurementSource = File(
       'lib/features/board_canvas/widgets/integrated_measure_panel.dart',
     ).readAsStringSync();
+    final componentSource = File(
+      'lib/features/board_canvas/widgets/component_identity_panel.dart',
+    ).readAsStringSync();
     final wizardOverlaySource = File(
       'lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart',
     ).readAsStringSync();
@@ -16120,6 +16123,86 @@ void main() {
     expect(hostSource, isNot(contains('V2SaveMeasurementRequest')));
     expect(hostSource, isNot(contains('v2SaveMeasurementWriterProvider')));
     expect(hostSource, isNot(contains('v2_save_measurement_writer.dart')));
+
+    for (final symbol in [
+      'class ComponentIdentityHolder extends ChangeNotifier',
+      'class ComponentIdentityPanel extends ConsumerWidget',
+      'class _RightPanelComponentCreationSection',
+      'class _RightPanelMetadataEditSection',
+      '_rightPanelCreateComponentInFlight',
+      '_rightPanelMetadataEditInFlight',
+      '_rightPanelMetadataEditLastSuccessfulFormKey',
+      '_seedRightPanelMetadataEditDraft',
+      '_rightPanelCreateComponentBlockReason',
+      '_rightPanelMetadataEditBlockReason',
+      '_confirmRightPanelComponentCreation',
+      '_confirmRightPanelMetadataEdit',
+      'V2AddComponentRequest',
+      'V2EditComponentRequest',
+      'v2AddComponentWriterProvider',
+      'v2EditComponentWriterProvider',
+      'op_board_canvas_component_created_',
+      'op_board_canvas_component_updated_',
+      'projectSession.applyCanonicalEvent',
+      '...placementSectionBuilder(context)',
+    ]) {
+      expect(componentSource, contains(symbol));
+    }
+    for (final moved in [
+      'v2_add_component_writer.dart',
+      'v2_edit_component_writer.dart',
+      'v2AddComponentWriterProvider',
+      'v2EditComponentWriterProvider',
+      'V2AddComponentRequest',
+      'V2EditComponentRequest',
+      '_RightPanelComponentCreationSection',
+      '_RightPanelMetadataEditSection',
+      '_rightPanelCreateComponentId',
+      '_rightPanelMetadataEditComponentId',
+      '_seedRightPanelMetadataEditDraft',
+      '_rightPanelCreateComponentBlockReason',
+      '_rightPanelMetadataEditBlockReason',
+      '_confirmRightPanelComponentCreation',
+      '_confirmRightPanelMetadataEdit',
+      '_componentCreationClientOperationIdFor',
+      '_metadataEditClientOperationIdFor',
+    ]) {
+      expect(hostSource, isNot(contains(moved)));
+    }
+    for (final forbidden in [
+      'MeasurementEventWriter',
+      'event_writer_service.py',
+      'jsonDecode(',
+      'known_facts.json',
+      'events.jsonl',
+      'board_graph.json',
+      'view_state.json',
+      'ProjectExporter',
+      'ProjectCreator',
+      'ProjectOverviewScreen',
+      'board_canvas_screen.dart',
+      'CanvasSelection',
+      '_PlacementEntry',
+      '_PlacementSaveTarget',
+      '_PlacementEditorDraftState',
+      '_BoardPlacementPainter',
+      '_FootprintPreviewPainter',
+      'placement_geometry.dart',
+      'v2PlacementWriterProvider',
+      'V2PlacementWriterRequest',
+      'workbench_shell.dart',
+      'ProviderContainer',
+      'part of ',
+    ]) {
+      expect(componentSource, isNot(contains(forbidden)));
+    }
+    expect(hostSource, contains('ComponentIdentityHolder();'));
+    expect(hostSource, contains('_componentIdentityHolder.dispose();'));
+    expect(hostSource, contains('holder: componentIdentityHolder'));
+    expect(hostSource, contains('placementSectionBuilder:'));
+    expect(hostSource, contains('_rightPanelSelectedMetadataComponent('));
+    expect(hostSource, contains('_confirmAddComponentTemplatePlacement('));
+
 
   });
 }

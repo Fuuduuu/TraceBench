@@ -1,9 +1,48 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
 
-## Components C1 committed-source map maintenance
+## Inspector I0 test-only characterization reservation
+
+The human selected one Inspector I0 characterization child at aligned baseline
+`a1fb50483dcfe50b3e46a7d4b542ebb606051906`,
+`docs: refresh components c1 code maps`. Completed Components C1 maintenance
+authority is spent. All predecessor sections below this I0 block are historical.
+
+Lane A / DOCS_SCOPE_LOCK. ACTIVE_SCOPE_LOCK owns exactly the three route owners,
+AUDIT_INDEX and this binding artifact:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+This pass creates no tests, production change, maps or extraction.
+The reservation names only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
+with exactly `test/widget/board_canvas_screen_test.dart` as its future writes.
+Activation requires accepted scope audit, bounded recording and human commit/push.
+
+I0 pins wide/compact Inspector child order and 12 px spacers, conditional
+installation/removal metadata, singular/plural measurement/badge copy and
+toggle/Canvas visibility coupling, host Placement draft lifetime/reseeding, and
+component-only placeholder/no draft. Safety clears selection; returning to the
+same placement must be tested through the real selection path.
+Current behavior is the oracle; no product repair is authorized.
+
+Inspector extraction is architecture context only: the future stateless
+board_canvas_inspector_panel.dart may own read-only presentation and exactly
+three reuse primitives, while host selection/Placement draft-editor/safety/
+lookup/badge/painter ownership stays fixed. The file is not in either allowlist;
+no I1, controller, view-model, provider or shared-widget library is armed.
+
+Use maintained host/test maps narrowly. Host remains REVIEWED_NO_CHANGE;
+committed I0 would require later test-map maintenance for TEST_DRIFT.
+No map/index status change or maintenance successor is authorized here.
+After I0: `NEEDS_USER_DECISION`.
+
+Scope validation is docs/governance only; future I0 requires focused/full Board/
+full Flutter tests, accepted inherited analyzer debt only, doctor, temporary
+validate_all, exact one-test-file diff and unchanged production bytes.
+Phase 2 reserves only verdict interior and the matching ledger Status cell.
+No staging, commit or push.
+
+## Historical completed Components C1 committed-source map maintenance
 
 Committed C1: `225cc4941c902baef7c3b66320925cee42a2fafa`,
 `refactor: extract board canvas component identity panel`.

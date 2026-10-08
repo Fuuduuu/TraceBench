@@ -2,10 +2,115 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
 
-## Current Components C1 committed-source Code Map maintenance
+## Current Inspector I0 characterization scope lock
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`.
+Lane A / `DOCS_SCOPE_LOCK`. Baseline:
+`HEAD == origin/main == a1fb50483dcfe50b3e46a7d4b542ebb606051906`,
+subject `docs: refresh components c1 code maps`.
+The human selected one test-only Inspector characterization child after completed
+Components C1 map maintenance. That predecessor authority is spent; all sections
+below this I0 block are historical and grant no current writes.
+
+### Current docs-only write authority
+
+Exact current write set, with no sixth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`
+
+Create the binding reservation, one neutral REVIEW_REQUIRED ledger row and one
+unique empty verdict block. Do not implement tests or change production, maps,
+the Code Map index, tooling, schemas, assets, packages or platform files.
+Preserve foreign Windows residue and scratch bytes.
+
+### Exactly one reserved child
+
+Reserve only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
+as `FLUTTER_QA / CHARACTERIZATION_ONLY`. Its entire future write allowlist is:
+
+1. `test/widget/board_canvas_screen_test.dart`
+
+The child becomes executable only after independent scope-lock acceptance,
+explicit bounded verdict recording and exact human commit/push of this scope.
+Recheck aligned HEAD/origin at that committed scope baseline, an empty staged/
+unmerged set, and the same Current/Next reservation before child execution.
+No routine lock-sync pass or additional child is reserved.
+After the child: `NEEDS_USER_DECISION`; no Inspector I1 extraction is armed.
+
+Binding contract, source zones, exact validation and acceptance requirements:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+The five required families characterize current behavior without fixing it:
+
+1. Selected-placement Inspector children and spacing at wide and compact sizes:
+   placement card -> Placement draft shell -> Measurement summary ->
+   Visual trace -> Photo alignment readiness. Seed alignment metadata to make
+   readiness present; verify rendered/widget order and four 12 px list spacers.
+2. Conditional read-only `Installation status` and `Removed by event ID`
+   fields, using their actual labelled Text rows.
+3. Singular/plural `Related measurement(s)` and `Eligible value badge(s)`
+   copy; the selected-component toggle label and actual Canvas badge visibility
+   must change together in both directions.
+4. Host-owned screen-lived Placement draft retention through Inspector ->
+   Measure -> Inspector, Inspector -> Safety -> Inspector, and focus on/off.
+   Safety clears selection; reselect the same placement to observe retention.
+   Preserve the current one-entry reseed on a different placement and a new
+   screen State; do not infer per-placement draft storage.
+5. Component selection without a placement: the current Inspector placeholder
+   is present and no Placement draft shell appears.
+
+Add one named `Inspector I0 characterization` group and only narrowly needed
+test-local fixtures/helpers. Existing tests, static guards, M0/C0 oracles and
+writer-fake behavior are preserved; no blanket rewrite or expectation weakening.
+All observations are read-only or UI_LOCAL; do not invoke canonical save flows.
+
+### Inspector architecture context only
+
+The selected future read-only library name is
+`lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart`.
+It is not an allowed path in this scope or I0 and is not armed.
+Future Inspector remains stateless, without a provider/session/writer.
+Host ownership remains selection, Placement draft/editor, safety disclosure,
+related-data lookup, badge state and painters. Future reuse may publicly expose
+exactly a section header, measurement summary tile and visual-trace summary tile
+for existing host Measurement reuse; no shared-widget library is reserved.
+No Placement-editor move, controller, view-model or new provider is authorized.
+
+### Maps, validation and stops
+
+Use the maintained Board Canvas host/test maps for bounding and committed
+source/tests for truth. Current scope changes no Dart responsibility.
+For the future child, Inspector test evidence and adjacent fixture/selection/
+draft/focus observations are explicitly authorized as one characterization slice.
+Host: REVIEWED_NO_CHANGE. After committed I0, test map: UPDATE_REQUIRED /
+TEST_DRIFT, for later separately authorized committed-source maintenance.
+Do not edit maps or their registry in either scope lock or I0.
+
+Scope validation: exact five docs, route agreement, unique empty verdict block/
+neutral row, bounded history changes, full raw-byte preservation, both Git diff
+checks, doctor and temporary-output validate_all. Flutter/analyzer are
+NOT_APPLICABLE to this docs-only reservation absent a concrete conflict.
+Future child must pass focused I0, full Board Canvas and full Flutter suites,
+analyzer with only the exact inherited three-info debt, doctor, temporary-output
+validate_all, both diff checks and one-file/production-byte integrity checks.
+
+STOP on baseline/route/allowlist conflict, failed map closure, another required
+path or independent responsibility, new analyzer debt, a product/protected
+semantic change, or a characterization requiring production fixes.
+Do not repair inherited lint, accepted NITs, stale unrelated map wording,
+Windows residue or scratch. Do not stage, commit or push.
+
+Bounded Phase 2 after independent acceptance may change only the artifact
+verdict-block interior and this PASS_ID's AUDIT_INDEX Status cell. Keep markers,
+route owners, ledger Description, all other cells and all remaining bytes fixed.
+
+## Historical completed Components C1 committed-source Code Map maintenance
 
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.
 The human selected this nine-path maintenance after committed C1 at

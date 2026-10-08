@@ -2,10 +2,43 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
 
-## Components C1 committed-source maintenance sequence
+## Inspector I0 scope and single test-child sequence
+
+The human selected one test-only Inspector characterization after completed
+Components C1 maintenance at `a1fb50483dcfe50b3e46a7d4b542ebb606051906`.
+That predecessor authority is spent; all sections below this block are historical.
+ACTIVE_SCOPE_LOCK owns exactly five current docs; binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+1. Create the docs-only I0 reservation, one neutral REVIEW_REQUIRED ledger row
+   and one unique empty verdict block. No test, production or map edit.
+2. Independently audit the complete five-doc material under scope-lock-post-audit.
+   With acceptance and explicit Phase-2 authorization, record only the verdict
+   interior and matching ledger Status cell; freeze every other byte.
+3. Exact scope staging/commit/push is human-owned. After those gates, recheck
+   aligned scope baseline, empty staged/unmerged sets and the same reservation.
+4. Execute only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`:
+   `test/widget/board_canvas_screen_test.dart`. Characterize all five Inspector
+   families with preserved M0/C0/existing guards and writer fakes. Do not fix
+   behavior, move Placement ownership or introduce extraction architecture.
+5. Run focused I0, full Board Canvas, full Flutter, analyzer with the exact
+   inherited three-info debt only, doctor and temporary-output validate_all.
+   Verify both diff checks, one-file material, unchanged production, baseline,
+   staging/conflicts and residue/scratch preservation; hand off the real diff
+   for independent audit. Exact accepted staging/commit/push stays human-owned.
+6. After I0: `NEEDS_USER_DECISION`. Committed test-map TEST_DRIFT is reserved
+   for a later human-decided maintenance scope; no map pass or I1 is armed.
+
+Architecture context only: a future read-only/stateless Inspector library may
+expose a section header and Measurement/Visual-trace summary tiles for existing
+host reuse. Host retains selection, Placement draft/editor, safety disclosure,
+related-data lookup, badge state and painters. No future extraction writes are
+authorized by this sequence.
+
+## Historical completed Components C1 committed-source maintenance sequence
 
 The human selected one nine-path maintenance after committed C1 at
 `225cc4941c902baef7c3b66320925cee42a2fafa`,

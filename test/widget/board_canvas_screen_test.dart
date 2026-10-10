@@ -15622,6 +15622,482 @@ void main() {
     );
   });
 
+  group('Inspector I0 characterization', () {
+    late ProjectState initialState;
+    late Map<String, dynamic> initialFacts;
+    late List<TraceBenchEvent> initialEvents;
+    late _FakeAddComponentWriter addWriter;
+    late _FakeEditComponentWriter editWriter;
+    late _FakePlacementWriter placementWriter;
+    late _FakeSaveMeasurementWriter measurementWriter;
+
+    ProjectState inspectorState({
+      bool metadata = false,
+      bool readiness = false,
+      int measurementCount = 0,
+    }) {
+      return _inlineProjectState(
+        components: [
+          ComponentFact(
+            componentId: 'cmp_r101',
+            designator: 'R101',
+            type: 'resistor',
+            installationStatus: metadata ? 'removed' : null,
+            removedByEventId: metadata ? 'evt_i0_removal' : null,
+          ),
+          const ComponentFact(
+            componentId: 'cmp_u1',
+            designator: 'U1',
+            type: 'ic',
+          ),
+          const ComponentFact(
+            componentId: 'R6',
+            designator: 'R6',
+            type: 'resistor',
+          ),
+        ],
+        placements: const [boardPlacement, boardPlacementWidthHeight],
+        measurements: [
+          for (var index = 0; index < measurementCount; index++)
+            MeasurementFact(
+              measurementId: 'I0_M${index + 1}',
+              mode: 'dc_voltage',
+              from: 'cmp_r101',
+              to: 'GND',
+              reading: 'numeric',
+              validityStatus: 'active',
+              powerState: 'on',
+              value: index + 1.0,
+              unit: 'V',
+            ),
+          if (measurementCount > 0)
+            const MeasurementFact(
+              measurementId: 'I0_OTHER',
+              mode: 'dc_voltage',
+              from: 'cmp_u1',
+              to: 'GND',
+              reading: 'numeric',
+              validityStatus: 'active',
+              powerState: 'on',
+              value: 3.3,
+              unit: 'V',
+            ),
+        ],
+        photoToBoardAlignments: readiness
+            ? const [readinessAlignment]
+            : const [],
+      );
+    }
+
+    Widget inspectorHarness({Key? boardCanvasKey}) => _harness(
+      projectState: initialState,
+      boardCanvasKey: boardCanvasKey,
+      addComponentWriter: addWriter,
+      editComponentWriter: editWriter,
+      placementWriter: placementWriter,
+      measurementWriter: measurementWriter,
+    );
+
+    Future<void> mountInspector(
+      WidgetTester tester, {
+      ProjectState? state,
+      Size size = const Size(1500, 900),
+      Key? boardCanvasKey,
+    }) async {
+      await tester.binding.setSurfaceSize(size);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      initialState = state ?? inspectorState();
+      initialFacts = initialState.knownFacts.toJson();
+      initialEvents = List.of(initialState.events);
+      addWriter = _FakeAddComponentWriter();
+      editWriter = _FakeEditComponentWriter();
+      placementWriter = _FakePlacementWriter();
+      measurementWriter = _FakeSaveMeasurementWriter();
+      await tester.pumpWidget(inspectorHarness(boardCanvasKey: boardCanvasKey));
+      await tester.pumpAndSettle();
+    }
+
+    void expectNoWrites(WidgetTester tester) {
+      final current = _readProjectState(tester);
+      expect(current, same(initialState));
+      expect(current.knownFacts.toJson(), initialFacts);
+      expect(current.events, orderedEquals(initialEvents));
+      expect(addWriter.requests, isEmpty);
+      expect(editWriter.requests, isEmpty);
+      expect(placementWriter.requests, isEmpty);
+      expect(measurementWriter.requests, isEmpty);
+      expect(tester.takeException(), isNull);
+    }
+
+    const draftFields = [
+      'component',
+      'side',
+      'template',
+      'rotation',
+      'width',
+      'height',
+    ];
+    const sourceDraft = [
+      'Selected component: R101 (cmp_r101)',
+      'Board side draft: top',
+      'Shape/template draft: sot23_3',
+      'Rotation draft: 15 deg',
+      'Width draft: 1.00',
+      'Height draft: 0.60',
+    ];
+    const changedDraft = [
+      'Selected component: R101 (cmp_r101)',
+      'Board side draft: bottom',
+      'Shape/template draft: sot23_3',
+      'Rotation draft: 30 deg',
+      'Width draft: 1.10',
+      'Height draft: 0.70',
+    ];
+
+    List<String?> draftCopy(WidgetTester tester) => [
+      for (final field in draftFields)
+        tester
+            .widget<Text>(
+              find.byKey(Key('board_canvas_placement_draft_$field')),
+            )
+            .data,
+    ];
+
+    Future<void> changeDraft(WidgetTester tester) async {
+      expect(draftCopy(tester), sourceDraft);
+      for (final key in const [
+        Key('board_canvas_placement_draft_side_toggle'),
+        Key('board_canvas_placement_draft_rotation_increment'),
+        Key('board_canvas_placement_draft_width_increment'),
+        Key('board_canvas_placement_draft_height_increment'),
+      ]) {
+        await _tapWidgetByKey(tester, key);
+      }
+      expect(draftCopy(tester), changedDraft);
+    }
+
+    for (final size in const [Size(1500, 900), Size(700, 760)]) {
+      testWidgets('selected placement order and four 12 px spacers at $size', (
+        tester,
+      ) async {
+        await mountInspector(
+          tester,
+          state: inspectorState(readiness: true),
+          size: size,
+        );
+        await _selectPlacement(tester, 'R101 (cmp_r101)');
+        await tester.pumpAndSettle();
+
+        final placementCard = find.ancestor(
+          of: find.text('Placement inspector (read-only)'),
+          matching: find.byType(Card),
+        );
+        expect(placementCard, findsOneWidget);
+        final inspectorWidget = tester
+            .element(placementCard)
+            .findAncestorWidgetOfExactType<SingleChildScrollView>()!;
+        final inspector = find.byWidget(inspectorWidget);
+        expect(inspector, findsOneWidget);
+        final list = find.descendant(
+          of: inspector,
+          matching: find.byWidget(inspectorWidget.child!),
+        );
+        expect(tester.widget(list), isA<Column>());
+        final children = <Element>[];
+        tester.element(list).visitChildren(children.add);
+        expect(children, hasLength(9));
+        const titles = [
+          'Placement inspector (read-only)',
+          'Placement draft',
+          'Measurement — read-only summary',
+          'Visual trace — read-only metadata',
+          'Photo alignment readiness — metadata only',
+        ];
+        final cardBounds = <Rect>[];
+        final paintedBounds = <Rect>[];
+        final margins = <EdgeInsets>[];
+        for (var index = 0; index < titles.length; index++) {
+          final child = find.byElementPredicate(
+            (element) => identical(element, children[index * 2]),
+          );
+          expect(
+            find.descendant(of: child, matching: find.text(titles[index])),
+            findsOneWidget,
+          );
+          cardBounds.add(tester.getRect(child));
+          expect(cardBounds.last.height, greaterThan(0));
+          final card = find.descendant(of: child, matching: find.byType(Card));
+          expect(card, findsOneWidget);
+          final context = tester.element(card);
+          margins.add(
+            (tester.widget<Card>(card).margin ??
+                    Theme.of(context).cardTheme.margin ??
+                    const EdgeInsets.all(4))
+                .resolve(Directionality.of(context)),
+          );
+          paintedBounds.add(
+            tester.getRect(
+              find.descendant(of: card, matching: find.byType(Material)).first,
+            ),
+          );
+        }
+        for (var index = 0; index < 4; index++) {
+          final spacer = find.byElementPredicate(
+            (element) => identical(element, children[index * 2 + 1]),
+          );
+          expect(tester.widget<SizedBox>(spacer).height, 12);
+          final gap = tester.getRect(spacer);
+          expect(gap.height, 12);
+          expect(gap.top, closeTo(cardBounds[index].bottom, 0.01));
+          expect(cardBounds[index + 1].top, closeTo(gap.bottom, 0.01));
+          expect(cardBounds[index + 1].top, greaterThan(cardBounds[index].top));
+          expect(
+            paintedBounds[index + 1].top - paintedBounds[index].bottom,
+            closeTo(12 + margins[index].bottom + margins[index + 1].top, 0.01),
+          );
+        }
+        for (final title in titles) {
+          await tester.ensureVisible(find.text(title));
+          await tester.pumpAndSettle();
+          expect(find.text(title).hitTestable(), findsOneWidget);
+        }
+        expectNoWrites(tester);
+      });
+    }
+
+    for (final metadata in [true, false]) {
+      testWidgets(
+        'installation/removal rows with populated fields: $metadata',
+        (tester) async {
+          await mountInspector(
+            tester,
+            state: inspectorState(metadata: metadata),
+          );
+          await _selectPlacement(tester, 'R101 (cmp_r101)');
+          if (metadata) {
+            expect(find.text('Installation status: removed'), findsOneWidget);
+            expect(
+              find.text('Removed by event ID: evt_i0_removal'),
+              findsOneWidget,
+            );
+          } else {
+            expect(find.textContaining('Installation status:'), findsNothing);
+            expect(find.textContaining('Removed by event ID:'), findsNothing);
+          }
+          expectNoWrites(tester);
+        },
+      );
+    }
+
+    for (final count in [1, 2]) {
+      testWidgets(
+        '$count measurement/badge copy and selected Canvas coupling',
+        (tester) async {
+          await mountInspector(
+            tester,
+            state: inspectorState(measurementCount: count),
+          );
+          const toggle = Key(
+            'board_canvas_selected_measurement_value_badge_toggle',
+          );
+          final otherBadge = find.byKey(
+            const Key('board_canvas_measurement_value_badge_I0_OTHER'),
+          );
+          final selectedBadges = [
+            for (var index = 1; index <= count; index++)
+              find.byKey(
+                Key('board_canvas_measurement_value_badge_I0_M$index'),
+              ),
+          ];
+          await _selectPlacement(tester, 'U1 (cmp_u1)');
+          expect(otherBadge, findsNothing);
+          await _tapWidgetByKey(tester, toggle);
+          expect(otherBadge, findsOneWidget);
+
+          await _selectPlacement(tester, 'R101 (cmp_r101)');
+          expect(
+            find.text(
+              count == 1 ? 'Related measurement: 1' : 'Related measurements: 2',
+            ),
+            findsOneWidget,
+          );
+          expect(
+            find.text(
+              count == 1
+                  ? 'Eligible value badge: 1'
+                  : 'Eligible value badges: 2',
+            ),
+            findsOneWidget,
+          );
+          expect(find.text('Show measurement badge'), findsOneWidget);
+          for (final badge in selectedBadges) {
+            expect(badge, findsNothing);
+          }
+          expect(otherBadge, findsOneWidget);
+          expectNoWrites(tester);
+
+          await _tapWidgetByKey(tester, toggle);
+          expect(find.text('Hide measurement badge'), findsOneWidget);
+          expect(find.text('Show measurement badge'), findsNothing);
+          for (final badge in selectedBadges) {
+            expect(badge, findsOneWidget);
+          }
+          expect(otherBadge, findsOneWidget);
+          expectNoWrites(tester);
+
+          await _tapWidgetByKey(tester, toggle);
+          expect(find.text('Show measurement badge'), findsOneWidget);
+          expect(find.text('Hide measurement badge'), findsNothing);
+          for (final badge in selectedBadges) {
+            expect(badge, findsNothing);
+          }
+          expect(otherBadge, findsOneWidget);
+          expectNoWrites(tester);
+        },
+      );
+    }
+
+    for (final safety in [false, true]) {
+      testWidgets(
+        'draft survives ${safety ? 'Safety and reselection' : 'Measure'}',
+        (tester) async {
+          await mountInspector(tester);
+          await _selectPlacement(tester, 'R101 (cmp_r101)');
+          await changeDraft(tester);
+          final before = draftCopy(tester);
+          await _tapWidgetByKey(
+            tester,
+            safety
+                ? const Key('board_canvas_rail_safety_evidence_tool')
+                : const Key('board_canvas_measure_sheet_button'),
+          );
+          expect(
+            find.byKey(const Key('board_canvas_placement_editor_shell')),
+            findsNothing,
+          );
+          if (!safety) {
+            expect(
+              find.byKey(const Key('board_canvas_measure_save_guard')),
+              findsOneWidget,
+            );
+          }
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_inspector_tool'),
+          );
+          if (safety) {
+            expect(
+              find.text('Select a placement to view read-only details.'),
+              findsOneWidget,
+            );
+            await _selectPlacement(tester, 'R101 (cmp_r101)');
+          }
+          expect(draftCopy(tester), before);
+          expect(draftCopy(tester), changedDraft);
+          expectNoWrites(tester);
+        },
+      );
+    }
+
+    testWidgets('draft survives focus on and off', (tester) async {
+      await mountInspector(tester);
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      await changeDraft(tester);
+      final before = draftCopy(tester);
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_focus_toggle_button'),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_placement_editor_shell')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_focus_restore_bar')),
+        findsOneWidget,
+      );
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_focus_restore_button'),
+      );
+      await tester.pumpAndSettle();
+      expect(draftCopy(tester), before);
+      expect(draftCopy(tester), changedDraft);
+      expectNoWrites(tester);
+    });
+
+    testWidgets('different placement reseeds and original has no draft cache', (
+      tester,
+    ) async {
+      await mountInspector(tester);
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      await changeDraft(tester);
+      await _selectPlacement(tester, 'U1 (cmp_u1)');
+      expect(draftCopy(tester), const [
+        'Selected component: U1 (cmp_u1)',
+        'Board side draft: bottom',
+        'Shape/template draft: unknown_rect',
+        'Rotation draft: 90 deg',
+        'Width draft: 1.50',
+        'Height draft: 0.80',
+      ]);
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      expect(draftCopy(tester), sourceDraft);
+      expect(draftCopy(tester), isNot(changedDraft));
+      expectNoWrites(tester);
+    });
+
+    testWidgets('new screen State reseeds draft from source', (tester) async {
+      await mountInspector(tester, boardCanvasKey: const ValueKey('i0_first'));
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      await changeDraft(tester);
+      await tester.pumpWidget(
+        inspectorHarness(boardCanvasKey: const ValueKey('i0_second')),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('board_canvas_placement_editor_shell')),
+        findsNothing,
+      );
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      expect(draftCopy(tester), sourceDraft);
+      expect(draftCopy(tester), isNot(changedDraft));
+      expectNoWrites(tester);
+    });
+
+    testWidgets('component without placement shows placeholder and no draft', (
+      tester,
+    ) async {
+      await mountInspector(tester);
+      for (final key in const [
+        Key('board_canvas_rail_placements_tool'),
+        Key('board_canvas_component_category_resistors'),
+        Key('board_canvas_component_row_R6'),
+      ]) {
+        await _tapWidgetByKey(tester, key);
+      }
+      expect(find.text('Pole veel canvasele paigutatud'), findsOneWidget);
+      expect(
+        find.byKey(const Key('board_canvas_component_inspector')),
+        findsOneWidget,
+      );
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_rail_inspector_tool'),
+      );
+      expect(
+        find.text('Select a placement to view read-only details.'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_placement_editor_shell')),
+        findsNothing,
+      );
+      expectNoWrites(tester);
+    });
+  });
+
   testWidgets('selection state is volatile in memory only', (tester) async {
     final state = _inlineProjectState(
       components: const [

@@ -2,10 +2,39 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Inspector I0 scope and single test-child sequence
+## Inspector I0 committed-source test-map maintenance sequence
+
+The human selected one seven-path maintenance after committed Inspector I0 at
+`7fb9d8821da84297cb16f72aea2ac1edaea13b72`,
+subject `test: characterize board canvas inspector i0`.
+The completed I0 scope/test authorities are spent; retained predecessor bodies
+below this block are historical. ACTIVE_SCOPE_LOCK owns the exact seven paths.
+Binding maintenance artifact:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Verify aligned baseline, staged/unmerged empty and exactly one committed
+   test-file change (+476 / -0); snapshot source/tests, maps and foreign residue.
+2. Refresh only the test map for TEST_DRIFT: seven groups, 244 declarations and
+   eight I0 declarations/twelve generated cases. Update Inspector zone 8 and
+   affected evidence prose; preserve M0/C0/unrelated zones and twelve-zone limit.
+   The unchanged host map is REVIEWED_NO_CHANGE and receives no edit.
+3. Keep registry parity 56/56 with 53 MAINTAINED / 1 REVIEW_REQUIRED / 2 RETIRED.
+   Create one neutral REVIEW_REQUIRED ledger row and a unique empty verdict block.
+4. Run anchor/count/route/material/raw-byte checks, both Git diff checks, artifact
+   whitespace/EOF, doctor and temporary-output validate_all. Flutter/analyzer are
+   NOT_APPLICABLE absent a concrete conflict; no source/test edits are permitted.
+5. Independently review the complete seven-path Phase 1 map/docs diff. With
+   acceptance and explicit Phase-2 authority, change only the test header and
+   matching registry Status, verdict interior and ledger Status cell.
+   Freeze all remaining bytes. Report a net-zero CODE_MAP_INDEX after promotion
+   and exclude it from final substantive staging material.
+6. Exact accepted staging/commit/push remains human-owned. After maintenance:
+   `NEEDS_USER_DECISION`; no Inspector I1 or another module extraction is armed.
+
+## Historical completed Inspector I0 scope and single test-child sequence
 
 The human selected one test-only Inspector characterization after completed
 Components C1 maintenance at `a1fb50483dcfe50b3e46a7d4b542ebb606051906`.

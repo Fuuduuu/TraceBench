@@ -2,10 +2,68 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Inspector I0 characterization scope lock
+## Current Inspector I0 committed-source test-map maintenance
+
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.
+The human selected this seven-path maintenance after committed Inspector I0:
+`7fb9d8821da84297cb16f72aea2ac1edaea13b72`,
+subject `test: characterize board canvas inspector i0`.
+Entry requires aligned HEAD/origin, divergence `0 / 0` and empty staged/unmerged
+sets. The commit changes only the Board Canvas test, +476 / -0.
+I0 characterization is complete; its scope/test authority is spent. All retained
+predecessor sections below this maintenance block are historical.
+
+### Exact current docs/map authority
+
+Exact write set, with no eighth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+7. `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS.md`
+
+Refresh only the test map from committed source for UPDATE_REQUIRED / TEST_DRIFT.
+Verify 244 declarations (221 testWidgets + 23 test), seven explicit groups and
+eight I0 declarations generating twelve cases. Existing M0/C0 and unrelated
+evidence remains; test-map zone 8 describes Inspector layout/order/spacing,
+metadata, measurement/badge copy and Canvas visibility, host Placement draft
+retention/reseeding, component-only placeholder and the structural finder.
+Keep twelve responsibility zones. This maintenance changes no product behavior.
+
+The unchanged production host and its map are REVIEWED_NO_CHANGE and inspect-only.
+Do not edit any source/test, unrelated/RETIRED map, tool, schema, runtime, asset,
+package, Windows residue or scratch; do not patch I0/C1 NITs.
+No Inspector I1 implementation, extraction or later pass is armed.
+
+### Registry, validation and bounded recording
+
+Phase 1 keeps 56 maps / 56 rows with 53 MAINTAINED, one REVIEW_REQUIRED and
+two RETIRED. Only the test-map header and matching registry Status use
+REVIEW_REQUIRED. Verify actual counts, status agreement and committed anchors.
+Validate the exact seven-path material, declaration/generated-case evidence,
+synchronized route, raw source/test/history preservation, both Git diff checks,
+new-artifact whitespace/single-LF EOF, doctor and temporary-output validate_all.
+Flutter/analyzer are NOT_APPLICABLE absent a concrete docs/source conflict.
+
+After independent acceptance and explicit Phase-2 authority, only four
+coordinates may change: test-map header Status, matching CODE_MAP_INDEX Status
+cell, the artifact's unique verdict-block interior and this AUDIT_INDEX Status
+cell. Keep markers, map body, route owners, ledger Description and other cells
+fixed. If registry promotion restores CODE_MAP_INDEX to HEAD, report the net-zero
+file and exclude it from the final substantive staging set; never fabricate a diff.
+
+Next is `NEEDS_USER_DECISION`; no later refactor or maintenance is reserved.
+Stop on a baseline/allowlist conflict, failed committed-source/anchor closure,
+unexpected material change, a required eighth file or protected/runtime change.
+Do not stage, commit or push.
+
+## Historical completed Inspector I0 characterization scope lock
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`.
 Lane A / `DOCS_SCOPE_LOCK`. Baseline:

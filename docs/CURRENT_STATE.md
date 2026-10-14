@@ -1,9 +1,38 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CHARACTERIZATION_TEST_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Inspector I0 test-only characterization reservation
+## Inspector I0 committed-source test-map maintenance
+
+Inspector I0 is committed at `7fb9d8821da84297cb16f72aea2ac1edaea13b72`,
+subject `test: characterize board canvas inspector i0`; Git verifies only
+`test/widget/board_canvas_screen_test.dart`, +476 / -0.
+The characterization scope/test authorities are complete and spent. All retained
+predecessor section bodies below this maintenance block remain historical.
+
+The human selected immediate Lane A / DOCS_MAPS_ONLY committed-source maintenance.
+ACTIVE_SCOPE_LOCK owns exactly seven docs/map/index paths; binding evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS.md`.
+Only the Board Canvas test map changes for UPDATE_REQUIRED / TEST_DRIFT:
+244 declarations (221 testWidgets + 23 test), seven groups and eight Inspector
+I0 declarations generating twelve cases. Zone 8 gains current Inspector evidence;
+M0/C0, unrelated zones and the unchanged host map remain preserved.
+
+Phase 1 retains 56 maps / 56 rows: 53 MAINTAINED / 1 REVIEW_REQUIRED / 2 RETIRED.
+Only the test header/registry pair changes status. Source/tests, other maps,
+historical audits/ledger rows, Windows residue and scratch stay byte-identical.
+Run anchor/count/route/material/preservation checks, both diff checks, doctor
+and temporary-output validate_all; check artifact whitespace and one-LF EOF.
+Flutter/analyzer are NOT_APPLICABLE to this docs-only pass absent conflict.
+
+Bounded Phase 2 after acceptance and explicit authority reserves only the test
+header Status, matching registry Status, verdict interior and ledger Status cell.
+A net-zero CODE_MAP_INDEX after promotion is reported and omitted from final
+substantive staging material. No staging, commit or push is authorized.
+Next is `NEEDS_USER_DECISION`; no Inspector I1 or other extraction is armed.
+
+## Historical completed Inspector I0 test-only characterization reservation
 
 The human selected one Inspector I0 characterization child at aligned baseline
 `a1fb50483dcfe50b3e46a7d4b542ebb606051906`,

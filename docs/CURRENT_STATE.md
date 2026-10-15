@@ -1,9 +1,45 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
 
-## Inspector I0 committed-source test-map maintenance
+## Inspector I1 read-only extraction reservation
+
+The human selected one Inspector extraction after committed I0 map maintenance
+at `49d8efa291b9b7eba7b643f794793f11b90bb744`,
+subject `docs: refresh inspector i0 code map`. I0 authority is complete and spent;
+all retained predecessor sections below this I1 block are historical.
+
+Lane B / DOCS_SCOPE_LOCK. ACTIVE_SCOPE_LOCK owns exactly five current docs.
+Binding API/source/oracle/validation contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+Reserve only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
+and its three host/new-Inspector-module/test paths. Activation follows independent
+scope acceptance, bounded recording and exact human commit/push; no I1 code now.
+
+Inspector moves into a stateless normal library with resolved facts, badge inputs/
+callback and an optional host-built Placement editor widget slot. Host keeps
+selection, Placement draft/save lifetime, safety, related-data lookup, badge state
+and all painters/geometry. Five-child order, 12 px gaps and existing copy remain.
+Only section header, Measurement summary tile and Visual-trace summary tile are
+public reusable widgets; existing host Measurement and Placement-header consumers
+retarget those calls without changing IntegratedMeasurePanel or draft ownership.
+No aggregate state/provider/session/writer/private-placement/painter crosses.
+
+Inspector I0 12-case oracle stays byte-identical; preserve M0/C0 and existing
+fakes/tests. Future test edits are zone-9 static ownership/data-path guards only.
+Maps/index stay frozen; committed I1 later requires host/test maintenance and
+new-module qualification, through a later human decision rather than this scope.
+
+Scope validation is docs/governance: exact five-doc route/material/freeze, both
+diff checks, new-artifact hygiene, doctor and temporary-output validate_all.
+Future validation includes pre/post I0 12/12, full Board/Flutter, inherited analyzer
+debt only, doctor/temporary validation and exact three-file/byte-integrity checks.
+Phase 2 reserves only verdict interior and matching ledger Status cell.
+After I1: `NEEDS_USER_DECISION`. No later extraction or map pass is armed.
+Do not stage, commit or push.
+
+## Historical completed Inspector I0 committed-source test-map maintenance
 
 Inspector I0 is committed at `7fb9d8821da84297cb16f72aea2ac1edaea13b72`,
 subject `test: characterize board canvas inspector i0`; Git verifies only

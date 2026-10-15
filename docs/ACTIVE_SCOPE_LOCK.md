@@ -2,10 +2,118 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
 
-## Current Inspector I0 committed-source test-map maintenance
+## Current Inspector I1 extraction scope lock
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`.
+Lane B / `DOCS_SCOPE_LOCK`. Baseline:
+`HEAD == origin/main == 49d8efa291b9b7eba7b643f794793f11b90bb744`,
+subject `docs: refresh inspector i0 code map`.
+The human selected one behavior-preserving Inspector extraction after completed
+I0 characterization and map maintenance. Those authorities are spent; retained
+predecessor sections below this I1 block are historical and non-authorizing.
+
+### Current docs-only authority
+
+Exact current write set, with no sixth path:
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+Create one binding scope, one neutral REVIEW_REQUIRED ledger row and one unique
+empty verdict block. No production/test/map/index/tool/schema/asset/platform edit.
+Preserve Windows residue, scratch, historical artifacts and all predecessor bodies.
+
+### Exactly one reserved implementation child
+
+Reserve only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
+as `FLUTTER_REFACTOR`, with exactly:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart` — new normal Dart library
+3. `test/widget/board_canvas_screen_test.dart`
+
+Activation requires independent scope acceptance, explicit bounded recording
+and exact human commit/push of these five docs. Then recheck aligned scope
+baseline, empty staged/unmerged sets and this exact Current/Next reservation.
+No routine active-lock sync, additional child or implementation is authorized now.
+After I1: `NEEDS_USER_DECISION`.
+
+Binding source closure, API, oracle and validation contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+### Read-only module and host boundary
+
+New `BoardCanvasInspectorPanel` and all module presentation widgets are stateless.
+Move the eleven named Inspector classes and their Inspector-only pure helpers.
+The only public reusable presentation widgets, in addition to the panel, are
+`InspectorSectionHeader`, `InspectorMeasurementSummaryTile` and
+`InspectorVisualTraceSummaryTile`. Every other moved widget/helper stays private.
+The host Measurement builder retargets these existing calls without changing
+IntegratedMeasurePanel, its API, provenance order, expansion or painter seam.
+The host Placement draft card may retarget only its existing section-header call;
+its editor, callbacks, state, lifetime, keys, layout and behavior remain host-owned.
+
+Panel inputs are nullable ComponentVisualPlacementFact, ComponentFact and
+FootprintTemplate derived from the same selectedEntry; resolved related fact
+lists/alignment metadata, badge counts/visibility, the existing toggle callback
+and optional Widget placementDraftSection. Host constructs the existing editor
+widget with all current callbacks and passes that opaque slot.
+Preserve the direct child list, five-child order when present and four 12 px gaps;
+do not add wrappers or relocate draft ownership. Preserve readiness's existing
+conditional append and all placeholder/metadata/label/safety copy.
+
+Module has no ProjectState/KnownFacts aggregate, WidgetRef/provider/session/writer,
+CanvasSelection, _PlacementEntry, draft-private or painter dependency; no host
+import, new part, holder/controller/service/repository/view-model/shared library.
+Fact/model imports for the explicit inputs do not authorize aggregate access.
+Host retains selection resolution, Placement draft/save, safety disclosure,
+related-data lookup, badge state and every painter/geometry owner.
+
+### Oracle, maps, validation and stops
+
+The entire Inspector I0 group stays byte-identical, including its local fixtures/
+helpers. M0 and Components C0 groups, existing fake defaults and other tests are
+also frozen. Future test edits are only necessary zone-9 static ownership/
+data-path guards outside those oracles; no weakening or behavior-test rewrite.
+Add inspectorSource positives/negatives and prove host Placement/selection/safety
+ownership, module absence of writer/session/provider/painter and removed host
+Inspector declarations. Avoid unrelated formatting and accepted-NIT cleanup.
+
+The human's cohesive extraction combines host Inspector zone 9 with only necessary
+composition/slot/header references in zones 1/4/6; test zone 9 guards change while
+zone 8's I0 oracle and all other behavior evidence stay fixed.
+Both host/test maps are MAINTAINED and frozen in scope and implementation.
+After committed I1: host UPDATE_REQUIRED; test UPDATE_REQUIRED if guards change;
+qualify the new module from committed source for its first map. Other maps are
+REVIEWED_NO_CHANGE only if actual source confirms; known unrelated debt is carried.
+No later map-maintenance PASS_ID is reserved.
+
+Scope checks: exact five docs, route, empty verdict/neutral row, raw-byte/history/
+oracle preservation, both Git diff checks, clean new-artifact EOF/whitespace,
+doctor and temporary-output validate_all. Flutter/analyzer are NOT_APPLICABLE
+to this docs-only scope absent a concrete conflict.
+Future I1 must pass I0 12/12 before production edits and after extraction, full
+Board Canvas and Flutter suites, analyzer with only inherited three-info debt,
+doctor, binding temporary-output validate_all, both diff checks, exact three paths
+and oracle/source/test/residue integrity; preserve all behavior and session ordering.
+
+STOP if I0 needs modification, Placement lifetime changes, writer/session/painter
+or host-private ownership crosses the module API, a fourth implementation path
+or independent responsibility is needed, new analyzer debt appears, or product/
+protected behavior changes. Do not patch prior NITs or residue/scratch.
+
+Phase 2 after accepted audit and explicit authorization may change only this
+artifact's verdict interior and the matching AUDIT_INDEX Status cell; keep marker
+lines, Description, route owners and all other bytes fixed.
+Do not stage, commit or push.
+
+## Historical completed Inspector I0 committed-source test-map maintenance
 
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.
 The human selected this seven-path maintenance after committed Inspector I0:

@@ -2,10 +2,40 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
 
-## Inspector I0 committed-source test-map maintenance sequence
+## Inspector I1 scope and single implementation-child sequence
+
+The human selected one read-only Inspector extraction after committed I0
+maintenance at `49d8efa291b9b7eba7b643f794793f11b90bb744`.
+I0 authorities are spent; every retained predecessor section below is historical.
+ACTIVE_SCOPE_LOCK owns exactly five docs; binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+1. Create this docs-only I1 scope, one neutral REVIEW_REQUIRED ledger row and one
+   unique empty verdict block. Do not implement, change maps or normalize residue.
+2. Independently audit the exact five docs under scope-lock-post-audit. With
+   acceptance and explicit Phase-2 authority, record only verdict interior and
+   matching ledger Status; preserve every other byte and marker.
+3. Exact scope staging/commit/push remains human-owned. After those gates, recheck
+   aligned scope baseline, empty staged/unmerged sets and the same reservation.
+4. Execute only `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`:
+   host screen, new board_canvas_inspector_panel.dart and Board Canvas test.
+   Run Inspector I0 12/12 against unchanged production before any production edit.
+5. Extract only stateless Inspector presentation with one optional host editor
+   slot and three reusable widgets. Keep selection/Placement/safety/lookup/badge/
+   painter ownership in the host; preserve labels, layout, lifetime and semantics.
+   Retarget host Measurement and Placement-header references; no Measurement API
+   change. I0/M0/C0 oracles/fakes remain fixed; static guards are the only test edits.
+6. Run post-I1 I0 12/12, full Board Canvas/full Flutter, inherited analyzer debt only,
+   doctor and binding temporary-output validate_all, both diff checks and exact
+   three-path/oracle/preservation gates. Independently audit the actual refactor;
+   exact accepted staging/commit/push remains human-owned.
+7. After I1: `NEEDS_USER_DECISION`. Later committed-source host/test/new-module
+   map maintenance needs a new human decision; no successor is named or armed.
+
+## Historical completed Inspector I0 committed-source test-map maintenance sequence
 
 The human selected one seven-path maintenance after committed Inspector I0 at
 `7fb9d8821da84297cb16f72aea2ac1edaea13b72`,

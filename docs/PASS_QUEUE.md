@@ -2,10 +2,41 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Inspector I1 scope and single implementation-child sequence
+## Inspector I1 committed-source Code Map maintenance sequence
+
+The human selected immediate maintenance of committed Inspector I1 at
+`5d3d62d863f80fb2ee61c98df66d4ed72e9b2853`,
+`refactor: extract board canvas inspector panel`.
+Completed I1 scope/implementation authorities are spent; predecessor bodies below
+remain historical. ACTIVE_SCOPE_LOCK owns the exact eleven-path material set.
+Evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Verify aligned baseline, divergence 0/0, staged/unmerged empty and the exact
+   three-path committed implementation (+1024 / -847); snapshot existing bytes.
+2. Refresh host/test maps, qualify/create the Inspector presentation map and
+   correct only confirmed Measurement/projection consumer attribution. Preserve
+   existing oracles, workflow/helper implementations and unrelated map zones.
+3. Validate Phase-1 registry: 57 maps/rows, 50 MAINTAINED / 5 REVIEW_REQUIRED / 2 RETIRED.
+   Add one sorted new registry row, one neutral REVIEW_REQUIRED ledger row and
+   one unique empty verdict block.
+4. Verify literal anchors, declarations, map format/zone limits, route/material,
+   source/test/RETIRED/residue preservation, both diff checks, doctor and binding
+   temporary-output validate_all; check artifact whitespace and one-LF EOF.
+   Flutter/analyzer are NOT_APPLICABLE to this docs-only work absent conflict.
+5. Independent map and docs audit uses the actual eleven-path diff. After
+   acceptance and explicit Phase-2 authority, change only five map-header statuses,
+   five registry Status cells, verdict interior and matching ledger Status cell.
+   All other bytes stay fixed; exact staging/commit/push remains human-owned.
+6. After maintenance: `NEEDS_USER_DECISION`. No next extraction is armed.
+   Known navigator/Wizard writer-owner wording debt remains outside this pass.
+
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 scope and single implementation-child sequence
 
 The human selected one read-only Inspector extraction after committed I0
 maintenance at `49d8efa291b9b7eba7b643f794793f11b90bb744`.

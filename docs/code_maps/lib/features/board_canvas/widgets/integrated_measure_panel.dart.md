@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — canonical writer path and substantial UI-local State coexist`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_MEASUREMENT_M1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -12,7 +12,8 @@ Owns the normal feature-internal Measurement widget, ConsumerState and complete
 draft/save/session workflow. It reads accepted measurement/visual-trace facts,
 derives target/context rows, renders local inputs and explicitly invokes the
 existing V2 writer for human-entered measurements. Board Canvas retains mount,
-selection, responsiveness, navigation, Inspector tiles and private painters.
+selection, responsiveness, navigation, provenance-child construction and private
+painters. The reused provenance tiles are declared in the Inspector library.
 Source, tests and canonical owners outrank this descriptive map.
 
 ## Qualification
@@ -68,7 +69,10 @@ No line-number anchors are maintained.
 8. [D] Appended/existing responses share the success-form guard. Six typed and
    unexpected failures retain current copy. Status/error/final in-flight updates
    occur only while mounted; generation/dedup belongs to ProjectSession.
-9. [D] Advanced children remain host Inspector/provenance tiles. The footprint
+9. [D] The host still supplies `advancedDetailsBuilder` children, constructing
+   presentation tiles declared in `board_canvas_inspector_panel.dart`. This
+   module imports neither presentation owner nor host; its builder API, State,
+   writer/session workflow and child ExpansionTile are unchanged. The footprint
    builder receives only target, visual label and count; private entry/painter
    capture stays in the host. Neither seam is a writer/session callback.
 
@@ -82,7 +86,7 @@ No line-number anchors are maintained.
 | `v2_save_measurement_writer.dart` | canonical output boundary | Existing request/provider/result and six typed failure kinds. |
 | `known_facts.dart`, `project_state.dart` | read input | Project, component, measurement and visual-trace inputs. |
 | `project_session.dart` | provider / projection output | Current state, generation capture and returned-event application. |
-| `board_canvas_screen.dart` | constructing caller / one-way builders | Placement-derived inputs, lifetime, routing and private rendering. |
+| `board_canvas_screen.dart` | constructing caller / one-way builders | Placement-derived inputs, lifetime/routing, provenance children using Inspector-library widgets, and private footprint rendering; the module has no Inspector import. |
 | `board_canvas_screen_test.dart` | indirect widget / direct source observation | M0/advanced-details/no-placement behavior and source-owner guards. |
 
 ## Write and protected boundaries
@@ -117,7 +121,7 @@ context do not establish confirmed connectivity.
 | Drafts/targets/labels | [D] precedence, maps and conversion | pure matcher and accepted facts | `UI_LOCAL` / `ZERO_WRITE` | M0 request/unit/header/target cases |
 | Guards/request/failures | [D] explicit writer and guards | existing writer/session | `CANONICAL_EVENT` / `UI_LOCAL` | M0 guard/repeat/in-flight/request/failure cases |
 | Async handoff | [D] capture-before-await/application-before-mounted | Session generation/dedup | `PROJECTION_STATE` / `UI_LOCAL` | M0 appended/existing, replacement/unmount cases |
-| Advanced details | [D] child frame and host children | Inspector tiles and Theme | `ZERO_WRITE` | empty/both-READ/rendered-order cases |
+| Advanced details | [D] child frame and host-built children | host builder, Inspector-library presentation tiles and Theme | `ZERO_WRITE` | empty/both-READ/rendered-order cases |
 | Footprint/rows | [D] 82 px slot/gutters/local controls | host painter/semantics and palette | `ZERO_WRITE` / `UI_LOCAL` | preview/compact/draft and source guards |
 
 ## Relevant tests and helpers
@@ -126,8 +130,8 @@ context do not establish confirmed connectivity.
 host. M0 covers copy, unit/request identity, guards, results/failures, deferred
 Session application and State lifetime. Four advanced-details/no-placement cases
 add rendered labelled provenance and widget-position evidence. Source guards
-read both owners, retain host negatives and add module ownership/data-path
-negatives. `_FakeSaveMeasurementWriter` controls requests, failures, existing
+retain host/workflow-module negatives and verify the Inspector presentation
+owner without changing Measurement workflow contracts. `_FakeSaveMeasurementWriter` controls requests, failures, existing
 results and deferred completion; it does not prove real writer atomicity.
 
 ## Dangerous combinations

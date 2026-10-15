@@ -1,9 +1,41 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Inspector I1 read-only extraction reservation
+## Inspector I1 committed-source Code Map maintenance
+
+Committed I1 at `5d3d62d863f80fb2ee61c98df66d4ed72e9b2853`,
+`refactor: extract board canvas inspector panel`, is exactly three accepted
+host/new-module/test paths, +1024 / -847. I1 scope/implementation authority is
+complete and spent. All predecessor sections below this block are historical.
+
+The human selected immediate Lane A / DOCS_MAPS_ONLY maintenance. ACTIVE_SCOPE_LOCK
+owns exactly eleven docs/map/index/artifact paths; binding evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`.
+Refresh host/test maps and create the automatically qualifying read-only Inspector
+map. Correct only confirmed Measurement/projection consumer wording. The host
+still constructs advancedDetailsBuilder children; their presentation declarations
+now belong to Inspector. Measurement workflow/API and pure helpers are unchanged.
+
+Inspector owns stateless presentation from resolved inputs and an opaque host
+Placement editor slot. Selection, Placement draft/save lifetime, related lookup,
+badge state, safety, painters and all existing writer/session paths retain their
+owners. I0/M0/C0 oracles, source/tests and accepted implementation NITs are frozen.
+Known navigator/Wizard writer-owner wording debt stays explicit and unpatched.
+
+Phase-1 registry: 57 maps/rows with 50 MAINTAINED / 5 REVIEW_REQUIRED / 2 RETIRED;
+one neutral ledger row and one empty verdict block. Verify literal anchors,
+declarations, format, committed-source/byte preservation, synchronized route and
+exact material. Run both diff checks, doctor and temporary-output validate_all;
+Flutter/analyzer are NOT_APPLICABLE absent conflict.
+
+Bounded Phase 2 reserves only five header statuses, five matching registry cells,
+verdict interior and ledger Status after independent acceptance and authorization.
+Next: `NEEDS_USER_DECISION`. No extraction or later maintenance child is armed.
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 read-only extraction reservation
 
 The human selected one Inspector extraction after committed I0 map maintenance
 at `49d8efa291b9b7eba7b643f794793f11b90bb744`,

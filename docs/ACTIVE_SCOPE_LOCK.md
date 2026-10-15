@@ -2,10 +2,84 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Inspector I1 extraction scope lock
+## Current Inspector I1 committed-source Code Map maintenance
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`.
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.
+Baseline: HEAD == origin/main == `5d3d62d863f80fb2ee61c98df66d4ed72e9b2853`,
+subject `refactor: extract board canvas inspector panel`.
+The committed I1 implementation contains exactly the accepted host/new-module/test
+paths, +1024 / -847. Its scope and implementation authorities are complete and
+spent; every retained predecessor section below this block is historical.
+
+### Exact current docs/map authority
+
+The human selected immediate committed-source maintenance, with exactly:
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart.md`
+9. `docs/code_maps/lib/features/board_canvas/widgets/integrated_measure_panel.dart.md`
+10. `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md`
+11. `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`
+
+No twelfth path, source/test/runtime/schema/tool/asset/package change is allowed.
+No additional refactor or next extraction is armed. Next: `NEEDS_USER_DECISION`.
+Binding evidence and recording:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+### Map and boundary contract
+
+Refresh host Inspector composition/ownership, the test's static ownership guards
+and the new Inspector library's first map. Qualify its independently testable
+presentation behaviors from committed source; do not use a canonical-writer
+rationale. All four public widgets are stateless. The host retains selection,
+Placement editor/draft/lifetime/save, lookups, badge state, safety and painters;
+the Inspector receives resolved facts and the opaque placementDraftSection slot.
+I0/M0/C0 oracles and every production/test byte remain fixed.
+
+Measurement and projection maps change only for confirmed consumer-description
+drift: host advancedDetailsBuilder constructs Inspector-library presentation tiles;
+Measurement API/State/writer/session and projection helper implementation stay
+unchanged. Retain the host related-measurement matcher call path and distinguish
+Inspector endpoint display/exact stale-summary copy from host counts/badges/caution.
+Preserve unrelated map zones and every RETIRED map.
+
+Before: 56 maps/rows, 54 MAINTAINED / 0 REVIEW_REQUIRED / 2 RETIRED.
+Phase-1 registry with the four refreshed maps and one new map: 57 maps/rows,
+50 MAINTAINED / 5 REVIEW_REQUIRED / 2 RETIRED. Add one sorted registry row.
+One new AUDIT_INDEX row is neutral REVIEW_REQUIRED; keep one empty verdict block.
+
+Navigator/Wizard maps retain known non-material stale writer-owner wording outside
+this write set. Carry that debt explicitly; do not call those rows source-current.
+STOP if another materially stale map needs modification or any excluded path,
+behavior, canonical ownership or unrelated responsibility must change.
+
+### Preservation, validation and bounded recording
+
+Rename only the three completed I1 predecessor heading lines as historical;
+preserve all section bodies and original line-ending bytes. Preserve old ledger
+rows/separator, unrelated registry rows, Windows residue and scratch.
+Validate committed evidence, declarations/oracle hashes, literal map anchors,
+format/zone limits, registry parity/statuses, route/material and raw-byte freeze.
+Run both Git diff checks, doctor and temporary-output validate_all. Check new
+artifact whitespace and single-LF EOF. Flutter/analyzer are NOT_APPLICABLE to this
+docs-only maintenance absent a concrete conflict.
+
+After independent acceptance and explicit Phase-2 authority, only five map-header
+statuses, five matching registry Status cells, verdict-block interior and this
+ledger Status cell may change. Preserve marker lines, map bodies, Description,
+route owners and all other Phase-1 bytes. No Phase 2 now.
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 extraction scope lock
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_EXTRACTION_SCOPE_LOCK_PASS`.
 Lane B / `DOCS_SCOPE_LOCK`. Baseline:

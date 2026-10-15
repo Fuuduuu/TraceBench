@@ -2,10 +2,72 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
 
-## Current Inspector I1 committed-source Code Map maintenance
+## Current Placement P0 characterization scope lock
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`.
+Lane A / `DOCS_SCOPE_LOCK`. Entry baseline: `47e1c3188f37febe57db34c1a397851c6749207f`.
+The human selected one test-only Placement P0 characterization child after
+accepted, committed Inspector I1 Code Map maintenance. That predecessor authority
+is complete and spent; every retained predecessor section below is historical.
+
+### Exact current docs-only authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`
+
+Binding characterization, frozen-oracle and validation contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+### Exactly one future child
+
+`TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
+Mode: `FLUTTER_QA / CHARACTERIZATION_ONLY`; exact future writable path:
+- `test/widget/board_canvas_screen_test.dart`
+
+Activation requires independent scope-lock acceptance, explicit bounded Phase-2
+recording authorization, and the exact accepted scope commit/push. Recheck the
+accepted scope baseline, empty staged/unmerged sets and this same reservation
+before execution. No routine lock-sync or extraction child is reserved.
+After P0: `NEEDS_USER_DECISION`.
+
+### Boundaries and preservation
+
+Add one `Placement P0 characterization` group for currently uncovered pending/
+repeat-save, panel/screen completion, generation/current-event composition,
+failure/retry/unlock, Add/template/ghost/focus/responsive lifetime, selection
+during save, entry reseeding and independent Add/Inspector drafts.
+Current behavior is the oracle; no desired guard, lifetime or copy improvement.
+Only narrowly needed new fixtures/helpers and the existing Placement fake's
+optional deferred completion/mutable errors are allowed in the future child;
+all default fake behavior and existing tests remain unchanged.
+Freeze C0/M0/I0 group slices and their existing helpers/add-edit/Measurement fakes,
+static source guards, production, writer/Session/event semantics, renderers,
+maps/index, tools, schemas, packages/assets and foreign Windows/scratch bytes.
+The Inspector local editor remains separate from Add's canonical save draft.
+No Placement module, holder/controller/provider or extraction implementation
+is authorized by this scope or its child.
+
+### Validation and recording
+
+Verify current five-doc material, route, live registry/anchors, byte preservation,
+both Git diff checks, doctor and binding temporary-output validate_all.
+No Flutter/analyzer run is required for this docs-only scope absent conflict.
+Future P0 requires focused/full Board Canvas/full Flutter, analyzer with only
+the accepted inherited three infos, doctor, temporary-output validate_all and
+one-file/source/oracle preservation checks as bound by the artifact.
+After committed P0, the test map needs TEST_DRIFT maintenance by a later human
+decision; the host map remains REVIEWED_NO_CHANGE. No maintenance child is armed.
+After independent audit and explicit Phase-2 authorization, only the artifact's
+PLACEMENT_P0_SCOPE_VERDICT block interior and this ledger Status cell may change.
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 committed-source Code Map maintenance
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`.
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE / PHASE_1`.

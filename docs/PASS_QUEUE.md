@@ -2,10 +2,41 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
 
-## Inspector I1 committed-source Code Map maintenance sequence
+## Placement P0 single-child characterization sequence
+
+The human selected this docs-only scope after accepted, committed Inspector I1
+Code Map maintenance at `47e1c3188f37febe57db34c1a397851c6749207f`.
+That predecessor authority is spent; retained predecessor bodies are historical.
+ACTIVE_SCOPE_LOCK owns the exact five-doc material; detailed binding evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+1. Verify aligned baseline, main/worktree, divergence 0/0, staged/unmerged empty,
+   no substantive entry diff and preserved Windows/two-scratch residue.
+2. Reserve only `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
+   and only `test/widget/board_canvas_screen_test.dart`; add one neutral ledger
+   row and one unique empty verdict block. No tests or extraction in this scope.
+3. Verify current maps/anchors/57-row registry, source/oracle/history/raw-byte
+   preservation, exact five docs, route, both diff checks, doctor and binding
+   temporary-output validate_all. Use independent scope-lock audit.
+4. After acceptance and explicit Phase-2 authorization, record only verdict
+   interior plus matching ledger Status. Exact human commit/push activates the
+   reserved child without a routine lock-sync pass.
+5. The child characterizes the eight bounded Placement gap families, preserving
+   production and existing C0/M0/I0 oracles; only the Placement fake's optional
+   completion/mutable-error extension may alter its implementation, with defaults
+   unchanged. Run focused/full Board Canvas/full Flutter, accepted-debt analyzer,
+   doctor, temporary-output validate_all and one-file/preservation checks.
+6. Independent child audit and exact human commit/push follow repository policy.
+   After P0: `NEEDS_USER_DECISION`. No extraction or map-maintenance child is armed.
+   Carry test-map UPDATE_REQUIRED / TEST_DRIFT for later committed-source
+   maintenance selected by the human; host map REVIEWED_NO_CHANGE.
+
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 committed-source Code Map maintenance sequence
 
 The human selected immediate maintenance of committed Inspector I1 at
 `5d3d62d863f80fb2ee61c98df66d4ed72e9b2853`,

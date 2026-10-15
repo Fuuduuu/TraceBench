@@ -1,9 +1,44 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
 
-## Inspector I1 committed-source Code Map maintenance
+## Placement P0 characterization reservation
+
+The human selected a Lane A docs-only scope at `47e1c3188f37febe57db34c1a397851c6749207f`
+after accepted, committed Inspector I1 Code Map maintenance. Its authority is
+complete and spent; all retained predecessor sections below are historical.
+
+ACTIVE_SCOPE_LOCK owns exactly five current docs. Binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS.md`.
+
+Reserve exactly `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`,
+with `test/widget/board_canvas_screen_test.dart` as its only future writable path.
+Activation is conditional on independent scope acceptance, explicitly authorized
+bounded recording and the accepted scope commit/push. After P0: NEEDS_USER_DECISION.
+
+P0 characterizes only missing Placement pending/repeat, late completion,
+generation/current-event composition, failure/retry/unlock, Add/template/ghost
+lifetime across focus/responsive/selection changes, Add-entry reseeding and
+separate Inspector/Add drafts. It must preserve observed behavior without fixes.
+The future Placement fake may gain optional completion/mutable errors while
+retaining defaults; existing C0/M0/I0 oracles/helpers and unrelated tests freeze.
+
+No production, writer/Session/canonical/rendering change, extraction module,
+new controller/provider or Placement implementation reservation is made.
+Maps/index, historical evidence and foreign Windows/scratch remain fixed.
+Host/test maps and registry are current: 57 maps/rows, 55/0/2 statuses.
+Changed Dart responsibility zone: none. After committed P0 the test map needs
+UPDATE_REQUIRED / TEST_DRIFT; host REVIEWED_NO_CHANGE. Later maintenance needs
+a human route decision and is not another reserved child.
+
+Scope validation uses byte/route/material/anchor checks, both Git diff checks,
+doctor and the artifact's temporary-output validate_all invocation.
+Future child validation includes focused/full Board Canvas/full Flutter and
+only the committed three-info analyzer debt. No extraction is armed.
+Do not stage, commit or push.
+
+## Historical completed Inspector I1 committed-source Code Map maintenance
 
 Committed I1 at `5d3d62d863f80fb2ee61c98df66d4ed72e9b2853`,
 `refactor: extract board canvas inspector panel`, is exactly three accepted

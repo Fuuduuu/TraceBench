@@ -16263,6 +16263,11 @@ void main() {
     final componentSource = File(
       'lib/features/board_canvas/widgets/component_identity_panel.dart',
     ).readAsStringSync();
+    final inspectorFile = File(
+      'lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart',
+    );
+    expect(inspectorFile.existsSync(), isTrue);
+    final inspectorSource = inspectorFile.readAsStringSync();
     final wizardOverlaySource = File(
       'lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart',
     ).readAsStringSync();
@@ -16678,6 +16683,164 @@ void main() {
     expect(hostSource, contains('placementSectionBuilder:'));
     expect(hostSource, contains('_rightPanelSelectedMetadataComponent('));
     expect(hostSource, contains('_confirmAddComponentTemplatePlacement('));
+
+    expect(
+      RegExp(r'^class ([A-Z]\w*) extends StatelessWidget', multiLine: true)
+          .allMatches(inspectorSource)
+          .map((match) => match.group(1)),
+      unorderedEquals([
+        'BoardCanvasInspectorPanel',
+        'InspectorSectionHeader',
+        'InspectorMeasurementSummaryTile',
+        'InspectorVisualTraceSummaryTile',
+      ]),
+    );
+    for (final symbol in [
+      'class _PlacementInspectorCard extends StatelessWidget',
+      'class _MeasurementSummaryCard extends StatelessWidget',
+      'class _VisualTraceMetadataCard extends StatelessWidget',
+      'class _EvidenceTag extends StatelessWidget',
+      'class _InspectorField extends StatelessWidget',
+      'class _PhotoAlignmentReadinessPanel extends StatelessWidget',
+      'class _PhotoAlignmentSummaryTile extends StatelessWidget',
+      'String _displayDirectionLabel(',
+      'String? _firstPresentText(',
+      'String _identityStatus(',
+      'final ComponentVisualPlacementFact? placement;',
+      'final ComponentFact? component;',
+      'final FootprintTemplate? template;',
+      'final Widget? placementDraftSection;',
+      'if (placement == null)',
+      'children.add(placementDraftSection!);',
+      'return SingleChildScrollView(',
+      'if (index > 0) const SizedBox(height: 12)',
+      'endpointDisplayParts(',
+    ]) {
+      expect(inspectorSource, contains(symbol));
+    }
+    expect(
+      RegExp(r'^class \w+ extends (\w+)', multiLine: true)
+          .allMatches(inspectorSource)
+          .map((match) => match.group(1)),
+      everyElement('StatelessWidget'),
+    );
+    for (final moved in [
+      'class _InspectorPanel',
+      'class _PlacementInspectorCard',
+      'class _MeasurementSummaryCard',
+      'class _VisualTraceMetadataCard',
+      'class _MeasurementSummaryTile',
+      'class _VisualTraceSummaryTile',
+      'class _SectionHeader',
+      'class _EvidenceTag',
+      'class _InspectorField',
+      'class _PhotoAlignmentReadinessPanel',
+      'class _PhotoAlignmentSummaryTile',
+      'String _displayDirectionLabel(',
+      'String? _firstPresentText(',
+      'String _identityStatus(',
+    ]) {
+      expect(hostSource, isNot(contains(moved)));
+    }
+    for (final symbol in [
+      'BoardCanvasInspectorPanel(',
+      'placement: selectedEntry?.placement,',
+      'component: selectedEntry?.component,',
+      'template: selectedEntry?.template,',
+      'placementDraftSection:',
+      'InspectorSectionHeader(',
+      'InspectorMeasurementSummaryTile(',
+      'InspectorVisualTraceSummaryTile(',
+      'class _PlacementEntry',
+      'class _PlacementEditorDraftState',
+      'class _PlacementEditorShellCard',
+      '_placementEditorDraftFor(',
+      '_measurementsForComponent(',
+      '_visualTracesForComponent(',
+      '_visibleMeasurementValueBadgeComponentIds',
+      '_BoardCanvasSafetyEvidenceDisclosure',
+      'class _BoardPlacementPainter',
+      'class _FootprintPreviewPainter',
+    ]) {
+      expect(hostSource, contains(symbol));
+    }
+    for (final forbidden in [
+      'board_canvas_screen.dart',
+      'CanvasSelection',
+      '_PlacementEntry',
+      '_PlacementEditorDraftState',
+      '_PlacementEditorShellCard',
+      '_placementEditorDraftFor',
+      '_PlacementSaveTarget',
+      '_BoardCanvasSafetyEvidenceDisclosure',
+      '_BoardPlacementPainter',
+      '_FootprintPreviewPainter',
+      'placement_geometry.dart',
+      'CustomPainter',
+      'CustomPaint(',
+      'ProjectState',
+      'KnownFacts',
+      'knownFacts.',
+      'ProjectSession',
+      'project_session.dart',
+      'Provider',
+      'WidgetRef',
+      'Consumer',
+      'flutter_riverpod',
+      'Writer',
+      '_writer.dart',
+      'Request',
+      'applyCanonicalEvent',
+      'StatefulWidget',
+      'State<',
+      'ChangeNotifier',
+      'ValueNotifier',
+      'setState(',
+      'dart:io',
+      'dart:convert',
+      'MeasurementEventWriter',
+      'event_writer_service.py',
+      'jsonDecode(',
+      'jsonEncode(',
+      'known_facts.json',
+      'events.jsonl',
+      'board_graph.json',
+      'view_state.json',
+      'ProjectExporter',
+      'ProjectCreator',
+      'ProjectOverviewScreen',
+      'from_point',
+      'to_point',
+      'referencePointsPhoto[',
+      'referencePointsBoard[',
+      'Image(',
+      'DecorationImage(',
+      'RawImage(',
+      'Promote to net',
+      'measurementOverlay',
+      'measurementAnchor',
+      'measurementCoordinate',
+      'drawMeasurementBadge',
+      'visualTracePath',
+      'damagePath',
+      'suspectPath',
+      'measurementPath',
+      'photoLocalPath',
+      'drawVisualTrace',
+      'drawDamage',
+      'drawSuspect',
+      'drawMeasurementPath',
+      'drawMeasurementOverlay',
+      'drawPhotoLocal',
+      'drawPhotoOverlay',
+      'part of ',
+    ]) {
+      expect(inspectorSource, isNot(contains(forbidden)));
+    }
+    expect(
+      inspectorSource,
+      isNot(matches(RegExp(r'^\s*part\b', multiLine: true))),
+    );
 
 
   });

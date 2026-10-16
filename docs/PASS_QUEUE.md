@@ -2,10 +2,38 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Placement P0 single-child characterization sequence
+## Placement P0 committed-source test-map maintenance sequence
+
+The committed P0 child at `c43e07fcc06c22254176ef60fcbac790491a577b`
+completes the prior reservation. Its scope/test authority is spent; retained
+predecessor sections below are historical. The human selected only this
+seven-path maintenance under ACTIVE_SCOPE_LOCK. Binding evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Verify main/worktree, aligned baseline, divergence 0/0, staged/unmerged empty,
+   exact one-file P0 commit and preserved Windows/two-scratch residue.
+2. Refresh only test-map zone 6 and affected count/dependency/coverage prose.
+   Verify 255 declarations, eight groups, eleven P0 declarations/twelve cases;
+   preserve twelve zones, unrelated/C0/M0/I0 ownership and host map/source.
+3. Keep 57/57 registry with 54 MAINTAINED / 1 REVIEW_REQUIRED / 2 RETIRED;
+   only the test header/registry pair changes status. Add one neutral ledger
+   row and one empty verdict block; no other map or history cleanup.
+4. Validate committed evidence, anchors/format/registry/route, seven paths,
+   raw-byte/history preservation, both Git diff checks, doctor and temporary-
+   output validate_all. Flutter/analyzer are NOT_APPLICABLE absent conflict.
+5. After independent audit and explicit authorization, record only test-map
+   header Status, registry Status, verdict interior and matching ledger Status.
+   Preserve map body/route/ledger Description/all other rows and marker bytes.
+   Report any net-zero registry result rather than fabricating a final diff.
+6. Next: `NEEDS_USER_DECISION`. No extraction implementation or additional
+   maintenance pass is reserved; staging/commit/push remain human-owned.
+
+Do not stage, commit or push.
+
+## Historical completed Placement P0 single-child characterization sequence
 
 The human selected this docs-only scope after accepted, committed Inspector I1
 Code Map maintenance at `47e1c3188f37febe57db34c1a397851c6749207f`.

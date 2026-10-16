@@ -1,9 +1,36 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Placement P0 characterization reservation
+## Placement P0 committed-source Code Map maintenance
+
+P0 is committed at `c43e07fcc06c22254176ef60fcbac790491a577b`,
+`test: characterize Placement P0 behavior`: only the Board Canvas test file,
++655 / -1. The completed scope/test authorities are spent; all predecessor
+sections below are historical. The human selected immediate bounded maintenance.
+
+ACTIVE_SCOPE_LOCK owns exactly seven docs/map/index/artifact paths. Evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS.md`.
+Refresh the test map for TEST_DRIFT: 255 declarations (232 widget + 23 pure),
+eight explicit groups and eleven P0 declarations generating twelve cases.
+Zone 6 gains fake completion/error and current pending/lifetime/session/retry/
+repeat/selection/reseed evidence. Twelve zones, C0/M0/I0 and unrelated ownership
+remain. Host map REVIEWED_NO_CHANGE; all source/tests and other maps stay fixed.
+
+Phase-1 registry: 57 maps/57 rows; 54 MAINTAINED / 1 REVIEW_REQUIRED / 2 RETIRED.
+Only the test header and matching registry Status change to REVIEW_REQUIRED.
+Create one neutral ledger row and a unique empty verdict block. Preserve old
+ledger/artifact/residue bytes and predecessor bodies; rename only their three
+completed P0 headings. Validate counts/anchors/route/material/raw bytes, both
+diff checks, doctor and temporary-output validate_all. Flutter/analyzer are
+NOT_APPLICABLE to this docs-only pass absent a concrete conflict.
+Bounded Phase 2 after acceptance/authorization permits only the map-header/
+registry Status pair, verdict interior and matching ledger Status cell.
+Next: `NEEDS_USER_DECISION`. No extraction or later maintenance child is armed.
+Do not stage, commit or push.
+
+## Historical completed Placement P0 characterization reservation
 
 The human selected a Lane A docs-only scope at `47e1c3188f37febe57db34c1a397851c6749207f`
 after accepted, committed Inspector I1 Code Map maintenance. Its authority is

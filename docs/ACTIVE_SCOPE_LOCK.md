@@ -2,10 +2,66 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_TEST_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Placement P0 characterization scope lock
+## Current Placement P0 committed-source Code Map maintenance
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`.
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
+Entry HEAD and origin/main: `c43e07fcc06c22254176ef60fcbac790491a577b`,
+`test: characterize Placement P0 behavior`; exactly one test path, +655 / -1.
+Committed P0 completes the reserved characterization child. Its scope/test
+authority is spent; every retained predecessor section below is historical.
+The human selected this bounded maintenance; the old parent/child route is
+operationally stale because P0 is committed, not an unresolved write conflict.
+
+### Exact current docs/map authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+7. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS.md`
+
+Binding maintenance evidence:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS.md`.
+
+### Map and preservation boundary
+
+Refresh only the test map for UPDATE_REQUIRED / TEST_DRIFT from committed source:
+255 declarations (232 testWidgets + 23 test), eight explicit groups and eleven
+P0 declarations generating twelve cases. Extend existing zone 6 for the deferred/
+mutable-error Placement fake, pending/re-entry, panel/screen completion,
+generation/composition, retry/repeat, focus/935/936, captured selection and
+Add/Inspector draft evidence. Keep twelve zones and unrelated C0/M0/I0 ownership.
+The host map remains REVIEWED_NO_CHANGE; do not edit it or other maps.
+
+Phase 1 changes only the test-map header and matching registry Status to
+REVIEW_REQUIRED; registry stays 57 maps/rows, 54 MAINTAINED / 1 REVIEW_REQUIRED /
+2 RETIRED. Add one neutral ledger row and one unique empty verdict block.
+Freeze all source/tests/runtime/schemas/tools/assets, other/RETIRED maps,
+historical artifacts/ledger rows and Windows/scratch bytes. Only the three
+completed P0 predecessor headings below are renamed for historical framing;
+all predecessor section bodies and other original bytes remain fixed.
+
+### Validation and bounded recording
+
+Verify committed counts/anchors, registry parity/statuses, synchronized route,
+exact seven paths, raw-byte/history preservation, both Git diff checks, doctor
+and temporary-output validate_all. Flutter/analyzer are NOT_APPLICABLE absent
+a concrete conflict; no product behavior is changed.
+After independent audit and explicit authorization, Phase 2 may change only
+the test-map header Status, matching CODE_MAP_INDEX Status cell, artifact verdict
+interior and matching AUDIT_INDEX Status cell. Preserve all other bytes.
+If registry promotion becomes net-zero against HEAD, report it and exclude it
+from final substantive material; do not fabricate a registry diff.
+Next: `NEEDS_USER_DECISION`. No extraction or additional maintenance is reserved.
+Do not stage, commit or push.
+
+## Historical completed Placement P0 characterization scope lock
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CHARACTERIZATION_SCOPE_LOCK_PASS`.
 Lane A / `DOCS_SCOPE_LOCK`. Entry baseline: `47e1c3188f37febe57db34c1a397851c6749207f`.

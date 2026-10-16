@@ -4,13 +4,13 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 244 declarations: 221 `testWidgets` and 23 `test`.
-Seven explicit groups cover import, alignment, placement geometry, Wizard overlays, `M0 Measurement characterization`, `Components C0 characterization` and `Inspector I0 characterization`.
-I0 adds eight declarations generating twelve cases; declaration counts are not executed-test totals.
+Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 255 declarations: 232 `testWidgets` and 23 `test`.
+Eight explicit groups cover import, alignment, placement geometry, Wizard overlays, `M0 Measurement characterization`, `Components C0 characterization`, `Placement P0 characterization` and `Inspector I0 characterization`.
+I0 adds eight declarations generating twelve cases; P0 adds eleven declarations generating twelve cases. Declaration counts are not executed-test totals.
 The Inspector extraction extends only the existing static source-owner guard;
 I0/M0/C0 behavior groups and their fixtures/helpers remain unchanged.
 
@@ -23,7 +23,7 @@ I0/M0/C0 behavior groups and their fixtures/helpers remain unchanged.
 | 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels` | Drill-down, typed selection, order, preview, counts and hide-unmeasured behavior. |
 | 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution`, `openAdvancedDetails`, `advancedDetailsState`, `M1 pre-move advanced details preserve empty children`, `M1 pre-move advanced details preserve both READ provenance tiles`, `M1 pre-move advanced details keep traces before measurements`, `M1 pre-move component-only selection cannot authorize a save` | Draft/target/save/session and pure read contracts; four provenance/order/empty/no-placement cases characterize the extracted Measurement workflow through the host. |
 | 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson`, `Components C0 characterization`, `mountComponents`, `createDraft`, `editDraft` | Guards/requests/results plus C0 screen-lived drafts/status, pending/retry, current repeat-save asymmetry, session safety, selection, Placement isolation and rendered create/Placement/edit order. |
-| 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged` | Template/ghost/editor, normalized bounds, save and duplicate behavior. |
+| 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged`, `Placement P0 characterization`, `mountPlacement`, `requestFields`, `addDraft`, `inspectorDraft`, `ghostPosition`, `expectUnchangedFacts`, `expectOperationId` | Retained template/ghost/editor, normalized bounds and explicit/duplicate saves; P0 pending/re-entry, panel/screen completion, generation/composition, failure/retry/unlock, current repeat-save, focus/935/936 lifetime, captured-target selection, Add-entry reseeding and independent Add/Inspector drafts. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel`, `Inspector I0 characterization`, `inspectorState`, `mountInspector`, `expectNoWrites`, `draftCopy`, `changeDraft`, `selected placement order and four 12 px spacers at $size` | Projected metadata/safety plus I0 wide/compact order/spacing, installation/removal rows, measurement/badge copy and Canvas visibility coupling, host Placement draft retention/reseeding and component-only placeholder; class-independent rendered-container selection. |
 | 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource`, `componentSource`, `inspectorSource` | Hidden default, tools/focus, volatile state and ownership/data-path guards across host, Components, Measurement and Inspector modules, and existing read-only owners. |
@@ -106,6 +106,20 @@ source anchors, not claims about generated case counts. No line-number anchors.
 16. [D] I0 finds rendered section Card -> nearest SingleChildScrollView -> actual child Column; five-child order and four 12 px gaps at 1500×900/700×760.
     Metadata/copy/badge toggles, host draft retention/reseeding and component-only placeholder preserve session facts/events and leave every writer request empty.
 
+16. [D] P0 drives rendered controls and bounded pumps for pending lock/re-entry,
+    completion after Add removal or screen disposal with Session still alive,
+    stale-generation rejection and same-generation current-event composition.
+    Writer-result success copy remains visible even when Session rejects apply.
+17. [D] Typed/generic failures complete while focus removes Add; restored copy,
+    retained draft and enabled retry are checked. Clearing the fake error allows
+    another explicit request; facts remain unchanged and accepted events promote stale.
+18. [D] The same completed valid Placement form permits another writer request.
+    Returning the same appended fake event exercises Session dedup; operation-ID
+    checks pin the current shape without assuming wall-clock uniqueness.
+19. [D] P0 retains label/counts/size/rotation/ghost through focus and 935/936 remount,
+    keeps an in-flight request's captured target after selection changes, and
+    separates Add-entry projection reseeding/unplaced reset from Inspector draft.
+
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
@@ -116,11 +130,11 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | `BoardCanvasInspectorPanel` / `board_canvas_inspector_panel.dart` | indirect child / direct source read | Frozen I0 behavior through host composition; `inspectorSource` verifies stateless presentation ownership and host/module boundaries. |
 | Photo panel/read model/writer/import types | child / injected seam | Explicit import and primary alignment workflow. |
 | `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
-| `ProjectSession`, provider and project models | fixture / observation | Generation, events, freshness, dedup and replacement. |
+| `ProjectSession`, provider and project models | fixture / observation | Generation, current-event composition, freshness, dedup and replacement; P0 keeps the provider alive after screen disposal to observe late handoff. |
 | Measurement/placement libraries | direct pure systems | Deterministic read/geometry contracts. |
 | Wizard part, BoardFact models, `WizardIntake` | render/fixture input | Noncanonical intake and canonical projection. |
 | Router, `WorkbenchShell`, GoRouter | routed harness | Canvas bypass and stable secondary navigation boundary. |
-| Four V2 and photo doubles | observations | Exact requests and returned-event application. |
+| Four V2 and photo doubles | observations | Exact requests and returned-event application; Placement adds optional deferred completion and mutable errors while retaining immediate appended/event/request defaults. |
 | Flutter gestures, semantics, painter/layout APIs | driver | Input, viewport, private painter, pixel and geometry checks. |
 | `dart:io` | harness boundary | Temporary image fixtures and static source reads. |
 
@@ -155,13 +169,14 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Raster/lifecycle | [D] layout geometry and context exits | host/loader/renderer/solver | `ZERO_WRITE` / `UI_LOCAL` | raster, exits and reopen cases |
 | Additional import | [D] retained six widget cases | service/writer/session | exercised `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` boundaries | import group and unit suites |
 | Existing writers / Components | [D] unchanged C0 oracle for lifetime/pending/retry/repeat, exact requests, session/selection and rendered order | Components module, host holder lifetime/selection/Placement and Session | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Components C0 characterization` and retained writer families |
+| Placement characterization | [D] P0 pending/re-entry, panel/screen handoff, generation/composition, retry/repeat, lifetime/selection/reseed and independent drafts | host Placement, Session, navigator, Components placement slot, Inspector editor slot and focus/900-content-width branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Placement P0 characterization` plus retained save/duplicate/bounds/template/ghost tests |
 | Measurement characterization | [D] copy/requests, result/lifetime, provenance/order and no-placement guards | module, two host builders, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
 | Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
 | Inspector/boundaries | [D] I0 rendered order/spacing, metadata/copy, selected/unrelated badge visibility, host draft retention/reseeding and placeholder; retained safety/source assertions | Inspector presentation module; host selection/Placement draft/local modes, Canvas badges, Components and Measurement owners | `ZERO_WRITE` / `UI_LOCAL` | `Inspector I0 characterization` plus readiness/safety/structural cases |
 
 ## Relevant tests and helpers
 
-- Seven explicit groups: import, alignment, placement geometry, Wizard, `M0 Measurement characterization` (including four M1 cases), `Components C0 characterization` and `Inspector I0 characterization`.
+- Eight explicit groups: import, alignment, placement geometry, Wizard, `M0 Measurement characterization` (including four M1 cases), `Components C0 characterization`, `Placement P0 characterization` and `Inspector I0 characterization`.
 - `inspectorState`, `mountInspector`, `expectNoWrites`, `draftCopy`, `changeDraft` seed metadata/readiness/badges, drive rendered controls and check zero writer calls.
 - `openAdvancedDetails` and `advancedDetailsState` bound provenance fixtures;
   ordering compares rendered labelled rows by widget position, not source text.
@@ -169,6 +184,10 @@ tests do not turn a provisional transform into canonical alignment evidence.
   optional failure, existing-event and deferred completion controls.
 - `_FakeAddComponentWriter` and `_FakeEditComponentWriter` keep appended defaults
   and expose mutable errors for retry, optional completion and existing results.
+- `_FakePlacementWriter` records the request before optional completion, reads its
+  mutable error after that await, and retains existing immediate appended defaults.
+- P0 `mountPlacement`, `addDraft`, `inspectorDraft`, `ghostPosition`, `requestFields`,
+  `expectOperationId` and `expectUnchangedFacts` drive UI and observe current data.
 - `_FakePhotoAlignmentWriter` records ensure/confirm independently.
 - `_FakeAlignedPhotoAssetLoader` and `_fakeAlignedPhotoImage` bound image I/O.
 - `_primaryPhotoWriteResult` and alignment fixtures model exact returned events.
@@ -183,6 +202,8 @@ tests do not turn a provisional transform into canonical alignment evidence.
 
 - Completing a fake before replacement cannot prove stale-result rejection.
 - UI fakes cannot replace real copy/hash/rollback and Python tool tests.
+- Disposing Session together with the screen cannot prove late screen handoff;
+  settling while a deferred fake is pending can stall the test.
 - Baseline literals are historical fixture inputs, not freshly measured output.
 - Altering viewport and expected pixels together can conceal geometry drift.
 - Primary source, additional photo rows and Wizard presentation are distinct.
@@ -197,6 +218,8 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - One C0 or retained V2/pure case: named family, frozen fake, module/host lifetime/selection seam and direct writer/session owner.
 - One Measurement case: parameterized copy/request/result or one deferred
   completion plus captured session and panel-lifetime observation.
+- One P0 family: exact rendered Add/editor controls, optional fake completion/error,
+  captured target and Session generation/event observation; existing defaults stay fixed.
 - One I0 case: rendered container/geometry, metadata/copy/badge or host Placement draft observation; preserve no-write/session and unrelated badge checks.
 - One source boundary: exact host/part/imported-owner string checks, including
   Inspector public/private stateless ownership, resolved slot and data-path negatives.
@@ -211,6 +234,8 @@ are distinct test families. This map prescribes no test reorganization.
 Review titles/declarations/generated loops, fixture baselines/viewports, seams,
 session generation, primary source/digest, point/preview/layer behavior, matrix
 layout, current source guards, writer boundaries, Inspector container/draft reseeding and route composition.
+Also review Placement pending/disposal, generation/retry/repeat, ghost/remount,
+selection capture and Add-versus-Inspector draft boundaries.
 
 ## Known uncertainty
 
@@ -218,6 +243,8 @@ layout, current source guards, writer boundaries, Inspector container/draft rese
 - [D] Area assertions prove improvement over recorded literals in this fixture;
   they do not establish a universal gain or a minimum percentage.
 - [P] Private painter and static source assertions are structure-sensitive.
+- [D] P0's repeated Placement result is the same appended fake event; this pins
+  enabled repeat-save UI and Session dedup, not real-writer idempotency or clock uniqueness.
 - [D] The fallback-row guard `Vali Koht enne salvestamist.` has no direct M0
   case because the current panel supplies a row through the supported UI.
 - [D] The M0 935/936 case proves panel lifetime; it does not itself assert

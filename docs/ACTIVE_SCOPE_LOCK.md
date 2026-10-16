@@ -2,10 +2,91 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
 
-## Current Placement P0 committed-source Code Map maintenance
+## Current Placement P1 extraction scope lock
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`.
+Lane B / `DOCS_SCOPE_LOCK`. Entry HEAD/origin/main:
+`e4fa24aa0dcf59bf1278e2fa6c3d4bd780a84d32`.
+Accepted Placement P0 characterization and its committed Code Map maintenance
+are complete; their authorities are spent. The human selected this cohesive
+Placement extraction reservation. All retained predecessor sections are historical.
+
+### Exact current docs-only authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS.md`
+
+The artifact above is the detailed binding contract. No implementation, test,
+map, registry, tool, schema, asset or Windows change is authorized in this scope.
+
+### Single conditional implementation child
+
+Reserve exactly `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`,
+Lane B / `FLUTTER_REFACTOR / BEHAVIOR_PRESERVING_EXTRACTION`, with only:
+
+1. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+2. `lib/features/board_canvas/widgets/board_canvas_placement_panel.dart` (new)
+3. `test/widget/board_canvas_screen_test.dart`
+
+Activation requires independent scope acceptance, explicitly authorized bounded
+verdict recording, and exact human scope commit/push. No routine lock-sync or
+additional precondition pass is reserved. After implementation:
+`NEEDS_USER_DECISION`. No later extraction or maintenance child is armed.
+
+### Cohesive ownership and frozen boundaries
+
+The module owns Add Placement controls/workflow, separate Add/Inspector drafts,
+screen-lived state, template selection values, pending/status/failure, explicit
+confirmation and the existing Placement writer/Session handoff. One screen-lived
+module-defined holder survives panel/focus/935/936 removal and is disposed by the
+host. Its disposal suppresses late UI updates, never already-started handoff.
+
+The host retains selection/target eligibility, catalogue/preview painters, all
+Canvas rendering/geometry/gestures/ghost painting/routing, screen composition
+and Components/Inspector slots. Use public resolved values, one-way presentation
+builders, an opaque editor Widget and a read-only ghost-draft snapshot. No
+host-private type, host-mediated save callback, global provider/controller,
+painter or canonical semantic change crosses the new boundary.
+
+Preserve P0 pending/re-entry, after-removal/disposal completion, generation/dedup,
+exact copy/retry/unlock, current post-success repeat, captured targets, entry
+reseeding and Add/Inspector independence. Preserve eager single-entry Inspector
+draft reseeding. Do not add a successful-form guard or a confirmation path.
+Keep capture -> await writer -> Session application -> alive-only UI handling.
+The artifact fixes the exact inputs, layout seams and oracle byte contracts.
+
+Only the existing zone-9 static ownership/data-path test may change in the
+child. Freeze P0/C0/M0/I0 groups and every existing helper/fake and other test.
+All nonallowlisted source, writer/Session/schema/event/persistence behavior,
+Components/Inspector/Measurement libraries, maps/index, history and foreign
+Windows/scratch bytes remain frozen.
+
+### Validation, recording and map lifecycle
+
+Scope: exact five docs, route, maintained maps/anchors/registry, inverse history
+and raw-byte preservation, both Git diff checks, doctor, temporary-output
+validate_all and artifact whitespace/EOF. Flutter/analyzer/manual smoke are
+NOT_APPLICABLE to this docs-only scope absent a concrete conflict.
+Future child: pre/post P0 12/12, full Board Canvas/full Flutter, analyzer with only
+the inherited three infos, doctor/temp validation, frozen oracles, exact three
+paths and independent implementation audit; use focused responsive/interaction
+smoke when required by the actual diff and repository policy.
+After independent scope audit and explicit authorization, Phase 2 may change
+only the artifact verdict interior and this PASS_ID's ledger Status cell.
+Keep the block empty and row neutral during Phase 1.
+Maps stay fixed through implementation; accepted committed P1 requires later
+human-decided host/test refresh, new-module qualification and coupled-map review.
+Carry accepted map NITs/debt without fixing them. Stop rather than widen scope
+if state, rendering, oracle or writer/Session preservation needs a fourth path.
+Do not stage, commit, push, stash, reset or clean.
+
+## Historical completed Placement P0 committed-source Code Map maintenance
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`.
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.

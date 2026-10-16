@@ -1,9 +1,47 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
 
-## Placement P0 committed-source Code Map maintenance
+## Placement P1 extraction reservation
+
+The human selected one Lane B docs-only Placement P1 scope after accepted P0
+characterization and completed Code Map maintenance at
+`e4fa24aa0dcf59bf1278e2fa6c3d4bd780a84d32`.
+The predecessor authorities are spent; retained sections below are historical.
+ACTIVE_SCOPE_LOCK owns exactly five current docs. Detailed binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+Reserve only `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`:
+host, new `lib/features/board_canvas/widgets/board_canvas_placement_panel.dart`
+and the Board Canvas test file. It becomes executable only after independent
+scope acceptance, authorized bounded recording and exact human commit/push.
+After implementation: `NEEDS_USER_DECISION`; no automatic additional child.
+
+The module owns Placement workflow/controls, independent Add/Inspector drafts,
+screen-lived state and existing writer/Session handoff. The host keeps selection/
+eligibility, catalogue/preview painters, Canvas/ghost/gesture/transform/rendering,
+main lifetime/composition and Components/Inspector integration. Public resolved
+values, one-way builders/slots and read-only ghost state form the boundary.
+Pending operations retain the captured target and apply the returned event to
+the captured Session before disposed-holder UI checks. P0 behavior, labels,
+layout and current repeat-save limitations remain unchanged.
+
+Freeze P0/C0/M0/I0 groups, helpers/fakes and all tests outside the existing zone-9
+static ownership/data-path guard. No source/test edits occur in this scope.
+Maps/index and foreign Windows/two-scratch material stay byte-identical.
+Host/test maps are current; after committed P1 both need maintenance, the new
+module must be qualified and coupled Components/Inspector descriptions reviewed.
+Existing accepted map NITs/debt remain unpatched.
+
+Validate this exact five-doc scope with route/anchor/registry/raw-byte checks,
+both Git diff checks, doctor and binding temporary-output validate_all.
+Future child validation includes pre/post P0, full Board Canvas/Flutter,
+accepted-debt analyzer, preservation, responsive interaction smoke if required
+and independent implementation audit. Phase 2 is reserved solely for verdict
+interior plus matching ledger Status. Do not stage, commit or push.
+
+## Historical completed Placement P0 committed-source Code Map maintenance
 
 P0 is committed at `c43e07fcc06c22254176ef60fcbac790491a577b`,
 `test: characterize Placement P0 behavior`: only the Board Canvas test file,

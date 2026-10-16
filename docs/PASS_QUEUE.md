@@ -2,10 +2,46 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P0_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
 
-## Placement P0 committed-source test-map maintenance sequence
+## Placement P1 single-child extraction sequence
+
+Accepted P0 tests and committed maintenance at
+`e4fa24aa0dcf59bf1278e2fa6c3d4bd780a84d32`
+complete the predecessor authority. Retained sections below are historical.
+The human selected this Lane B docs-only reservation; ACTIVE_SCOPE_LOCK owns
+the exact five-doc material. Binding contract:
+`docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS.md`.
+
+1. Verify main/worktree, aligned entry baseline, divergence 0/0, staged/unmerged
+   empty, completed P0 route and preserved Windows/two-scratch bytes.
+2. Reserve only `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS` and only the
+   host, new normal Placement library and Board Canvas test file. Bind module
+   state/writer ownership, host rendering/selection/catalogue, exact lifecycle/
+   layout seams, P0/C0/M0/I0 hashes and the zone-9-only test exception.
+3. Add one neutral ledger row and one unique empty verdict block. Validate
+   exact five docs, route, maintained maps/anchors/57-row registry, byte/history
+   preservation, both Git diff checks, doctor and temporary-output validate_all.
+4. Independent scope-lock audit precedes explicitly authorized verdict-interior/
+   ledger-Status recording. Exact human commit/push activates the reserved child;
+   no routine lock-sync, audit-of-audit or extra precondition pass is reserved.
+5. Before production edits the child runs committed P0: twelve cases must pass.
+   Preserve drafts/pending/repeat/reseed/selection and capture -> await -> Session
+   -> alive-only UI order. Only zone-9 ownership/data-path guards may change in
+   tests; all behavior oracles/helpers/fakes remain fixed.
+6. Run post-move P0, full Board Canvas/full Flutter, accepted-debt analyzer,
+   doctor/temp validation, exact three-path/frozen-byte checks and any required
+   focused responsive/interaction smoke. Independent implementation audit and
+   exact human commit/push follow repository policy.
+7. After P1: `NEEDS_USER_DECISION`. No later extraction or maintenance child
+   is reserved. Keep maps/index fixed during implementation; later committed-
+   source maintenance must refresh host/test, qualify the new module and review
+   coupled Components/Inspector descriptions without silently fixing old NITs.
+
+Do not stage, commit, push, stash, reset or clean.
+
+## Historical completed Placement P0 committed-source test-map maintenance sequence
 
 The committed P0 child at `c43e07fcc06c22254176ef60fcbac790491a577b`
 completes the prior reservation. Its scope/test authority is spent; retained

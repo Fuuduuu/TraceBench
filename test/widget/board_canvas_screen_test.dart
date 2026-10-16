@@ -1329,11 +1329,13 @@ class _FakeEditComponentWriter implements V2EditComponentWriter {
 class _FakePlacementWriter implements V2PlacementWriter {
   _FakePlacementWriter({
     this.error,
+    this.completion,
     this.status = V2PlacementWriteStatus.appended,
     Map<String, dynamic>? event,
   }) : event = event ?? _placementWriterEventJson();
 
-  final Object? error;
+  Object? error;
+  final Completer<void>? completion;
   final V2PlacementWriteStatus status;
   final Map<String, dynamic> event;
   final List<V2PlacementWriterRequest> requests = <V2PlacementWriterRequest>[];
@@ -1344,6 +1346,9 @@ class _FakePlacementWriter implements V2PlacementWriter {
     required V2PlacementWriterRequest request,
   }) async {
     requests.add(request);
+    if (completion != null) {
+      await completion!.future;
+    }
     final error = this.error;
     if (error != null) {
       throw error;
@@ -15620,6 +15625,655 @@ void main() {
       find.textContaining('Notes: visible copper path near edge'),
       findsOneWidget,
     );
+  });
+
+  group('Placement P0 characterization', () {
+    const builder = 'board_canvas_add_component_builder_';
+    const template = 'board_canvas_add_component_template_';
+    const rect2 = 'template_family_rect_2_top_bottom';
+    const pending = 'Salvestan valitud komponendi visuaalset paigutust...';
+    const success =
+        'Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.';
+    const sourcePlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_r101',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.25,
+      centerY: 0.45,
+      rotationDeg: 15,
+      width: 0.4,
+      height: 0.3,
+      templateId: rect2,
+      sourceEventId: 'evt_p0_source',
+      status: 'user_confirmed_visual',
+    );
+    const otherPlacement = ComponentVisualPlacementFact(
+      componentId: 'cmp_u1',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'bottom',
+      centerX: 0.75,
+      centerY: 0.65,
+      rotationDeg: 90,
+      width: 0.2,
+      height: 0.2,
+      templateId: 'template_family_rect_4_perimeter',
+      sourceEventId: 'evt_p0_other',
+      status: 'user_confirmed_visual',
+    );
+
+    ProjectState placementState({String projectId = 'proj_001'}) =>
+        _inlineProjectState(
+          projectId: projectId,
+          components: const [
+            ComponentFact(
+              componentId: 'cmp_r101',
+              designator: 'R101',
+              type: 'resistor',
+            ),
+            ComponentFact(componentId: 'cmp_u1', designator: 'U1', type: 'ic'),
+            ComponentFact(
+                componentId: 'R6', designator: 'R6', type: 'resistor'),
+          ],
+          placements: const [sourcePlacement, otherPlacement],
+          // The injected writer performs no filesystem I/O.
+          projectDirectory: r'C:\placement-p0-fixture',
+        );
+
+    Future<void> frames(WidgetTester tester) async {
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+
+    Future<void> tap(WidgetTester tester, String key) =>
+        _tapWidgetByKey(tester, Key(key));
+
+    String copy(WidgetTester tester, String key) =>
+        tester.widget<Text>(find.byKey(Key(key))).data!;
+
+    Offset ghostPosition(WidgetTester tester) => tester.getCenter(
+          find.byKey(const Key('${template}ghost_preview_body')),
+        );
+
+    String label(WidgetTester tester) => tester
+        .widget<EditableText>(
+          find.descendant(
+            of: find.byKey(const Key('${template}draft_label_input')),
+            matching: find.byType(EditableText),
+          ),
+        )
+        .controller
+        .text;
+
+    OutlinedButton saveButton(WidgetTester tester) =>
+        tester.widget<OutlinedButton>(
+          find.descendant(
+            of: find.byKey(const Key('${builder}save')),
+            matching: find.byType(OutlinedButton),
+          ),
+        );
+
+    ProjectSession session(WidgetTester tester) => ProviderScope.containerOf(
+          tester.element(find.byType(BoardCanvasScreen)),
+          listen: false,
+        ).read(projectStateProvider.notifier);
+
+    Future<void> enterLabel(WidgetTester tester, String value) async {
+      final field = find.byKey(const Key('${template}draft_label_input'));
+      await tester.ensureVisible(field);
+      await tester.enterText(field, value);
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+
+    Future<ProjectState> mountPlacement(
+      WidgetTester tester,
+      _FakePlacementWriter writer, {
+      bool openAdd = true,
+      Size size = const Size(1400, 1000),
+    }) async {
+      await tester.binding.setSurfaceSize(size);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final initial = placementState();
+      final addWriter = _FakeAddComponentWriter();
+      final editWriter = _FakeEditComponentWriter();
+      final measureWriter = _FakeSaveMeasurementWriter();
+      addTearDown(() {
+        expect(addWriter.requests, isEmpty);
+        expect(editWriter.requests, isEmpty);
+        expect(measureWriter.requests, isEmpty);
+      });
+      await tester.pumpWidget(
+        _harness(
+          projectState: initial,
+          placementWriter: writer,
+          addComponentWriter: addWriter,
+          editComponentWriter: editWriter,
+          measurementWriter: measureWriter,
+        ),
+      );
+      await frames(tester);
+      // This existing helper settles only before any deferred save is started.
+      await _selectPlacement(tester, 'R101 (cmp_r101)');
+      if (openAdd) {
+        await tap(tester, 'board_canvas_rail_add_component_tool');
+        await enterLabel(tester, 'P0 draft');
+        expect(saveButton(tester).onPressed, isNotNull);
+      }
+      return initial;
+    }
+
+    Future<void> save(WidgetTester tester) async {
+      await tap(tester, '${builder}save');
+      await frames(tester);
+    }
+
+    void expectUnchangedFacts(ProjectState initial, ProjectState current) {
+      expect(current.knownFacts, same(initial.knownFacts));
+      expect(initial.events, isEmpty);
+    }
+
+    List<Object?> requestFields(V2PlacementWriterRequest request) => [
+          request.componentId,
+          request.coordinateSpace,
+          request.boardSide,
+          request.centerX,
+          request.centerY,
+          request.width,
+          request.height,
+          request.rotationDeg,
+          request.templateId,
+          request.sourcePhotoId,
+          request.notes,
+        ];
+
+    void expectOperationId(V2PlacementWriterRequest request) {
+      expect(
+        request.clientOperationId,
+        matches(RegExp(r'^op_board_canvas_visual_placement_cmp_r101_[0-9]+$')),
+      );
+    }
+
+    List<String> addDraft(WidgetTester tester) => [
+          label(tester),
+          copy(tester, '${template}builder_top_value'),
+          copy(tester, '${template}builder_right_value'),
+          copy(tester, '${template}builder_bottom_value'),
+          copy(tester, '${template}builder_left_value'),
+          copy(tester, '${builder}width_value'),
+          copy(tester, '${builder}height_value'),
+          copy(tester, '${builder}rotation_value'),
+        ];
+
+    List<String> inspectorDraft(WidgetTester tester) => [
+          for (final field in [
+            'component',
+            'side',
+            'rotation',
+            'width',
+            'height'
+          ])
+            copy(tester, 'board_canvas_placement_draft_$field'),
+        ];
+
+    testWidgets('pending confirmation stays locked across Add re-entry',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      final initial = await mountPlacement(tester, writer);
+      await save(tester);
+      expect(copy(tester, '${builder}save_status'), pending);
+      expect(saveButton(tester).onPressed, isNull);
+      expect(writer.requests, hasLength(1));
+      expect(_readProjectState(tester), same(initial));
+
+      await save(tester);
+      expect(writer.requests, hasLength(1));
+      await tap(tester, 'board_canvas_rail_inspector_tool');
+      expect(find.byKey(const Key('${builder}card')), findsNothing);
+      await tap(tester, 'board_canvas_rail_add_component_tool');
+      expect(label(tester), 'P0 draft');
+      expect(copy(tester, '${builder}save_status'), pending);
+      expect(saveButton(tester).onPressed, isNull);
+      await save(tester);
+      expect(writer.requests, hasLength(1));
+      expect(_readProjectState(tester), same(initial));
+
+      completion.complete();
+      await frames(tester);
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(saveButton(tester).onPressed, isNotNull);
+      final current = _readProjectState(tester);
+      expect(current.events.single.eventId, writer.event['event_id']);
+      expect(current.isProjectionStale, isTrue);
+      expectUnchangedFacts(initial, current);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('completion with Add removed applies event and retains status',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      final initial = await mountPlacement(tester, writer);
+      await save(tester);
+      await tap(tester, 'board_canvas_rail_inspector_tool');
+      expect(find.byKey(const Key('${builder}card')), findsNothing);
+      expect(_readProjectState(tester), same(initial));
+      completion.complete();
+      await frames(tester);
+
+      final current = _readProjectState(tester);
+      expect(current.events.single.eventId, writer.event['event_id']);
+      expect(current.isProjectionStale, isTrue);
+      expectUnchangedFacts(initial, current);
+      await tap(tester, 'board_canvas_rail_add_component_tool');
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(label(tester), 'P0 draft');
+      expect(saveButton(tester).onPressed, isNotNull);
+      expect(writer.requests, hasLength(1));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('screen disposal keeps already-started session handoff alive',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      final initial = await mountPlacement(tester, writer);
+      final screen = find.byType(BoardCanvasScreen);
+      final oldScreenState = tester.state(screen);
+      final container =
+          ProviderScope.containerOf(tester.element(screen), listen: false);
+      final projectSession = container.read(projectStateProvider.notifier);
+      final generation = projectSession.generation;
+      await save(tester);
+      Navigator.of(tester.element(screen)).pushReplacement<void, void>(
+        PageRouteBuilder<void>(
+          transitionDuration: Duration.zero,
+          pageBuilder: (_, __, ___) =>
+              const Scaffold(body: Text('P0 screen removed')),
+        ),
+      );
+      await frames(tester);
+      await frames(tester);
+      expect(screen, findsNothing);
+      expect(oldScreenState.mounted, isFalse);
+      expect(container.read(projectStateProvider), same(initial));
+      expect(projectSession.generation, generation);
+
+      completion.complete();
+      await frames(tester);
+      final current = container.read(projectStateProvider)!;
+      expect(current.events.single.eventId, writer.event['event_id']);
+      expect(current.isProjectionStale, isTrue);
+      expect(projectSession.generation, generation);
+      expectUnchangedFacts(initial, current);
+      expect(writer.requests, hasLength(1));
+      expect(find.text('P0 screen removed'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'replacement generation rejects event but keeps writer-result copy',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      await mountPlacement(tester, writer);
+      final projectSession = session(tester);
+      final generation = projectSession.generation;
+      await save(tester);
+      final replacement = placementState(projectId: 'proj_p0_replacement');
+      _replaceProjectState(tester, replacement);
+      await frames(tester);
+      expect(projectSession.generation, generation + 1);
+
+      completion.complete();
+      await frames(tester);
+      expect(_readProjectState(tester), same(replacement));
+      expect(replacement.events, isEmpty);
+      expect(replacement.isProjectionStale, isFalse);
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(saveButton(tester).onPressed, isNotNull);
+      expect(writer.requests, hasLength(1));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('same-generation completion composes with intervening event',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      final initial = await mountPlacement(tester, writer);
+      final projectSession = session(tester);
+      final generation = projectSession.generation;
+      await save(tester);
+      final intervening = _componentCreatedEventJson(
+        eventId: 'evt_p0_intervening',
+        clientOperationId: 'op_p0_intervening',
+      );
+      expect(
+        projectSession.applyCanonicalEvent(intervening, generation: generation),
+        isTrue,
+      );
+      await frames(tester);
+      expect(_readProjectState(tester).events.single.eventId,
+          'evt_p0_intervening');
+      expect(projectSession.generation, generation);
+      expect(copy(tester, '${builder}save_status'), pending);
+
+      completion.complete();
+      await frames(tester);
+      final current = _readProjectState(tester);
+      expect(
+        current.events.map((event) => event.eventId),
+        ['evt_p0_intervening', writer.event['event_id']],
+      );
+      expect(current.isProjectionStale, isTrue);
+      expect(projectSession.generation, generation);
+      expectUnchangedFacts(initial, current);
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(writer.requests, hasLength(1));
+      expect(tester.takeException(), isNull);
+    });
+
+    for (final failure in [
+      (
+        name: 'typed',
+        error: const V2PlacementWriterException(
+          V2PlacementFailureKind.lockConflict,
+          'P0 writer locked',
+        ),
+        copy: 'Salvestamine ebaõnnestus: P0 writer locked',
+      ),
+      (
+        name: 'generic',
+        error: StateError('P0 retry failure'),
+        copy: 'Salvestamine ebaõnnestus: Bad state: P0 retry failure',
+      ),
+    ]) {
+      testWidgets(
+        '${failure.name} failure while hidden retains draft and unlocks retry',
+        (tester) async {
+          final completion = Completer<void>();
+          final writer = _FakePlacementWriter(
+            completion: completion,
+            error: failure.error,
+          );
+          final initial = await mountPlacement(tester, writer);
+          await enterLabel(tester, 'P0 retry');
+          await tap(tester, '${builder}rotation_increment');
+          final draft = addDraft(tester);
+          await save(tester);
+          expect(saveButton(tester).onPressed, isNull);
+          await tap(tester, 'board_canvas_focus_toggle_button');
+          expect(find.byKey(const Key('${builder}card')), findsNothing);
+          completion.complete();
+          await frames(tester);
+          expect(_readProjectState(tester), same(initial));
+          await tap(tester, 'board_canvas_focus_restore_button');
+          expect(copy(tester, '${builder}save_status'), failure.copy);
+          expect(addDraft(tester), draft);
+          expect(saveButton(tester).onPressed, isNotNull);
+          expect(writer.requests, hasLength(1));
+
+          writer.error = null;
+          await save(tester);
+          expect(writer.requests, hasLength(2));
+          expect(
+            requestFields(writer.requests.last),
+            requestFields(writer.requests.first),
+          );
+          expectOperationId(writer.requests.first);
+          expectOperationId(writer.requests.last);
+          expect(copy(tester, '${builder}save_status'), success);
+          expect(addDraft(tester), draft);
+          expect(saveButton(tester).onPressed, isNotNull);
+          final current = _readProjectState(tester);
+          expect(current.events.single.eventId, writer.event['event_id']);
+          expect(current.isProjectionStale, isTrue);
+          expectUnchangedFacts(initial, current);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+
+    testWidgets(
+        'completed valid form permits another save with returned-event dedup',
+        (tester) async {
+      final writer = _FakePlacementWriter();
+      final initial = await mountPlacement(tester, writer);
+      await save(tester);
+      expect(writer.requests, hasLength(1));
+      final afterFirst = _readProjectState(tester);
+      final draft = addDraft(tester);
+      expect(afterFirst.events, hasLength(1));
+      expect(saveButton(tester).onPressed, isNotNull);
+
+      await save(tester);
+      expect(writer.requests, hasLength(2));
+      expect(
+        requestFields(writer.requests.last),
+        requestFields(writer.requests.first),
+      );
+      for (final request in writer.requests) {
+        expectOperationId(request);
+      }
+      // Shape is pinned without assuming the wall clock makes IDs unique.
+      expect(_readProjectState(tester), same(afterFirst));
+      expect(afterFirst.events.single.eventId, writer.event['event_id']);
+      expect(afterFirst.isProjectionStale, isTrue);
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(addDraft(tester), draft);
+      expect(saveButton(tester).onPressed, isNotNull);
+      expectUnchangedFacts(initial, afterFirst);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Add draft and ghost survive focus removal and 935/936 cutover',
+        (tester) async {
+      final writer = _FakePlacementWriter();
+      final initial = await mountPlacement(
+        tester,
+        writer,
+        size: const Size(936, 1000),
+      );
+      final screenState = tester.state(find.byType(BoardCanvasScreen));
+      await enterLabel(tester, 'P0 lifetime');
+      for (final key in [
+        '${template}builder_top_increment',
+        '${builder}width_increment',
+        '${builder}height_increment',
+        '${builder}rotation_increment',
+      ]) {
+        await tap(tester, key);
+      }
+      await _tapCanvasAtNormalized(tester, x: 0.62, y: 0.38);
+      final draft = addDraft(tester);
+      final ghostCenter = ghostPosition(tester);
+      final ghostRect = tester.getRect(
+        find.byKey(const Key('${template}ghost_preview_body')),
+      );
+      expect(
+        find.byKey(const Key('${builder}preview_$rect2')),
+        findsOneWidget,
+      );
+
+      await tap(tester, 'board_canvas_focus_toggle_button');
+      expect(find.byKey(const Key('${builder}card')), findsNothing);
+      await tap(tester, 'board_canvas_focus_restore_button');
+      expect(addDraft(tester), draft);
+      expect(ghostPosition(tester), ghostCenter);
+
+      final oldBuilder =
+          tester.element(find.byKey(const Key('${builder}card')));
+      await tester.binding.setSurfaceSize(const Size(935, 1000));
+      await frames(tester);
+      expect(
+          find.byKey(const Key('board_canvas_workbench_shell')), findsNothing);
+      expect(find.byKey(const Key('${builder}card')), findsNothing);
+      expect(oldBuilder.mounted, isFalse);
+      expect(tester.state(find.byType(BoardCanvasScreen)), same(screenState));
+      await tester.binding.setSurfaceSize(const Size(936, 1000));
+      await frames(tester);
+      expect(find.byKey(const Key('board_canvas_workbench_shell')),
+          findsOneWidget);
+      expect(tester.state(find.byType(BoardCanvasScreen)), same(screenState));
+      expect(addDraft(tester), draft);
+      expect(ghostPosition(tester), ghostCenter);
+      expect(
+        tester.getRect(find.byKey(const Key('${template}ghost_preview_body'))),
+        ghostRect,
+      );
+      expect(writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(initial));
+
+      await save(tester);
+      final request = writer.requests.single;
+      expect(request.componentId, 'cmp_r101');
+      expect(request.templateId, rect2);
+      expect(request.centerX, closeTo(0.62, 0.001));
+      expect(request.centerY, closeTo(0.38, 0.001));
+      expect(request.width, closeTo(0.5, 0.00001));
+      expect(request.height, closeTo(0.4, 0.00001));
+      expect(request.rotationDeg, 25);
+      expectUnchangedFacts(initial, _readProjectState(tester));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'selection change during save preserves captured target without restoring it',
+        (tester) async {
+      final completion = Completer<void>();
+      final writer = _FakePlacementWriter(completion: completion);
+      final initial = await mountPlacement(tester, writer);
+      await save(tester);
+      final captured = requestFields(writer.requests.single);
+      // Use bounded rendered navigator actions while the operation is pending.
+      await tap(tester, 'board_canvas_rail_placements_tool');
+      await tap(tester, 'board_canvas_component_category_integrated_circuits');
+      await tap(tester, 'board_canvas_component_row_cmp_u1');
+      await tap(tester, 'board_canvas_component_view_placement');
+      await tap(tester, 'board_canvas_rail_inspector_tool');
+      expect(
+        copy(tester, 'board_canvas_placement_draft_component'),
+        'Selected component: U1 (cmp_u1)',
+      );
+      expect(writer.requests, hasLength(1));
+      expect(writer.requests.single.componentId, 'cmp_r101');
+      expect(_readProjectState(tester), same(initial));
+
+      completion.complete();
+      await frames(tester);
+      final current = _readProjectState(tester);
+      expect(current.events.single.payload['component_id'], 'cmp_r101');
+      expect(current.isProjectionStale, isTrue);
+      expect(
+        copy(tester, 'board_canvas_placement_draft_component'),
+        'Selected component: U1 (cmp_u1)',
+      );
+      await tap(tester, 'board_canvas_rail_add_component_tool');
+      expect(copy(tester, '${builder}save_context'),
+          'Valitud komponent: U1 (cmp_u1)');
+      expect(copy(tester, '${builder}save_status'), success);
+      expect(label(tester), 'P0 draft');
+      expect(saveButton(tester).onPressed, isNotNull);
+      expect(requestFields(writer.requests.single), captured);
+      expectUnchangedFacts(initial, current);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'Add entry reseeds projection geometry independently of Inspector draft',
+        (tester) async {
+      final writer =
+          _FakePlacementWriter(error: StateError('P0 retained status'));
+      final initial = await mountPlacement(tester, writer, openAdd: false);
+      for (final field in [
+        'side_toggle',
+        'rotation_increment',
+        'width_increment',
+        'height_increment'
+      ]) {
+        await tap(tester, 'board_canvas_placement_draft_$field');
+      }
+      final changedInspector = inspectorDraft(tester);
+      expect(changedInspector, [
+        'Selected component: R101 (cmp_r101)',
+        'Board side draft: bottom',
+        'Rotation draft: 30 deg',
+        'Width draft: 0.50',
+        'Height draft: 0.40',
+      ]);
+      await tap(tester, 'board_canvas_rail_add_component_tool');
+      expect(copy(tester, '${builder}width_value'), '0.40');
+      expect(copy(tester, '${builder}height_value'), '0.30');
+      expect(copy(tester, '${builder}rotation_value'), 'Pööre: 15°');
+      await enterLabel(tester, 'P0 reseed');
+      for (final key in [
+        '${template}builder_top_increment',
+        '${builder}width_increment',
+        '${builder}height_increment',
+        '${builder}rotation_increment',
+      ]) {
+        await tap(tester, key);
+      }
+      await _tapCanvasAtNormalized(tester, x: 0.62, y: 0.38);
+      expect(find.byKey(const Key('${template}ghost_draft_position')),
+          findsOneWidget);
+      await save(tester);
+      const failure = 'Salvestamine ebaõnnestus: Bad state: P0 retained status';
+      expect(copy(tester, '${builder}save_status'), failure);
+      expect(writer.requests.single.boardSide, 'top');
+
+      await tap(tester, 'board_canvas_rail_add_component_tool');
+      expect(label(tester), 'P0 reseed');
+      expect(copy(tester, '${builder}save_status'), failure);
+      expect(copy(tester, '${template}builder_top_value'), '1');
+      expect(copy(tester, '${builder}width_value'), '0.40');
+      expect(copy(tester, '${builder}height_value'), '0.30');
+      expect(copy(tester, '${builder}rotation_value'), 'Pööre: 15°');
+      expect(find.byKey(const Key('${template}ghost_draft_position')),
+          findsNothing);
+      expect(find.byKey(const Key('${builder}preview_$rect2')), findsOneWidget);
+      await tap(tester, 'board_canvas_rail_inspector_tool');
+      expect(inspectorDraft(tester), changedInspector);
+      expect(_readProjectState(tester), same(initial));
+      expect(writer.requests, hasLength(1));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+        'unplaced Add entry resets template, label, scalars, ghost and status',
+        (tester) async {
+      final writer = _FakePlacementWriter(error: StateError('P0 old status'));
+      final initial = await mountPlacement(tester, writer);
+      await tap(tester, '${builder}rotation_increment');
+      await tap(tester, '${template}builder_top_increment');
+      await _tapCanvasAtNormalized(tester, x: 0.62, y: 0.38);
+      await save(tester);
+      expect(copy(tester, '${builder}save_status'),
+          'Salvestamine ebaõnnestus: Bad state: P0 old status');
+
+      await tap(tester, 'board_canvas_rail_placements_tool');
+      await tap(tester, 'board_canvas_component_category_resistors');
+      await tap(tester, 'board_canvas_component_row_R6');
+      await tap(tester, 'board_canvas_component_place_action');
+      expect(find.byKey(const Key('${template}list_rows')), findsOneWidget);
+      expect(find.byKey(const Key('${builder}card')), findsNothing);
+      expect(find.byKey(const Key('${template}ghost_preview')), findsNothing);
+      await tap(tester, '$template$rect2');
+      expect(label(tester), 'R6');
+      expect(copy(tester, '${template}builder_top_value'), '1');
+      expect(copy(tester, '${builder}width_value'), '1.00');
+      expect(copy(tester, '${builder}height_value'), '0.60');
+      expect(copy(tester, '${builder}rotation_value'), 'Pööre: 0°');
+      expect(copy(tester, '${builder}save_context'), 'Valitud komponent: R6');
+      expect(find.byKey(const Key('${builder}save_status')), findsNothing);
+      expect(find.byKey(const Key('${template}ghost_draft_position')),
+          findsNothing);
+      expect(find.byKey(const Key('${template}ghost_preview')), findsOneWidget);
+      expect(find.text('Vali canvasele paigutuse asukoht.'), findsOneWidget);
+      expect(saveButton(tester).onPressed, isNull);
+      expect(writer.requests, hasLength(1));
+      expect(_readProjectState(tester), same(initial));
+      expect(tester.takeException(), isNull);
+    });
   });
 
   group('Inspector I0 characterization', () {

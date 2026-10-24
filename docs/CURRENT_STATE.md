@@ -1,9 +1,37 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Placement P1 committed-source Code Map maintenance
+## Shared Workbench Foundation v1 reservation
+
+The human decision of 2026-10-24 selects BoardCanvasPalette warm black/gold.
+Review/scope entry baseline: `9b30f5be46b1dc4656e2f14c14316391cf8a26ac`.
+Strategy C coordinates feature architecture and visual design through separately
+auditable scopes. Committed Placement P1 map maintenance is retained as history.
+
+ACTIVE_SCOPE_LOCK owns five current docs and reserves only
+`TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS` with six runtime/test paths.
+Binding contract: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS.md`.
+WorkbenchPage applies one complete warm dark theme only to opt-in content.
+Freeze existing theme class/buildTheme/root/ProjectGate appearance and every
+Canvas palette value. Contrast and Photos field/mode/freshness contracts bind.
+
+Freeze Canvas host/modules, shell/colors, Overview, router, other destinations,
+writer/Session/canonical behavior, existing helpers/fakes and P0/C0/M0/I0.
+Warm Photos inside the cool shell is accepted interim presentation.
+The new page qualifies for a later map against accepted committed code;
+no map path, automatic maintenance child or Slice 2/3 is reserved.
+After the single implementation child: `NEEDS_USER_DECISION`.
+Activation requires independent scope acceptance, authorized bounded recording
+and exact human scope commit/push without a routine lock-sync pass.
+
+Current validation is docs-only: exact material, raw/inverse/history/source
+freeze, registry/anchors, both Git checks, doctor and temporary-output
+validate_all. Flutter and fresh human smoke belong to the future child.
+One empty verdict block and one neutral ledger row follow AUDIT_CONTRACT.
+
+## Historical completed Placement P1 committed-source Code Map maintenance
 
 The accepted Placement P1 extraction is committed at
 `117e3a96c8dd69bc31a501bab59d66f5fbbed7f3`; its exact three-file material is

@@ -2,10 +2,89 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Current Placement P1 committed-source Code Map maintenance
+## Current Shared Workbench Foundation v1 scope lock
+
+PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`.
+Lane A / `DOCS_SCOPE_LOCK_ONLY`. Entry HEAD/origin/main:
+`9b30f5be46b1dc4656e2f14c14316391cf8a26ac`. The human selected this scope from
+NEEDS_USER_DECISION after committed Placement P1 map maintenance.
+Retained predecessor bodies are historical and do not renew their authority.
+
+### Current exact docs-only write authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS.md` (new)
+
+Only leading route fields, new scope sections, three completed predecessor
+headings, one neutral ledger row and the binding artifact may change.
+Preserve old owner bodies, ledger rows/cells/separators and audit history.
+No Dart, test, map/index, tool, dependency, asset or schema edit belongs here.
+
+### Single conditional implementation child
+
+Reserve only `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`, Lane A /
+`FLUTTER_PRESENTATION_FOUNDATION`, with exactly:
+
+1. `lib/shared/theme/app_theme.dart`
+2. `lib/features/board_canvas/theme/board_canvas_palette.dart`
+3. `lib/shared/widgets/workbench_page.dart` (new)
+4. `lib/features/photos/screens/photo_list_screen.dart`
+5. `test/widget/photo_list_screen_test.dart`
+6. `test/widget/workbench_page_test.dart` (new)
+
+Activation requires independent acceptance of this exact lock, expressly
+authorized bounded verdict recording and exact human scope commit/push.
+No routine active-lock-sync or additional preparatory pass is reserved.
+After this one child: `NEEDS_USER_DECISION`.
+
+### Binding boundaries and validation
+
+The human decision of 2026-10-24 selects BoardCanvasPalette warm black/gold
+and Strategy C: coordinate architecture/design through separately audited
+implementation scopes. Slice 1 is foundation plus Photo Evidence only.
+Warm Photos inside the cool shell is an accepted interim state.
+
+One complete dark Workbench theme applies only through opt-in WorkbenchPage.
+Freeze the existing BenchBeepVisualTokens class, darkInstrument values,
+buildTheme(), root wiring and ProjectGate fallback. Re-point all thirteen
+Canvas palette constants to shared values without changing any value or pixel.
+Bind >=4.5:1 declared text pairs, >=3:1 essential borders, accessible outline,
+warning/danger and dark on-gold foregrounds as specified by the artifact.
+
+Freeze Canvas host/workflow modules, WorkbenchShell/WorkbenchShellColors,
+Overview, router, other destinations, writers/Session/canonical semantics,
+packages/assets/schemas, all existing helpers/fakes and P0/C0/M0/I0.
+Photos retains all fields, beginner/advanced branches, counts, freshness and
+read-only meaning; no new import/alignment/editor/search workflow is added.
+
+WorkbenchPage independently qualifies AUTO for >=5 testable behaviors.
+The Standard maps accepted committed code, excluding unfinished local work.
+No speculative map or registry row belongs to this scope or six-path child.
+After accepted child commit, a separate human-authorized docs-only map decision
+is required before subsequent mapped work relies on that owner. No map path,
+map-maintenance child or Slice 2/3 is authorized; stop on an extra obligation
+that cannot follow this lifecycle without human authorization.
+
+Current validation: exact five docs, inverse/raw-byte/history/source freeze,
+registry/anchors, both git --no-pager diff checks, doctor, temporary-output
+validate_all and artifact LF/whitespace/EOF. Future validation includes focused
+frame/theme/contrast/palette/Photos, Photos/freshness end-to-end, shell/gate,
+full Canvas/full Flutter, inherited-debt-only analyzer and fresh human smoke.
+Exact commands and complete palette capture are in the binding artifact.
+
+Keep one empty SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_VERDICT block and neutral
+ledger Status during Phase 1. After independent verdict and explicit human
+authorization, Phase 2 may touch only that interior and this row's Status;
+all other bytes freeze. No staging/commit/push/stash/reset/clean is authorized.
+Binding contract: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS.md`.
+
+## Historical completed Placement P1 committed-source Code Map maintenance
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`.
 Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.

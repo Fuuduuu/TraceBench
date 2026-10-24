@@ -2,10 +2,38 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Placement P1 committed-source maintenance sequence
+## Shared Workbench Foundation v1 single-child sequence
+
+The human selects this five-doc Lane A scope from NEEDS_USER_DECISION.
+Committed Placement P1 maintenance and its retained owner bodies are history.
+ACTIVE_SCOPE_LOCK and `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS.md`
+bind the current and future material sets.
+
+1. Verify aligned main/baseline, clean entry, live owners, actual index/source
+   qualification and all thirteen committed Canvas palette values.
+2. Reserve only `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS` with four production
+   and two focused test paths. Bind opt-in theme, preserved root/ProjectGate,
+   exact palette equivalence, contrast and every Photos mode/field/freshness.
+3. Validate five-doc material, raw/inverse/history/source freeze, registry and
+   anchors, both Git checks, doctor and temporary-output validate_all.
+   Keep one neutral ledger row and one unique empty verdict block.
+4. Independent scope audit precedes explicitly authorized two-coordinate
+   verdict/ledger recording and exact human commit/push. Only then may the one
+   child execute; no extra preparatory or active-lock-sync pass is armed.
+5. The child validates focused frame/theme/contrast/palette/Photos, Photos and
+   freshness end-to-end, shell/gate, full Canvas/full Flutter, inherited-debt-only
+   analyzer, doctor/temp validator and fresh human smoke before its Claude audit.
+6. After that child: NEEDS_USER_DECISION. The qualifying page map requires a
+   separate human-authorized docs-only decision against accepted committed code.
+   No map-maintenance child, Slice 2 or Slice 3 is reserved.
+
+No protected writer/evidence behavior or new primary workflow is authorized.
+Do not stage, commit, push, stash, reset or clean.
+
+## Historical completed Placement P1 committed-source maintenance sequence
 
 The committed extraction completes the previous reservation. Retained
 predecessor sections are historical, not renewed implementation authority.

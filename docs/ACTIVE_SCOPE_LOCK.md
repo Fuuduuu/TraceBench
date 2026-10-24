@@ -2,10 +2,66 @@
 
 ## Route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Placement P1 extraction scope lock
+## Current Placement P1 committed-source Code Map maintenance
+
+PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`.
+Lane A / `DOCS_MAPS_ONLY / COMMITTED_SOURCE_MAINTENANCE`.
+Entry HEAD/origin/main: `117e3a96c8dd69bc31a501bab59d66f5fbbed7f3`.
+The accepted committed extraction completes the preceding P1 authority.
+Its retained reservation is operational history, not permission to repeat it.
+The human selected this bounded docs/map pass; no runtime child is armed.
+
+### Exact twelve-path docs-only authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+8. `docs/code_maps/lib/features/board_canvas/widgets/board_canvas_placement_panel.dart.md` (new)
+9. `docs/code_maps/lib/features/board_canvas/widgets/component_identity_panel.dart.md`
+10. `docs/code_maps/lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart.md`
+11. `docs/code_maps/lib/features/board_canvas/geometry/placement_geometry.dart.md`
+12. `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+### Boundaries and validation
+
+Use accepted committed source only. Refresh host/test moved Placement
+ownership, independently qualify the new module, and update Components,
+Inspector and geometry descriptions only where source proves drift.
+ProjectSession and all unrelated/RETIRED maps remain unchanged.
+Preserve prior owner bodies; rename only the three completed P1 headings,
+replace current route fields and add these maintenance sections.
+Keep prior ledger rows/cells/separators byte-identical and add one neutral row.
+
+Freeze every Dart source/test/helper/fake/oracle, package/lockfile, tool,
+schema, asset, fixture and foreign/generated tracked file. No runtime NIT fix,
+staging, commit, push, stash, reset or clean. Stop on a necessary thirteenth
+path, source edit, authority conflict or unpreservable history.
+Verify anchors/write ownership/registry, exact material/raw bytes/history,
+both Git checks, doctor and binding temporary-output validate_all.
+Artifact uses LF, no trailing spaces, one final LF after its END marker.
+No Flutter run unless a concrete conflict requires it.
+
+### Independent audit and bounded recording
+
+Use REVIEW_REQUIRED for changed/new map headers and matching registry rows.
+Keep one unique empty verdict block and one neutral ledger Status during
+Phase 1. After independent audit and explicit human authorization, mechanical
+recording may touch only the six affected map-header Status lines, six matching
+CODE_MAP_INDEX Status cells, artifact verdict interior and this ledger Status
+cell. Bodies, marker lines, route and all other ledger/index cells freeze.
+No Phase-2 acceptance is authored by this maintenance action.
+
+Next: NEEDS_USER_DECISION. No further extraction or maintenance is reserved.
+Binding evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+## Historical completed Placement P1 extraction scope lock
 
 PASS_ID: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`.
 Lane B / `DOCS_SCOPE_LOCK`. Entry HEAD/origin/main:

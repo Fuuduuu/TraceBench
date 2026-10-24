@@ -1,9 +1,30 @@
 # Current State
 
-Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
+Current pass: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Placement P1 extraction reservation
+## Placement P1 committed-source Code Map maintenance
+
+The accepted Placement P1 extraction is committed at
+`117e3a96c8dd69bc31a501bab59d66f5fbbed7f3`; its exact three-file material is
+verified. The previous scope/implementation authority is spent, and retained
+predecessor sections below are historical. The human selected this Lane A
+docs/map-only maintenance, with the exact twelve paths in ACTIVE_SCOPE_LOCK.
+Evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+Refresh host/test ownership maps, independently qualify and map the Placement
+library, and correct demonstrated Components/Inspector/geometry caller wording.
+ProjectSession remains unchanged. All Dart source/tests/packages, unrelated
+maps and RETIRED history are frozen. Map headers and matching registry rows
+use REVIEW_REQUIRED for independent map review; no acceptance is pre-recorded.
+
+Next is NEEDS_USER_DECISION. No extraction, runtime fix or additional
+maintenance child is reserved. Validation uses committed-source anchors,
+registry parity, raw-byte/history preservation, both Git checks, doctor and
+temporary-output validate_all. Flutter is not applicable absent a concrete
+conflict. Keep one neutral ledger row and one empty verdict block.
+
+## Historical completed Placement P1 extraction reservation
 
 The human selected one Lane B docs-only Placement P1 scope after accepted P0
 characterization and completed Code Map maintenance at

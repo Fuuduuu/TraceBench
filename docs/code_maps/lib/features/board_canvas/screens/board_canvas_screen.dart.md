@@ -4,17 +4,19 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibility categories`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns the primary Board Canvas workbench shell, rendering/interaction, Inspector
-composition, UI-local drafts, Wizard intake and freshness presentation. One direct V2
-Placement writer remains host-owned. Component create/edit workflow belongs to
+composition, Wizard intake and freshness presentation. Placement workflow/drafts
+and explicit writer/Session handling belong to the normal Placement library.
+Component create/edit workflow belongs to
 `ComponentIdentityPanel` and its screen-lived holder; Measurement State/save/session
 workflow belongs to `IntegratedMeasurePanel`. Read-only Inspector presentation
 belongs to `BoardCanvasInspectorPanel`; the host supplies resolved inputs and an
-opaque Placement editor slot. Additional-photo import and primary alignment
+opaque module-built Placement editor slot. Additional-photo import and primary
+alignment
 confirmation are delegated to `PhotoWorkbenchPanel` and its writers.
 The host loads the Wizard primary asset, selects event-derived alignments and
 composes provisional/confirmed photo rendering without promoting visual evidence.
@@ -32,10 +34,10 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | 3. Navigator/filter | `_ComponentCategory`, `_ComponentNavigatorPanel`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host callbacks/filter state and delegated navigator/projection. |
 | 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel`, `InspectorMeasurementSummaryTile`, `InspectorVisualTraceSummaryTile` | Constructs the child from one resolved placement; builds provenance children using imported Inspector presentation widgets and supplies private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Components composition/lifetime | `ComponentIdentityHolder`, `_componentIdentityHolder.dispose()`, `_rightPanelSelectedMetadataComponent`, `_AddComponentTemplateListPanel`, `ComponentIdentityPanel`, `placementSectionBuilder` | Creates/disposes one screen-lived holder, resolves a nullable edit target, retains the Add frame/scroll and supplies Placement children; the module owns create/edit state and writes. |
-| 6. Placement draft/save | `_AddComponentTemplateBuilderPanel`, `_PlacementEditorDraftState`, `_confirmAddComponentTemplatePlacement`, `_PlacementSaveTarget`, `_PlacementEditorShellCard`, `_placementEditorDraftFor`, `InspectorSectionHeader` | Template/ghost/editor draft, normalized guards and explicit save; editor lifetime/callbacks remain host-owned and its header uses the imported presentation widget. |
+| 6. Placement composition/lifetime | `BoardCanvasPlacementHolder`, `_placementHolder`, `_onPlacementChanged`, `_PlacementSaveTarget`, `_placementSaveTarget`, `_placementSeedFor`, `_resolvedPlacementSaveValues`, `buildBoardCanvasPlacementChildren`, `buildBoardCanvasPlacementEditor` | Creates/listens/disposes one screen-lived holder; retains selection/eligibility, immutable seeding, current-snapshot center conversion and catalogue/preview builders. Module owns drafts, controls, guards and writer/Session workflow. |
 | 7. Interaction/Wizard | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile` | Zero-component intake, pan/zoom/tap/fit and read-only Wizard input. |
 | 8. General rendering/geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Delegated Wizard/pure geometry plus host Board painters and semantics. |
-| 9. Inspector composition/evidence | `BoardCanvasInspectorPanel`, `placement: selectedEntry?.placement`, `component: selectedEntry?.component`, `template: selectedEntry?.template`, `placementDraftSection`, `_BoardCanvasSafetyEvidenceDisclosure` | Resolves Inspector inputs from one selected entry, passes the existing host-built Placement editor slot and keeps safety disclosure; the imported library declares summaries/readiness without evidence promotion. |
+| 9. Inspector composition/evidence | `BoardCanvasInspectorPanel`, `placement: selectedEntry?.placement`, `component: selectedEntry?.component`, `template: selectedEntry?.template`, `placementDraftSection`, `_BoardCanvasSafetyEvidenceDisclosure` | Resolves Inspector inputs from one selected entry, passes the module-built Placement editor slot and keeps safety disclosure; the imported library declares summaries/readiness without evidence promotion. |
 | 10. Photo workflow/primary asset | `_buildPhotoWorkbenchPanel`, `PhotoWorkbenchPanel`, `photoEventItemsFromEvents`, `_reconcilePrimaryPhotoAsset`, `_loadPrimaryPhotoAsset` | Import/align child seam, sole Wizard primary asset load and guarded result callbacks. |
 | 11. Instrument bar/local chrome | `board_canvas_instrument_bar`, `board_canvas_project_menu`, `workbenchDestinations`, `beginnerModeProvider`, `_WorkbenchToolRail`, `_CompactPhotoPanelButton`, `_CanvasFocusRestoreBar` | Home, transient global navigation, labelled mode, safety status, local rail/context and focus. |
 | 12. Alignment selection/render/capture | `_reconcileAlignmentState`, `primaryPhotoAlignmentEventItemsFromEvents`, `_activeAlignment`, `_requestAlignmentBoardPoint`, `_acceptAlignmentBoardPoint`, `AlignedPhotoLayer`, `_PhotoAlignmentReferencePainter` | Primary-only bounded alignment selection, host preview/layer state and normalized board capture. |
@@ -43,7 +45,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 ## Anchor inventory and verification
 
 Every anchor resolves as a host substring. Wizard/navigator part types and
-imported Components, Measurement, Inspector, geometry, photo, mode and destination-model names are consumer
+imported Components, Placement, Measurement, Inspector, geometry, photo, mode and destination-model names are consumer
 references; their declarations remain in the named dependency owners.
 No line-number anchors are maintained.
 
@@ -92,8 +94,9 @@ No line-number anchors are maintained.
    directly, not `ProjectAlignedPhotoLayer`'s alternate loading wrapper.
 10. [D] Missing/unsafe primary data gives warning; reflected affine geometry
     and provisional solutions have separate visual badges. None append events.
-11. [D] Only Placement's direct V2 writer/result application remains in screen
-    State. Components and Measurement own their separate writer/session workflows.
+11. [D] Placement, Components and Measurement libraries own their separate
+    explicit writer/Session workflows; screen State owns no Placement request,
+    writer-provider read, confirmation or returned-event application.
     Photo copy/ensure/confirm and result application stay delegated; host callbacks
     create no parallel canonical rows.
 12. [D] Exact canonical results use session generation/dedup/stale handling.
@@ -115,10 +118,21 @@ No line-number anchors are maintained.
     `List<Widget>` builder; the child spreads Placement children between create
     and edit in the same Column, with no writer/session callback through the host.
 17. [D] Inspector placement/component/template come from the same `selectedEntry`.
-    The host builds `_PlacementEditorShellCard` with its existing draft/callbacks
-    and passes only that Widget as `placementDraftSection`. Draft reseeding,
-    related-data lookup, badge visibility and safety remain host-owned; stateless
-    summaries/readiness and the three reused presentation widgets live in Inspector.
+    The host resolves `PlacementSeed`, eagerly calls holder `reseedInspector`
+    even when the panel is hidden, and passes the module-built editor Widget as
+    `placementDraftSection`. The holder owns independent Add/Inspector drafts;
+    related-data lookup, badge visibility and safety remain host-owned.
+18. [D] One `BoardCanvasPlacementHolder` survives Add/focus/responsive removal;
+    the host subscribes once and removes the listener before screen disposal.
+    Gesture forwarding writes its anchor/captured Canvas size; rendering reads
+    immutable `ghostDraft` values. Catalogue and every painter remain host-owned.
+19. [D] Host `resolveSaveValues` captures eligible target identity, not a center.
+    The module invokes it again at Save with the current snapshot; X/Y conversion
+    uses that same anchor/size pair. The resolved value feeds module bounds and
+    request fields, without a host-mediated writer/Session/save callback.
+20. [D] Eligibility uses all placements, including hidden photo placements.
+    Components receives direct module-built Placement children through the host;
+    Inspector receives the opaque editor, preserving existing frames and order.
 
 ## Direct dependencies
 
@@ -133,8 +147,8 @@ No line-number anchors are maintained.
 | `measurement_projection.dart`, `placement_geometry.dart` | pure helpers | Counts/badges/caution and geometry/hit tests. |
 | `wizard_intake_overlay.part.dart`, `component_navigator.part.dart` | same-library parts | Wizard rendering and Stateless navigator declarations. |
 | `BoardCanvasPalette`, facts, `WizardIntake` | read input | Static colors, canonical projection and noncanonical intake. |
-| `v2PlacementWriterProvider` | canonical output | Sole direct host V2 writer; explicit Placement confirmation only. |
-| `board_canvas_inspector_panel.dart` | normal child / presentation library | Resolved Inspector facts, counts/visibility and opaque Placement editor slot; declares the three presentation widgets constructed by host Measurement/Placement consumers. |
+| `board_canvas_placement_panel.dart` | normal workflow / immutable-value library | Screen-lived Placement holder, Add children/editor, guards and explicit writer/Session workflow; host resolves target/geometry and supplies catalogue/preview adapters. |
+| `board_canvas_inspector_panel.dart` | normal child / presentation library | Resolved Inspector facts, counts/visibility and opaque Placement editor slot; declares presentation widgets consumed by host Measurement and the separate Placement editor. |
 | `component_identity_panel.dart` | normal child library | Component create/edit UI, holder and writer/session workflow; host owns holder lifetime, nullable edit-target resolution and one-way Placement children construction. |
 | `integrated_measure_panel.dart` | normal child library | Measurement widget/State/writer/session workflow; stable nullable component inputs, navigation callback and two one-way host builders. |
 | Flutter/GoRouter, `dart:async`, `dart:io` | framework/read | Widgets/navigation, capture completion and legacy Wizard image read. |
@@ -143,14 +157,14 @@ No line-number anchors are maintained.
 
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
-| `_confirmAddComponentTemplatePlacement` | `CANONICAL_EVENT` | [D] Sole direct host V2 writer call, for Placement. |
-| Placement returned-event application | `PROJECTION_STATE` | [D] Captured-generation handoff for that host writer. |
+| delegated Placement workflow | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Module owns drafts and explicit confirmation plus captured Session handoff; host supplies no writer or save callback. |
+| Placement holder lifetime / target / geometry / presentation adapters | `UI_LOCAL` / `ZERO_WRITE` | [D] Host subscribes/disposes, resolves eligibility and center conversion, and constructs catalogue/preview widgets without canonical mutation. |
 | delegated Components panel | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Module owns drafts and explicit add/edit calls plus Session handoff; host supplies no save/session callback. |
-| Components holder lifetime / Placement children builder | `UI_LOCAL` / `ZERO_WRITE` | [D] Host creates/disposes the holder and constructs existing Placement children; component workflow state and writes stay in the module. |
+| Components holder lifetime / Placement children builder | `UI_LOCAL` / `ZERO_WRITE` | [D] Host creates/disposes the holder and delegates Placement children construction; Components and Placement retain their own workflow state/writes. |
 | delegated Measurement panel | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child owns drafts, explicit V2 writer and generation-guarded Session result; host supplies no save/session callback. |
 | Measurement provenance/footprint builders | `ZERO_WRITE` | [D] Host constructs imported Inspector tiles and private painter rendering; no event or projection mutation. |
 | Inspector resolved inputs and editor-slot composition | `ZERO_WRITE` | [D] Host supplies current facts and the existing editor Widget; Inspector owns no draft, lookup, provider or writer. |
-| Inspector badge and Placement draft callbacks | `UI_LOCAL` | [D] Existing host setState/draft helpers remain the mutation owners; the Inspector only forwards the badge callback or composes the opaque editor. |
+| Inspector badge / Placement draft handoff | `UI_LOCAL` | [D] Badge setState stays host-owned; Placement holder mutators own draft/ghost changes. Inspector only forwards the badge callback or composes the opaque module editor. |
 | delegated photo panel | `NONCANONICAL_FILE` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child/service owners enforce import or explicit primary ensure/confirm. |
 | Home | `PROJECTION_STATE` + `UI_LOCAL` | [D] Existing close before root navigation, no canonical write. |
 | mode/menu/selection/layer/focus/capture | `UI_LOCAL` | [D] Transient providers, callbacks and navigation. |
@@ -176,10 +190,10 @@ that evidence comes only from the explicit delegated confirmation writer.
 | Primary asset/selection | [D] path/hash/dimensions and guarded load | read model / loader | `ZERO_WRITE` / `UI_LOCAL` | reopen, changed-byte and unavailable cases |
 | Photo confirmation seam | [D] child callbacks and injected writer | panel, durable writer, session | delegated `CANONICAL_EVENT` / `PROJECTION_STATE` | confirm/retry/stale groups |
 | Preview/capture/render | [D] host state and stack | solver / raster / Wizard | `UI_LOCAL` / `ZERO_WRITE` | exit, raster and composite cases |
-| Host Placement writer | [D] one direct confirm path | Session and Placement writer | `CANONICAL_EVENT` / `PROJECTION_STATE` | retained Placement writer families |
+| Placement composition/lifetime/center | [D] screen-lived holder, immutable inputs and tap-time geometry adapter | Placement controls/guards/writer/Session, host selection/catalogue/Canvas and Components/Inspector slots | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; host adapters `ZERO_WRITE` | `Placement P0 characterization`, retained save/duplicate/bounds/template/ghost and source-owner cases |
 | Components composition/lifetime | [D] one screen holder, nullable target and spread Placement children | module guards/add-edit writers/Session, host selection and Placement frame | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; construction `ZERO_WRITE` | `Components C0 characterization` and host/module source guards |
 | Measurement composition | [D] placement-derived inputs and two host builders | module State/writer/session, Inspector tiles and preview painter | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; builders `ZERO_WRITE` | M0 group, four advanced-details/no-placement cases and source-owner guards |
-| Inspector composition | [D] one resolved entry, host editor Widget and imported presentation declarations | Inspector library, host draft/selection/badge state, Measurement reuse and safety | `ZERO_WRITE` / host `UI_LOCAL` | frozen I0, M0 provenance and source-owner guards |
+| Inspector composition | [D] one resolved entry, module-built editor Widget and imported presentation declarations | Inspector/Placement libraries, host selection/badge state, Measurement reuse and safety | `ZERO_WRITE` / host `UI_LOCAL` | frozen I0, M0 provenance and source-owner guards |
 | Navigator/geometry | [D] helper/part consumers | pure owners and painter hits | `UI_LOCAL` / `ZERO_WRITE` | navigator and geometry families |
 | Responsive/freshness | [D] separate bar/content thresholds | router/body padding/banner | `ZERO_WRITE` / `UI_LOCAL` | width matrix, focus and banner cases |
 
@@ -198,8 +212,11 @@ that evidence comes only from the explicit delegated confirmation writer.
 - `Components C0 characterization` retains screen lifetime, pending/re-entry,
   repeat-save asymmetry, session/selection and create/Placement/edit order.
 - `Inspector I0 characterization` retains wide/compact rendered order and gaps,
-  metadata/copy/badge coupling, host draft lifetime/reseeding and placeholder.
+  metadata/copy/badge coupling, screen-lived Placement holder draft lifetime/reseeding and placeholder.
   Static guards inspect host, Inspector and existing workflow-module ownership.
+- `Placement P0 characterization` retains twelve generated cases for pending,
+  late handoff, generation/composition, retry/repeat, focus/935/936, captured
+  selection and independent Add/Inspector entry reseeding.
 
 ## Dangerous combinations
 
@@ -210,7 +227,7 @@ that evidence comes only from the explicit delegated confirmation writer.
 - Normalized board geometry, intrinsic raster sizing and Wizard fit have
   separate coordinate bases; altering one can hide a visual regression in another.
 - Async results must not mutate a newer project or become local canonical rows.
-- Panel absence must not dispose the Components holder; screen disposal must
+- Panel absence must not dispose Components or Placement holders; screen disposal must
   suppress late UI updates without suppressing already-started session handoff.
 
 ## Safe SNIPER slices
@@ -219,13 +236,14 @@ that evidence comes only from the explicit delegated confirmation writer.
 - Primary loading: reconcile/load identity plus changed-byte/reopen cases.
 - Preview exit/capture: host clear/completer plus exit/capture cases.
 - One delegated photo result: child callback and matching session case.
-- Placement confirmation or one pure helper: exact method/owner and focused family.
+- Placement composition/center: host resolver/holder bridge plus module guard/request,
+  P0 and retained coordinate/bounds evidence; a pure helper uses its own owner.
 - One Components input/lifetime/builder seam: inspect module ownership and the
   matching C0 lifetime, selection, Placement-order or source-owner evidence.
 - One Measurement input or host builder seam: inspect the module and exact
   M0/advanced-details/no-placement/source-owner evidence.
 - Inspector input/editor-slot or reused presentation widget: inspect the module
-  and matching I0/M0/static-owner evidence; keep host draft and painter seams.
+  and matching I0/M0/static-owner evidence; keep module draft and host painter seams.
 - Rendering: one stack layer plus raster/composite evidence.
 
 ## Future extraction seams

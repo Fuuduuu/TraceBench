@@ -4,16 +4,17 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — canonical add/edit writer paths and screen-lived UI-local state coexist`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_COMPONENTS_C1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Owns Board Canvas component identity creation and metadata editing in one normal
 Dart library. `ComponentIdentityHolder` owns screen-lived drafts, guards, status,
 pending/repeat state and existing add/edit writer/session workflow.
-`ComponentIdentityPanel` renders both forms around host-built Placement children.
-The host owns holder lifetime, selection resolution, Add frame/scroll, Placement,
-Inspector and painters. Source, tests and canonical owners outrank this map.
+`ComponentIdentityPanel` renders both forms around Placement-library children
+returned by the host builder. The host owns screen lifetime, selection resolution,
+Add frame/scroll, catalogue/painters and integration; the Placement library owns
+its independent holder, controls, editor and writer/Session workflow. Source, tests and canonical owners outrank this map.
 
 ## Responsibility zones
 
@@ -26,7 +27,7 @@ Inspector and painters. Source, tests and canonical owners outrank this map.
 | 5. Explicit edit workflow and repeat gate | `_rightPanelMetadataEditBlockReason`, `_rightPanelMetadataEditLastSuccessfulFormKey`, `_confirmRightPanelMetadataEdit`, `V2EditComponentRequest`, `v2EditComponentWriterProvider` | Existing target/nonempty changes/directory and successful-form gates; accepted edit-writer invocation. |
 | 6. Operation identity and failure copy | `_componentCreationClientOperationIdFor`, `_metadataEditClientOperationIdFor`, `_componentCreationFailureMessage`, `_componentMetadataEditFailureMessage` | Current ID normalization/timestamp pattern and typed/generic result presentation. |
 | 7. Captured session handoff | `projectStateProvider.notifier`, `projectSession.applyCanonicalEvent`, `generation: generation` | Captures session/generation before await and applies the returned event before disposed-holder UI checks. |
-| 8. Panel and Placement composition | `ComponentIdentityPanel`, `metadataEditComponent`, `placementSectionBuilder`, `...placementSectionBuilder(context)`, `ListenableBuilder` | Reads the host-resolved nullable target, listens to the holder and spreads host children between create and edit in one Column. |
+| 8. Panel and Placement composition | `ComponentIdentityPanel`, `metadataEditComponent`, `placementSectionBuilder`, `...placementSectionBuilder(context)`, `ListenableBuilder` | Reads the host-resolved nullable target, listens to the holder and spreads supplied children between create and edit in one Column. |
 | 9. Form presentation | `_RightPanelComponentCreationSection`, `_RightPanelMetadataEditSection`, `_AddComponentDraftChipButton` | Existing keyed controls, canonical kind choices, guard/result copy and private chip-button rendering. |
 
 ## Anchor inventory and verification
@@ -63,9 +64,11 @@ The host and writer/session types remain separate owners; no line-number anchors
 9. [D] Live holders receive appended/existing or typed/generic failure copy and
    finally clear in-flight. Disposed holders skip completion/error/finally
    local updates; panel absence alone does not suppress completion.
-10. [D] The panel spreads host Placement children between both existing forms
-    in its single stretch/min Column. The host retains Card/ExpansionTile,
-    scroll controller, Placement widgets/callbacks and their canonical writer.
+10. [D] The panel spreads supplied Placement children between both existing forms
+    in its single stretch/min Column. The host retains Card/ExpansionTile and
+    scroll controller, delegating child construction to the Placement library.
+    That library owns Placement draft callbacks, confirmation and Session handoff;
+    Components imports neither the Placement library nor its writer.
 
 ## Direct dependencies
 
@@ -78,7 +81,7 @@ The host and writer/session types remain separate owners; no line-number anchors
 | `known_facts.dart`, `project_state.dart` | read inputs | Nullable existing component and current loaded project passed to writers. |
 | `project_session.dart` | provider / projection output | Captured generation and returned-event application. |
 | `board_canvas_palette.dart`, `dart:math` | static presentation / sizing | Existing colors and chip-button maximum width. |
-| `board_canvas_screen.dart` | constructing caller / one-way builder | Owns holder lifetime, target resolution and Placement children; never imported by this module. |
+| `board_canvas_screen.dart` | constructing caller / one-way builder | Owns holder lifetime/target resolution and forwards Placement-library children through the existing builder; never imported by this module. |
 | `board_canvas_screen_test.dart` | indirect widget / direct source observation | Frozen C0 oracle and `componentSource` ownership/data-path guards. |
 
 ## Write and protected boundaries
@@ -89,7 +92,7 @@ The host and writer/session types remain separate owners; no line-number anchors
 | `_confirmRightPanelComponentCreation` -> add writer | `CANONICAL_EVENT` boundary invoked | [D] Explicit enabled action supplies V2 request to the accepted writer. |
 | `_confirmRightPanelMetadataEdit` -> edit writer | `CANONICAL_EVENT` boundary invoked | [D] Explicit gated action supplies projected target and observed-value changes. |
 | Returned event -> `projectSession.applyCanonicalEvent` | `PROJECTION_STATE` | [D] Captured-generation in-memory handoff before local disposal checks; Session owns rejection/dedup/stale promotion. |
-| Form rendering / host Placement children construction | `ZERO_WRITE` | [D] Construction and read-only copy do not invoke a writer; Placement save callback remains host-owned. |
+| Form rendering / supplied Placement children construction | `ZERO_WRITE` | [D] Construction and read-only copy do not invoke a writer; embedded explicit Placement actions belong to the separate Placement library. |
 
 Canonical validation, persistence, locks, event envelope and idempotency stay
 with the existing writers. Session application mirrors their returned event;
@@ -100,7 +103,7 @@ this module does not append files or materialize Known Facts.
 - Form presentation, selected-component labels, kind normalization and change
   comparison are local/read operations until explicit create/edit action.
 - No target shows guidance only; created components are not auto-selected.
-- Placement builder invocation constructs host widgets without owning their
+- Placement builder invocation receives supplied widgets without owning their
   draft, save target, writer or painter implementation.
 - The module imports no host, filesystem, loader, exporter, materializer or
   geometry owner and contains no CanvasSelection/placement-private/painter type.
@@ -115,7 +118,7 @@ this module does not append files or materialize Known Facts.
 | Edit repeat/request | [D] successful form key plus explicit edit call | edit writer, target and ordered request fields | `UI_LOCAL` / invoked `CANONICAL_EVENT` | C0 repeat/appended/existing and exact edit requests |
 | Await/disposal/session | [D] captured objects and application before UI guard | Session generation/dedup, writer completion | `PROJECTION_STATE` / `UI_LOCAL` | C0 replacement, screen disposal and concurrent completion order |
 | Operation IDs/failures | [D] regex normalization, UTC microseconds and exact failure branches | writer enums/request identity and result copy | `UI_LOCAL` / invoked `CANONICAL_EVENT` | C0 edge/underscore IDs, typed/generic failures and retry |
-| Placement composition | [D] builder children spread between keyed sections | host frame/scroll/template picker/builder/Placement writer | construction `ZERO_WRITE` | C0 picker/builder widget order and draft isolation |
+| Placement composition | [D] builder children spread between keyed sections | host frame/scroll/catalogue plus Placement-library controls/writer | construction `ZERO_WRITE` | C0 picker/builder widget order and draft isolation |
 
 ## Relevant tests and helpers
 
@@ -128,7 +131,7 @@ this module does not append files or materialize Known Facts.
   by a replacement generation; two completions preserve distinct events.
 - Widget positions pin create -> Placement picker/builder -> edit ordering.
 - `componentSource` checks module holder/sections/requests/providers/IDs,
-  host ownership exclusions, module dependency negatives and host Placement.
+  host ownership exclusions, module dependency negatives and separate Placement ownership.
 - Writer unit suites own real command/validation/persistence boundaries.
   `project_session_test.dart` owns the in-memory generation/dedup contract.
 
@@ -175,5 +178,5 @@ form keys/copy, and C0/static-owner evidence.
   copy while the holder is alive; this map does not reinterpret that behavior.
 - [D] Create's missing successful-form repeat guard is observed current behavior,
   with no product-intent claim.
-- [D] The private chip presentation is copied locally; the host retains its own
-  Placement copy. Neither owns a shared-widget extraction.
+- [D] The private chip presentation is copied locally; the Placement library
+  retains its own copy. Neither owns a shared-widget extraction.

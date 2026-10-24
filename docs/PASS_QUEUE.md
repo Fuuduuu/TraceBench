@@ -2,10 +2,31 @@
 
 ## Current route
 
-Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_EXTRACTION_IMPL_PASS`
+Current: `TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Placement P1 single-child extraction sequence
+## Placement P1 committed-source maintenance sequence
+
+The committed extraction completes the previous reservation. Retained
+predecessor sections are historical, not renewed implementation authority.
+ACTIVE_SCOPE_LOCK owns this human-selected twelve-path Lane A docs/map pass.
+Detailed evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+1. Verify aligned main/baseline, clean entry, exact committed P1 material and
+   committed ownership; snapshot raw bytes before edits.
+2. Refresh host/test maps, qualify the normal Placement library and update
+   only demonstrated Components/Inspector/geometry owner-description drift.
+   Preserve ProjectSession, unrelated zones, all source/tests and RETIRED maps.
+3. Verify source anchors, actual registry/header parity and bounded material;
+   keep affected map statuses REVIEW_REQUIRED, one neutral ledger row and one
+   unique empty verdict block. Correct map-only flow numbering/P0 references.
+4. Run doctor, temporary-output validate_all, both Git checks, history/raw-byte
+   and artifact-format checks. No Flutter run absent a concrete conflict.
+5. Independent diff/map audit precedes explicitly authorized bounded mechanical
+   recording. No acceptance, staging, commit or push is pre-recorded or performed.
+6. Next: NEEDS_USER_DECISION. No further extraction or maintenance child is armed.
+
+## Historical completed Placement P1 single-child extraction sequence
 
 Accepted P0 tests and committed maintenance at
 `e4fa24aa0dcf59bf1278e2fa6c3d4bd780a84d32`

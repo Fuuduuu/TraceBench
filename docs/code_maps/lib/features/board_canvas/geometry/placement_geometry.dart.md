@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_GEOMETRY_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -88,7 +88,7 @@ dependency.
 | Every public function and private template classifier | `ZERO_WRITE` | `[D]` Reads immutable arguments and returns derived geometry/classification without State, provider, writer, filesystem, navigation, event, or projection access. |
 | `FootprintVisualKind` | `ZERO_WRITE` | `[D]` Presentation enum only; it does not establish component or electrical identity. |
 | Host painters and labels consuming results | `ZERO_WRITE` | `[D]` Inspect-only coupling leaves painting, semantics, and UI ownership in the host. |
-| Host placement and other writer paths | `CANONICAL_EVENT` | `[D]` Excluded explicit-save boundaries remain host/service-owned and are not dependencies of this library. |
+| Delegated Placement and other explicit writer paths | `CANONICAL_EVENT` | `[D]` Excluded confirmation boundaries belong to workflow modules/services; Placement uses its own library and does not import this geometry owner. |
 
 The visual classifier is presentation guidance, not canonical truth. Upright hit
 testing is interaction geometry, not placement persistence or rotation-aware

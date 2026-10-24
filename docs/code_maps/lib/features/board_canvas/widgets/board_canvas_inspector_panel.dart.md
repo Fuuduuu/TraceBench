@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable presentation behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_INSPECTOR_I1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -34,7 +34,7 @@ five-plus-behavior qualification; the module owns no canonical writer.
 | 4. Measurement read summaries | `_MeasurementSummaryCard`, `InspectorMeasurementSummaryTile`, `endpointDisplayParts`, `_displayDirectionLabel` | Displays related measurements, verbatim value/reading, endpoint component/pin fields, provenance and exact stale-summary copy. |
 | 5. Visual-trace read summaries | `_VisualTraceMetadataCard`, `InspectorVisualTraceSummaryTile`, `_firstPresentText` | Displays trace/photo/evidence metadata, first nonblank endpoints and connectivity disclaimers without geometry or electrical inference. |
 | 6. Alignment-readiness metadata | `_PhotoAlignmentReadinessPanel`, `_PhotoAlignmentSummaryTile` | Displays alignment metadata and minimum reference-list length as a pair count; contains no transform solver, image renderer or canonical confirmation. |
-| 7. Reused presentation primitives | `InspectorSectionHeader`, `_EvidenceTag`, `_InspectorField` | Renders shared section title/tag/subtitle and labelled rows; the public header is reused by host Measurement and Placement composition. |
+| 7. Reused presentation primitives | `InspectorSectionHeader`, `_EvidenceTag`, `_InspectorField` | Renders shared section title/tag/subtitle and labelled rows; the public header is reused by host Measurement composition and the separate Placement library. |
 
 ## Anchor inventory and verification
 
@@ -54,7 +54,8 @@ in measurement_projection.dart. No line-number anchors are maintained.
 - Related measurements/traces, alignment metadata, counts/visibility and the
   nullable badge callback are supplied values, not aggregate project access.
 - placementDraftSection is only a Widget slot. Draft/editor State, reseeding,
-  lifetime, callbacks and save ownership remain outside the library.
+  lifetime, callbacks and save ownership remain in the Placement library;
+  the host supplies its opaque editor result.
 - There is no host import, CanvasSelection/private-placement/painter API,
   ProjectState/KnownFacts aggregate, provider, session, writer, holder or part.
 
@@ -83,8 +84,9 @@ in measurement_projection.dart. No line-number anchors are maintained.
    event-derived aligned-photo renderer.
 9. [D] The host's Measurement advancedDetailsBuilder constructs the public
    header/trace/measurement widgets, traces first and both READ. Measurement owns
-   its ExpansionTile/State/save/session. The host Placement editor reuses only
-   InspectorSectionHeader; this library neither constructs nor controls the editor.
+   its ExpansionTile/State/save/session. The separate Placement library builds
+   its editor and reuses only InspectorSectionHeader; this Inspector library
+   neither constructs nor controls that editor.
 
 ## Direct dependencies
 
@@ -95,7 +97,8 @@ in measurement_projection.dart. No line-number anchors are maintained.
 | `footprint_models.dart` | read model | FootprintTemplate package display name; no geometry/painter ownership. |
 | `measurement_projection.dart` | pure helper input | endpointDisplayParts for Measurement summary endpoint labels. |
 | `board_canvas_palette.dart`, `dart:math` | static presentation / pure helper | Existing colors and min for stored reference-list lengths. |
-| `board_canvas_screen.dart` | constructing caller / public-widget consumer | Resolves inputs, supplies the editor slot/callback and constructs reused Measurement/Placement presentation. |
+| `board_canvas_screen.dart` | constructing caller / public-widget consumer | Resolves inputs, supplies the module-built editor slot/badge callback and constructs reused Measurement presentation. |
+| `board_canvas_placement_panel.dart` | public-header consumer | Constructs its private editor shell with InspectorSectionHeader; independent holder/draft/writer ownership stays in that library. |
 | `board_canvas_screen_test.dart` | indirect widget / direct source observation | Frozen I0/M0 behavior and Inspector ownership/data-path guards. |
 
 IntegratedMeasurePanel does not import this library. It receives the public
@@ -107,7 +110,7 @@ presentation widgets only as children returned by the existing host builder.
 | --- | --- | --- |
 | Panel/cards/tiles/headers/helpers | `ZERO_WRITE` | [D] Reads supplied values and creates presentation; no provider, writer, session, filesystem, event or projection mutation. |
 | Badge toggle onPressed | `UI_LOCAL` (host-owned) | [D] Forwards the supplied callback; the host mutates its visible-badge set through setState. No visibility state is stored here. |
-| Opaque editor-slot composition | `ZERO_WRITE` | [D] Adds the supplied Widget without private draft/selection/painter knowledge; embedded draft callbacks retain host UI_LOCAL ownership. |
+| Opaque editor-slot composition | `ZERO_WRITE` | [D] Adds the supplied Widget without private draft/selection/painter knowledge; embedded draft callbacks retain Placement-library UI_LOCAL ownership. |
 | Measurement/provenance/trace/alignment copy | `ZERO_WRITE` | [D] Displays accepted metadata without event creation, validity transitions, identity confirmation, electrical-net inference or transform computation. |
 
 No module-owned CANONICAL_EVENT, PROJECTION_STATE or NONCANONICAL_FILE path exists.
@@ -127,19 +130,19 @@ electrical proof or a canonical alignment-authoring action.
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Nullable inputs/order/editor slot | [D] panel branches and direct child list | host resolved entry, editor construction and lifetime | `ZERO_WRITE` | I0 wide/compact order/four-gap and component-only cases |
+| Nullable inputs/order/editor slot | [D] panel branches and direct child list | host resolved entry/lifetime and Placement-library editor construction | `ZERO_WRITE` | I0 wide/compact order/four-gap and component-only cases |
 | Placement/identity metadata | [D] conditional fields and identity helper | supplied component/placement/template models | `ZERO_WRITE` | I0 installation/removal; retained metadata cases |
 | Counts/badge toggle | [D] supplied count/visibility/callback | host badge set and Canvas painter | `ZERO_WRITE` / host `UI_LOCAL` | I0 singular/plural and selected/unrelated badge coupling |
 | Measurement/trace presentation | [D] public tiles and pure parser | host Measurement builder, projection helper, Measurement frame | `ZERO_WRITE` | M0 empty/both-READ/rendered-order plus summary cases |
 | Readiness | [D] conditional metadata append and stored fields | host alignment fact list; separate photo renderer | `ZERO_WRITE` | I0 readiness/order and retained metadata-only cases |
-| Public header reuse | [D] header/tag/row primitives and host calls | Measurement and host Placement editor | `ZERO_WRITE` | I0/M0/Placement and source-owner guards |
+| Public header reuse | [D] header/tag/row primitives and consumer calls | host Measurement builder and Placement-library editor | `ZERO_WRITE` | I0/M0/Placement and source-owner guards |
 
 ## Relevant tests and helpers
 
 - Inspector I0 characterization has eight declarations generating twelve cases:
   1500x900/700x760 rendered order and four gaps, conditional installation/removal,
   singular/plural copy, bidirectional selected Canvas badge visibility with
-  unrelated badges/session preserved, host draft retention/reseeding and placeholder.
+  unrelated badges/session preserved, Placement-holder draft retention/reseeding and placeholder.
 - The class-independent finder follows the rendered section Card to the nearest
   SingleChildScrollView and its child Column; it does not depend on this class name.
 - M0 Measurement characterization retains empty/both-READ/trace-before-measurement
@@ -152,7 +155,7 @@ electrical proof or a canonical alignment-authoring action.
 ## Dangerous combinations
 
 - Moving selection/related lookup or authoritative Placement draft into the panel.
-- Coupling public tile/header edits with Measurement State/save or host editor lifetime.
+- Coupling public tile/header edits with Measurement State/save or Placement holder/editor lifetime.
 - Treating badge callbacks/opaque editor contents as module-owned mutable state.
 - Replacing metadata disclaimers or exact stale copy with canonical/electrical inference.
 - Changing wrappers/spacing/focus composition together can conceal responsive regressions.
@@ -161,7 +164,7 @@ electrical proof or a canonical alignment-authoring action.
 
 - One nullable-input/order/slot branch with exact host construction and I0 geometry.
 - One metadata/copy row with its supplied model and matching I0/summary case.
-- One reused tile/header with host Measurement/Placement caller and M0/I0 evidence.
+- One reused tile/header with host Measurement or Placement-library caller and M0/I0 evidence.
 - One readiness field with conditional append and metadata-only boundary.
 - One source-owner guard with all existing oracle/fake bytes preserved.
 
@@ -174,7 +177,7 @@ These descriptions authorize no abstraction, shared-widget library or further mo
 
 Review constructor nullability, model/slot/callback contracts, stateless/public
 ownership, direct child order/gaps, conditional fields/counts/copy, endpoint and
-stale-summary display, readiness metadata and host Measurement/Placement reuse.
+stale-summary display, readiness metadata and host Measurement/Placement-library reuse.
 Recheck host/test/projection descriptions when consumers or declarations move.
 
 ## Known uncertainty
@@ -184,4 +187,4 @@ Recheck host/test/projection descriptions when consumers or declarations move.
 - [D] Existing metadata-only copy is preserved presentation, not a claim that no
   other application surface computes a transform or renders an aligned photo.
 - [P] Static source guards are structure-sensitive; rendered I0/M0 evidence
-  separately bounds behavior and host draft lifetime.
+  separately bounds behavior and Placement-holder draft lifetime.

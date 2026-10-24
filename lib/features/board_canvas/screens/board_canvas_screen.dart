@@ -15,8 +15,8 @@ import '../rendering/aligned_photo_layer.dart';
 import '../theme/board_canvas_palette.dart';
 import '../widgets/board_canvas_inspector_panel.dart';
 import '../widgets/component_identity_panel.dart';
+import '../widgets/board_canvas_placement_panel.dart';
 import '../widgets/integrated_measure_panel.dart';
-import '../../components/services/v2_placement_writer.dart';
 import '../../photos/logic/photo_event_read_model.dart';
 import '../../photos/logic/photo_alignment_transform.dart';
 import '../../photos/services/photo_event_writer.dart';
@@ -44,7 +44,6 @@ const double _kWorkbenchToolTileGap = 4;
 const EdgeInsets _kWorkbenchRailPadding = EdgeInsets.fromLTRB(8, 8, 8, 10);
 const double _kWideContextPanelWidth = 320;
 const double _kMediumContextPanelWidth = 280;
-const int _kAddComponentContactMarkerWarningLimit = 8;
 const double _kPreviewFootprintVerticalCenterOffset = 2;
 const Color _kMeasurePanelNavy = Color(0xFFF3ECDC);
 const Color _kMeasurePanelBodyFill = Color(0xFF1A1916);
@@ -482,21 +481,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   _ComponentCategory? _componentNavigatorCategory;
   Set<String> _previewPlacementKeys = const <String>{};
   bool _hideUnmeasuredComponents = false;
-  String? _selectedAddComponentTemplateId;
-  int _addComponentTemplateTopContactMarkers = 0;
-  int _addComponentTemplateRightContactMarkers = 0;
-  int _addComponentTemplateBottomContactMarkers = 0;
-  int _addComponentTemplateLeftContactMarkers = 0;
-  String _addComponentTemplateDraftLabel = '';
-  double _addComponentTemplateDraftWidth = 1.0;
-  double _addComponentTemplateDraftHeight = 0.6;
-  int _addComponentTemplateDraftRotationDeg = 0;
-  Offset? _addComponentTemplateGhostDraftAnchor;
-  Size? _addComponentTemplateGhostDraftCanvasSize;
-  String? _placementEditorDraftKey;
-  _PlacementEditorDraftState? _placementEditorDraft;
-  bool _addComponentPlacementSaveInFlight = false;
-  String? _addComponentTemplateSaveStatusMessage;
+  final BoardCanvasPlacementHolder _placementHolder =
+      BoardCanvasPlacementHolder();
   final ComponentIdentityHolder _componentIdentityHolder =
       ComponentIdentityHolder();
   bool _inspectorVisible = true;
@@ -518,11 +504,21 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _primaryPhotoUnavailable = false;
 
   @override
+  void initState() {
+    super.initState();
+    _placementHolder.addListener(_onPlacementChanged);
+  }
+
+  void _onPlacementChanged() => setState(() {});
+
+  @override
   void dispose() {
     if (_boardPointCompleter case final completer?
         when !completer.isCompleted) {
       completer.complete(null);
     }
+    _placementHolder.removeListener(_onPlacementChanged);
+    _placementHolder.dispose();
     _componentIdentityHolder.dispose();
     _addComponentContextScrollController.dispose();
     super.dispose();
@@ -734,16 +730,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       _contextPanelMode = _WorkbenchContextPanelMode.addComponentTemplates;
       _inspectorVisible = true;
       _canvasFocusMode = false;
-      _selectedAddComponentTemplateId = null;
-      _addComponentTemplateTopContactMarkers = 0;
-      _addComponentTemplateRightContactMarkers = 0;
-      _addComponentTemplateBottomContactMarkers = 0;
-      _addComponentTemplateLeftContactMarkers = 0;
-      _addComponentTemplateDraftLabel = _componentPrimaryLabel(component);
-      _resetAddComponentTemplateLocalDraftScalars();
-      _addComponentTemplateGhostDraftAnchor = null;
-      _addComponentTemplateGhostDraftCanvasSize = null;
-      _addComponentTemplateSaveStatusMessage = null;
+      _placementHolder.beginUnplaced(_componentPrimaryLabel(component));
       _previewPlacementKeys = const <String>{};
     });
   }
@@ -776,7 +763,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   }
 
   _AddComponentTemplateDefinition? _selectedAddComponentTemplateDefinition() {
-    return _starterAddComponentTemplateById(_selectedAddComponentTemplateId);
+    return _starterAddComponentTemplateById(
+        _placementHolder.ghostDraft.templateId);
   }
 
   _AddComponentTemplateDefinition? _starterAddComponentTemplateById(
@@ -794,88 +782,154 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return null;
   }
 
-  bool get _addComponentTemplateHasExcessiveCounts {
-    return _addComponentTemplateTopContactMarkers > _kAddComponentContactMarkerWarningLimit ||
-        _addComponentTemplateRightContactMarkers >
-            _kAddComponentContactMarkerWarningLimit ||
-        _addComponentTemplateBottomContactMarkers >
-            _kAddComponentContactMarkerWarningLimit ||
-        _addComponentTemplateLeftContactMarkers >
-            _kAddComponentContactMarkerWarningLimit;
-  }
+  PlacementTemplate _placementTemplateValues(
+          _AddComponentTemplateDefinition template) =>
+      PlacementTemplate(
+        id: template.id,
+        displayName: template.templateFamily,
+        topContactMarkers: template.topContactMarkers,
+        rightContactMarkers: template.rightContactMarkers,
+        bottomContactMarkers: template.bottomContactMarkers,
+        leftContactMarkers: template.leftContactMarkers,
+      );
 
-  bool get _addComponentTemplateHasZeroMarkers =>
-      _addComponentTemplateTopContactMarkers +
-          _addComponentTemplateRightContactMarkers +
-          _addComponentTemplateBottomContactMarkers +
-          _addComponentTemplateLeftContactMarkers ==
-      0;
-
-  void _seedAddComponentTemplateContactCounts(
-    _AddComponentTemplateDefinition template,
-  ) {
-    _addComponentTemplateTopContactMarkers = template.topContactMarkers;
-    _addComponentTemplateRightContactMarkers = template.rightContactMarkers;
-    _addComponentTemplateBottomContactMarkers = template.bottomContactMarkers;
-    _addComponentTemplateLeftContactMarkers = template.leftContactMarkers;
-  }
-
-  void _resetAddComponentTemplateLocalDraftScalars() {
-    _addComponentTemplateDraftWidth = 1.0;
-    _addComponentTemplateDraftHeight = 0.6;
-    _addComponentTemplateDraftRotationDeg = 0;
-  }
-
-  void _seedAddComponentTemplateDraftFromPlacement(
-    _PlacementEntry entry, {
-    bool seedTemplate = true,
-  }) {
+  PlacementSeed _placementSeedFor(_PlacementEntry entry) {
     final placement = entry.placement;
-    final placementWidth = placement.width?.toDouble();
-    final placementHeight = placement.height?.toDouble();
-    _addComponentTemplateDraftWidth = placementWidth == null ||
-            !placementWidth.isFinite ||
-            placementWidth <= 0
-        ? 1.0
-        : _clampAddComponentTemplateDraftDimension(placementWidth);
-    _addComponentTemplateDraftHeight = placementHeight == null ||
-            !placementHeight.isFinite ||
-            placementHeight <= 0
-        ? 0.6
-        : _clampAddComponentTemplateDraftDimension(placementHeight);
-    _addComponentTemplateDraftRotationDeg =
-        _normalizeAddComponentTemplateDraftRotation(
-      placement.rotationDeg.round(),
+    final templateId = placement.templateId?.trim();
+    final template = _starterAddComponentTemplateById(templateId);
+    return PlacementSeed(
+      key: entry.key,
+      componentLabel: entry.selectorLabel,
+      templateLabel: templateId == null || templateId.isEmpty
+          ? _footprintVisualKindLabel(footprintVisualKind(
+              entry.placement, entry.component, entry.template))
+          : templateId,
+      boardSide: placement.boardSide,
+      rotationDeg: placement.rotationDeg,
+      width: placement.width,
+      height: placement.height,
+      template: template == null ? null : _placementTemplateValues(template),
     );
-    _addComponentTemplateGhostDraftAnchor = null;
-    _addComponentTemplateGhostDraftCanvasSize = null;
-
-    if (!seedTemplate) {
-      return;
-    }
-    final template = _starterAddComponentTemplateById(placement.templateId);
-    if (template == null) {
-      _selectedAddComponentTemplateId = null;
-      return;
-    }
-    _selectedAddComponentTemplateId = template.id;
-    _seedAddComponentTemplateContactCounts(template);
   }
 
-  double _clampAddComponentTemplateDraftDimension(double value) {
-    return value.clamp(0.2, 9.9).toDouble();
+  PlacementSaveValues? _resolvedPlacementSaveValues(
+      _PlacementSaveTarget? target, PlacementDraftSnapshot ghost) {
+    if (target == null) return null;
+    return PlacementSaveValues(
+      componentId: target.componentId,
+      coordinateSpace: target.coordinateSpace,
+      boardSide: target.boardSide,
+      sourcePhotoId: target.sourcePhotoId,
+      requiresExplicitAnchor: target.requiresExplicitAnchor,
+      centerX: _addComponentTemplateDraftCenterX(target, ghost),
+      centerY: _addComponentTemplateDraftCenterY(target, ghost),
+    );
   }
 
-  int _normalizeAddComponentTemplateDraftRotation(int value) {
-    return ((value % 360) + 360) % 360;
+  Widget _buildPlacementTemplateChooser(BuildContext context,
+      String? selectedTemplateId, ValueChanged<String> onTemplateSelected) {
+    final theme = Theme.of(context);
+    final templateRows = _kStarterAddComponentTemplates
+        .map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AddComponentTemplateListTile(
+              entry: entry,
+              selected: selectedTemplateId == entry.id,
+              onTap: () => onTemplateSelected(entry.id),
+            ),
+          ),
+        )
+        .toList(growable: false);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(2, 0, 2, 6),
+          child: Text(
+            'Vali kuju',
+            key: const Key(
+              'board_canvas_add_component_template_picker_label',
+            ),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: BoardCanvasPalette.signal,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.zero,
+          key: const Key(
+            'board_canvas_add_component_template_list_rows',
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: templateRows,
+          ),
+        ),
+      ],
+    );
   }
 
-  double? _addComponentTemplateDraftCenterX(_PlacementSaveTarget target) {
-    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+  Widget _buildPlacementSelectedSummary(BuildContext context, String templateId,
+          VoidCallback onChangeTemplate) =>
+      _AddComponentTemplateSelectedSummary(
+        template: _starterAddComponentTemplateById(templateId)!,
+        onChangeTemplate: onChangeTemplate,
+      );
+
+  Widget _buildPlacementTemplatePreview(
+      BuildContext context, PlacementDraftSnapshot draft) {
+    final template = _starterAddComponentTemplateById(draft.templateId)!;
+    final topContactMarkers = draft.topContactMarkers;
+    final rightContactMarkers = draft.rightContactMarkers;
+    final bottomContactMarkers = draft.bottomContactMarkers;
+    final leftContactMarkers = draft.leftContactMarkers;
+    return KeyedSubtree(
+      key: Key(
+        'board_canvas_add_component_builder_preview_${template.id}',
+      ),
+      child: AspectRatio(
+        aspectRatio: template.bodyAspectRatio,
+        child: CustomPaint(
+          key: const Key(
+            'board_canvas_add_component_builder_preview',
+          ),
+          painter: _RectangularPerimeterTemplatePreviewPainter(
+            template: template,
+            topContactMarkers: topContactMarkers,
+            rightContactMarkers: rightContactMarkers,
+            bottomContactMarkers: bottomContactMarkers,
+            leftContactMarkers: leftContactMarkers,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlacementDraftPreview(
+          BuildContext context, PlacementDraftSnapshot draft) =>
+      _AddComponentDraftPreviewCard(
+        template: _starterAddComponentTemplateById(draft.templateId)!,
+        draftWidth: draft.width,
+        draftHeight: draft.height,
+        draftRotationDeg: draft.rotationDeg,
+        topContactMarkers: draft.topContactMarkers,
+        rightContactMarkers: draft.rightContactMarkers,
+        bottomContactMarkers: draft.bottomContactMarkers,
+        leftContactMarkers: draft.leftContactMarkers,
+      );
+
+  double? _addComponentTemplateDraftCenterX(
+      _PlacementSaveTarget target, PlacementDraftSnapshot ghost) {
+    final draftAnchor = ghost.anchor;
     if (draftAnchor == null) {
       return target.existingCenterX;
     }
-    final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
+    final canvasSize = ghost.canvasSize;
     if (canvasSize == null || canvasSize.width <= 0) {
       return target.coordinateSpace == 'board_normalized'
           ? null
@@ -884,131 +938,19 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return draftAnchor.dx / canvasSize.width;
   }
 
-  double? _addComponentTemplateDraftCenterY(_PlacementSaveTarget target) {
-    final draftAnchor = _addComponentTemplateGhostDraftAnchor;
+  double? _addComponentTemplateDraftCenterY(
+      _PlacementSaveTarget target, PlacementDraftSnapshot ghost) {
+    final draftAnchor = ghost.anchor;
     if (draftAnchor == null) {
       return target.existingCenterY;
     }
-    final canvasSize = _addComponentTemplateGhostDraftCanvasSize;
+    final canvasSize = ghost.canvasSize;
     if (canvasSize == null || canvasSize.height <= 0) {
       return target.coordinateSpace == 'board_normalized'
           ? null
           : draftAnchor.dy;
     }
     return draftAnchor.dy / canvasSize.height;
-  }
-
-  bool _isBoardNormalizedCoordinateInBounds(double value) {
-    return value.isFinite && value >= 0 && value <= 1;
-  }
-
-  bool _isBoardNormalizedSizeInBounds(double value) {
-    return value.isFinite && value > 0 && value <= 1;
-  }
-
-  String? _addComponentTemplateCanonicalBoundsBlockReason(
-    _PlacementSaveTarget target,
-  ) {
-    if (target.coordinateSpace.trim() != 'board_normalized') {
-      return null;
-    }
-    final centerX = _addComponentTemplateDraftCenterX(target);
-    final centerY = _addComponentTemplateDraftCenterY(target);
-    if (centerX == null ||
-        centerY == null ||
-        !_isBoardNormalizedCoordinateInBounds(centerX) ||
-        !_isBoardNormalizedCoordinateInBounds(centerY) ||
-        !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftWidth) ||
-        !_isBoardNormalizedSizeInBounds(_addComponentTemplateDraftHeight)) {
-      return 'Suurus või asukoht ei mahu plaadi piiridesse.';
-    }
-    return null;
-  }
-
-  void _setAddComponentTemplateSelection(
-    String templateId, {
-    _PlacementEntry? placementContextEntry,
-  }) {
-    final template = _kStarterAddComponentTemplates
-        .cast<_AddComponentTemplateDefinition?>()
-        .firstWhere(
-          (entry) => entry?.id == templateId,
-          orElse: () => null,
-        );
-    if (template == null) {
-      return;
-    }
-    setState(() {
-      _selectedAddComponentTemplateId = templateId;
-      _seedAddComponentTemplateContactCounts(template);
-      if (placementContextEntry == null) {
-        _resetAddComponentTemplateLocalDraftScalars();
-        _addComponentTemplateGhostDraftAnchor = null;
-        _addComponentTemplateGhostDraftCanvasSize = null;
-        return;
-      }
-      _seedAddComponentTemplateDraftFromPlacement(
-        placementContextEntry,
-        seedTemplate: false,
-      );
-    });
-  }
-
-  _PlacementEditorDraftState _placementEditorDraftFor(_PlacementEntry entry) {
-    if (_placementEditorDraftKey != entry.key ||
-        _placementEditorDraft == null) {
-      _placementEditorDraftKey = entry.key;
-      _placementEditorDraft = _PlacementEditorDraftState.fromEntry(entry);
-    }
-    return _placementEditorDraft!;
-  }
-
-  void _updatePlacementEditorDraft(
-    _PlacementEntry entry,
-    _PlacementEditorDraftState Function(_PlacementEditorDraftState draft)
-        update,
-  ) {
-    setState(() {
-      final current =
-          _placementEditorDraftKey == entry.key && _placementEditorDraft != null
-              ? _placementEditorDraft!
-              : _PlacementEditorDraftState.fromEntry(entry);
-      _placementEditorDraftKey = entry.key;
-      _placementEditorDraft = update(current);
-    });
-  }
-
-  void _resetPlacementEditorDraft(_PlacementEntry entry) {
-    setState(() {
-      _placementEditorDraftKey = entry.key;
-      _placementEditorDraft = _PlacementEditorDraftState.fromEntry(entry);
-    });
-  }
-
-  String? _addComponentTemplateSaveBlockReason({
-    required ProjectState projectState,
-    required _PlacementSaveTarget? target,
-  }) {
-    if (target == null) {
-      return 'Vali olemasolev komponent enne salvestamist.';
-    }
-    if (_addComponentTemplateDraftLabel.trim().isEmpty) {
-      return 'Lisa nimi enne salvestamist.';
-    }
-    if (target.requiresExplicitAnchor &&
-        _addComponentTemplateGhostDraftAnchor == null) {
-      return 'Vali canvasele paigutuse asukoht.';
-    }
-    final canonicalBoundsReason =
-        _addComponentTemplateCanonicalBoundsBlockReason(target);
-    if (canonicalBoundsReason != null) {
-      return canonicalBoundsReason;
-    }
-    final projectDirectory = projectState.projectDirectory;
-    if (projectDirectory == null || projectDirectory.trim().isEmpty) {
-      return 'Salvestamiseks ava projekt kohalikust kaustast.';
-    }
-    return null;
   }
 
   _PlacementSaveTarget? _placementSaveTarget(
@@ -1038,12 +980,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     return null;
   }
 
-  void _showAddComponentTemplateSaveStatus(String message) {
-    setState(() {
-      _addComponentTemplateSaveStatusMessage = message;
-    });
-  }
-
   ComponentFact? _rightPanelSelectedMetadataComponent(
     ProjectState projectState, {
     String? fallbackComponentId,
@@ -1063,109 +999,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       }
     }
     return null;
-  }
-
-  Future<void> _confirmAddComponentTemplatePlacement({
-    required ProjectState projectState,
-    required _PlacementSaveTarget target,
-    required _AddComponentTemplateDefinition template,
-  }) async {
-    if (_addComponentPlacementSaveInFlight) {
-      return;
-    }
-
-    final canonicalBoundsBlockReason =
-        _addComponentTemplateCanonicalBoundsBlockReason(target);
-    if (canonicalBoundsBlockReason != null) {
-      _showAddComponentTemplateSaveStatus(canonicalBoundsBlockReason);
-      return;
-    }
-    final centerX = _addComponentTemplateDraftCenterX(target);
-    final centerY = _addComponentTemplateDraftCenterY(target);
-    if (centerX == null || centerY == null) {
-      _showAddComponentTemplateSaveStatus(
-        'Vali canvasele paigutuse asukoht.',
-      );
-      return;
-    }
-    final request = V2PlacementWriterRequest(
-      componentId: target.componentId,
-      coordinateSpace: target.coordinateSpace,
-      boardSide: target.boardSide,
-      centerX: centerX,
-      centerY: centerY,
-      rotationDeg: _addComponentTemplateDraftRotationDeg,
-      width: _addComponentTemplateDraftWidth,
-      height: _addComponentTemplateDraftHeight,
-      templateId: template.id,
-      sourcePhotoId: target.sourcePhotoId,
-      clientOperationId: _placementClientOperationIdFor(target.componentId),
-    );
-
-    setState(() {
-      _addComponentPlacementSaveInFlight = true;
-      _addComponentTemplateSaveStatusMessage =
-          'Salvestan valitud komponendi visuaalset paigutust...';
-    });
-
-    try {
-      final projectSession = ref.read(projectStateProvider.notifier);
-      final generation = projectSession.generation;
-      final result = await ref.read(v2PlacementWriterProvider).confirmPlacement(
-            projectState: projectState,
-            request: request,
-          );
-      projectSession.applyCanonicalEvent(
-        result.event,
-        generation: generation,
-      );
-      if (!mounted) {
-        return;
-      }
-      _showAddComponentTemplateSaveStatus(
-        result.appended
-            ? 'Visuaalne paigutus salvestatud. Projektsioon vajab värskendamist.'
-            : 'See visuaalne paigutus oli juba salvestatud. Projektsioon vajab värskendamist.',
-      );
-    } on V2PlacementWriterException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _showAddComponentTemplateSaveStatus(
-        'Salvestamine ebaõnnestus: ${error.message}',
-      );
-    } catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _showAddComponentTemplateSaveStatus('Salvestamine ebaõnnestus: $error');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _addComponentPlacementSaveInFlight = false;
-        });
-      }
-    }
-  }
-
-  String _placementClientOperationIdFor(String componentId) {
-    final safeComponentId = componentId
-        .trim()
-        .replaceAll(RegExp(r'[^A-Za-z0-9_]+'), '_')
-        .replaceAll(RegExp(r'_+'), '_');
-    final timestamp = DateTime.now().toUtc().microsecondsSinceEpoch;
-    return 'op_board_canvas_visual_placement_${safeComponentId}_$timestamp';
-  }
-
-  String _nextPlacementDraftBoardSide(String boardSide) {
-    switch (boardSide.trim().toLowerCase()) {
-      case 'top':
-        return 'bottom';
-      case 'bottom':
-        return 'top';
-      default:
-        return 'top';
-    }
   }
 
   @override
@@ -1329,24 +1162,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         visibleMeasurementValueBadgeComponentIds.contains(
           selectedEntry.placement.componentId,
         );
-    final _PlacementEntry? selectedDraftEntry = selectedEntry;
-    final selectedPlacementDraft = selectedDraftEntry == null
-        ? null
-        : _placementEditorDraftFor(selectedDraftEntry);
+    final selectedPlacementSeed =
+        selectedEntry == null ? null : _placementSeedFor(selectedEntry);
+    if (selectedPlacementSeed != null) {
+      _placementHolder.reseedInspector(selectedPlacementSeed);
+    }
     final placementSaveTarget = _placementSaveTarget(allEntries);
     final addComponentTemplatePlacementContextEntry =
         placementSaveTarget?.sourceEntry;
-    final addComponentTemplateSaveBlockReason =
-        selectedAddComponentTemplate == null
-            ? null
-            : _addComponentTemplateSaveBlockReason(
-                projectState: projectState,
-                target: placementSaveTarget,
-              );
-    final canConfirmAddComponentPlacement =
-        selectedAddComponentTemplate != null &&
-            addComponentTemplateSaveBlockReason == null &&
-            !_addComponentPlacementSaveInFlight;
     return _buildScaffold(
       context,
       Padding(
@@ -1488,26 +1311,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                   showAddComponentTemplateGhost: _contextPanelMode ==
                           _WorkbenchContextPanelMode.addComponentTemplates &&
-                      _selectedAddComponentTemplateId != null,
+                      _placementHolder.ghostDraft.templateId != null,
                   addComponentTemplateGhostTopContactMarkers:
-                      _addComponentTemplateTopContactMarkers,
+                      _placementHolder.ghostDraft.topContactMarkers,
                   addComponentTemplateGhostRightContactMarkers:
-                      _addComponentTemplateRightContactMarkers,
+                      _placementHolder.ghostDraft.rightContactMarkers,
                   addComponentTemplateGhostBottomContactMarkers:
-                      _addComponentTemplateBottomContactMarkers,
+                      _placementHolder.ghostDraft.bottomContactMarkers,
                   addComponentTemplateGhostLeftContactMarkers:
-                      _addComponentTemplateLeftContactMarkers,
+                      _placementHolder.ghostDraft.leftContactMarkers,
                   addComponentTemplateGhostDraftLabel:
-                      _addComponentTemplateDraftLabel,
+                      _placementHolder.ghostDraft.label,
                   addComponentTemplateGhostDraftAnchor:
-                      _addComponentTemplateGhostDraftAnchor,
+                      _placementHolder.ghostDraft.anchor,
                   selectedAddComponentTemplate: selectedAddComponentTemplate,
                   onAddComponentTemplateGhostDraftAnchorChanged: (value) {
-                    setState(() {
-                      _addComponentTemplateGhostDraftAnchor = value.anchor;
-                      _addComponentTemplateGhostDraftCanvasSize =
-                          value.canvasSize;
-                    });
+                    _placementHolder.setGhostAnchor(
+                        value.anchor, value.canvasSize);
                   },
                 );
                 final metadata = BoardCanvasInspectorPanel(
@@ -1540,51 +1360,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   relatedMeasurements: relatedMeasurements,
                   relatedVisualTraces: relatedVisualTraces,
                   photoToBoardAlignments: photoToBoardAlignments,
-                  placementDraftSection:
-                      selectedDraftEntry == null || selectedPlacementDraft == null
-                          ? null
-                          : _PlacementEditorShellCard(
-                              entry: selectedDraftEntry,
-                              draft: selectedPlacementDraft,
-                              onToggleSide: () {
-                                _updatePlacementEditorDraft(
-                                  selectedDraftEntry,
-                                  (draft) => draft.copyWith(
-                                    boardSide: _nextPlacementDraftBoardSide(
-                                      draft.boardSide,
-                                    ),
-                                  ),
-                                );
-                              },
-                              onIncrementRotation: () {
-                                _updatePlacementEditorDraft(
-                                  selectedDraftEntry,
-                                  (draft) => draft.copyWith(
-                                    rotationDeg: draft.rotationDeg + 15,
-                                  ),
-                                );
-                              },
-                              onIncrementWidth: () {
-                                _updatePlacementEditorDraft(
-                                  selectedDraftEntry,
-                                  (draft) => draft.copyWith(
-                                    width: draft.width + 0.1,
-                                  ),
-                                );
-                              },
-                              onIncrementHeight: () {
-                                _updatePlacementEditorDraft(
-                                  selectedDraftEntry,
-                                  (draft) => draft.copyWith(
-                                    height: draft.height + 0.1,
-                                  ),
-                                );
-                              },
-                              onReset: () =>
-                                  _resetPlacementEditorDraft(selectedDraftEntry),
-                              onDiscard: () =>
-                                  _resetPlacementEditorDraft(selectedDraftEntry),
-                            ),
+                  placementDraftSection: selectedPlacementSeed == null
+                      ? null
+                      : buildBoardCanvasPlacementEditor(
+                          holder: _placementHolder,
+                          seed: selectedPlacementSeed),
                 );
                 final photoPanel = _buildPhotoWorkbenchPanel(
                   projectState,
@@ -1780,112 +1560,34 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                 ?.placement.componentId,
                       );
                       contextPanel = _AddComponentTemplateListPanel(
-                        entries: _kStarterAddComponentTemplates,
                         projectState: projectState,
                         metadataEditComponent: metadataEditComponent,
                         componentIdentityHolder: _componentIdentityHolder,
-                        selectedTemplateId: _selectedAddComponentTemplateId,
-                        selectedTemplate: selectedAddComponentTemplate,
-                        topContactMarkers:
-                            _addComponentTemplateTopContactMarkers,
-                        rightContactMarkers:
-                            _addComponentTemplateRightContactMarkers,
-                        bottomContactMarkers:
-                            _addComponentTemplateBottomContactMarkers,
-                        leftContactMarkers:
-                            _addComponentTemplateLeftContactMarkers,
-                        draftWidth: _addComponentTemplateDraftWidth,
-                        draftHeight: _addComponentTemplateDraftHeight,
-                        draftRotationDeg: _addComponentTemplateDraftRotationDeg,
-                        hasZeroContactMarkers:
-                            _addComponentTemplateHasZeroMarkers,
-                        hasExcessiveContactMarkers:
-                            _addComponentTemplateHasExcessiveCounts,
-                        onTemplateSelected: (templateId) {
-                          _setAddComponentTemplateSelection(
-                            templateId,
-                            placementContextEntry:
-                                addComponentTemplatePlacementContextEntry,
-                          );
-                        },
-                        draftLabel: _addComponentTemplateDraftLabel,
-                        onDraftLabelChanged: (value) {
-                          setState(() {
-                            _addComponentTemplateDraftLabel = value;
-                          });
-                        },
-                        onTopContactMarkersChanged: (value) {
-                          setState(() =>
-                              _addComponentTemplateTopContactMarkers = value);
-                        },
-                        onRightContactMarkersChanged: (value) {
-                          setState(() =>
-                              _addComponentTemplateRightContactMarkers = value);
-                        },
-                        onBottomContactMarkersChanged: (value) {
-                          setState(() =>
-                              _addComponentTemplateBottomContactMarkers =
-                                  value);
-                        },
-                        onLeftContactMarkersChanged: (value) {
-                          setState(() =>
-                              _addComponentTemplateLeftContactMarkers = value);
-                        },
-                        onDraftWidthChanged: (value) {
-                          setState(() {
-                            _addComponentTemplateDraftWidth =
-                                _clampAddComponentTemplateDraftDimension(value);
-                          });
-                        },
-                        onDraftHeightChanged: (value) {
-                          setState(() {
-                            _addComponentTemplateDraftHeight =
-                                _clampAddComponentTemplateDraftDimension(value);
-                          });
-                        },
-                        onDraftRotationChanged: (value) {
-                          setState(() {
-                            _addComponentTemplateDraftRotationDeg =
-                                _normalizeAddComponentTemplateDraftRotation(
-                                    value);
-                          });
-                        },
-                        onChangeTemplateSelection: () {
-                          setState(() {
-                            _selectedAddComponentTemplateId = null;
-                            _addComponentTemplateGhostDraftAnchor = null;
-                            _addComponentTemplateGhostDraftCanvasSize = null;
-                            _resetAddComponentTemplateLocalDraftScalars();
-                          });
-                        },
-                        onResetToTemplateDefaults:
-                            selectedAddComponentTemplate == null
-                                ? null
-                                : () {
-                                    setState(() {
-                                      _seedAddComponentTemplateContactCounts(
-                                          selectedAddComponentTemplate);
-                                      _resetAddComponentTemplateLocalDraftScalars();
-                                      _addComponentTemplateGhostDraftAnchor =
-                                          null;
-                                      _addComponentTemplateGhostDraftCanvasSize =
-                                          null;
-                                    });
-                                  },
-                        onConfirmPlacement: canConfirmAddComponentPlacement
-                            ? () {
-                                _confirmAddComponentTemplatePlacement(
-                                  projectState: projectState,
-                                  target: placementSaveTarget!,
-                                  template: selectedAddComponentTemplate,
-                                );
-                              }
-                            : null,
-                        saveBoundaryCopy: _addComponentPlacementSaveInFlight
-                            ? 'Salvestamine on pooleli...'
-                            : addComponentTemplateSaveBlockReason ??
-                                'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
-                        saveContextLabel:
+                        hasSelectedTemplate:
+                            selectedAddComponentTemplate != null,
+                        placementSectionBuilder: (context) =>
+                            buildBoardCanvasPlacementChildren(
+                          context,
+                          holder: _placementHolder,
+                          projectState: projectState,
+                          resolveSaveValues: (draft) =>
+                              _resolvedPlacementSaveValues(
+                                  placementSaveTarget, draft),
+                          placementSeed:
+                              addComponentTemplatePlacementContextEntry == null
+                                  ? null
+                                  : _placementSeedFor(
+                                      addComponentTemplatePlacementContextEntry),
+                          templates: _kStarterAddComponentTemplates
+                              .map(_placementTemplateValues)
+                              .toList(growable: false),
+                          chooserBuilder: _buildPlacementTemplateChooser,
+                          selectedSummaryBuilder:
+                              _buildPlacementSelectedSummary,
+                          templatePreviewBuilder:
+                              _buildPlacementTemplatePreview,
+                          draftPreviewBuilder: _buildPlacementDraftPreview,
+                          saveContextLabel:
                             addComponentTemplatePlacementContextEntry
                                     ?.selectorLabel ??
                                 (placementSaveTarget == null
@@ -1898,8 +1600,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                                   .componentId,
                                             ),
                                       )),
-                        saveStatusMessage:
-                            _addComponentTemplateSaveStatusMessage,
+                        ),
                       );
                       break;
                     case _WorkbenchContextPanelMode.safetyEvidence:
@@ -1985,8 +1686,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       final placementContextEntry = selectedEntry;
                       setState(() {
                         if (placementContextEntry != null) {
-                          _seedAddComponentTemplateDraftFromPlacement(
-                              placementContextEntry);
+                          _placementHolder.seedAddFromPlacement(
+                              _placementSeedFor(placementContextEntry));
                         } else if (_canvasSelection is ComponentSelection) {
                           _clearCanvasSelection();
                         }
@@ -3240,88 +2941,20 @@ class _CanvasFocusRestoreBar extends StatelessWidget {
 }
 
 class _AddComponentTemplateListPanel extends StatelessWidget {
-  const _AddComponentTemplateListPanel({
-    required this.entries,
-    required this.projectState,
-    required this.metadataEditComponent,
-    required this.componentIdentityHolder,
-    required this.selectedTemplateId,
-    required this.onTemplateSelected,
-    required this.selectedTemplate,
-    required this.topContactMarkers,
-    required this.rightContactMarkers,
-    required this.bottomContactMarkers,
-    required this.leftContactMarkers,
-    required this.draftWidth,
-    required this.draftHeight,
-    required this.draftRotationDeg,
-    required this.hasZeroContactMarkers,
-    required this.hasExcessiveContactMarkers,
-    required this.onTopContactMarkersChanged,
-    required this.onRightContactMarkersChanged,
-    required this.onBottomContactMarkersChanged,
-    required this.onLeftContactMarkersChanged,
-    required this.onDraftWidthChanged,
-    required this.onDraftHeightChanged,
-    required this.onDraftRotationChanged,
-    required this.onChangeTemplateSelection,
-    required this.draftLabel,
-    required this.onDraftLabelChanged,
-    required this.onConfirmPlacement,
-    this.saveBoundaryCopy =
-        'Salvesta kinnitab ainult valitud olemasoleva komponendi visuaalse paigutuse. Renderer/painter ei kirjuta.',
-    this.saveContextLabel,
-    this.saveStatusMessage,
-    this.onResetToTemplateDefaults,
-  });
-
-  final List<_AddComponentTemplateDefinition> entries;
+  const _AddComponentTemplateListPanel(
+      {required this.projectState,
+      required this.metadataEditComponent,
+      required this.componentIdentityHolder,
+      required this.hasSelectedTemplate,
+      required this.placementSectionBuilder});
   final ProjectState projectState;
   final ComponentFact? metadataEditComponent;
   final ComponentIdentityHolder componentIdentityHolder;
-  final String? selectedTemplateId;
-  final ValueChanged<String> onTemplateSelected;
-  final _AddComponentTemplateDefinition? selectedTemplate;
-  final int topContactMarkers;
-  final int rightContactMarkers;
-  final int bottomContactMarkers;
-  final int leftContactMarkers;
-  final double draftWidth;
-  final double draftHeight;
-  final int draftRotationDeg;
-  final bool hasZeroContactMarkers;
-  final bool hasExcessiveContactMarkers;
-  final ValueChanged<int> onTopContactMarkersChanged;
-  final ValueChanged<int> onRightContactMarkersChanged;
-  final ValueChanged<int> onBottomContactMarkersChanged;
-  final ValueChanged<int> onLeftContactMarkersChanged;
-  final ValueChanged<double> onDraftWidthChanged;
-  final ValueChanged<double> onDraftHeightChanged;
-  final ValueChanged<int> onDraftRotationChanged;
-  final VoidCallback onChangeTemplateSelection;
-  final String draftLabel;
-  final ValueChanged<String> onDraftLabelChanged;
-  final VoidCallback? onConfirmPlacement;
-  final String saveBoundaryCopy;
-  final String? saveContextLabel;
-  final String? saveStatusMessage;
-  final VoidCallback? onResetToTemplateDefaults;
+  final bool hasSelectedTemplate;
+  final List<Widget> Function(BuildContext) placementSectionBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final templateRows = entries
-        .map(
-          (entry) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: _AddComponentTemplateListTile(
-              entry: entry,
-              selected: selectedTemplateId == entry.id,
-              onTap: () => onTemplateSelected(entry.id),
-            ),
-          ),
-        )
-        .toList(growable: false);
     return Card(
       margin: EdgeInsets.zero,
       color: BoardCanvasPalette.paper,
@@ -3341,122 +2974,15 @@ class _AddComponentTemplateListPanel extends StatelessWidget {
         childrenPadding: _kCompactControlChildrenPadding,
         title: _CompactDisclosureTitle(
           label: 'Lisa visuaalne paigutus',
-          detail: selectedTemplate == null
-              ? 'Visuaalsed algmallid'
-              : 'Aktiivne mall',
+          detail:
+              !hasSelectedTemplate ? 'Visuaalsed algmallid' : 'Aktiivne mall',
         ),
         children: [
           ComponentIdentityPanel(
             projectState: projectState,
             metadataEditComponent: metadataEditComponent,
             holder: componentIdentityHolder,
-            placementSectionBuilder: (context) => [
-              const SizedBox(height: 10),
-              const Divider(color: BoardCanvasPalette.rule, height: 1),
-              const SizedBox(height: 8),
-              if (selectedTemplate == null)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 0, 2, 6),
-                      child: Text(
-                        'Vali kuju',
-                        key: const Key(
-                          'board_canvas_add_component_template_picker_label',
-                        ),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: BoardCanvasPalette.signal,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.zero,
-                      key: const Key(
-                        'board_canvas_add_component_template_list_rows',
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: templateRows,
-                      ),
-                    ),
-                  ],
-                )
-              else ...[
-                _AddComponentTemplateSelectedSummary(
-                  template: selectedTemplate!,
-                  onChangeTemplate: onChangeTemplateSelection,
-                ),
-                const SizedBox(height: 6),
-                TextFormField(
-                  key: const Key(
-                    'board_canvas_add_component_template_draft_label_input',
-                  ),
-                  initialValue: draftLabel,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    labelText: 'Draft label',
-                    hintText: 'e.g. AGH789',
-                    labelStyle: theme.textTheme.labelSmall?.copyWith(
-                      color: BoardCanvasPalette.muted,
-                    ),
-                    hintStyle: theme.textTheme.bodySmall?.copyWith(
-                      color: BoardCanvasPalette.dim,
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: BoardCanvasPalette.rule),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: BoardCanvasPalette.signal),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                  ),
-                  maxLength: 16,
-                  onChanged: onDraftLabelChanged,
-                  textAlign: TextAlign.left,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: BoardCanvasPalette.navy,
-                  ),
-                ),
-                _AddComponentTemplateBuilderPanel(
-                  key: const Key(
-                    'board_canvas_add_component_template_builder',
-                  ),
-                  template: selectedTemplate!,
-                  topContactMarkers: topContactMarkers,
-                  rightContactMarkers: rightContactMarkers,
-                  bottomContactMarkers: bottomContactMarkers,
-                  leftContactMarkers: leftContactMarkers,
-                  draftWidth: draftWidth,
-                  draftHeight: draftHeight,
-                  draftRotationDeg: draftRotationDeg,
-                  hasZeroContactMarkers: hasZeroContactMarkers,
-                  hasExcessiveContactMarkers: hasExcessiveContactMarkers,
-                  onTopChanged: onTopContactMarkersChanged,
-                  onRightChanged: onRightContactMarkersChanged,
-                  onBottomChanged: onBottomContactMarkersChanged,
-                  onLeftChanged: onLeftContactMarkersChanged,
-                  onDraftWidthChanged: onDraftWidthChanged,
-                  onDraftHeightChanged: onDraftHeightChanged,
-                  onDraftRotationChanged: onDraftRotationChanged,
-                  onResetToDefaults: onResetToTemplateDefaults,
-                  onConfirmPlacement: onConfirmPlacement,
-                  saveBoundaryCopy: saveBoundaryCopy,
-                  saveContextLabel: saveContextLabel,
-                  saveStatusMessage: saveStatusMessage,
-                ),
-              ],
-              const SizedBox(height: 10),
-              const Divider(color: BoardCanvasPalette.rule, height: 1),
-              const SizedBox(height: 8),
-            ],
+            placementSectionBuilder: placementSectionBuilder,
           ),
         ],
       ),
@@ -3640,595 +3166,6 @@ class _AddComponentTemplateSelectedSummary extends StatelessWidget {
   }
 }
 
-class _AddComponentTemplateBuilderPanel extends StatelessWidget {
-  const _AddComponentTemplateBuilderPanel({
-    super.key,
-    required this.template,
-    required this.topContactMarkers,
-    required this.rightContactMarkers,
-    required this.bottomContactMarkers,
-    required this.leftContactMarkers,
-    required this.draftWidth,
-    required this.draftHeight,
-    required this.draftRotationDeg,
-    required this.hasZeroContactMarkers,
-    required this.hasExcessiveContactMarkers,
-    required this.onTopChanged,
-    required this.onRightChanged,
-    required this.onBottomChanged,
-    required this.onLeftChanged,
-    required this.onDraftWidthChanged,
-    required this.onDraftHeightChanged,
-    required this.onDraftRotationChanged,
-    required this.onConfirmPlacement,
-    required this.saveBoundaryCopy,
-    this.saveContextLabel,
-    this.saveStatusMessage,
-    this.onResetToDefaults,
-  });
-
-  final _AddComponentTemplateDefinition template;
-  final int topContactMarkers;
-  final int rightContactMarkers;
-  final int bottomContactMarkers;
-  final int leftContactMarkers;
-  final double draftWidth;
-  final double draftHeight;
-  final int draftRotationDeg;
-  final bool hasZeroContactMarkers;
-  final bool hasExcessiveContactMarkers;
-  final ValueChanged<int> onTopChanged;
-  final ValueChanged<int> onRightChanged;
-  final ValueChanged<int> onBottomChanged;
-  final ValueChanged<int> onLeftChanged;
-  final ValueChanged<double> onDraftWidthChanged;
-  final ValueChanged<double> onDraftHeightChanged;
-  final ValueChanged<int> onDraftRotationChanged;
-  final VoidCallback? onConfirmPlacement;
-  final String saveBoundaryCopy;
-  final String? saveContextLabel;
-  final String? saveStatusMessage;
-  final VoidCallback? onResetToDefaults;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      key: const Key('board_canvas_add_component_builder_card'),
-      margin: EdgeInsets.zero,
-      color: BoardCanvasPalette.tile,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: BoardCanvasPalette.rule),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Pin-asetus',
-              key: const Key(
-                'board_canvas_add_component_builder_pin_layout_heading',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.signal,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.6,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'UI-local marker draft',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: BoardCanvasPalette.navy,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'UI-local markers',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: BoardCanvasPalette.muted,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 2),
-            Text(
-              'Kontaktid on lokaalne mustand; neid ei kinnitata elektriliste kontaktidena.',
-              key: const Key(
-                'board_canvas_add_component_builder_local_contact_boundary',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.navy,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              'Per-side markers are UI-local; not confirmed contacts.',
-              key: const Key(
-                'board_canvas_add_component_builder_local_marker_boundary',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.muted,
-              ),
-            ),
-            const SizedBox(height: 5),
-            SizedBox(
-              key: const Key('board_canvas_add_component_builder_visual_body'),
-              height: 148,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: 30,
-                    child: Center(
-                      child: _ContactMarkerCountRow(
-                        controlKey: const Key(
-                          'board_canvas_add_component_builder_top_control',
-                        ),
-                        side: 'Top',
-                        sideKey: 'top',
-                        value: topContactMarkers,
-                        onChanged: (value) {
-                          if (value < 0) {
-                            return;
-                          }
-                          onTopChanged(value);
-                        },
-                        axis: Axis.horizontal,
-                        showLabel: false,
-                        compact: true,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 58,
-                          child: Center(
-                            child: _ContactMarkerCountRow(
-                              controlKey: const Key(
-                                'board_canvas_add_component_builder_left_control',
-                              ),
-                              side: 'Left',
-                              sideKey: 'left',
-                              value: leftContactMarkers,
-                              onChanged: (value) {
-                                if (value < 0) {
-                                  return;
-                                }
-                                onLeftChanged(value);
-                              },
-                              axis: Axis.vertical,
-                              showLabel: false,
-                              compact: true,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxWidth: 140,
-                                maxHeight: 82,
-                              ),
-                              child: KeyedSubtree(
-                                key: Key(
-                                  'board_canvas_add_component_builder_preview_${template.id}',
-                                ),
-                                child: AspectRatio(
-                                  aspectRatio: template.bodyAspectRatio,
-                                  child: CustomPaint(
-                                    key: const Key(
-                                      'board_canvas_add_component_builder_preview',
-                                    ),
-                                    painter:
-                                        _RectangularPerimeterTemplatePreviewPainter(
-                                      template: template,
-                                      topContactMarkers: topContactMarkers,
-                                      rightContactMarkers: rightContactMarkers,
-                                      bottomContactMarkers:
-                                          bottomContactMarkers,
-                                      leftContactMarkers: leftContactMarkers,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 58,
-                          child: Center(
-                            child: _ContactMarkerCountRow(
-                              controlKey: const Key(
-                                'board_canvas_add_component_builder_right_control',
-                              ),
-                              side: 'Right',
-                              sideKey: 'right',
-                              value: rightContactMarkers,
-                              onChanged: (value) {
-                                if (value < 0) {
-                                  return;
-                                }
-                                onRightChanged(value);
-                              },
-                              axis: Axis.vertical,
-                              showLabel: false,
-                              compact: true,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                    child: Center(
-                      child: _ContactMarkerCountRow(
-                        controlKey: const Key(
-                          'board_canvas_add_component_builder_bottom_control',
-                        ),
-                        side: 'Bottom',
-                        sideKey: 'bottom',
-                        value: bottomContactMarkers,
-                        onChanged: (value) =>
-                            onBottomChanged(value < 0 ? 0 : value),
-                        axis: Axis.horizontal,
-                        showLabel: false,
-                        compact: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (onResetToDefaults != null)
-              Align(
-                alignment: Alignment.centerRight,
-                child: SizedBox(
-                  height: 24,
-                  child: TextButton(
-                    key: const Key(
-                      'board_canvas_add_component_builder_reset_to_defaults',
-                    ),
-                    onPressed: onResetToDefaults,
-                    style: TextButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 0,
-                      ),
-                      minimumSize: const Size(0, 24),
-                      textStyle: theme.textTheme.labelSmall,
-                      foregroundColor: BoardCanvasPalette.muted,
-                    ),
-                    child: const Text('Reset to template defaults'),
-                  ),
-                ),
-              ),
-            if (hasZeroContactMarkers)
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(
-                  'No visual contact markers configured.',
-                  key: const Key(
-                    'board_canvas_add_component_builder_zero_markers_hint',
-                  ),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
-                ),
-              ),
-            if (hasExcessiveContactMarkers)
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Text(
-                  'Excessive contact marker counts may be invalid.',
-                  key: const Key(
-                    'board_canvas_add_component_builder_excessive_markers_hint',
-                  ),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.tertiary,
-                  ),
-                  maxLines: 2,
-                ),
-              ),
-            const SizedBox(height: 6),
-            _AddComponentDraftSizeControls(
-              draftWidth: draftWidth,
-              draftHeight: draftHeight,
-              onWidthChanged: onDraftWidthChanged,
-              onHeightChanged: onDraftHeightChanged,
-            ),
-            const SizedBox(height: 6),
-            _AddComponentDraftRotationControls(
-              rotationDeg: draftRotationDeg,
-              onRotationChanged: onDraftRotationChanged,
-            ),
-            const SizedBox(height: 6),
-            _AddComponentDraftPreviewCard(
-              template: template,
-              draftWidth: draftWidth,
-              draftHeight: draftHeight,
-              draftRotationDeg: draftRotationDeg,
-              topContactMarkers: topContactMarkers,
-              rightContactMarkers: rightContactMarkers,
-              bottomContactMarkers: bottomContactMarkers,
-              leftContactMarkers: leftContactMarkers,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Mustand on lokaalne kuni salvestamiseni.',
-              key: const Key(
-                'board_canvas_add_component_builder_local_draft_copy',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.navy,
-              ),
-            ),
-            Text(
-              'Kontaktid ei kinnita elektrilist ühendust.',
-              key: const Key(
-                'board_canvas_add_component_builder_no_connectivity_copy',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.navy,
-              ),
-            ),
-            DecoratedBox(
-              key: const Key(
-                'board_canvas_add_component_builder_save_boundary_notice',
-              ),
-              decoration: BoxDecoration(
-                color: BoardCanvasPalette.tile,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: BoardCanvasPalette.rule),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 7,
-                ),
-                child: Text(
-                  saveBoundaryCopy,
-                  key: const Key(
-                    'board_canvas_add_component_builder_save_boundary_copy',
-                  ),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: BoardCanvasPalette.navy,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              saveContextLabel == null
-                  ? 'Valitud komponent: puudub'
-                  : 'Valitud komponent: $saveContextLabel',
-              key: const Key(
-                'board_canvas_add_component_builder_save_context',
-              ),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.muted,
-              ),
-            ),
-            if (saveStatusMessage != null)
-              Text(
-                saveStatusMessage!,
-                key: const Key(
-                  'board_canvas_add_component_builder_save_status',
-                ),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: BoardCanvasPalette.signal,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            const SizedBox(height: 6),
-            _AddComponentDraftActionBar(
-              onResetToDefaults: onResetToDefaults,
-              onConfirmPlacement: onConfirmPlacement,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AddComponentDraftSizeControls extends StatelessWidget {
-  const _AddComponentDraftSizeControls({
-    required this.draftWidth,
-    required this.draftHeight,
-    required this.onWidthChanged,
-    required this.onHeightChanged,
-  });
-
-  final double draftWidth;
-  final double draftHeight;
-  final ValueChanged<double> onWidthChanged;
-  final ValueChanged<double> onHeightChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      key: const Key('board_canvas_add_component_builder_size_section'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: BoardCanvasPalette.paper,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: BoardCanvasPalette.rule),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Suurus',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: BoardCanvasPalette.navy,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 6),
-          _AddComponentDraftScalarControl(
-            label: 'Laius',
-            valueText: draftWidth.toStringAsFixed(2),
-            decrementKey: const Key(
-              'board_canvas_add_component_builder_width_decrement',
-            ),
-            valueKey:
-                const Key('board_canvas_add_component_builder_width_value'),
-            incrementKey: const Key(
-              'board_canvas_add_component_builder_width_increment',
-            ),
-            onDecrement: () => onWidthChanged(draftWidth - 0.1),
-            onIncrement: () => onWidthChanged(draftWidth + 0.1),
-          ),
-          const SizedBox(height: 4),
-          _AddComponentDraftScalarControl(
-            label: 'Kõrgus',
-            valueText: draftHeight.toStringAsFixed(2),
-            decrementKey: const Key(
-              'board_canvas_add_component_builder_height_decrement',
-            ),
-            valueKey:
-                const Key('board_canvas_add_component_builder_height_value'),
-            incrementKey: const Key(
-              'board_canvas_add_component_builder_height_increment',
-            ),
-            onDecrement: () => onHeightChanged(draftHeight - 0.1),
-            onIncrement: () => onHeightChanged(draftHeight + 0.1),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Lohista nurgast suuruse muutmiseks',
-            key: const Key(
-              'board_canvas_add_component_builder_resize_hint',
-            ),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: BoardCanvasPalette.muted,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AddComponentDraftRotationControls extends StatelessWidget {
-  const _AddComponentDraftRotationControls({
-    required this.rotationDeg,
-    required this.onRotationChanged,
-  });
-
-  final int rotationDeg;
-  final ValueChanged<int> onRotationChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      key: const Key('board_canvas_add_component_builder_rotation_section'),
-      width: double.infinity,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: BoardCanvasPalette.paper,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: BoardCanvasPalette.rule),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Pööramine',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: BoardCanvasPalette.navy,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Pööre: $rotationDeg°',
-            key: const Key(
-              'board_canvas_add_component_builder_rotation_value',
-            ),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: BoardCanvasPalette.navy,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final snap in const [0, 90, 180, 270])
-                _AddComponentDraftChipButton(
-                  key: Key(
-                    'board_canvas_add_component_builder_rotation_snap_$snap',
-                  ),
-                  label: '$snap°',
-                  onPressed: () => onRotationChanged(snap),
-                  minWidth: 52,
-                  minHeight: 32,
-                  foregroundColor: BoardCanvasPalette.navy,
-                  backgroundColor: BoardCanvasPalette.signalTint,
-                  borderColor: BoardCanvasPalette.ruleStrong,
-                ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Peenhäälestus',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: BoardCanvasPalette.muted,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              _AddComponentDraftChipButton(
-                key: const Key(
-                  'board_canvas_add_component_builder_rotation_decrement',
-                ),
-                label: '−10°',
-                onPressed: () => onRotationChanged(rotationDeg - 10),
-                minHeight: 26,
-                foregroundColor: BoardCanvasPalette.muted,
-                borderColor: BoardCanvasPalette.rule,
-              ),
-              _AddComponentDraftChipButton(
-                key: const Key(
-                  'board_canvas_add_component_builder_rotation_increment',
-                ),
-                label: '+10°',
-                onPressed: () => onRotationChanged(rotationDeg + 10),
-                minHeight: 26,
-                foregroundColor: BoardCanvasPalette.muted,
-                borderColor: BoardCanvasPalette.rule,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _AddComponentDraftPreviewCard extends StatelessWidget {
   const _AddComponentDraftPreviewCard({
     required this.template,
@@ -4340,354 +3277,6 @@ class _AddComponentDraftPreviewCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _AddComponentDraftActionBar extends StatelessWidget {
-  const _AddComponentDraftActionBar({
-    required this.onResetToDefaults,
-    required this.onConfirmPlacement,
-  });
-
-  final VoidCallback? onResetToDefaults;
-  final VoidCallback? onConfirmPlacement;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      key: const Key('board_canvas_add_component_builder_action_bar'),
-      alignment: WrapAlignment.center,
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        _AddComponentDraftChipButton(
-          key: const Key('board_canvas_add_component_builder_save'),
-          label: 'Salvesta',
-          onPressed: onConfirmPlacement,
-          minWidth: 74,
-          minHeight: 38,
-          foregroundColor: BoardCanvasPalette.signal,
-          backgroundColor: BoardCanvasPalette.signalTint,
-          borderColor: BoardCanvasPalette.signal.withValues(alpha: 0.7),
-          disabledForegroundColor: BoardCanvasPalette.muted,
-          disabledBackgroundColor: BoardCanvasPalette.tile,
-          disabledBorderColor: BoardCanvasPalette.ruleStrong,
-        ),
-        const _AddComponentDraftChipButton(
-          key: Key('board_canvas_add_component_builder_local_edit'),
-          label: 'Muuda (tulekul)',
-          onPressed: null,
-          minWidth: 68,
-          minHeight: 38,
-          foregroundColor: Color(0xFFF6C453),
-          backgroundColor: Color(0xFF231B0A),
-          borderColor: Color(0xFF66501D),
-        ),
-        _AddComponentDraftChipButton(
-          key: const Key('board_canvas_add_component_builder_delete'),
-          label: 'Kustuta mustand',
-          onPressed: onResetToDefaults,
-          minWidth: 74,
-          minHeight: 38,
-          foregroundColor: const Color(0xFFEAA6A6),
-          backgroundColor: const Color(0xFF211417),
-          borderColor: const Color(0xFF493039),
-        ),
-        const _AddComponentDraftChipButton(
-          key: Key('board_canvas_add_component_builder_cancel'),
-          label: 'Tühista (pole aktiivne)',
-          onPressed: null,
-          minWidth: 74,
-          minHeight: 38,
-          foregroundColor: BoardCanvasPalette.navy,
-          backgroundColor: BoardCanvasPalette.paper,
-          borderColor: BoardCanvasPalette.ruleStrong,
-        ),
-      ],
-    );
-  }
-}
-
-class _AddComponentDraftScalarControl extends StatelessWidget {
-  const _AddComponentDraftScalarControl({
-    required this.label,
-    required this.valueText,
-    required this.decrementKey,
-    required this.valueKey,
-    required this.incrementKey,
-    required this.onDecrement,
-    required this.onIncrement,
-  });
-
-  final String label;
-  final String valueText;
-  final Key decrementKey;
-  final Key valueKey;
-  final Key incrementKey;
-  final VoidCallback onDecrement;
-  final VoidCallback onIncrement;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: BoardCanvasPalette.tile,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: BoardCanvasPalette.rule),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 52,
-            child: Text(
-              label,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: BoardCanvasPalette.navy,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          IconButton(
-            key: decrementKey,
-            iconSize: 20,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints.tightFor(width: 30, height: 30),
-            style: IconButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minimumSize: const Size(30, 30),
-              maximumSize: const Size(30, 30),
-              foregroundColor: const Color(0xFFEAA6A6),
-              backgroundColor: const Color(0xFF211417),
-            ),
-            tooltip: 'Vähenda $label',
-            onPressed: onDecrement,
-            icon: const Icon(Icons.remove_circle_outline),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              decoration: BoxDecoration(
-                color: BoardCanvasPalette.shell,
-                borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: BoardCanvasPalette.ruleStrong),
-              ),
-              child: Text(
-                valueText,
-                key: valueKey,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: BoardCanvasPalette.navy,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.2,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            key: incrementKey,
-            iconSize: 20,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints.tightFor(width: 30, height: 30),
-            style: IconButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minimumSize: const Size(30, 30),
-              maximumSize: const Size(30, 30),
-              foregroundColor: BoardCanvasPalette.signal,
-              backgroundColor: BoardCanvasPalette.signalTint,
-            ),
-            tooltip: 'Suurenda $label',
-            onPressed: onIncrement,
-            icon: const Icon(Icons.add_circle_outline),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AddComponentDraftChipButton extends StatelessWidget {
-  const _AddComponentDraftChipButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    this.foregroundColor,
-    this.backgroundColor,
-    this.borderColor,
-    this.disabledForegroundColor,
-    this.disabledBackgroundColor,
-    this.disabledBorderColor,
-    this.minWidth = 0,
-    this.minHeight = 28,
-  });
-
-  final String label;
-  final VoidCallback? onPressed;
-  final Color? foregroundColor;
-  final Color? backgroundColor;
-  final Color? borderColor;
-  final Color? disabledForegroundColor;
-  final Color? disabledBackgroundColor;
-  final Color? disabledBorderColor;
-  final double minWidth;
-  final double minHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-        minimumSize: Size(minWidth, minHeight),
-        maximumSize: Size(math.max(minWidth, 120), minHeight),
-        foregroundColor: foregroundColor ?? BoardCanvasPalette.navy,
-        backgroundColor: backgroundColor ?? Colors.transparent,
-        disabledForegroundColor:
-            disabledForegroundColor ?? BoardCanvasPalette.dim,
-        disabledBackgroundColor: disabledBackgroundColor ?? Colors.transparent,
-        side: BorderSide(
-          color: onPressed == null
-              ? disabledBorderColor ?? BoardCanvasPalette.rule
-              : borderColor ?? BoardCanvasPalette.ruleStrong,
-        ),
-        textStyle: theme.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      child: Text(label),
-    );
-  }
-}
-
-class _ContactMarkerCountRow extends StatelessWidget {
-  const _ContactMarkerCountRow({
-    this.controlKey,
-    required this.side,
-    required this.sideKey,
-    required this.value,
-    required this.onChanged,
-    this.axis = Axis.horizontal,
-    this.showLabel = true,
-    this.compact = false,
-  });
-
-  final Key? controlKey;
-  final String side;
-  final String sideKey;
-  final int value;
-  final ValueChanged<int> onChanged;
-  final Axis axis;
-  final bool showLabel;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final label = Text(
-      side,
-      style: theme.textTheme.labelSmall?.copyWith(
-        color: BoardCanvasPalette.muted,
-        fontSize: 10,
-      ),
-    );
-
-    final controls = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          iconSize: 16,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints.tightFor(width: 16, height: 16),
-          style: IconButton.styleFrom(
-            visualDensity: VisualDensity.compact,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minimumSize: const Size(16, 16),
-            foregroundColor: BoardCanvasPalette.muted,
-            disabledForegroundColor: BoardCanvasPalette.dim,
-          ),
-          onPressed: value <= 0 ? null : () => onChanged(value - 1),
-          icon: const Icon(Icons.remove_circle_outline),
-          tooltip: 'Decrease $side contact markers',
-          key: Key(
-            'board_canvas_add_component_template_builder_${sideKey}_decrement',
-          ),
-        ),
-        Container(
-          width: 20,
-          alignment: Alignment.center,
-          child: Text(
-            value.toString(),
-            key: Key(
-              'board_canvas_add_component_template_builder_${sideKey}_value',
-            ),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: BoardCanvasPalette.navy,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        IconButton(
-          iconSize: 16,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints.tightFor(width: 16, height: 16),
-          style: IconButton.styleFrom(
-            visualDensity: VisualDensity.compact,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minimumSize: const Size(16, 16),
-            foregroundColor: BoardCanvasPalette.muted,
-          ),
-          onPressed: () => onChanged(value + 1),
-          icon: const Icon(Icons.add_circle_outline),
-          tooltip: 'Increase $side contact markers',
-          key: Key(
-            'board_canvas_add_component_template_builder_${sideKey}_increment',
-          ),
-        ),
-      ],
-    );
-
-    if (!showLabel) {
-      return Container(
-        key: controlKey,
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: controls,
-      );
-    }
-
-    if (axis == Axis.horizontal) {
-      return Row(
-        key: controlKey,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (!compact)
-            SizedBox(
-              width: 34,
-              child: label,
-            ),
-          if (!compact) const SizedBox(width: 2),
-          controls,
-        ],
-      );
-    }
-
-    return Column(
-      key: controlKey,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (!compact) label,
-        if (!compact) const SizedBox(height: 2),
-        controls,
-      ],
     );
   }
 }
@@ -6245,261 +4834,6 @@ class _LegendItem extends StatelessWidget {
       ],
     );
   }
-}
-
-class _PlacementEditorDraftState {
-  const _PlacementEditorDraftState({
-    required this.componentLabel,
-    required this.boardSide,
-    required this.templateLabel,
-    required this.rotationDeg,
-    required this.width,
-    required this.height,
-  });
-
-  factory _PlacementEditorDraftState.fromEntry(_PlacementEntry entry) {
-    final placement = entry.placement;
-    final templateId = placement.templateId?.trim();
-    final width = placement.width?.toDouble();
-    final height = placement.height?.toDouble();
-    return _PlacementEditorDraftState(
-      componentLabel: entry.selectorLabel,
-      boardSide: placement.boardSide.trim().isEmpty
-          ? 'top'
-          : placement.boardSide.trim(),
-      templateLabel: templateId == null || templateId.isEmpty
-          ? _footprintVisualKindLabel(
-              footprintVisualKind(
-                entry.placement,
-                entry.component,
-                entry.template,
-              ),
-            )
-          : templateId,
-      rotationDeg: placement.rotationDeg.toDouble(),
-      width: width == null || !width.isFinite || width <= 0 ? 1.0 : width,
-      height: height == null || !height.isFinite || height <= 0 ? 0.6 : height,
-    );
-  }
-
-  final String componentLabel;
-  final String boardSide;
-  final String templateLabel;
-  final double rotationDeg;
-  final double width;
-  final double height;
-
-  _PlacementEditorDraftState copyWith({
-    String? boardSide,
-    double? rotationDeg,
-    double? width,
-    double? height,
-  }) {
-    return _PlacementEditorDraftState(
-      componentLabel: componentLabel,
-      boardSide: boardSide ?? this.boardSide,
-      templateLabel: templateLabel,
-      rotationDeg: rotationDeg ?? this.rotationDeg,
-      width: width ?? this.width,
-      height: height ?? this.height,
-    );
-  }
-}
-
-class _PlacementEditorShellCard extends StatelessWidget {
-  const _PlacementEditorShellCard({
-    required this.entry,
-    required this.draft,
-    required this.onToggleSide,
-    required this.onIncrementRotation,
-    required this.onIncrementWidth,
-    required this.onIncrementHeight,
-    required this.onReset,
-    required this.onDiscard,
-  });
-
-  final _PlacementEntry entry;
-  final _PlacementEditorDraftState draft;
-  final VoidCallback? onToggleSide;
-  final VoidCallback? onIncrementRotation;
-  final VoidCallback? onIncrementWidth;
-  final VoidCallback? onIncrementHeight;
-  final VoidCallback? onReset;
-  final VoidCallback? onDiscard;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final boundaryTextStyle = theme.textTheme.bodySmall?.copyWith(
-      color: BoardCanvasPalette.navy,
-      fontWeight: FontWeight.w600,
-      height: 1.25,
-    );
-    return Card(
-      key: const Key('board_canvas_placement_editor_shell'),
-      color: BoardCanvasPalette.tile,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: BoardCanvasPalette.rule),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const InspectorSectionHeader(
-              title: 'Placement draft',
-              tag: 'LOCAL',
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'unsaved/session-only',
-              key: const Key('board_canvas_placement_draft_session_only'),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: BoardCanvasPalette.signal,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Draft changes stay in memory only.',
-              style: boundaryTextStyle,
-            ),
-            Text(
-              'Canonical projection remains unchanged.',
-              style: boundaryTextStyle,
-            ),
-            Text(
-              'Canonical write unavailable in this pass.',
-              style: boundaryTextStyle,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Selected component: ${draft.componentLabel}',
-              key: const Key('board_canvas_placement_draft_component'),
-            ),
-            Text(
-              'Board side draft: ${draft.boardSide}',
-              key: const Key('board_canvas_placement_draft_side'),
-            ),
-            Text(
-              'Shape/template draft: ${draft.templateLabel}',
-              key: const Key('board_canvas_placement_draft_template'),
-            ),
-            Text(
-              'Rotation draft: ${_formatPlacementDraftRotation(draft.rotationDeg)} deg',
-              key: const Key('board_canvas_placement_draft_rotation'),
-            ),
-            Text(
-              'Width draft: ${_formatPlacementDraftSize(draft.width)}',
-              key: const Key('board_canvas_placement_draft_width'),
-            ),
-            Text(
-              'Height draft: ${_formatPlacementDraftSize(draft.height)}',
-              key: const Key('board_canvas_placement_draft_height'),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                _PlacementDraftButton(
-                  buttonKey:
-                      const Key('board_canvas_placement_draft_side_toggle'),
-                  label: 'Toggle side',
-                  onPressed: onToggleSide,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key(
-                    'board_canvas_placement_draft_rotation_increment',
-                  ),
-                  label: 'Rotate +15',
-                  onPressed: onIncrementRotation,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key(
-                    'board_canvas_placement_draft_width_increment',
-                  ),
-                  label: 'Width +0.10',
-                  onPressed: onIncrementWidth,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key(
-                    'board_canvas_placement_draft_height_increment',
-                  ),
-                  label: 'Height +0.10',
-                  onPressed: onIncrementHeight,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key('board_canvas_placement_draft_cancel'),
-                  label: 'Cancel local draft',
-                  onPressed: onReset,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key('board_canvas_placement_draft_reset'),
-                  label: 'Reset local draft',
-                  onPressed: onReset,
-                ),
-                _PlacementDraftButton(
-                  buttonKey: const Key('board_canvas_placement_draft_discard'),
-                  label: 'Discard local draft',
-                  onPressed: onDiscard,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PlacementDraftButton extends StatelessWidget {
-  const _PlacementDraftButton({
-    required this.buttonKey,
-    required this.label,
-    required this.onPressed,
-  });
-
-  final Key buttonKey;
-  final String label;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return TextButton(
-      key: buttonKey,
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        minimumSize: const Size(0, 28),
-        textStyle: theme.textTheme.labelSmall,
-        foregroundColor: BoardCanvasPalette.signal,
-        disabledForegroundColor: BoardCanvasPalette.dim,
-      ),
-      child: Text(label),
-    );
-  }
-}
-
-String _formatPlacementDraftRotation(double value) {
-  if (!value.isFinite) {
-    return '0';
-  }
-  final rounded = value.roundToDouble();
-  if ((value - rounded).abs() < 0.001) {
-    return rounded.toInt().toString();
-  }
-  return value.toStringAsFixed(1);
-}
-
-String _formatPlacementDraftSize(double value) {
-  if (!value.isFinite) {
-    return '0.00';
-  }
-  return value.toStringAsFixed(2);
 }
 
 String _componentPreviewSemanticsLabel(_PlacementEntry? entry) {

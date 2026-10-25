@@ -1,9 +1,42 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS`
 Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Shared Workbench Foundation v1 reservation
+## Foundation v1 visual acceptance amendment
+
+The human decision of 2026-10-25 rejects the previous final warm-Photos/cool-Shell
+compromise. Actual Board Canvas warm black/gold is the visual reference for
+Canvas -> WorkbenchShell -> Photos -> Overview. Existing six-file technical
+foundation work is retained; prior 851/851 automation does not confer visual
+acceptance. Human visual review is FAIL; implementation audit is gated on a
+fresh PASS after corrected external Navigator/Overlay smoke preparation.
+
+ACTIVE_SCOPE_LOCK owns exactly five current docs in a clean isolated detached
+worktree, preserving all primary-checkout bytes and the six-file child draft.
+Binding amendment: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS.md`.
+The original accepted scope/verdict/findings and historical ledger row are fixed.
+Reserve continuation of the same implementation child with exactly eleven paths:
+original six plus WorkbenchShell/Overview, their two tests and only the Canvas
+host opened-navigation-popup zone. No twelfth path; new popup assertions use
+the already authorized shell test. Only the opened popup may change visually;
+closed instrument chrome, all other Canvas pixels/behavior, thirteen palette
+values, the entire Canvas test/P0/C0/M0/I0 and navigation semantics remain fixed.
+No extra runtime
+path, new primary workflow, router/global-theme or canonical/Session change.
+Warm shell chrome must preserve legacy child inheritance and legacy color/
+surface bytes; remaining destination content requires later separate scopes.
+
+Independent scope acceptance, bounded verdict recording and exact human docs
+commit/push/integration precede continuation. No implementation/harness/map edit
+occurs in this docs phase. Maps stay fixed; requalify accepted committed source
+later with no automatic map child, including the maintained host instrument/
+navigation zone. Preserve all eleven shell keys and Canvas shell-only absences.
+The amendment ledger Status is neutral — and its unique verdict block is empty.
+Future human --ff-only --no-autostash integration requires six-file byte/hash/
+Git-diff equality before and after. Post-child: NEEDS_USER_DECISION.
+
+## Historical superseded Shared Workbench Foundation v1 reservation
 
 The human decision of 2026-10-24 selects BoardCanvasPalette warm black/gold.
 Review/scope entry baseline: `9b30f5be46b1dc4656e2f14c14316391cf8a26ac`.

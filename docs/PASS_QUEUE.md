@@ -2,10 +2,40 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS`
 Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Shared Workbench Foundation v1 single-child sequence
+## Foundation v1 visual acceptance amendment sequence
+
+1. Freeze the six-file child draft and all primary bytes at main baseline
+   `073d53dfb4865e0f02df5b844b418bb3f0ef2324`; use clean detached isolation.
+2. Author exactly five docs with explicit supersession of the original scope's
+   final visual-mismatch acceptance and exact-eleven continuation boundary.
+   Only the opened Canvas navigation popup may change visually; its closed bar,
+   every other Canvas zone, thirteen values and full Canvas tests stay frozen.
+3. Verify five added MAINTAINED source/test maps, including host instrument/
+   navigation, source anchors and sufficiency;
+   freeze all maps/index and the original scope/verdict/ledger/history.
+4. Validate docs/material/raw/inverse/Git, doctor/temp-output validator and one
+   empty verdict block/neutral — Status row. Independent scope audit is docs-only.
+5. After acceptance, expressly authorized two-coordinate recording and exact
+   human docs commit/push plus --ff-only --no-autostash integration, verify the
+   six-file raw/hash/Git diff immediately before and after, then continue
+   the same implementation child. No additional sync/preparatory pass.
+6. Prove warm shell/Photos/Overview/opened-navigation-popup coherence against
+   actual Canvas; preserve closed Canvas appearance and all eleven shell keys,
+   preserve legacy destination content/global theme/navigation/domain behavior,
+   correct the external smoke harness ancestry and obtain fresh human PASS
+   before the implementation's Claude audit.
+7. After the single eleven-path child: NEEDS_USER_DECISION. Later legacy content
+   modernization and accepted-committed map maintenance are human decisions;
+   neither another implementation nor automatic map child is reserved.
+
+Binding exact paths/zones/gates: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS.md`.
+No runtime, test, external harness, map, package or tool edit in the docs phase;
+no staging, commit, push, stash, reset, clean or draft discard by Codex.
+
+## Historical superseded Shared Workbench Foundation v1 single-child sequence
 
 The human selects this five-doc Lane A scope from NEEDS_USER_DECISION.
 Committed Placement P1 maintenance and its retained owner bodies are history.

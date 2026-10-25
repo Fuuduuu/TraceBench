@@ -2,10 +2,59 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS`
 Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Current Shared Workbench Foundation v1 scope lock
+## Current Foundation v1 visual acceptance scope amendment
+
+PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS`.
+Lane A / DOCS_SCOPE_AMENDMENT_ONLY. Entry baseline:
+`073d53dfb4865e0f02df5b844b418bb3f0ef2324`.
+The human's 2026-10-25 decision replaces final warm-Photos/cool-Shell acceptance
+with coherent actual Board Canvas -> WorkbenchShell -> Photos -> Overview.
+The original scope artifact, accepted verdict/findings and ledger row remain
+immutable history. This amendment supersedes only the affected future scope
+clauses; compatible preservation/contrast/behavior contracts remain binding.
+
+Exact current five-doc authority: this file, CURRENT_STATE, PASS_QUEUE,
+AUDIT_INDEX and `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS.md` (new).
+Use the clean detached `C:\dev\TraceBench-foundation-visual-scope` worktree;
+freeze every primary-checkout byte, including the retained six-file child draft.
+Only route tops/new sections, three predecessor heading labels, one neutral
+ledger row and the new artifact may change. No runtime or external harness edit.
+
+Reserve continuation of the same `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
+with exactly the original six paths plus shell, Overview, their two widget
+tests and the Canvas host opened-navigation-popup zone: eleven paths enumerated
+in the binding amendment. No twelfth path; popup assertions stay in shell tests.
+Scope acceptance/authorized recording and exact human docs commit/push plus
+safe fast-forward integration precede runtime continuation. No extra child or sync.
+
+New warm chrome must isolate the opaque legacy child. Freeze WorkbenchShellColors
+values and WorkbenchDestinationSurface bytes; remaining destination content is a
+later human decision. Preserve global buildTheme/darkInstrument, all Canvas
+values/oracles, closed bar and every pixel except the opened navigation popup,
+twelve destinations/routes, Home/mode/Session semantics,
+writers/canonical data and dependencies. Preserve existing helper/fake/behavior
+oracles; only authorized visual expectations in the added tests may retarget.
+The artifact binds exact zones, committed/map identities, original literal
+palette/contrast, Photos information, Overview read-only roles, responsive
+contracts, external Overlay repair prerequisite and fresh explicit human PASS
+before implementation audit. Current human visual result is FAIL.
+Only the opened board_canvas_project_menu may change visually; preserve its
+keys/tooltip/items/checked semantics/context.go and all other Canvas behavior.
+Preserve all eleven shell keys and Canvas-route shell-only absence semantics.
+Future human integration uses --ff-only --no-autostash with six-file raw/hash/
+Git-diff preservation verified immediately before and after; no integration now.
+
+Validate only docs here: exact material/raw/inverse/history/primary freeze,
+map anchors/parity, both diff checks, doctor/temp-output validate_all and hygiene.
+Keep one empty verdict block plus neutral — ledger Status; later bounded
+recording may touch only that interior and Status cell. No map/index change.
+Requalify accepted committed additions later, without an automatic map child.
+After the one resumed implementation: NEEDS_USER_DECISION.
+
+## Historical superseded Shared Workbench Foundation v1 scope lock
 
 PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_SCOPE_LOCK_PASS`.
 Lane A / `DOCS_SCOPE_LOCK_ONLY`. Entry HEAD/origin/main:

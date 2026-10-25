@@ -8,7 +8,8 @@ import '../../../shared/session/project_session.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
-import '../widgets/workbench_shell.dart';
+import '../../../shared/theme/app_theme.dart';
+import '../../../shared/widgets/workbench_page.dart';
 
 class ProjectOverviewScreen extends ConsumerWidget {
   const ProjectOverviewScreen({super.key});
@@ -17,9 +18,8 @@ class ProjectOverviewScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final projectState = ref.watch(projectStateProvider);
     if (projectState == null) {
-      return const Scaffold(
-        body: Center(child: Text('No project loaded')),
-      );
+      return WorkbenchPage(
+          builder: (_) => const Center(child: Text('No project loaded')));
     }
 
     const workbenchDisplaySubtitle = 'Kohalik töölaud · ainult vaatamine';
@@ -29,24 +29,28 @@ class ProjectOverviewScreen extends ConsumerWidget {
         )
         .toList(growable: false);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1320),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ProjectionStaleBanner(
-                freshness: projectState.projectionFreshness,
-              ),
-              const SizedBox(height: 10),
-              _WorkbenchShellLayout(
-                boardPlacements: boardPlacements,
-                projectState: projectState,
-                workbenchDisplaySubtitle: workbenchDisplaySubtitle,
-              ),
-            ],
+    return WorkbenchPage(
+      maxContentWidth: 1344,
+      padding: EdgeInsets.zero,
+      builder: (_) => SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1320),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ProjectionStaleBanner(
+                  freshness: projectState.projectionFreshness,
+                ),
+                const SizedBox(height: 10),
+                _WorkbenchShellLayout(
+                  boardPlacements: boardPlacements,
+                  projectState: projectState,
+                  workbenchDisplaySubtitle: workbenchDisplaySubtitle,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -125,17 +129,17 @@ class _WorkbenchZoneCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: WorkbenchShellColors.text,
+          color: WorkbenchColors.navy,
           fontWeight: FontWeight.w800,
         );
     final subtitleStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: WorkbenchShellColors.muted,
+          color: WorkbenchColors.muted,
           fontWeight: FontWeight.w600,
         );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: WorkbenchShellColors.panel,
-        border: Border.all(color: WorkbenchShellColors.rule),
+        color: WorkbenchColors.paper,
+        border: Border.all(color: WorkbenchColors.rule),
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
@@ -156,7 +160,7 @@ class _WorkbenchZoneCard extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
-                  'BenchBeep Workbench',
+                  'Plaadi ülevaade',
                   style: titleStyle,
                 ),
                 const _EvidenceTag(
@@ -173,7 +177,6 @@ class _WorkbenchZoneCard extends StatelessWidget {
             Text(
               workbenchDisplaySubtitle,
               style: subtitleStyle,
-              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
             if (projectState.knownFacts.componentVisualPlacements.isEmpty)
@@ -223,9 +226,9 @@ class _WorkbenchZoneCard extends StatelessWidget {
             const SizedBox(height: 6),
             if (projectState.manifest.projectId == 'prj_pelle_pv20_001')
               const Chip(
-                backgroundColor: WorkbenchShellColors.greenTint,
+                backgroundColor: WorkbenchColors.signalTint,
                 label: Text('Bundled sample'),
-                labelStyle: TextStyle(color: WorkbenchShellColors.text),
+                labelStyle: TextStyle(color: WorkbenchColors.navy),
               ),
           ],
         ),
@@ -261,10 +264,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
         return DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(
-              color: WorkbenchShellColors.ruleStrong,
+              color: WorkbenchColors.outline,
             ),
             borderRadius: BorderRadius.circular(8),
-            color: WorkbenchShellColors.tile,
+            color: WorkbenchColors.tile,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -274,7 +277,7 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                 Text(
                   'Plaadi tööala (ainult vaatamine)',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: WorkbenchShellColors.text,
+                        color: WorkbenchColors.navy,
                         fontWeight: FontWeight.w800,
                       ),
                 ),
@@ -291,10 +294,10 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                       return Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: WorkbenchShellColors.ruleStrong,
+                            color: WorkbenchColors.outline,
                           ),
                           borderRadius: BorderRadius.circular(8),
-                          color: WorkbenchShellColors.boardBase,
+                          color: WorkbenchColors.shell,
                         ),
                         child: Stack(
                           children: [
@@ -334,7 +337,7 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                                       .textTheme
                                       .labelSmall
                                       ?.copyWith(
-                                        color: WorkbenchShellColors.dim,
+                                        color: WorkbenchColors.muted,
                                         letterSpacing: 0.4,
                                       ),
                                 ),
@@ -350,7 +353,7 @@ class _WorkbenchBoardReadOnlyCanvas extends StatelessWidget {
                 const Text(
                   'Paigutuste kokkuvõte on ainult vaatamiseks ja lokaalne.',
                   style: TextStyle(
-                    color: WorkbenchShellColors.dim,
+                    color: WorkbenchColors.muted,
                     fontSize: 11.5,
                   ),
                 ),
@@ -374,10 +377,10 @@ class _WorkbenchGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final boardRect = Rect.fromLTWH(4, 4, size.width - 8, size.height - 8);
-    final base = Paint()..color = WorkbenchShellColors.boardBase;
-    final inner = Paint()..color = WorkbenchShellColors.boardSurface;
+    final base = Paint()..color = WorkbenchColors.shell;
+    final inner = Paint()..color = WorkbenchColors.tile;
     final border = Paint()
-      ..color = WorkbenchShellColors.green
+      ..color = WorkbenchColors.signal
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -421,13 +424,9 @@ class _WorkbenchPlacementBadge extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected
-              ? WorkbenchShellColors.greenTint
-              : WorkbenchShellColors.silk,
+          color: isSelected ? WorkbenchColors.signalTint : WorkbenchColors.navy,
           border: Border.all(
-            color: isSelected
-                ? WorkbenchShellColors.greenBright
-                : WorkbenchShellColors.green,
+            color: isSelected ? WorkbenchColors.signal : WorkbenchColors.signal,
             width: 1.5,
           ),
         ),
@@ -435,7 +434,7 @@ class _WorkbenchPlacementBadge extends StatelessWidget {
           child: Text(
             _shortLabel(designator),
             style: const TextStyle(
-              color: Color(0xFF06140C),
+              color: WorkbenchColors.navyDeep,
               fontSize: 10,
               fontWeight: FontWeight.w700,
             ),
@@ -472,12 +471,12 @@ class _WorkbenchPlaceholder extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: WorkbenchShellColors.ruleStrong,
+              color: WorkbenchColors.outline,
             ),
-            color: WorkbenchShellColors.boardBase,
+            color: WorkbenchColors.shell,
           ),
           child: const DefaultTextStyle(
-            style: TextStyle(color: WorkbenchShellColors.muted),
+            style: TextStyle(color: WorkbenchColors.muted),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 14),
               child: Center(
@@ -486,14 +485,14 @@ class _WorkbenchPlaceholder extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.dashboard_customize_outlined,
-                      color: WorkbenchShellColors.greenBright,
+                      color: WorkbenchColors.signal,
                       size: 34,
                     ),
                     SizedBox(height: 8),
                     Text(
                       'PCB/töölaua kohatäide',
                       style: TextStyle(
-                        color: WorkbenchShellColors.text,
+                        color: WorkbenchColors.navy,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -521,19 +520,15 @@ class _ActionRailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final outlinedButtonStyle = OutlinedButton.styleFrom(
-      foregroundColor: WorkbenchShellColors.muted,
-      disabledForegroundColor: WorkbenchShellColors.dim,
-      backgroundColor: WorkbenchShellColors.tile,
-      visualDensity: VisualDensity.compact,
-      minimumSize: const Size(0, 34),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
-      side: const BorderSide(color: WorkbenchShellColors.ruleStrong),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    );
+    final outlinedButtonStyle =
+        Theme.of(context).outlinedButtonTheme.style!.copyWith(
+              visualDensity: VisualDensity.compact,
+              minimumSize: const WidgetStatePropertyAll(Size(0, 38)),
+              padding: const WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 8, vertical: 7)),
+            );
     final sectionTitleStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: WorkbenchShellColors.text,
+          color: WorkbenchColors.navy,
           fontWeight: FontWeight.w800,
         );
 
@@ -543,30 +538,21 @@ class _ActionRailCard extends StatelessWidget {
         ElevatedButton.icon(
           key: const ValueKey('overview-measurement-record-button'),
           onPressed: () => context.go('/project/measure-sheet'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: WorkbenchShellColors.green,
-            foregroundColor: Colors.white,
-            surfaceTintColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
-            textStyle: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
+          style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 12)),
+              ),
           icon: const Icon(Icons.science_outlined, size: 18),
           label: const Text('Lisa mõõtmine'),
         ),
         const SizedBox(height: 6),
         Card(
           margin: const EdgeInsets.symmetric(vertical: 2),
-          color: WorkbenchShellColors.panel,
+          color: WorkbenchColors.paper,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: WorkbenchShellColors.rule),
+            side: const BorderSide(color: WorkbenchColors.rule),
           ),
           child: Padding(
             padding: const EdgeInsets.all(7),
@@ -606,20 +592,20 @@ class _ActionRailCard extends StatelessWidget {
         const SizedBox(height: 4),
         Card(
           margin: const EdgeInsets.symmetric(vertical: 2),
-          color: WorkbenchShellColors.tile,
+          color: WorkbenchColors.tile,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: WorkbenchShellColors.rule),
+            side: const BorderSide(color: WorkbenchColors.rule),
           ),
           child: Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               key: const ValueKey('overview-future-tools-panel'),
-              textColor: WorkbenchShellColors.text,
-              collapsedTextColor: WorkbenchShellColors.muted,
-              iconColor: WorkbenchShellColors.greenBright,
-              collapsedIconColor: WorkbenchShellColors.dim,
+              textColor: WorkbenchColors.navy,
+              collapsedTextColor: WorkbenchColors.muted,
+              iconColor: WorkbenchColors.signal,
+              collapsedIconColor: WorkbenchColors.muted,
               tilePadding: const EdgeInsets.symmetric(horizontal: 8),
               childrenPadding: const EdgeInsets.only(
                 bottom: 8,
@@ -630,7 +616,7 @@ class _ActionRailCard extends StatelessWidget {
               subtitle: Text(
                 'Välja lülitatud',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: WorkbenchShellColors.dim,
+                      color: WorkbenchColors.muted,
                     ),
               ),
               children: [
@@ -675,7 +661,7 @@ class _ActionRailCard extends StatelessWidget {
           'TraceBench platform · display-only shell',
           key: const ValueKey('overview-project-id'),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: WorkbenchShellColors.dim,
+                color: WorkbenchColors.muted,
               ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -695,10 +681,8 @@ class _EvidenceTag extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: WorkbenchShellColors.ruleStrong),
-        color: compact
-            ? WorkbenchShellColors.greenTint
-            : WorkbenchShellColors.panelRaised,
+        border: Border.all(color: WorkbenchColors.outline),
+        color: compact ? WorkbenchColors.signalTint : WorkbenchColors.raised,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -708,9 +692,7 @@ class _EvidenceTag extends StatelessWidget {
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: compact
-                    ? WorkbenchShellColors.greenBright
-                    : WorkbenchShellColors.muted,
+                color: compact ? WorkbenchColors.signal : WorkbenchColors.muted,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
               ),
@@ -738,8 +720,8 @@ class _OverviewChip extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: WorkbenchShellColors.ruleStrong),
-            color: WorkbenchShellColors.tile,
+            border: Border.all(color: WorkbenchColors.outline),
+            color: WorkbenchColors.tile,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -749,7 +731,7 @@ class _OverviewChip extends StatelessWidget {
                   child: Text(
                     label,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: WorkbenchShellColors.muted,
+                          color: WorkbenchColors.muted,
                         ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -758,7 +740,7 @@ class _OverviewChip extends StatelessWidget {
                 Text(
                   value.toString(),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: WorkbenchShellColors.copper,
+                        color: WorkbenchColors.signal,
                         fontWeight: FontWeight.w700,
                       ),
                 ),

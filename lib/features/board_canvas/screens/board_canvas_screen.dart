@@ -30,6 +30,7 @@ import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/session/project_session.dart';
 import '../../../shared/session/beginner_mode_provider.dart';
+import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
 part '../rendering/wizard_intake_overlay.part.dart';
@@ -2018,44 +2019,49 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: PopupMenuButton<String>(
-                      key: const Key('board_canvas_project_menu'),
-                      tooltip: 'Ava projekti navigatsioon: $identity',
-                      position: PopupMenuPosition.under,
-                      onSelected: (location) => context.go(location),
-                      itemBuilder: (_) => [
-                        for (final destination in workbenchDestinations)
-                          CheckedPopupMenuItem<String>(
-                            key: Key('workbench-destination-${destination.id}'),
-                            value: destination.location,
-                            checked: destination.location == '/project',
-                            child: Text(destination.label),
+                    child: WorkbenchPopupTheme(
+                      child: PopupMenuButton<String>(
+                        key: const Key('board_canvas_project_menu'),
+                        tooltip: 'Ava projekti navigatsioon: $identity',
+                        position: PopupMenuPosition.under,
+                        onSelected: (location) => context.go(location),
+                        itemBuilder: (_) => [
+                          for (final destination in workbenchDestinations)
+                            CheckedPopupMenuItem<String>(
+                              key: Key(
+                                  'workbench-destination-${destination.id}'),
+                              value: destination.location,
+                              checked: destination.location == '/project',
+                              child: Text(destination.label),
+                            ),
+                        ],
+                        child: Container(
+                          height: 30,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: BoardCanvasPalette.ruleStrong),
+                            borderRadius: BorderRadius.circular(6),
                           ),
-                      ],
-                      child: Container(
-                        height: 30,
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: BoardCanvasPalette.ruleStrong),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                compact ? identity : '$identity · Board Canvas',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                  color: BoardCanvasPalette.navy,
-                                  fontWeight: FontWeight.w700,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  compact
+                                      ? identity
+                                      : '$identity · Board Canvas',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: BoardCanvasPalette.navy,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Icon(Icons.expand_more, size: 18),
-                          ],
+                              const Icon(Icons.expand_more, size: 18),
+                            ],
+                          ),
                         ),
                       ),
                     ),

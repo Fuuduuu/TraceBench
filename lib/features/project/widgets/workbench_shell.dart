@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../shared/session/beginner_mode_provider.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/theme/app_theme.dart';
 
 class WorkbenchShellColors {
   const WorkbenchShellColors._();
@@ -205,255 +206,200 @@ class WorkbenchShell extends ConsumerStatefulWidget {
 }
 
 class _WorkbenchShellState extends ConsumerState<WorkbenchShell> {
-  static const _wideBreakpoint = 1228.0;
-  static const _navigationWidth = 244.0;
-
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     final activeDestination = activeWorkbenchDestination(location);
     final beginnerMode = ref.watch(beginnerModeProvider);
+    final manifest = ref.watch(projectStateProvider)?.manifest;
+    final projectName = manifest?.projectName?.trim();
+    final identity = projectName != null && projectName.isNotEmpty
+        ? projectName
+        : manifest?.projectId ?? 'Projekt';
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isWide = constraints.maxWidth >= _wideBreakpoint;
-        return Scaffold(
-          key: const Key('workbench-shell'),
-          backgroundColor: WorkbenchShellColors.background,
-          appBar: AppBar(
+    return Scaffold(
+      key: const Key('workbench-shell'),
+      backgroundColor: WorkbenchColors.shell,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(45),
+        child: Theme(
+          data: buildWorkbenchTheme(),
+          child: AppBar(
             key: const Key('workbench-shell-app-bar'),
-            automaticallyImplyLeading: false,
-            backgroundColor: WorkbenchShellColors.panel,
-            foregroundColor: WorkbenchShellColors.text,
+            toolbarHeight: 44,
+            backgroundColor: WorkbenchColors.paper,
+            foregroundColor: WorkbenchColors.navy,
             surfaceTintColor: Colors.transparent,
-            shadowColor: Colors.black,
-            leading: isWide
-                ? null
-                : Builder(
-                    builder: (drawerContext) => IconButton(
-                      key: const Key('workbench-compact-menu-button'),
-                      tooltip: 'Ava projekti navigatsioon',
-                      onPressed: () => Scaffold.of(drawerContext).openDrawer(),
-                      icon: const Icon(Icons.menu),
-                    ),
-                  ),
-            title: const Text('BenchBeep Workbench'),
-            actions: [
-              IconButton(
-                key: const Key('workbench-home-button'),
-                tooltip: 'BenchBeep Home',
-                onPressed: () {
-                  ref.read(projectStateProvider.notifier).closeProject();
-                  context.go('/');
-                },
-                icon: const Icon(Icons.home_outlined),
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            leadingWidth: 36,
+            leading: IconButton(
+              key: const Key('workbench-home-button'),
+              tooltip: 'BenchBeep Home',
+              style: IconButton.styleFrom(
+                minimumSize: const Size(32, 32),
+                padding: EdgeInsets.zero,
               ),
+              iconSize: 20,
+              onPressed: () {
+                ref.read(projectStateProvider.notifier).closeProject();
+                context.go('/');
+              },
+              icon: const Icon(Icons.home_outlined),
+            ),
+            titleSpacing: 4,
+            title: LayoutBuilder(
+              builder: (context, constraints) => Align(
+                alignment: Alignment.centerLeft,
+                child: _WorkbenchBreadcrumb(
+                  activeDestination: activeDestination,
+                  identity: identity,
+                  showIdentity: constraints.maxWidth >= 500,
+                ),
+              ),
+            ),
+            actions: [
               Semantics(
                 label: 'Beginner mode',
                 button: true,
                 toggled: beginnerMode,
-                child: IconButton(
-                  key: const Key('workbench-beginner-mode-button'),
-                  tooltip: beginnerMode
+                child: Tooltip(
+                  message: beginnerMode
                       ? 'Lülita beginner mode välja'
                       : 'Lülita beginner mode sisse',
-                  onPressed: () {
-                    ref.read(beginnerModeProvider.notifier).state =
-                        !beginnerMode;
-                  },
-                  icon: Icon(
-                    beginnerMode
-                        ? Icons.school_outlined
-                        : Icons.engineering_outlined,
+                  child: TextButton.icon(
+                    key: const Key('workbench-beginner-mode-button'),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(0, 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      textStyle: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      ref.read(beginnerModeProvider.notifier).state =
+                          !beginnerMode;
+                    },
+                    icon: Icon(
+                      beginnerMode
+                          ? Icons.school_outlined
+                          : Icons.engineering_outlined,
+                      size: 16,
+                    ),
+                    label: Text(beginnerMode ? 'Algaja' : 'Edasijõudnu'),
                   ),
                 ),
               ),
+              const SizedBox(width: 4),
             ],
-            bottom: _WorkbenchBreadcrumb(activeDestination: activeDestination),
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(1),
+              child: ColoredBox(
+                color: WorkbenchColors.rule,
+                child: SizedBox(height: 1, width: double.infinity),
+              ),
+            ),
           ),
-          drawer: isWide
-              ? null
-              : Drawer(
-                  key: const Key('workbench-compact-drawer'),
-                  backgroundColor: WorkbenchShellColors.panel,
-                  child: SafeArea(
-                    child: _WorkbenchNavigation(
-                      key: const Key('workbench-compact-navigation'),
-                      activeDestination: activeDestination,
-                      closeDrawerOnNavigate: true,
+        ),
+      ),
+      body: ColoredBox(
+        color: WorkbenchColors.shell,
+        child: SizedBox.expand(child: widget.child),
+      ),
+    );
+  }
+}
+
+class _WorkbenchBreadcrumb extends StatelessWidget {
+  const _WorkbenchBreadcrumb({
+    required this.activeDestination,
+    required this.identity,
+    required this.showIdentity,
+  });
+
+  final WorkbenchDestination activeDestination;
+  final String identity;
+  final bool showIdentity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      skipTraversal: true,
+      canRequestFocus: false,
+      child: Builder(builder: (context) {
+        final focused = Focus.of(context).hasFocus;
+        final labelStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: WorkbenchColors.navy,
+              fontWeight: FontWeight.w700,
+              decoration:
+                  focused ? TextDecoration.underline : TextDecoration.none,
+            );
+        return PopupMenuButton<String>(
+          key: const Key('workbench-project-menu'),
+          tooltip:
+              'Ava projekti navigatsioon: $identity · ${activeDestination.label}',
+          position: PopupMenuPosition.under,
+          onSelected: (location) => context.go(location),
+          itemBuilder: (_) => [
+            for (final destination in workbenchDestinations)
+              CheckedPopupMenuItem<String>(
+                key: Key('workbench-destination-${destination.id}'),
+                value: destination.location,
+                checked: destination.location == activeDestination.location,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(destination.icon, size: 18),
+                    const SizedBox(width: 8),
+                    Flexible(child: Text(destination.label)),
+                  ],
+                ),
+              ),
+          ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color:
+                    focused ? WorkbenchColors.signal : WorkbenchColors.outline,
+                width: focused ? 2 : 1,
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              key: const Key('workbench-breadcrumb'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showIdentity) ...[
+                  Flexible(
+                    child: Text(
+                      '$identity ·',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: labelStyle?.copyWith(color: WorkbenchColors.muted),
                     ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                Flexible(
+                  child: Text(
+                    activeDestination.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: labelStyle,
                   ),
                 ),
-          body: ColoredBox(
-            color: WorkbenchShellColors.background,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (isWide)
-                  SizedBox(
-                    width: _navigationWidth,
-                    child: _WorkbenchNavigation(
-                      key: const Key('workbench-wide-navigation'),
-                      activeDestination: activeDestination,
-                      closeDrawerOnNavigate: false,
-                    ),
-                  ),
-                Expanded(child: widget.child),
+                const SizedBox(width: 4),
+                const Icon(Icons.expand_more, size: 18),
               ],
             ),
           ),
         );
-      },
-    );
-  }
-}
-
-class _WorkbenchBreadcrumb extends StatelessWidget
-    implements PreferredSizeWidget {
-  const _WorkbenchBreadcrumb({required this.activeDestination});
-
-  final WorkbenchDestination activeDestination;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(38);
-
-  @override
-  Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: WorkbenchShellColors.text,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.6,
-        );
-    final activeStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: WorkbenchShellColors.muted,
-          letterSpacing: 0.4,
-        );
-
-    return DecoratedBox(
-      key: const Key('workbench-breadcrumb'),
-      decoration: const BoxDecoration(
-        color: WorkbenchShellColors.tile,
-        border: Border(
-          top: BorderSide(color: WorkbenchShellColors.rule),
-        ),
-      ),
-      child: SizedBox(
-        height: preferredSize.height,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              Text('BenchBeep', style: labelStyle),
-              const _BreadcrumbSeparator(),
-              Text('Töölaud', style: labelStyle),
-              const _BreadcrumbSeparator(),
-              Text(activeDestination.label, style: activeStyle),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BreadcrumbSeparator extends StatelessWidget {
-  const _BreadcrumbSeparator();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Icon(
-        Icons.chevron_right,
-        size: 16,
-        color: WorkbenchShellColors.dim,
-      ),
-    );
-  }
-}
-
-class _WorkbenchNavigation extends StatelessWidget {
-  const _WorkbenchNavigation({
-    required this.activeDestination,
-    required this.closeDrawerOnNavigate,
-    super.key,
-  });
-
-  final WorkbenchDestination activeDestination;
-  final bool closeDrawerOnNavigate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: WorkbenchShellColors.panel,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
-            child: Text(
-              'Projekt',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: WorkbenchShellColors.text,
-                    fontWeight: FontWeight.w800,
-                  ),
-            ),
-          ),
-          for (final destination in workbenchDestinations)
-            _WorkbenchDestinationTile(
-              destination: destination,
-              selected: destination.location == activeDestination.location,
-              closeDrawerOnNavigate: closeDrawerOnNavigate,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WorkbenchDestinationTile extends StatelessWidget {
-  const _WorkbenchDestinationTile({
-    required this.destination,
-    required this.selected,
-    required this.closeDrawerOnNavigate,
-  });
-
-  final WorkbenchDestination destination;
-  final bool selected;
-  final bool closeDrawerOnNavigate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      selected: selected,
-      button: true,
-      label: selected
-          ? '${destination.label}, aktiivne sihtkoht'
-          : destination.label,
-      child: ListTile(
-        key: Key('workbench-destination-${destination.id}'),
-        dense: true,
-        selected: selected,
-        selectedColor: WorkbenchShellColors.text,
-        selectedTileColor: WorkbenchShellColors.greenTint,
-        iconColor: WorkbenchShellColors.muted,
-        textColor: WorkbenchShellColors.muted,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: selected ? WorkbenchShellColors.green : Colors.transparent,
-          ),
-        ),
-        leading: Icon(destination.icon, size: 20),
-        title: Text(destination.label),
-        onTap: () {
-          if (closeDrawerOnNavigate) {
-            Navigator.of(context).pop();
-          }
-          context.go(destination.location);
-        },
-      ),
+      }),
     );
   }
 }

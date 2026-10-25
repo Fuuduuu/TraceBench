@@ -15,6 +15,7 @@ import 'package:trace_bench_viewer/shared/models/project_manifest.dart';
 import 'package:trace_bench_viewer/shared/models/project_state.dart';
 import 'package:trace_bench_viewer/shared/models/trace_bench_event.dart';
 import 'package:trace_bench_viewer/shared/widgets/projection_stale_banner.dart';
+import 'package:trace_bench_viewer/shared/theme/app_theme.dart';
 
 ProjectState _inlineProjectState({
   ProjectionFreshness projectionFreshness = ProjectionFreshness.fresh,
@@ -122,6 +123,45 @@ List<Map<String, dynamic>> _normalizedPlacementFacts() {
 }
 
 void main() {
+  testWidgets(
+      'warm Overview scales and scrolls across all routed width boundaries',
+      (tester) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.binding.setSurfaceSize(const Size(959, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await _pumpProjectOverview(tester,
+        projectState: _inlineProjectState(
+            componentVisualPlacements: _normalizedPlacementFacts()));
+    for (final width in [959.0, 960.0, 1227.0, 1228.0, 1229.0, 1500.0]) {
+      await tester.binding.setSurfaceSize(Size(width, 800));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(AppBar), findsOneWidget, reason: '$width');
+      expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
+          findsOneWidget);
+      expect(tester.takeException(), isNull, reason: '$width at 1.5x');
+    }
+  });
+
+  testWidgets('Overview uses the warm opt-in surface and dark-on-gold actions',
+      (tester) async {
+    await _pumpProjectOverview(tester, projectState: _inlineProjectState());
+    final zone = find.byKey(const ValueKey('overview-workbench-zone'));
+    final theme = Theme.of(tester.element(zone));
+    expect(theme.brightness, Brightness.dark);
+    expect(theme.colorScheme.surface, WorkbenchColors.paper);
+    final action = tester.widget<ElevatedButton>(
+        find.byKey(const ValueKey('overview-measurement-record-button')));
+    final background = action.style?.backgroundColor ??
+        theme.elevatedButtonTheme.style!.backgroundColor!;
+    final foreground = action.style?.foregroundColor ??
+        theme.elevatedButtonTheme.style!.foregroundColor!;
+    expect(background.resolve({}), WorkbenchColors.signal);
+    expect(foreground.resolve({}), WorkbenchColors.navyDeep);
+    expect(find.byType(Scaffold), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('/project/overview opens the retained named overview route',
       (tester) async {
     await _pumpProjectOverview(
@@ -202,11 +242,11 @@ void main() {
     expect(secondaryAction, findsOneWidget);
 
     final shellWidget = tester.widget<Scaffold>(darkShell);
-    expect(shellWidget.backgroundColor, const Color(0xFF0A0D11));
+    expect(shellWidget.backgroundColor, WorkbenchColors.shell);
     final appBar = tester.widget<AppBar>(
       find.byKey(const ValueKey('workbench-shell-app-bar')),
     );
-    expect(appBar.backgroundColor, const Color(0xFF161B22));
+    expect(appBar.backgroundColor, WorkbenchColors.paper);
 
     expect(
       tester.getTopLeft(actionsPanel).dy,
@@ -216,14 +256,15 @@ void main() {
       tester.getTopLeft(primaryMeasurementAction).dy,
       lessThan(tester.getTopLeft(secondaryAction).dy),
     );
-    expect(find.text('BenchBeep Workbench'), findsNWidgets(2));
+    expect(find.text('BenchBeep Workbench'), findsNothing);
+    expect(find.text('Plaadi ülevaade'), findsOneWidget);
     expect(find.text('Töölaud nr 1'), findsOneWidget);
     expect(find.text('Kohalik töölaud · ainult vaatamine'), findsOneWidget);
     expect(find.text('Lisa mõõtmine'), findsOneWidget);
     expect(find.byKey(const ValueKey('workbench-breadcrumb')), findsOneWidget);
     expect(find.byKey(const ValueKey('workbench-home-button')), findsOneWidget);
-    expect(find.text('BenchBeep'), findsOneWidget);
-    expect(find.text('Töölaud'), findsOneWidget);
+    expect(find.byKey(const Key('workbench-project-menu')), findsOneWidget);
+    expect(find.text('Töölaud'), findsNothing);
     expect(find.text('Project Overview'), findsWidgets);
     expect(find.text('Workbench'), findsNothing);
     expect(find.text('Overview'), findsNothing);
@@ -260,7 +301,7 @@ void main() {
     expect(find.text('Pole paigaldatud'), findsOneWidget);
   });
 
-  testWidgets('routed overview stays monotonic across the shell cutover',
+  testWidgets('routed overview stays monotonic with full-width menu navigation',
       (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),
@@ -276,15 +317,14 @@ void main() {
 
     const widths = <({
       double width,
-      bool persistent,
       bool overviewWide,
     })>[
-      (width: 959, persistent: false, overviewWide: false),
-      (width: 960, persistent: false, overviewWide: false),
-      (width: 1227, persistent: false, overviewWide: true),
-      (width: 1228, persistent: true, overviewWide: true),
-      (width: 1229, persistent: true, overviewWide: true),
-      (width: 1500, persistent: true, overviewWide: true),
+      (width: 959, overviewWide: false),
+      (width: 960, overviewWide: false),
+      (width: 1227, overviewWide: true),
+      (width: 1228, overviewWide: true),
+      (width: 1229, overviewWide: true),
+      (width: 1500, overviewWide: true),
     ];
 
     for (final expectation in widths) {
@@ -293,16 +333,12 @@ void main() {
 
       expect(find.byType(WorkbenchShell), findsOneWidget,
           reason: '${expectation.width} px');
+      expect(find.byKey(const Key('workbench-wide-navigation')), findsNothing);
       expect(
-        find.byKey(const Key('workbench-wide-navigation')),
-        expectation.persistent ? findsOneWidget : findsNothing,
-        reason: '${expectation.width} px',
-      );
-      expect(
-        find.byKey(const Key('workbench-compact-menu-button')),
-        expectation.persistent ? findsNothing : findsOneWidget,
-        reason: '${expectation.width} px',
-      );
+          find.byKey(const Key('workbench-compact-menu-button')), findsNothing);
+      expect(find.byType(Drawer), findsNothing);
+      expect(find.byKey(const Key('workbench-project-menu')), findsOneWidget,
+          reason: '${expectation.width} px');
 
       final workbenchZoneRect = tester.getRect(
         find.byKey(const ValueKey('overview-workbench-zone')),
@@ -325,7 +361,8 @@ void main() {
     }
   });
 
-  testWidgets('routed 1500 layout gives board preview room and compacts rail',
+  testWidgets(
+      'routed 1500 layout gives board preview room without navigation rail',
       (tester) async {
     final projectState = _inlineProjectState(
       componentVisualPlacements: _normalizedPlacementFacts(),
@@ -340,7 +377,8 @@ void main() {
     );
 
     expect(find.byType(WorkbenchShell), findsOneWidget);
-    expect(find.byKey(const Key('workbench-wide-navigation')), findsOneWidget);
+    expect(find.byKey(const Key('workbench-wide-navigation')), findsNothing);
+    expect(find.byKey(const Key('workbench-project-menu')), findsOneWidget);
 
     final workbenchZoneRect = tester.getRect(
       find.byKey(const ValueKey('overview-workbench-zone')),
@@ -430,7 +468,7 @@ void main() {
       useRouter: false,
     );
 
-    expect(find.text('BenchBeep Workbench'), findsOneWidget);
+    expect(find.text('Plaadi ülevaade'), findsOneWidget);
     expect(find.text('Töölaud nr 1'), findsOneWidget);
     expect(find.byKey(const ValueKey('overview-workbench-board-preview')),
         findsOneWidget);
@@ -476,7 +514,7 @@ void main() {
         find.byKey(const ValueKey('overview-future-tools-panel'));
     await tester.ensureVisible(futureToolsPanel);
     await tester.pump();
-    await tester.tap(futureToolsPanel);
+    await tester.tap(find.text('Tulevased tööriistad'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
 
@@ -492,7 +530,7 @@ void main() {
 
     await tester.ensureVisible(futureToolsPanel);
     await tester.pump();
-    await tester.tap(futureToolsPanel);
+    await tester.tap(find.text('Tulevased tööriistad'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 250));
 

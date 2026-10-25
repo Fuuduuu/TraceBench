@@ -273,6 +273,98 @@ Future<void> _pumpUntilRouterPath(
 }
 
 void main() {
+  testWidgets('compact warm chrome stays local and has keyboard focus cues',
+      (tester) async {
+    final session = await _pumpRouter(tester, initialLocation: '/project/pins');
+    final header = find.byKey(const Key('workbench-shell-app-bar'));
+    expect(tester.getSize(header).height, lessThanOrEqualTo(48));
+    final trigger = find.byKey(const Key('workbench-project-menu'));
+    expect(trigger, findsOneWidget);
+    final legacy = find.byKey(const Key('workbench-destination-surface'));
+    final legacyTheme = Theme.of(tester.element(find
+        .descendant(of: legacy, matching: find.byType(DefaultTextStyle))
+        .first));
+    expect(legacyTheme.colorScheme.primary, WorkbenchShellColors.greenBright);
+    expect(legacyTheme.brightness, buildTheme().brightness);
+    final title = find.descendant(
+        of: find.byKey(const Key('workbench-breadcrumb')),
+        matching: find.text('Pinnid'));
+    expect(title, findsOneWidget);
+    Focus.of(tester.element(title)).requestFocus();
+    await tester.pump();
+    await tester.pump();
+    expect(
+        tester.widget<Text>(title).style?.decoration, TextDecoration.underline);
+    final frame = tester.widget<Container>(
+        find.descendant(of: trigger, matching: find.byType(Container)).first);
+    expect(
+        ((frame.decoration! as BoxDecoration).border! as Border).top.width, 2);
+    await tester.tap(trigger);
+    await tester.pumpAndSettle();
+    final entries = find.byType(CheckedPopupMenuItem<String>);
+    expect(entries, findsNWidgets(12));
+    expect(
+        tester
+            .widget<CheckedPopupMenuItem<String>>(
+                find.byKey(const Key('workbench-destination-pins')))
+            .checked,
+        isTrue);
+    final popupTheme = Theme.of(tester.element(entries.first));
+    expect(popupTheme.brightness, Brightness.dark);
+    expect(popupTheme.popupMenuTheme.color, WorkbenchColors.raised);
+    expect(
+        popupTheme.popupMenuTheme.labelTextStyle!
+            .resolve({WidgetState.selected})!.color,
+        WorkbenchColors.signal);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(session.router.routeInformationProvider.value.uri.path,
+        '/project/pins');
+    expect(Theme.of(tester.element(legacy)), legacyTheme);
+    await tester.binding.setSurfaceSize(const Size(800, 800));
+    await tester.pumpAndSettle();
+    expect(find.byType(Drawer), findsNothing);
+    expect(find.byKey(const Key('workbench-project-menu')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Canvas popup alone captures warm theme and retains all items',
+      (tester) async {
+    final session = await _pumpRouter(tester, initialLocation: '/project');
+    final trigger = find.byKey(const Key('board_canvas_project_menu'));
+    final closedTheme = Theme.of(tester.element(trigger));
+    expect(closedTheme.brightness, buildTheme().brightness);
+    await tester.tap(trigger);
+    await tester.pumpAndSettle();
+    final entries = find.byType(CheckedPopupMenuItem<String>);
+    expect(entries, findsNWidgets(12));
+    expect(
+        tester
+            .widgetList<CheckedPopupMenuItem<String>>(entries)
+            .map((e) => e.value),
+        orderedEquals(_expectedDestinationPaths));
+    final popupTheme = Theme.of(tester.element(entries.first));
+    expect(popupTheme.brightness, Brightness.dark);
+    expect(popupTheme.popupMenuTheme.color, WorkbenchColors.raised);
+    expect(popupTheme.listTileTheme.iconColor, WorkbenchColors.signal);
+    expect(
+        popupTheme.popupMenuTheme.labelTextStyle!
+            .resolve({WidgetState.selected})!.color,
+        WorkbenchColors.signal);
+    expect(popupTheme.popupMenuTheme.labelTextStyle!.resolve({})!.color,
+        WorkbenchColors.navy);
+    expect(Theme.of(tester.element(trigger)), closedTheme);
+    final popupMaterials = tester.widgetList<Material>(
+        find.ancestor(of: entries.first, matching: find.byType(Material)));
+    expect(
+        popupMaterials.any((m) => m.color == WorkbenchColors.raised), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(entries, findsNothing);
+    expect(session.router.routeInformationProvider.value.uri.path, '/project');
+    expect(Theme.of(tester.element(trigger)), closedTheme);
+  });
+
   for (final width in <double>[390, 1500]) {
     testWidgets('single shell project menu reaches every destination at $width',
         (tester) async {
@@ -333,6 +425,9 @@ void main() {
       }
       session.router.go('/project');
       await tester.pumpAndSettle();
+      expect(find.byKey(const Key('workbench-project-menu')), findsNothing);
+      expect(find.byKey(const Key('workbench-shell-app-bar')), findsNothing);
+      expect(find.byKey(const Key('workbench-breadcrumb')), findsNothing);
       await tester.tap(find.byKey(const Key('board_canvas_project_menu')));
       await tester.pumpAndSettle();
       await tester.tapAt(const Offset(2, 800));
@@ -398,6 +493,104 @@ void main() {
         0);
   });
 
+  for (final width in [390.0, 1500.0]) {
+    testWidgets('secondary project menu preserves all destinations at $width',
+        (tester) async {
+      final session = await _pumpRouter(tester,
+          initialLocation: '/project/photos', surfaceSize: Size(width, 844));
+      final original = session.loadedProject.debugJson;
+      final generation =
+          session.container.read(projectStateProvider.notifier).generation;
+      final files = {
+        for (final file in session.projectDirectory
+            .listSync(recursive: true)
+            .whereType<File>())
+          file.path: file.readAsBytesSync(),
+      };
+      for (final destination in workbenchDestinations) {
+        session.router.go('/project/photos');
+        await tester.pumpAndSettle();
+        expect(find.text('Foto tõendid'), findsOneWidget);
+        await tester.tap(find.byKey(const Key('workbench-project-menu')));
+        await tester.pumpAndSettle();
+        final entries = tester
+            .widgetList<CheckedPopupMenuItem<String>>(
+                find.byType(CheckedPopupMenuItem<String>))
+            .toList();
+        expect(entries.map((e) => e.value),
+            orderedEquals(_expectedDestinationPaths));
+        expect(entries.where((e) => e.checked).single.value, '/project/photos');
+        final item = find.byKey(Key('workbench-destination-${destination.id}'));
+        await tester.ensureVisible(item);
+        await tester.tap(item);
+        await _pumpUntilRouterPath(
+            tester, session.router, destination.location);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(
+            session.router.routerDelegate.state.uri.path, destination.location);
+        expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+        expect(find.byKey(const Key('workbench-project-menu')),
+            destination.location == '/project' ? findsNothing : findsOneWidget);
+        expect(find.byKey(const Key('workbench-shell-app-bar')),
+            destination.location == '/project' ? findsNothing : findsOneWidget);
+        expect(session.container.read(projectStateProvider),
+            same(session.loadedProject));
+        expect(session.loadedProject.debugJson, original);
+        expect(session.container.read(projectStateProvider.notifier).generation,
+            generation);
+        expect(
+            session.addWriter.calls +
+                session.editWriter.calls +
+                session.placementWriter.calls +
+                session.measurementWriter.calls,
+            0);
+        expect({
+          for (final file in session.projectDirectory
+              .listSync(recursive: true)
+              .whereType<File>())
+            file.path: file.readAsBytesSync(),
+        }, files);
+        expect(tester.takeException(), isNull);
+      }
+      session.router.go('/project/photos');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('workbench-project-menu')));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(2, 800));
+      await tester.pumpAndSettle();
+      expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+      expect(session.router.routerDelegate.state.uri.path, '/project/photos');
+    });
+  }
+
+  testWidgets('secondary menu supports keyboard traversal and activation',
+      (tester) async {
+    final session =
+        await _pumpRouter(tester, initialLocation: '/project/photos');
+    final original = session.loadedProject.debugJson;
+    await tester.tap(find.byKey(const Key('workbench-project-menu')));
+    await tester.pumpAndSettle();
+    // First Down enters the ordered menu; the fifth reaches Pinnid.
+    for (var step = 0; step < 5; step++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(session.router.routerDelegate.state.uri.path, '/project/pins');
+    expect(find.byType(CheckedPopupMenuItem<String>), findsNothing);
+    expect(session.container.read(projectStateProvider),
+        same(session.loadedProject));
+    expect(session.loadedProject.debugJson, original);
+    expect(
+        session.addWriter.calls +
+            session.editWriter.calls +
+            session.placementWriter.calls +
+            session.measurementWriter.calls,
+        0);
+    expect(tester.takeException(), isNull);
+  });
+
   test('owns the exact ordered top-level destination inventory', () {
     final locations = workbenchDestinations
         .map((destination) => destination.location)
@@ -458,7 +651,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.byKey(const Key('workbench-wide-navigation')),
+        find.byKey(const Key('workbench-project-menu')),
         findsOneWidget,
       );
       expect(
@@ -487,14 +680,16 @@ void main() {
         identical(tester.state(find.byType(WorkbenchShell)), shellState),
         isTrue,
       );
+      await tester.tap(find.byKey(const Key('workbench-project-menu')));
+      await tester.pumpAndSettle();
       expect(
-        tester
-            .widget<ListTile>(
-              find.byKey(const Key('workbench-destination-components')),
-            )
-            .selected,
-        isTrue,
-      );
+          tester
+              .widget<CheckedPopupMenuItem<String>>(
+                  find.byKey(const Key('workbench-destination-components')))
+              .checked,
+          isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
       expect(
         session.container.read(projectStateProvider),
         same(session.loadedProject),
@@ -619,16 +814,10 @@ void main() {
         expect(find.byType(Scaffold), findsOneWidget,
             reason: testCase.caseName);
         expect(surface, findsOneWidget, reason: testCase.caseName);
-        expect(
-          (tester.widget<AppBar>(shellAppBar).title! as Text).data,
-          'BenchBeep Workbench',
-          reason: testCase.caseName,
-        );
-        expect(
-          tester.widget<ListTile>(activeControl).selected,
-          isTrue,
-          reason: testCase.caseName,
-        );
+        expect(tester.getSize(shellAppBar).height, lessThanOrEqualTo(48),
+            reason: testCase.caseName);
+        expect(find.text('BenchBeep Workbench'), findsNothing,
+            reason: testCase.caseName);
         expect(
           find.descendant(
             of: breadcrumb,
@@ -637,6 +826,14 @@ void main() {
           findsOneWidget,
           reason: testCase.caseName,
         );
+        await tester.tap(find.byKey(const Key('workbench-project-menu')));
+        await tester.pumpAndSettle();
+        expect(
+            tester.widget<CheckedPopupMenuItem<String>>(activeControl).checked,
+            isTrue,
+            reason: testCase.caseName);
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        await tester.pumpAndSettle();
         if (testCase.removedTitle case final removedTitle?) {
           expect(find.text(removedTitle), findsNothing,
               reason: testCase.caseName);
@@ -771,7 +968,8 @@ void main() {
     },
   );
 
-  testWidgets('renders one reachable compact navigation model', (tester) async {
+  testWidgets('compact project menu reaches Measurements without a drawer',
+      (tester) async {
     final session = await _pumpRouter(
       tester,
       surfaceSize: const Size(390, 844),
@@ -790,12 +988,10 @@ void main() {
       findsNothing,
     );
 
-    await tester.tap(find.byKey(const Key('workbench-compact-menu-button')));
+    await tester.tap(find.byKey(const Key('workbench-project-menu')));
     await tester.pumpAndSettle();
-    expect(
-      find.byKey(const Key('workbench-compact-navigation')),
-      findsOneWidget,
-    );
+    expect(find.byType(CheckedPopupMenuItem<String>), findsNWidgets(12));
+    expect(find.byType(Drawer), findsNothing);
 
     await tester.tap(
       find.byKey(const Key('workbench-destination-measurements')),
@@ -809,39 +1005,53 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('persistent navigation starts at the safe 1228 width',
+  testWidgets('one compact project menu serves every width and text scale',
       (tester) async {
-    await _pumpRouter(
-      tester,
-      surfaceSize: const Size(959, 800),
-    );
-
-    const widths = <({double width, bool persistent})>[
-      (width: 959, persistent: false),
-      (width: 960, persistent: false),
-      (width: 1227, persistent: false),
-      (width: 1228, persistent: true),
-      (width: 1229, persistent: true),
-      (width: 1500, persistent: true),
-    ];
-
-    for (final expectation in widths) {
-      await tester.binding.setSurfaceSize(Size(expectation.width, 800));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(WorkbenchShell), findsOneWidget,
-          reason: '${expectation.width} px');
-      expect(
-        find.byKey(const Key('workbench-wide-navigation')),
-        expectation.persistent ? findsOneWidget : findsNothing,
-        reason: '${expectation.width} px',
-      );
-      expect(
-        find.byKey(const Key('workbench-compact-menu-button')),
-        expectation.persistent ? findsNothing : findsOneWidget,
-        reason: '${expectation.width} px',
-      );
-      expect(tester.takeException(), isNull, reason: '${expectation.width} px');
+    await _pumpRouter(tester,
+        initialLocation: '/project/photos', surfaceSize: const Size(390, 844));
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    for (final scale in [1.0, 1.5]) {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      for (final width in [
+        390.0,
+        959.0,
+        960.0,
+        1227.0,
+        1228.0,
+        1229.0,
+        1500.0
+      ]) {
+        await tester.binding.setSurfaceSize(Size(width, 844));
+        await tester.pumpAndSettle();
+        expect(find.byType(WorkbenchShell), findsOneWidget,
+            reason: '$width px, $scale text');
+        expect(find.byKey(const Key('workbench-project-menu')), findsOneWidget);
+        expect(
+            find.byKey(const Key('workbench-wide-navigation')), findsNothing);
+        expect(find.byKey(const Key('workbench-compact-menu-button')),
+            findsNothing);
+        expect(find.byKey(const Key('workbench-compact-navigation')),
+            findsNothing);
+        expect(find.byType(Drawer), findsNothing);
+        final header = find.byKey(const Key('workbench-shell-app-bar'));
+        final breadcrumb = find.byKey(const Key('workbench-breadcrumb'));
+        expect(
+            find.descendant(
+                of: breadcrumb, matching: find.text('Foto tõendid')),
+            findsOneWidget);
+        expect(tester.getRect(header).contains(tester.getCenter(breadcrumb)),
+            isTrue);
+        await tester.tap(find.byKey(const Key('workbench-project-menu')));
+        await tester.pumpAndSettle();
+        expect(find.byType(CheckedPopupMenuItem<String>), findsNWidgets(12));
+        final report = find.byKey(const Key('workbench-destination-report'));
+        await tester.ensureVisible(report);
+        expect(report.hitTestable(), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull,
+            reason: '$width px, $scale text');
+      }
     }
   });
 
@@ -884,14 +1094,9 @@ void main() {
       final destinationControl = find.byKey(
         Key('workbench-destination-${destination.id}'),
       );
-      await tester.scrollUntilVisible(
-        destinationControl,
-        160,
-        scrollable: find.descendant(
-          of: find.byKey(const Key('workbench-wide-navigation')),
-          matching: find.byType(Scrollable),
-        ),
-      );
+      await tester.tap(find.byKey(const Key('workbench-project-menu')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(destinationControl);
       await tester.tap(destinationControl);
       await _pumpUntilRouterPath(
         tester,
@@ -947,14 +1152,16 @@ void main() {
     );
 
     expect(find.byType(WorkbenchShell), findsOneWidget);
+    await tester.tap(find.byKey(const Key('workbench-project-menu')));
+    await tester.pumpAndSettle();
     expect(
-      tester
-          .widget<ListTile>(
-            find.byKey(const Key('workbench-destination-components')),
-          )
-          .selected,
-      isTrue,
-    );
+        tester
+            .widget<CheckedPopupMenuItem<String>>(
+                find.byKey(const Key('workbench-destination-components')))
+            .checked,
+        isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
 
     session.router.go('/project/measurements/new');
     await tester.pumpAndSettle();
@@ -963,14 +1170,16 @@ void main() {
       '/project/measure-sheet',
     );
     expect(find.byType(WorkbenchShell), findsOneWidget);
+    await tester.tap(find.byKey(const Key('workbench-project-menu')));
+    await tester.pumpAndSettle();
     expect(
-      tester
-          .widget<ListTile>(
-            find.byKey(const Key('workbench-destination-measurements')),
-          )
-          .selected,
-      isTrue,
-    );
+        tester
+            .widget<CheckedPopupMenuItem<String>>(
+                find.byKey(const Key('workbench-destination-measurements')))
+            .checked,
+        isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
 
     session.router.go('/project/board-canvas');
     await tester.pumpAndSettle();

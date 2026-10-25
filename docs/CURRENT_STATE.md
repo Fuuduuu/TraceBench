@@ -1,9 +1,45 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_VISUAL_SCOPE_AMENDMENT_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS`
 Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
 
-## Foundation v1 visual acceptance amendment
+## Foundation v1 navigation structure amendment
+
+Entry baseline: `6c329896abc4c9ad71ecfcbc12e0bbb67a338904`. Lane A / DOCS_SCOPE_AMENDMENT_ONLY.
+Exact current five-doc authority is enumerated in ACTIVE_SCOPE_LOCK and
+`docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS.md`:
+ACTIVE_SCOPE_LOCK, CURRENT_STATE, PASS_QUEUE, AUDIT_INDEX and that new artifact.
+Only route tops/new sections, three predecessor heading labels, one neutral
+row and the artifact may change in detached
+`C:\dev\TraceBench-foundation-navigation-scope`. Freeze primary's eleven-file
+draft/all bytes/status/diff, previous docs worktree and all accepted history.
+
+The human's 2026-10-25 direction replaces Shell 1228/244 rail/Drawer and duplicate
+global title/breadcrumb rows with one compact real-Canvas-style project-menu
+header at every width, retaining inline context. Explicit key lifecycle retires
+four obsolete navigation keys, preserves seven key roles/templates and adds
+workbench-project-menu. Preserve all twelve entries/order/labels/locations,
+Home/session/mode/active-parent semantics, secondary identity and Canvas bypass.
+Canvas's closed bar/other pixels, thirteen values and entire tests/P0/C0/M0/I0
+stay fixed; its prior opened-popup-only exception remains.
+
+Reserve only `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS` with the same exact eleven paths.
+Keep compatible foundation/Photos/Overview work; retarget only structure-bound
+Shell/Overview test drivers/geometry while preserving functional oracles and
+helpers/fakes. Keep Overview local 960 math, global theme/ProjectGate, legacy
+Shell colors/surface/child theme and domain/writer boundaries. Nine legacy
+contents remain excluded and the next product priority, unarmed. Five future
+maintained-map obligations remain; maps/index fixed now. Gate tests unchanged.
+
+Independent scope acceptance -> authorized two-coordinate recording -> exact
+human docs commit/--ff-only --no-autostash integration/push with eleven-file
+raw/status/diff equality -> same retained child. Current human visual FAIL
+requires fresh first-stage PASS before Claude implementation audit; prior
+857/857 and corrected external Overlay harness 1/1 are not visual acceptance.
+Post-child NEEDS_USER_DECISION. No RECON/sync/new child or full-consistency
+claim. Current validation is docs-only.
+
+## Historical superseded Foundation v1 visual acceptance amendment
 
 The human decision of 2026-10-25 rejects the previous final warm-Photos/cool-Shell
 compromise. Actual Board Canvas warm black/gold is the visual reference for

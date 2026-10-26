@@ -29,6 +29,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/measurements/screens/measurement_record_screen.dart` | `docs/code_maps/lib/features/measurements/screens/measurement_record_screen.dart.md` | production | `RETIRED` |
 | `lib/features/photos/logic/photo_alignment_transform.dart` | `docs/code_maps/lib/features/photos/logic/photo_alignment_transform.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/logic/photo_event_read_model.dart` | `docs/code_maps/lib/features/photos/logic/photo_event_read_model.dart.md` | production | `MAINTAINED` |
+| `lib/features/photos/screens/photo_list_screen.dart` | `docs/code_maps/lib/features/photos/screens/photo_list_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/services/photo_event_writer.dart` | `docs/code_maps/lib/features/photos/services/photo_event_writer.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/services/photo_import_service.dart` | `docs/code_maps/lib/features/photos/services/photo_import_service.dart.md` | production | `MAINTAINED` |
 | `lib/features/photos/widgets/photo_workbench_panel.dart` | `docs/code_maps/lib/features/photos/widgets/photo_workbench_panel.dart.md` | production | `MAINTAINED` |
@@ -46,6 +47,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/shared/services/project_loader.dart` | `docs/code_maps/lib/shared/services/project_loader.dart.md` | production | `MAINTAINED` |
 | `lib/shared/services/python_runner.dart` | `docs/code_maps/lib/shared/services/python_runner.dart.md` | production | `MAINTAINED` |
 | `lib/shared/session/project_session.dart` | `docs/code_maps/lib/shared/session/project_session.dart.md` | production | `MAINTAINED` |
+| `lib/shared/theme/app_theme.dart` | `docs/code_maps/lib/shared/theme/app_theme.dart.md` | production | `MAINTAINED` |
 | `test/unit/photo_event_read_model_test.dart` | `docs/code_maps/test/unit/photo_event_read_model_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/photo_event_writer_test.dart` | `docs/code_maps/test/unit/photo_event_writer_test.dart.md` | test | `MAINTAINED` |
 | `test/unit/photo_import_service_test.dart` | `docs/code_maps/test/unit/photo_import_service_test.dart.md` | test | `MAINTAINED` |
@@ -62,7 +64,9 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `test/widget/new_project_wizard_photo_editor_test.dart` | `docs/code_maps/test/widget/new_project_wizard_photo_editor_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/new_project_wizard_problem_description_test.dart` | `docs/code_maps/test/widget/new_project_wizard_problem_description_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/new_project_wizard_screen_test.dart` | `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/photo_list_screen_test.dart` | `docs/code_maps/test/widget/photo_list_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/project_gate_test.dart` | `docs/code_maps/test/widget/project_gate_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/project_overview_screen_test.dart` | `docs/code_maps/test/widget/project_overview_screen_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/reference_images_screen_test.dart` | `docs/code_maps/test/widget/reference_images_screen_test.dart.md` | test | `MAINTAINED` |
+| `test/widget/workbench_page_test.dart` | `docs/code_maps/test/widget/workbench_page_test.dart.md` | test | `MAINTAINED` |
 | `test/widget/workbench_shell_test.dart` | `docs/code_maps/test/widget/workbench_shell_test.dart.md` | test | `MAINTAINED` |

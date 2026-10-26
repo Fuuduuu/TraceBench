@@ -2,10 +2,63 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Current Foundation v1 navigation structure scope amendment
+## Foundation v1 committed-source Code Map maintenance
+
+PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`.
+Entry main/HEAD/origin/main: `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`; divergence 0/0.
+The human selected one Lane A / DOCS_MAPS_ONLY maintenance against accepted
+committed Foundation v1 at `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`.
+The source commit contains the eleven Foundation runtime/test paths; this
+maintenance reads that code and changes no Dart behavior. Earlier implementation
+reservations and visual-review snapshots below are historical, not executable.
+The accepted scope artifacts and their verdicts remain unchanged.
+
+### Exact docs/map write authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/board_canvas/screens/board_canvas_screen.dart.md`
+7. `docs/code_maps/lib/features/project/widgets/workbench_shell.dart.md`
+8. `docs/code_maps/lib/features/project/screens/project_overview_screen.dart.md`
+9. `docs/code_maps/test/widget/workbench_shell_test.dart.md`
+10. `docs/code_maps/test/widget/project_overview_screen_test.dart.md`
+11. `docs/code_maps/lib/shared/theme/app_theme.dart.md` (new)
+12. `docs/code_maps/lib/features/photos/screens/photo_list_screen.dart.md` (new)
+13. `docs/code_maps/test/widget/photo_list_screen_test.dart.md` (new)
+14. `docs/code_maps/test/widget/workbench_page_test.dart.md` (new)
+15. `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md` (new)
+
+Only leading route fields/new sections, three predecessor heading labels,
+the five existing maps, four qualifying new maps, exact registry rows, one
+neutral ledger row and the new artifact may change. All remaining bytes,
+source/tests/packages/tools/assets/helpers, unrelated maps and RETIRED maps
+are fixed. The binding artifact owns qualification and exact source zones.
+
+Refresh five accepted-source ownership descriptions. Independently map
+app_theme, PhotoListScreen and their two qualifying widget suites.
+WorkbenchPage is a small cohesive 67-line adapter and does not qualify;
+its frame/scroll/capture contract is covered by the new test map. Palette
+aliases preserve all thirteen values and require no separate map.
+Changed/new map headers and matching rows use REVIEW_REQUIRED; registry:
+62 actual maps/62 rows, 51 MAINTAINED, nine REVIEW_REQUIRED, two RETIRED.
+No map acceptance or implementation-audit result is inferred from a commit.
+
+Validate source anchors/ownership, registry parity, exact material, inverse
+operational/history preservation, both Git diff checks, doctor and
+temporary-output validate_all. No Flutter run is required absent a concrete
+source/validation conflict. One empty named verdict block and neutral — Status
+follow AUDIT_CONTRACT. Only an independent verdict plus explicit authorization
+may permit bounded recording and map-status promotion.
+Next is NEEDS_USER_DECISION. No feature/module, implementation, RECON or
+automatic follow-up pass is reserved.
+
+## Historical completed Foundation v1 navigation structure amendment
 
 PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS`.
 Entry baseline: `6c329896abc4c9ad71ecfcbc12e0bbb67a338904`. Lane A / DOCS_SCOPE_AMENDMENT_ONLY.

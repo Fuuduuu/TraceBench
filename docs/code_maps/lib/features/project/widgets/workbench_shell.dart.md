@@ -4,35 +4,31 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Owns the reusable loaded-project Workbench chrome around secondary project
-destinations supplied by the router and the presentation-only dark surface used by simple
-read-only destinations. It is the sole ordered owner of the 12 top-level
-project destinations, active-parent selection, dark shared visual vocabulary,
-Home and beginner-mode controls, breadcrumb, and compact/persistent navigation
-for those secondary pages. Primary Board Canvas bypasses this widget and reuses
-`workbenchDestinations` for its own transient project menu.
-Its Home action explicitly closes `ProjectSession` before routing to `/`, while
-beginner mode remains separate and survives. It owns no destination business
-logic, writer, persistent file, freshness, or route declaration.
+Owns secondary loaded-project chrome: one compact warm instrument header,
+inline project/current-page context, a transient twelve-entry project menu,
+Home and independent beginner mode. Board Canvas bypasses this State and reuses
+the sole destination inventory. Legacy palette/surface remain separate from
+warm shared values. Photos/Overview opt into warm content in their own owners.
+No destination workflow, writer, persistence, freshness or route declaration
+belongs here; Home retains in-memory Session close before root navigation.
 
 ## Responsibility zones
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| Shared visual vocabulary | `WorkbenchShellColors`, `background`, `panel`, `greenTint` | Exposes the atomic dark Workbench color set used by the shell and retained Overview content. |
-| Read-only destination surface | `WorkbenchDestinationSurface`, `workbench-destination-surface`, `ListTileThemeData`, `ExpansionTileThemeData` | Applies the existing color vocabulary through a local Theme and Material boundary with only `child` and widget `key` inputs. |
-| Destination data model | `WorkbenchDestination`, `id`, `label`, `location`, `icon` | Defines one immutable navigation-entry shape. |
-| Ordered destination inventory | `workbenchDestinations`, `Board Canvas`, `Project Overview`, `Teadaolevad faktid` | Owns the exact ordered 12-entry top-level project model; Home is not an entry. |
-| Active workflow parent | `activeWorkbenchDestination`, `/project/components/add`, `/project/components/edit`, `/project/measure-sheet` | Maps Add/Edit to Components and Measure Sheet/legacy alias to Measurements before selecting an entry. |
-| Shell state and inputs | `WorkbenchShell`, `_WorkbenchShellState`, `GoRouterState.of`, `beginnerModeProvider` | Reads current URI and transient beginner mode while retaining the router-supplied child. |
-| Responsive frame | `_wideBreakpoint`, `_navigationWidth`, `workbench-shell`, `workbench-wide-navigation`, `workbench-compact-drawer` | Keeps navigation compact below 1228 and persistent at/above 1228 with a fixed 244-pixel rail. |
-| Home and mode controls | `workbench-home-button`, `workbench-beginner-mode-button`, `projectStateProvider.notifier`, `closeProject`, `context.go('/')` | Closes the active project session before returning Home and toggles only the separate UI-local beginner mode. |
-| Breadcrumb | `_WorkbenchBreadcrumb`, `workbench-breadcrumb`, `_BreadcrumbSeparator` | Renders horizontally scrollable BenchBeep/Töölaud/active-destination context. |
-| Navigation renderer | `_WorkbenchNavigation`, `_WorkbenchDestinationTile`, `workbench-destination-`, `context.go(destination.location)` | Renders one scroll-safe model, active semantics, compact drawer close, and exact `go` navigation. |
+| Legacy palette | `WorkbenchShellColors`, `background`, `greenTint` | Existing constants for legacy destinations; shared warm values live elsewhere. |
+| Legacy surface | `WorkbenchDestinationSurface`, `workbench-destination-surface`, `ListTileThemeData`, `ExpansionTileThemeData` | Opaque-child Theme/Material wrapper; no domain ownership. |
+| Model/inventory | `WorkbenchDestination`, `workbenchDestinations`, `Board Canvas`, `Project Overview` | Sole ordered twelve entries, icons and locations; Home/workflow leaves excluded. |
+| Active parent | `activeWorkbenchDestination`, `/project/components/add`, `/project/components/edit`, `/project/measure-sheet` | Pure Add/Edit/Measure parent normalization. |
+| Shell lifetime/input | `WorkbenchShell`, `_WorkbenchShellState`, `GoRouterState.of`, `beginnerModeProvider`, `manifest?.projectName?.trim()` | Stateful secondary frame; route, mode and display identity reads. |
+| Compact frame/theme | `workbench-shell`, `workbench-shell-app-bar`, `toolbarHeight: 44`, `buildWorkbenchTheme`, `SizedBox.expand(child: widget.child)` | Header-only warm Theme, one decorative rule, full-width original-theme child. |
+| Home/mode | `workbench-home-button`, `workbench-beginner-mode-button`, `closeProject`, `context.go('/')` | Close before root go; mode toggles only its provider. |
+| Inline context | `_WorkbenchBreadcrumb`, `workbench-breadcrumb`, `showIdentity`, `activeDestination.label` | Separate exact current-page Text; optional identity abbreviation/full tooltip. |
+| Menu/focus | `workbench-project-menu`, `CheckedPopupMenuItem<String>`, `workbench-destination-`, `focused`, `TextDecoration.underline`, `context.go(location)` | Checked entries/icons, transient routing and visible border/underline focus cue. |
 
 ## Anchor inventory and verification
 
@@ -64,155 +60,113 @@ than becoming additional entries.
 
 ## State and data flow
 
-1. A loaded read-only destination may wrap its existing body in
-   `WorkbenchDestinationSurface`; the wrapper derives a local Theme from the
-   ambient theme, applies only existing Workbench colors, and renders the
-   supplied child inside one keyed Material surface.
-2. After `ProjectGate` admits loaded state, the router constructs
-   `WorkbenchShell` only when the top route is not `board-canvas`. Its shared
-   element/state persists between secondary pages; returning to Canvas removes
-   this chrome. Canvas independently supplies its Home/mode instrument bar.
-3. `GoRouterState.of(context).uri.path` supplies the current path;
-   `activeWorkbenchDestination` normalizes workflow paths and returns one of
-   the 12 immutable entries.
-4. `beginnerModeProvider` supplies the existing transient display mode. The
-   mode control flips only that provider value.
-5. A `LayoutBuilder` compares available shell width with exactly `1228.0`.
-   Below it, one drawer-backed navigation model is reachable through the menu;
-   at/above it, one `244.0`-wide persistent `ListView` is rendered.
-6. Home calls `ProjectSession.closeProject` before `go('/')`. Destination
-   actions call `go`; compact destination selection first closes the drawer,
-   then navigates. Beginner mode is not cleared by Home.
-7. The router-provided child remains expanded beside the persistent rail or
-   occupies the full body under compact navigation. Destination code receives
-   no shell width and owns no shell breakpoint.
+1. The router's loaded-project gate owns child selection. Canvas is shell-free;
+   secondary leaves retain one Element/State across navigation.
+2. URI passes through the active-parent resolver; Session manifest supplies
+   trimmed projectName or projectId/Projekt display fallback.
+3. Separate beginner state supplies the visible mode caption and toggle.
+4. A local warm Theme wraps only the 44 px AppBar and captured popup, followed
+   by a one-pixel rule. The opaque child expands under its original Theme.
+5. A 500-pixel available-title constraint abbreviates identity. This is not a
+   navigation breakpoint; current-page Text stays exact and tooltip full.
+6. The popup renders the sole twelve-entry inventory. Checked state derives
+   from the active parent; selection returns a location and calls go. Outside
+   click/Escape/cancel dismiss transient UI without changing the project.
+7. Home closes Session before go('/'); mode remains separate. No destination
+   writer, project reload or materializer is invoked by chrome.
 
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
-| Flutter Material/layout/semantics/theme | framework UI | Supplies the local destination Theme/Material treatment plus Scaffold, AppBar, drawer, responsive layout, scrolling, and selected-state presentation. |
-| GoRouter | inbound state / outbound navigation | Supplies current URI and `go` for Home and destination changes. |
-| `beginnerModeProvider` from `shared/session` | UI-local read/write | Supplies and toggles the separate existing presentation mode only. |
-| `projectStateProvider` / `ProjectSession` | projection-state command | Clears the active loaded project on explicit Workbench Home. |
-| router-provided `child` | inbound destination | Renders the matched destination without inspecting or changing it. |
-| `lib/app/router.dart` | construction owner | Places this shell inside the loaded-project gate for secondary targets only. |
-| `BoardCanvasScreen` | destination-model consumer | Reuses `workbenchDestinations` in its own popup without mounting this shell or copying the inventory. |
-| Project Overview | visual-token consumer | Reuses the same dark vocabulary without owning shell chrome. |
-| Six Batch-1 read-only destination owners | outbound consumers | Reuse the destination surface around their unchanged loaded bodies. |
+| Flutter Material/layout/focus | presentation | AppBar, popup, checked semantics and focus cue. |
+| `buildWorkbenchTheme` / `WorkbenchColors` | shared input | Warm header and captured popup; app_theme.dart owns values. |
+| GoRouter | route input / UI-local output | URI and existing go callbacks. |
+| Beginner provider | UI-local read/write | Independent transient mode. |
+| ProjectSession/provider | read / explicit command | Manifest identity and Home close only. |
+| Router child | opaque inbound content | Full-width original ambient Theme. |
+| App router / ProjectGate | construction | Secondary shell and Canvas bypass. |
+| Board Canvas | model consumer | Shared inventory, separate bar/popup. |
+| Legacy destinations | surface consumers | Original local surface/old palette. |
 
 ## Write and protected boundaries
 
-| Symbol or flow | Write class | Boundary evidence |
+| Symbol or flow | Write class | Evidence |
 | --- | --- | --- |
-| `WorkbenchDestinationSurface` theme and child composition | `ZERO_WRITE` | Reads ambient theme, applies existing presentation tokens, and renders an opaque child; it has no title, route, provider, action, freshness, or writer input. |
-| Destination metadata and active selection | `ZERO_WRITE` | Pure immutable values and path normalization. |
-| Responsive shell, breadcrumb, navigation rendering | `ZERO_WRITE` | Reads constraints/state and builds widgets only. |
-| `closeProject` before `context.go('/')` | `PROJECTION_STATE` + `UI_LOCAL` | Clears in-memory session/dedup state and advances generation before Home navigation; invokes no domain writer. |
-| Destination `go` | `UI_LOCAL` | Changes transient router location without invoking domain writers. |
-| beginner-mode assignment | `UI_LOCAL` | Mutates only the existing presentation provider. |
-| compact drawer close | `UI_LOCAL` | Mutates Navigator presentation before the route change. |
-| child composition | `ZERO_WRITE` | Passes through the router-owned destination unchanged. |
+| Palette/surface/inventory/parent/context | `ZERO_WRITE` | Constants, path normalization, identity reads and widgets only. |
+| Menu/focus/go | `UI_LOCAL` | Transient route and presentation state. |
+| Beginner toggle | `UI_LOCAL` | Existing boolean provider only. |
+| Home close then go | `PROJECTION_STATE` + `UI_LOCAL` | Existing in-memory clear before root navigation. |
+| Child composition | `ZERO_WRITE` | Downstream effects remain destination-owned. |
 
-Apart from explicit Home session clearing, the file does not replace a project,
-apply an event, call any V2 writer, mutate facts/evidence/freshness, access
-project files, load/materialize a project, or change Project ZIP behavior.
-Destination labels and navigation do not transfer destination write authority
-into the shell.
+No load/replace/materialize/save, event/fact mutation, file operation or ZIP
+write originates here. A destination's write authority is not transferred by
+including its route in the menu.
 
 ## Zero-write zones
 
-- `WorkbenchShellColors`, `WorkbenchDestinationSurface`, destination metadata,
-  and workflow-parent selection are pure presentation/navigation definitions.
-- Breadcrumb, active semantics, and both navigation renderers only display
-  current state.
-- The shell child is opaque; downstream effects remain destination-owned.
+- Legacy surface, pure metadata/resolver and identity/theme presentation.
+- Header/context build only; focus/menu/mode are transient UI.
+- Home is the explicit in-memory Session exception, not a canonical write.
+- The routed child retains independent domain and presentation ownership.
 
 ## Impact matrix
 
-| Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
+| Zone | Evidence | Inspect-only coupling | Write class | Tests |
 | --- | --- | --- | --- | --- |
-| Destination surface | `[D]` one local Theme/Material wrapper with a child slot | six loaded read-only destination bodies and global theme | `ZERO_WRITE` | seven-case routed Batch-1 regression |
-| Destination inventory | `[D]` one const ordered list | router paths/names, Canvas popup and destination availability | `ZERO_WRITE` | inventory and all-route matrices |
-| Active selection | `[D]` exact path normalization | Add/Edit/Measure workflows and aliases | `ZERO_WRITE` | workflow/alias selection case |
-| Router/provider shell identity | `[D]` stateful wrapper receives changing child | ShellRoute and provider scope | `ZERO_WRITE` | shell and gate identity tests |
-| Responsive cutover | `[D]` 1228 threshold and 244 rail | secondary-page framing and Overview 960; Canvas now bypasses this rail | `ZERO_WRITE` | six-width shell/Board/Overview cases |
-| Home navigation | `[D]` `closeProject` precedes AppBar `go('/')` | launcher, session generation/dedup, beginner mode | `PROJECTION_STATE` + `UI_LOCAL` | Home clears project/mode-survives cases |
-| Beginner mode | `[D]` one provider assignment | other mode consumers | `UI_LOCAL` | leaf and Home round-trip survival |
-| Shared colors | `[D]` public constants used by Overview | Overview cards/preview/actions | `ZERO_WRITE` | shell-copy/color assertions |
+| Legacy surface | [D] original local Theme/Material | six loaded consumers/global fallback | `ZERO_WRITE` | seven-case body/theme matrix |
+| Inventory/parent | [D] one list/resolver | router/aliases/Canvas menu | `ZERO_WRITE` | literal inventory/parent/twelve routes |
+| Compact frame | [D] full-width child, no rail/Drawer | Overview local 960 | `ZERO_WRITE` | widths, scaling and geometry |
+| Popup/focus | [D] checked entries, keyboard and border/underline | shared theme | `UI_LOCAL` | both menus, cancel/keyboard/focus |
+| Home/mode | [D] close-before-go/boolean | Session generation/launcher | `PROJECTION_STATE` / `UI_LOCAL` | Home and mode-survival |
+| Shell identity | [D] one State across leaves | gate/router push/pop | `ZERO_WRITE` | Shell/Gate matrices |
 
 ## Relevant tests and helpers
 
-- `test/widget/workbench_shell_test.dart` directly covers the ordered model,
-  workflow-parent mapping, same shell identity, provider setup, compact
-  reachability, exact 1228 cutover, Home project clearing with beginner-mode
-  survival, representative routes,
-  aliases, and zero writer/event/fact/file/freshness mutation. Its routed
-  Batch-1 matrix covers seven loaded cases across six URIs, one shell AppBar,
-  one keyed destination surface, active breadcrumb/selection, preserved body
-  signatures, both Events modes, and stable project/fact/event identities plus
-  recursive file-listing observation.
-- `test/widget/project_gate_test.dart` proves the gate remains outside the
-  shell, null recovery is shell-free, Canvas has no shared shell, and secondary
-  leaves retain shell identity. Nested push/pop restores the primary bypass; an
-  unsettled secondary-to-Canvas transition retains a Material ancestor.
-- Routed Board Canvas and Overview suites cover `959`, `960`, `1227`, `1228`,
-  `1229`, and `1500`: Overview still exercises this shell; Canvas exercises
-  its own shell-free layout. The shell suite also traverses all 12 Canvas popup
-  destinations at 390 and 1500 and tests both labelled modes plus Canvas Home.
+- Shell tests contain two pure and thirteen widget declarations, generating
+  seventeen cases through two two-width loops. They cover both twelve-entry
+  menus, checked state, focus/keyboard/cancel, exact Photos Text and Canvas
+  absence, provider/State identity and Home/mode/data/writer/file guards.
+- Seven Batch-1 cases retain original body signatures and legacy surface
+  roles, both Events modes and facts/events/freshness/file observations.
+- Gate tests retain all-fifteen null/loaded targets, nested stack, primary
+  bypass and unsettled-transition Material evidence.
+- Overview owns local 960 content math; Canvas owns its separate renderer/bar
+  thresholds. Neither consumes a Shell rail.
+- Theme/frame tests independently cover palette/roles and transient capture.
 
 ## Dangerous combinations
 
-- Changing the shell cutover without secondary destination thresholds and
-  framing can reintroduce rich-to-compact inversion. Canvas
-  does not consume this rail or breakpoint.
-- Duplicating the destination list in a destination screen can drift order,
-  paths, active semantics, or zero-write evidence.
-- Turning Home into a list entry or adding workflow leaves as top-level entries
-  changes product navigation ownership.
-- Expanding the single `closeProject` command into project reads/replacements
-  would blur the gate/session boundary; moving the gate inside the shell would
-  expose chrome during recovery.
-- Adding route, title, provider, freshness, or action ownership to
-  `WorkbenchDestinationSurface` would turn a presentation wrapper into a
-  competing destination or business owner.
-- Copying only part of `WorkbenchShellColors` back into Overview can create two
-  competing visual vocabularies.
+- Applying the header Theme to its opaque child silently recolors legacy
+  destinations; warm content is opt-in.
+- Duplicate metadata or changed parent normalization drifts routing/selection.
+- Recreating Shell State or moving the gate breaks lifetime/recovery evidence.
+- Adding persistence to Home/menu changes current write boundaries.
+- Changing frame allocation and Overview math together can conceal width loss.
+- Legacy WorkbenchShellColors and shared WorkbenchColors are different owners.
 
 ## Safe SNIPER slices
 
-- One destination metadata change: exact list entry, router owner, active-state
-  mapping, and matching shell/gate route evidence.
-- One workflow-parent mapping: `activeWorkbenchDestination` and the focused
-  unit/widget alias-selection case.
-- Responsive shell only: `_wideBreakpoint`, `_navigationWidth`, both keyed
-  navigation modes, and all three six-width suites.
-- Home/mode control only: `closeProject`, AppBar action, provider/route
-  assertions, and mode-survival evidence.
-- Shared visual token only: exact color constant and Overview consumers.
-- Read-only surface only: `WorkbenchDestinationSurface`, the seven loaded
-  consumer branches, and the routed Batch-1 chrome/body/zero-write matrix.
+- Header/context/focus: build/breadcrumb, warm/keyboard and width/scale cases;
+  inspect child Theme and Overview allocation.
+- One inventory/parent change: model/resolver, router and both menu matrices.
+- Home/mode: callback with Session/generation/mode guards.
+- Legacy surface: exact wrapper with seven-case role/body matrix.
 
 ## Future extraction seams
 
-- `[S]` Destination metadata could become a pure navigation model in a smaller
-  owner if router and test inventories remain independently verifiable.
-- `[S]` Breadcrumb and destination tile are cohesive presentation units but do
-  not currently require separate ownership.
+- [S] Pure metadata is cohesive but currently shared by both menu consumers.
+- [S] The inline project menu is a local leaf; no move is prescribed.
 
 ## Freshness and review triggers
 
-Review for `SYMBOL_DRIFT` when shell, destination-surface, breakpoint, key, or
-color anchors change; `FLOW_DRIFT` when active mapping, drawer close, Home
-close-before-`go`, child, or provider flow changes; `BOUNDARY_DRIFT` if project state beyond explicit close, freshness,
-writers, files, or persistence enter; `TEST_DRIFT` when Batch-1, identity,
-route, responsive, or no-write evidence moves; and `STRUCTURE_DRIFT` when
-navigation or destination-surface ownership splits.
+Review menu/header/context keys, identity fallback, mode/Home callbacks,
+parent normalization, captured Theme, child allocation and router lifetime.
+The removed rail/Drawer is not an active contract. Recheck actual source/tests
+when symbol, flow, boundary, test or structure ownership changes.
 
 ## Known uncertainty
 
-- `[D]` The shell proves navigation calls no writer in this owner; downstream
-  destination behavior remains outside its boundary.
-- `[D]` The threshold applies to shared secondary chrome. Canvas maintains
-  separate instrument-bar and content thresholds.
-- `[S]` Extraction seams are descriptive only and authorize no refactor.
+- [D] Owner-local no-write evidence does not prove destination internals.
+- [D] Title abbreviation is distinct from destination responsive thresholds.
+- [S] Seams describe possibilities and authorize no refactor.

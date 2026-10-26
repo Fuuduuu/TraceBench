@@ -2,10 +2,37 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS`
-Next: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
+Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `NEEDS_USER_DECISION`
 
-## Foundation v1 navigation structure amendment sequence
+## Foundation v1 committed-source Code Map maintenance sequence
+
+The human selected one Lane A / DOCS_MAPS_ONLY maintenance against accepted
+committed Foundation v1 at `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`.
+The source commit contains the eleven Foundation runtime/test paths; this
+maintenance reads that code and changes no Dart behavior. Earlier implementation
+reservations and visual-review snapshots below are historical, not executable.
+The accepted scope artifacts and their verdicts remain unchanged.
+
+1. Verify clean main at the named baseline, origin alignment, divergence 0/0
+   and empty staged/unmerged sets; read the five owners and map standard.
+2. Review exact committed source and five affected maps. Requalify additions
+   independently; add only theme, Photos and the two qualifying test maps.
+   WorkbenchPage remains excluded as a small cohesive presentation adapter.
+3. Update exactly fifteen docs/map/index/artifact paths under ACTIVE_SCOPE_LOCK.
+   Preserve all source, unrelated/RETIRED maps and prior audit evidence.
+   Use REVIEW_REQUIRED on nine pairs, neutral — ledger Status and one empty
+   named verdict block.
+4. Validate anchors/ownership, actual 62/62 registry and 51/9/2 statuses,
+   source/history/raw/inverse freeze, both Git checks, doctor and temporary-output
+   validate_all. Flutter is not applicable without a concrete conflict.
+5. One independent Claude docs/map audit uses the exact material. Any later
+   mechanical verdict recording and nine-pair status promotion require returned
+   acceptance and explicit human authorization, with outside-coordinate proof.
+6. Return to NEEDS_USER_DECISION. The human chooses the next feature module;
+   no automatic implementation, architecture review or follow-up pass is armed.
+
+## Historical completed Foundation v1 navigation structure amendment sequence
 
 Entry baseline: `6c329896abc4c9ad71ecfcbc12e0bbb67a338904`. Lane A / DOCS_SCOPE_AMENDMENT_ONLY.
 Exact current five-doc authority is enumerated in ACTIVE_SCOPE_LOCK and

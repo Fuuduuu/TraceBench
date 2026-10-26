@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >5000 lines + 3+ responsibility categories`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -39,7 +39,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | 8. General rendering/geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Delegated Wizard/pure geometry plus host Board painters and semantics. |
 | 9. Inspector composition/evidence | `BoardCanvasInspectorPanel`, `placement: selectedEntry?.placement`, `component: selectedEntry?.component`, `template: selectedEntry?.template`, `placementDraftSection`, `_BoardCanvasSafetyEvidenceDisclosure` | Resolves Inspector inputs from one selected entry, passes the module-built Placement editor slot and keeps safety disclosure; the imported library declares summaries/readiness without evidence promotion. |
 | 10. Photo workflow/primary asset | `_buildPhotoWorkbenchPanel`, `PhotoWorkbenchPanel`, `photoEventItemsFromEvents`, `_reconcilePrimaryPhotoAsset`, `_loadPrimaryPhotoAsset` | Import/align child seam, sole Wizard primary asset load and guarded result callbacks. |
-| 11. Instrument bar/local chrome | `board_canvas_instrument_bar`, `board_canvas_project_menu`, `workbenchDestinations`, `beginnerModeProvider`, `_WorkbenchToolRail`, `_CompactPhotoPanelButton`, `_CanvasFocusRestoreBar` | Home, transient global navigation, labelled mode, safety status, local rail/context and focus. |
+| 11. Instrument bar/local chrome | `board_canvas_instrument_bar`, `board_canvas_project_menu`, `WorkbenchPopupTheme`, `workbenchDestinations`, `beginnerModeProvider`, `_WorkbenchToolRail`, `_CompactPhotoPanelButton`, `_CanvasFocusRestoreBar` | Home, captured warm transient popup, labelled mode, safety status, local rail/context and focus. |
 | 12. Alignment selection/render/capture | `_reconcileAlignmentState`, `primaryPhotoAlignmentEventItemsFromEvents`, `_activeAlignment`, `_requestAlignmentBoardPoint`, `_acceptAlignmentBoardPoint`, `AlignedPhotoLayer`, `_PhotoAlignmentReferencePainter` | Primary-only bounded alignment selection, host preview/layer state and normalized board capture. |
 
 ## Anchor inventory and verification
@@ -55,6 +55,9 @@ No line-number anchors are maintained.
   identity/menu, renderer/write-safety presentation and `Algaja`/`Edasijõudnu`.
 - Home calls session `closeProject` before `go('/')`. The popup reuses the
   exact `workbenchDestinations` inventory and navigates through `go`.
+- `WorkbenchPopupTheme` preserves the closed trigger Theme; only the opened
+  menu captures shared warm Theme. The thirteen public Canvas constants remain
+  value-identical aliases to shared WorkbenchColors.
 - Title-layout width below 900 abbreviates identity/safety copy; full safety
   meaning remains in Tooltip/Semantics. This is distinct from Canvas layout.
 - Canvas content retains `constraints.maxWidth >= 900` after body padding
@@ -139,6 +142,7 @@ No line-number anchors are maintained.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `ProjectSession`, `projectStateProvider`, `ProjectState` | input / projection | State, close, generation, event application and freshness. |
+| `WorkbenchPopupTheme` from shared app_theme.dart | inherited presentation | Opened-menu Theme capture without recoloring closed instrument chrome or renderer. |
 | `workbench_shell.dart`, `beginner_mode_provider.dart` | model / UI state | Shared destination inventory and independent mode provider. |
 | `photo_event_read_model.dart` | pure input | Accepted photos, exact primary identity and bounded alignments. |
 | `photo_workbench_panel.dart` | child workflow | Additional import, point draft, explicit ensure/confirm and session handoff. |
@@ -186,7 +190,7 @@ that evidence comes only from the explicit delegated confirmation writer.
 
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
-| Instrument/navigation | [D] one bar and shared inventory popup | router, shell model, mode/session | `UI_LOCAL` / Home `PROJECTION_STATE` | shell, gate and Single Shell Board cases |
+| Instrument/navigation | [D] unchanged bar and shared-inventory popup with captured warm Theme | router, Shell model, shared theme, mode/session | `UI_LOCAL` / Home `PROJECTION_STATE` | shell, gate and Single Shell Board cases |
 | Primary asset/selection | [D] path/hash/dimensions and guarded load | read model / loader | `ZERO_WRITE` / `UI_LOCAL` | reopen, changed-byte and unavailable cases |
 | Photo confirmation seam | [D] child callbacks and injected writer | panel, durable writer, session | delegated `CANONICAL_EVENT` / `PROJECTION_STATE` | confirm/retry/stale groups |
 | Preview/capture/render | [D] host state and stack | solver / raster / Wizard | `UI_LOCAL` / `ZERO_WRITE` | exit, raster and composite cases |

@@ -1,9 +1,37 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_NAVIGATION_SCOPE_AMENDMENT_PASS`
-Next recommended pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `NEEDS_USER_DECISION`
 
-## Foundation v1 navigation structure amendment
+## Foundation v1 committed-source Code Map maintenance
+
+The human selected one Lane A / DOCS_MAPS_ONLY maintenance against accepted
+committed Foundation v1 at `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`.
+The source commit contains the eleven Foundation runtime/test paths; this
+maintenance reads that code and changes no Dart behavior. Earlier implementation
+reservations and visual-review snapshots below are historical, not executable.
+The accepted scope artifacts and their verdicts remain unchanged.
+
+Current maintenance: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`.
+ACTIVE_SCOPE_LOCK owns exactly fifteen docs/map/index/artifact paths.
+Evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+Five existing maps follow the compact Shell project menu, opened-only Canvas
+popup Theme, opt-in Overview and updated structural test ownership. Four new
+maps qualify independently: shared theme, Photos, Photos tests and page/theme
+tests. WorkbenchPage is a small cohesive adapter; no map is required for it.
+All source/test and unrelated-map bytes, including protected oracles, stay fixed.
+
+Registry derives from actual files/rows: 62/62, with 51 MAINTAINED,
+nine REVIEW_REQUIRED and two RETIRED. Changed/new pairs use REVIEW_REQUIRED
+under the independent map-audit lifecycle; acceptance is not pre-recorded.
+Validation is docs-only: anchors/write ownership, registry, raw/inverse/history
+freeze, both Git checks, doctor and temporary-output validate_all.
+Next is NEEDS_USER_DECISION for the human's next module choice.
+Nine legacy destination contents remain outside this maintenance; no feature
+scope or maintenance child is armed.
+
+## Historical completed Foundation v1 navigation structure amendment
 
 Entry baseline: `6c329896abc4c9ad71ecfcbc12e0bbb67a338904`. Lane A / DOCS_SCOPE_AMENDMENT_ONLY.
 Exact current five-doc authority is enumerated in ACTIVE_SCOPE_LOCK and

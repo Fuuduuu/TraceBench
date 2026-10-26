@@ -3,15 +3,15 @@
 - Source: `test/widget/project_overview_screen_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 7/12 — 19 tests across freshness, shared-shell, responsive, preview, workflow-route, and zero-write families`
-- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_SHELL_CODE_MAP_MAINTENANCE_PASS.md`
+- Qualification: `SCORE 7/12 — 21 tests across freshness, shared-shell, responsive, preview, workflow-route, and zero-write families`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
 Verifies Project Overview as destination content under the production shared
-Workbench shell and, where useful, as a direct mount. The 19-test suite covers
-warning ownership, retained summary/preview/placeholder content, shared-shell
-copy and colors, six-width routed responsive monotonicity, retained
+Workbench shell and, where useful, as a direct mount. The 21-test suite covers
+warning ownership, retained summary/preview/placeholder content, compact-shell
+copy, warm opt-in actions, 1.5x scaling and six-width routed geometry, retained
 Measure/Add/Edit workflows, inert future controls, and event preservation. It
 no longer owns top-level Canvas/Graph/Reference Images navigation coverage.
 
@@ -22,9 +22,9 @@ no longer owns top-level Canvas/Graph/Reference Images navigation coverage.
 | Project fixture | `_inlineProjectState`, `_normalizedPlacementFacts`, `projectionFreshness` | Builds fresh/stale/unknown states, placements, raw IDs, counters, and seeded events. |
 | Direct/routed harness | `_pumpProjectOverview`, `buildTraceBenchRouter`, `ProviderContainer`, `useRouter` | Mounts the destination directly or through the production router with controlled providers. |
 | Route and warning identity | `/project/overview opens the retained named overview route`, `shows stale projection banner when projection is stale`, `shows one distinct unknown freshness warning` | Verifies canonical route plus exactly one shared stale/unknown warning and no legacy tag. |
-| Shared shell and copy | `renders workbench-first shell with dominant primary action`, `workbench-shell`, `workbench-breadcrumb`, `workbench-home-button` | Verifies shared dark Scaffold/AppBar, breadcrumb/Home ownership, localized destination copy, and action hierarchy. |
-| Six-width monotonic geometry | `routed overview stays monotonic across the shell cutover`, `959`, `960`, `1227`, `1228`, `1229`, `1500` | Proves compact/persistent navigation and stacked/wide Overview geometry without inversion. |
-| Comfortably wide density | `routed 1500 layout gives board preview room and compacts rail`, `overview-workbench-board-preview` | Verifies dominant Workbench zone, bounded action rail, and preview height at the satisfiable wide checkpoint. |
+| Shared shell and copy | `renders workbench-first shell with dominant primary action`, `workbench-shell`, `workbench-breadcrumb`, `workbench-home-button` | Verifies compact warm Shell, inline context/Home ownership, removed duplicate title and retained action hierarchy. |
+| Six-width monotonic geometry | `routed overview stays monotonic with full-width menu navigation`, `959`, `960`, `1227`, `1228`, `1229`, `1500` | Proves uniform menu navigation and unchanged local stacked/wide geometry. |
+| Comfortably wide density | `routed 1500 layout gives board preview room without navigation rail`, `overview-workbench-board-preview` | Verifies dominant Workbench zone, bounded action rail, and preview height at the satisfiable wide checkpoint. |
 | Summary, preview, and empty state | `renders compact status strip for board statistics`, `renders sparse-placement workbench placeholder state`, `renders read-only board canvas` | Covers counters, placeholder, and board-normalized read-only preview. |
 | Visibility and future controls | `hides raw fixture identifiers from the visible shell`, `future tools are collapsed by default and remain inert` | Guards visible copy and all four null future callbacks. |
 | Retained workflow routes | `legacy measurement action routes to measure sheet`, `Add Component action navigates to add component screen`, `Edit Component action navigates to edit component screen` | Verifies exact Measure/Add/Edit destination behavior. |
@@ -44,10 +44,11 @@ exact substring in committed test source. The map uses no line-number anchors.
   or seeded events.
 - `[D]` `_pumpProjectOverview` seeds providers and mounts either the production
   router at `/project/overview` or the destination directly.
+- `[D]` Warm-theme/action and 1.5x cases add role/isolation/overflow evidence.
 - `[D]` Shared-shell assertions target shell keys while Overview assertions
   continue to target `overview-*` content keys.
 - `[D]` The monotonic case resizes one routed composition through exactly 959,
-  960, 1227, 1228, 1229, and 1500 pixels, pairing shell-mode assertions with
+  960, 1227, 1228, 1229, and 1500 pixels, pairing no-rail/project-menu assertions with
   measured Overview row/stack geometry and provider identity.
 - `[D]` The 1500 case separately proves preview width produces height at least
   430 and the action rail remains at most 260 wide.
@@ -59,7 +60,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `ProjectOverviewScreen` | system under test | Supplies retained destination content and private keyed zones. |
-| `WorkbenchShell`, `WorkbenchShellColors` | shared-shell observation | Supplies shared chrome, navigation mode, and dark vocabulary. |
+| `WorkbenchShell`, `WorkbenchColors` | shared-shell observation | Supplies compact chrome and shared warm presentation observations. |
 | `buildTraceBenchRouter`, `GoRouter` | routed harness | Resolves canonical and retained workflow routes. |
 | `projectStateProvider`, `beginnerModeProvider` | fixture | Injects loaded state/mode; provider identity is observed during resize. |
 | `ProjectState`, manifest/fact/event models | fixture | Build typed projected inputs. |
@@ -90,10 +91,10 @@ write action. Placement facts remain read-only preview inputs.
 
 | Family | Evidence | Coupling | Write class | Escalation |
 | --- | --- | --- | --- | --- |
-| Fixture/harness | `[D]` shared by all 19 tests | provider, router, screen | setup | full target |
+| Fixture/harness | `[D]` shared by all 21 tests | provider, router, screen | setup | full target |
 | Warning | `[D]` explicit tri-state fixtures and one-banner assertions | shared banner and status strip | `ZERO_WRITE` | stale/unknown cases |
 | Shared shell/copy | `[D]` shell keys, colors, localized text | Workbench shell map | `ZERO_WRITE` | shell/copy case plus shell suite |
-| Responsive | `[D]` six routed widths and measured rectangles | shell 1228, Overview 960/framing | `ZERO_WRITE` | monotonic + 1500 cases |
+| Responsive | `[D]` six routed widths and measured rectangles | full-width Shell, shared frame and local Overview 960 | `ZERO_WRITE` | monotonic + 1500 cases |
 | Preview/placeholder | `[D]` optional normalized placement fixture | known-facts model/painter | `ZERO_WRITE` | both preview states |
 | Inert controls | `[D]` expansion and null callbacks | future product authority | `ZERO_WRITE` | future-tools case |
 | Workflow routes | `[D]` three destination action keys | router/destination screens | `UI_LOCAL` | Measure/Add/Edit cases |
@@ -101,7 +102,7 @@ write action. Placement facts remain read-only preview inputs.
 
 ## Relevant tests and helpers
 
-- The target contains exactly 19 `testWidgets` declarations.
+- The target contains exactly 21 `testWidgets` declarations.
 - `_inlineProjectState`, `_normalizedPlacementFacts`, and
   `_pumpProjectOverview` are shared across freshness, geometry, preview, route,
   and no-write families.
@@ -118,10 +119,10 @@ write action. Placement facts remain read-only preview inputs.
 - Harness changes can alter every shared-shell, route, warning, and geometry
   expectation.
 - Surface-size tests must restore global binding state.
-- Shell cutover and local Overview geometry assertions must remain paired;
-  checking only navigation mode would miss a destination inversion.
-- The 430-pixel preview assertion is satisfiable at 1500, not 1440, under the
-  retained 244/24/252/12/24 geometry.
+- Full-width Shell and local geometry assertions must remain paired;
+  menu visibility alone misses content allocation regressions.
+- The 1500-pixel case retains preview height >=430, actions <=260 and dominant
+  board width; the obsolete 244-pixel Shell subtraction is absent.
 - Re-adding removed top-level route tests here would duplicate shell ownership.
 - Enabling future controls requires product authority, not an expectation edit.
 
@@ -131,7 +132,7 @@ write action. Placement facts remain read-only preview inputs.
 | --- | --- | --- | --- |
 | One warning assertion | warning tests and fixture freshness | shared banner/status strip | both warning cases |
 | Shared-shell copy | shell/copy case | shell source and Overview content | shell case + shell suite |
-| Responsive geometry | monotonic and 1500 cases | surface teardown, shell/Overview thresholds | both responsive cases |
+| Responsive geometry | monotonic and 1500 cases | surface teardown, Shell allocation/Overview threshold | both responsive cases |
 | One preview state | placement fixture and keyed preview | model/painter | placeholder + preview cases |
 | One workflow route | matching action key/test | router/destination | exact route plus event guard |
 

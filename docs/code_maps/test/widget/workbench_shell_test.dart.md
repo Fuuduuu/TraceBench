@@ -3,21 +3,18 @@
 - Source: `test/widget/workbench_shell_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 8/12 — 11 declarations across inventory, active selection, shell/provider identity, Batch-1 destination chrome, responsive navigation, Home round-trip, alias, and zero-write families`
-- Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
+- Qualification: `SCORE 8/12 — 15 declarations across inventory, active selection, shell/provider identity, Batch-1 destination chrome, responsive navigation, Home round-trip, alias, and zero-write families`
+- Audit evidence: `docs/audit/TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Provides focused contract evidence for the shared loaded-project Workbench
-shell. Two unit tests verify its sole ordered destination model and workflow-
-parent selection. Nine widget-test declarations (ten generated cases) use the production router
-to verify secondary-shell/provider identity, Batch-1 destination chrome and body
-preservation, compact reachability, the exact 1228 persistent cutover,
-Home project clearing with beginner-mode survival, representative zero-write
-routes, and alias selection.
-Four writer sentinels plus event/fact/freshness/file checks protect the
-navigation-only boundary. Added Canvas cases cover every project-menu entry at
-390/1500, transient dismissal, labelled modes and Home session close.
+Verifies the shared secondary Shell and both project-menu consumers.
+Two pure and thirteen widget declarations generate seventeen cases. Coverage
+includes literal twelve-entry inventory, parents/aliases, compact warm header,
+seven widths/two scales, keyboard/focus, Canvas popup Theme capture and absence
+of secondary chrome on Canvas. State/provider identity, Home/mode and writer/
+event/fact/freshness/file guards bound navigation; legacy bodies retain their
+own signatures and original surface roles.
 
 ## Responsibility zones
 
@@ -30,10 +27,10 @@ navigation-only boundary. Added Canvas cases cover every project-menu entry at
 | Route settling | `_pumpUntilRouterPath`, `routeInformationProvider` | Waits for expected URI plus Navigator transition completion. |
 | Shell/provider identity | `keeps one shell identity and providers across project leaf navigation`, `WorkbenchShell`, `same(session.loadedProject)` | Proves one on/offstage shell, identical element/state, loaded-project identity, beginner mode, and events across a leaf change. |
 | Batch-1 destination chrome | `read-only routed destinations render one shell AppBar and one destination surface`, `workbench-destination-surface`, `events-advanced`, `events-beginner` | Covers seven loaded cases across six URIs, one shell AppBar/surface, same shell identity, active route chrome, preserved body signatures, both Events modes, and zero mutation. |
-| Compact and persistent responsive modes | `renders one reachable compact navigation model`, `persistent navigation starts at the safe 1228 width`, `workbench-wide-navigation`, `workbench-compact-menu-button` | Proves reachable drawer navigation and exact six-width shell cutover. |
-| Canvas single-shell navigation and mode | `single shell project menu reaches every destination at $width`, `single shell modes survive navigation and Home closes without writes` | Covers all 12 popup routes at 390/1500, outside/Escape dismissal, both mode directions, secondary round-trip, session generation and byte-level no-write checks. |
+| Compact frame/theme/focus | `compact warm chrome stays local and has keyboard focus cues`, `one compact project menu serves every width and text scale`, `workbench-project-menu`, `Foto tõendid` | Header-only warm Theme, legacy child isolation, visible focus, exact page Text and seven-width/two-scale menu; old navigation absent. |
+| Canvas popup/navigation/mode | `Canvas popup alone captures warm theme and retains all items`, `single shell project menu reaches every destination at $width`, `single shell modes survive navigation and Home closes without writes` | Twelve routes at 390/1500, closed/opened Theme, dismissal/mode/Home/generation/bytes and secondary-chrome absence. |
 | Home session close | `Home clears project and preserves beginner mode`, `workbench-home-button` | Verifies Home clears ProjectSession while the separate beginner-mode value survives. |
-| Navigation mutation guards | `shared destination controls navigate exact routes without state writes`, `calls`, `listSync` | Checks representative exact routes with stable project/facts/events/freshness/files and zero writer calls. |
+| Secondary menu/mutation guards | `secondary project menu preserves all destinations at $width`, `secondary menu supports keyboard traversal and activation`, `shared destination controls navigate exact routes without state writes`, `calls`, `listSync` | Twelve secondary menu routes at both widths, natural keyboard selection and retained project/generation/facts/events/files/writer guards. |
 | Workflow and alias selection | `workflow and aliases select one canonical shell destination`, `/project/measurements/new`, `/project/board-canvas` | Verifies workflow-parent selection and both compatibility redirects settle on canonical shell entries. |
 
 ## Anchor inventory and verification
@@ -45,7 +42,7 @@ exact substring in committed test source. The map uses no line-number anchors.
 
 ## Qualification evidence
 
-`SCORE 8/12` reflects 990 physical lines and distinct inventory, responsive,
+`SCORE 8/12` reflects 1199 physical lines and distinct inventory, responsive,
 route, provider/session, and writer/file observation families. Qualification
 does not depend on production-file qualification.
 
@@ -70,19 +67,23 @@ does not depend on production-file qualification.
    one keyed dark surface, checks active breadcrumb/selection and body
    signatures, expands advanced Events JSON, and preserves project, facts,
    events, freshness, writers, and the recursive file listing.
-6. The compact case opens one drawer, selects Measurements, and retains one
-   shell. The responsive case checks 959, 960, 1227, 1228, 1229, and 1500.
+6. The compact popup selects Measurements without a Drawer. Uniform menu
+   coverage uses 390/959/960/1227/1228/1229/1500 at 1.0/1.5 text, exact Photos
+   Text, scroll-reachable Report and absence of the old navigation structures.
 7. Home navigation clears the project session before reaching `/` and preserves
    false beginner mode; the suite does not re-seed or re-enter a project.
 8. Representative destination taps preserve exact project/fact/event/freshness
    values, all four zero call counts, and the recursive file listing.
 9. Workflow and compatibility paths select one canonical parent entry after
    redirect settlement. The Canvas alias uses a checked popup entry, while
-   secondary workflow selections remain ListTiles. Outside tap and Escape
+   secondary workflow selections use checked popup entries. Outside tap and Escape
    dismiss the popup without leaving Canvas.
 10. The Canvas mode/Home case toggles both labelled directions, visits Overview
     and returns, then checks Home clears the project and advances generation
     once while mode, old project JSON, file bytes and zero writer counts remain.
+11. Secondary loops traverse all twelve entries at 390/1500 with JSON/generation/
+    file-byte and zero writer observations. Menu/header are absent on Canvas.
+    Natural Down/Enter activates Pins in the existing order.
 
 ## Direct dependencies
 
@@ -93,7 +94,7 @@ does not depend on production-file qualification.
 | `projectStateProvider`, `SeededProjectSession`, `beginnerModeProvider` | fixture/observation | Seeds loaded state/mode, proves navigation identity, and observes Home clearing/mode survival. |
 | Four V2 writer interfaces/providers | protected-boundary sentinels | Fail/count any unexpected add/edit/placement/measurement call. |
 | Project/manifest/fact/event models | fixture | Build typed state with event/fact/freshness observations. |
-| Flutter tester/layout/navigation APIs | driver | Control surface size, drawer, taps, scrolling, and element/state identity. |
+| Flutter tester/layout/navigation APIs | driver | Control size/text scale, popup/keyboard/taps/scroll and element/state identity. |
 | `dart:io` Directory/File | fixture boundary | Creates and later deletes one noncanonical temporary tree. |
 
 ## Write and protected boundaries
@@ -102,13 +103,13 @@ does not depend on production-file qualification.
 | --- | --- | --- |
 | Inventory and active-selection unit tests | `ZERO_WRITE` | Read pure production metadata/functions only. |
 | Batch-1 routed destination matrix | `ZERO_WRITE` | Observes presentation, body content, object identity, writer counters, freshness, and file listing without invoking a product write. |
-| Router/destination navigation | `UI_LOCAL` | Changes transient route location/drawer state. |
+| Router/destination navigation | `UI_LOCAL` | Changes transient route location/popup state. |
 | Beginner-mode toggle | observed `UI_LOCAL` | Verifies only the existing presentation provider changes. |
 | Project/session identity assertions | `ZERO_WRITE` | Read and compare existing in-memory objects/values during destination navigation. |
 | Home button session clear | observed `PROJECTION_STATE` | Verifies the explicit shell-owned close while writer/file/fact paths remain untouched. |
 | Four writer sentinels | exercised `CANONICAL_EVENT` boundary | All call counts remain zero during shell navigation. |
 | Temp fixture setup/teardown | `NONCANONICAL_FILE` | Test-only file creation/deletion outside product persistence. |
-| Recursive file observations | `ZERO_WRITE` | Existing cases compare paths; Canvas menu/Home cases additionally snapshot and compare each fixture file byte-for-byte. |
+| Recursive file observations | `ZERO_WRITE` | Existing cases compare paths; Canvas and secondary menu/Home cases additionally compare fixture bytes. |
 
 ## Zero-write zones
 
@@ -128,16 +129,16 @@ does not depend on production-file qualification.
 | Harness | `[D]` production router/providers/four writers/temp file | all widget cases | fixture `NONCANONICAL_FILE` / `UI_LOCAL` | full target |
 | Shell identity/providers | `[D]` element/state/object identity | ShellRoute/gate/provider scope | `ZERO_WRITE` | identity case + gate matrix |
 | Batch-1 destination chrome | `[D]` seven routed cases and body signatures | six destination owners and local surface theme | `ZERO_WRITE` | Batch-1 matrix + focused destination suites |
-| Compact navigation | `[D]` drawer/menu/tap | route and scroll reachability | `UI_LOCAL` | compact case |
-| Persistent cutover | `[D]` six exact widths | shell/Board/Overview responsive owners | `ZERO_WRITE` | cutover + destination suites |
+| Compact menu | `[D]` popup/menu/tap | route/scroll reachability | `UI_LOCAL` | compact and both twelve-route loops |
+| Uniform frame/focus | `[D]` seven widths/two scales, local Theme and focus cue | shared theme/legacy child/Overview allocation | `ZERO_WRITE` / `UI_LOCAL` | width/scale, isolation and keyboard cases |
 | Home close | `[D]` exact route, null project, and preserved mode | shell/session/launcher | `PROJECTION_STATE` + `UI_LOCAL` | Home case + Home suite |
 | No-write routes | `[D]` values/calls/file listing | four writers/project state | `ZERO_WRITE` | representative route loop |
-| Workflows/aliases | `[D]` selected ListTiles and canonical URIs | router redirects | `UI_LOCAL` | alias-selection case |
+| Workflows/aliases | `[D]` checked menu entries and canonical URIs | router redirects | `UI_LOCAL` | alias-selection case |
 
 ## Relevant tests and helpers
 
-- Eleven declarations: two `test` and nine `testWidgets`; the two-width popup
-  loop generates two cases, yielding twelve executed tests.
+- Fifteen declarations: two `test` and thirteen `testWidgets`. Canvas and
+  secondary two-width loops add one generated case each: seventeen cases.
 - `_expectedDestinationPaths` is the exact expected order; production
   `workbenchDestinations` remains independently owned by the shell.
 - `_RouterSession`, `_pumpRouter`, and `_pumpUntilRouterPath` own common routed
@@ -146,8 +147,8 @@ does not depend on production-file qualification.
 - `test/widget/project_gate_test.dart` extends identity evidence across all 15
   real destinations with Canvas bypass/secondary-shell identity, shell-free
   null state, unsettled transitions, nested push/pop, and file bytes.
-- Routed Overview and Board suites independently pair the same six widths with
-  destination geometry.
+- Overview and Board retain measured geometry; Shell additionally covers 390
+  and 1.5x without treating header/content thresholds as one.
 
 ## Dangerous combinations
 
@@ -172,7 +173,7 @@ does not depend on production-file qualification.
 | Workflow parent | active-selection unit test | router workflows/aliases | unit + alias widget case |
 | Shell identity | identity widget test | ShellRoute/gate/provider scope | identity + loaded gate matrix |
 | Batch-1 destination chrome | seven-case routed matrix | six destination build branches | matrix + focused destination/freshness suites |
-| Responsive cutover | six-width case | Board/Overview geometry | all three responsive cases |
+| Header layout/focus | seven-width/two-scale and warm cases | shared theme/child/Overview | width, isolation and keyboard cases |
 | Home close/mode survival | Home case | ProjectSession, launcher, router lifetime | Home case + Home suite |
 | No-write navigation | representative route loop and sentinels | destination writers | loop + gate mutation matrix |
 
@@ -185,16 +186,16 @@ does not depend on production-file qualification.
 
 ## Freshness and review triggers
 
-Set `REVIEW_REQUIRED` for fixture/helper/test-name `SYMBOL_DRIFT`, route/drawer/
+Set `REVIEW_REQUIRED` for fixture/helper/test-name `SYMBOL_DRIFT`, route/popup/
 session/provider `FLOW_DRIFT`, writer/file/mode/Home-close `BOUNDARY_DRIFT`, behavior-family
 `TEST_DRIFT`, or shell/harness `STRUCTURE_DRIFT`. Recheck exact declaration
 count, ordered 12 paths, seven Batch-1 cases, both Events modes, one surface/
-AppBar, six widths, all four writer sentinels, and provider/file guards
+AppBar, menu/width/scale coverage, all four writer sentinels, and provider/file guards
 whenever imported contracts change.
 
 ## Known uncertainty
 
-- `[D]` Canvas menu tests cover all 12 top-level destinations. The gate suite
+- `[D]` Canvas and secondary menu tests cover all 12 destinations. The gate suite
   extends coverage to the complete 15 real targets, including workflow leaves.
 - `[D]` Older cases compare file listings; added Canvas cases compare bytes
   too. Neither proves behavior outside the exercised temporary fixture tree.

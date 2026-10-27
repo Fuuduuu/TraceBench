@@ -2,10 +2,67 @@
 
 ## Route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
 
-## Foundation v1 committed-source Code Map maintenance
+## Wizard to Canvas shared candidate geometry v1 scope lock
+
+PASS_ID: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`. Lane A / BOUNDED_DOCS_SCOPE_LOCK_ONLY.
+Entry main/HEAD/origin/main: `bf2ff82e0a04bee7b4e380066608abae65b13133`; divergence 0/0.
+The human selects variant 1: unify only Wizard-candidate and Canvas-overlay
+geometry. Existing confirmed placements, their renderer/hit testing, coordinate
+meaning and persistence remain unchanged. This child does not enable candidate
+editing or confirmation. A separately authorized persistent placement-geometry
+distinction is required before future confirmation can preserve the same pose.
+No migration or future confirmation child is reserved.
+
+### Exact current docs-only authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS.md` (new)
+
+Only leading route fields, the new bounded sections, three completed predecessor
+heading labels, one neutral ledger row and this artifact may change. Prior
+bodies/rows/verdicts, maps/index and every runtime/test/tool/package byte freeze.
+
+### Single conditional implementation child
+
+Reserve only `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS` with exactly:
+
+1. `lib/shared/geometry/wizard_candidate_geometry.dart` (new)
+2. `lib/features/project/screens/new_project_wizard_screen.dart`
+3. `lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart`
+4. `lib/features/board_canvas/screens/board_canvas_screen.dart`
+5. `test/unit/wizard_candidate_geometry_test.dart` (new)
+6. `test/widget/new_project_wizard_screen_test.dart`
+7. `test/widget/board_canvas_screen_test.dart`
+
+Host authority is one shared-helper import only; its entire runtime body stays
+fixed. Wizard authority is the candidate geometry adapter/import; overlay
+authority is candidate geometry consumption only. Existing reference fitting,
+photo/contour transforms, interaction/creation behavior and visual styling stay
+fixed. Tests are additive; no existing assertion/helper/fake retarget is needed.
+
+The shared pure helper accepts an explicit reference rectangle and existing
+Wizard shape/position/sizeScale/rotation values. It centralizes center, shortest-
+reference-side size, shape path, effective rotation, rotated bounds and existing
+hit envelope. Preserve 0.035 sizing, 8 px display floor, shape ratios and 56 px
+minimum Wizard hit bounds. Overlay uses normalizedCanvasRect; its portrait
+candidate sizing follows the same shortest-side rule as Wizard.
+
+Freeze placement_geometry.dart, canonical painters/hit tests, Add preview/ghost,
+Placement/Components/Inspector/Measurement/Navigator modules, all persisted
+formats, writers, Session, ZIP, palettes and P0/C0/M0/I0. No global redefinition
+of board_normalized or inferred legacy discriminator is authorized.
+Activation requires accepted independent scope audit, explicitly authorized
+bounded recording and the exact human docs commit/push. Current validation is
+docs-only. Future commands/tests/smoke and Code Map lifecycle are in the artifact.
+After the child: NEEDS_USER_DECISION. No RECON, sync or automatic map/feature child.
+
+## Historical completed Foundation v1 committed-source Code Map maintenance
 
 PASS_ID: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`.
 Entry main/HEAD/origin/main: `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`; divergence 0/0.

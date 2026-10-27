@@ -1,9 +1,35 @@
 # Current State
 
-Current pass: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
-Next recommended pass: `NEEDS_USER_DECISION`
+Current pass: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
+Next recommended pass: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
 
-## Foundation v1 committed-source Code Map maintenance
+## Wizard to Canvas shared candidate geometry v1 reservation
+
+The human selected one bounded Lane A scope at `bf2ff82e0a04bee7b4e380066608abae65b13133`:
+`TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`. ACTIVE_SCOPE_LOCK owns exactly five docs.
+Binding artifact: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS.md`.
+
+The human selects variant 1: unify only Wizard-candidate and Canvas-overlay
+geometry. Existing confirmed placements, their renderer/hit testing, coordinate
+meaning and persistence remain unchanged. This child does not enable candidate
+editing or confirmation. A separately authorized persistent placement-geometry
+distinction is required before future confirmation can preserve the same pose.
+No migration or future confirmation child is reserved.
+
+Only `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS` is conditionally reserved with seven source/test
+paths: one pure shared helper, Wizard candidate adapter, overlay consumer,
+host import only, one new unit suite and additive Wizard/Canvas regressions.
+No existing test retarget is authorized. Preserve all reference/photo/contour
+fit behavior, read-only overlay input, UI styling and module/domain boundaries.
+The full confirmed-placement and Add-preview paths remain byte-frozen.
+
+Maps/index stay fixed at 62/62 (60 MAINTAINED, zero REVIEW_REQUIRED, two RETIRED).
+Existing affected-map dispositions and independent new-file qualification
+lifecycle are explicit in the artifact. No map-maintenance child is automatic.
+Independent scope acceptance, authorized two-coordinate recording and exact
+human docs commit/push precede implementation. Post-child NEEDS_USER_DECISION.
+
+## Historical completed Foundation v1 committed-source Code Map maintenance
 
 The human selected one Lane A / DOCS_MAPS_ONLY maintenance against accepted
 committed Foundation v1 at `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`.

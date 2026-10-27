@@ -2,10 +2,37 @@
 
 ## Current route
 
-Current: `TRACEBENCH_SHARED_WORKBENCH_FOUNDATION_V1_CODE_MAP_MAINTENANCE_PASS`
-Next: `NEEDS_USER_DECISION`
+Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
+Next: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
 
-## Foundation v1 committed-source Code Map maintenance sequence
+## Wizard to Canvas shared candidate geometry v1 sequence
+
+The human selected the reduced candidate-only scope at `bf2ff82e0a04bee7b4e380066608abae65b13133`.
+The human selects variant 1: unify only Wizard-candidate and Canvas-overlay
+geometry. Existing confirmed placements, their renderer/hit testing, coordinate
+meaning and persistence remain unchanged. This child does not enable candidate
+editing or confirmation. A separately authorized persistent placement-geometry
+distinction is required before future confirmation can preserve the same pose.
+No migration or future confirmation child is reserved.
+
+1. Prepare exactly five docs under `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`.
+   Preserve prior audit/ledger history and all source/maps; one neutral — row
+   and one empty verdict block follow AUDIT_CONTRACT.
+2. Validate exact material, raw/inverse/history preservation, map anchors/parity,
+   both Git checks, doctor and temporary-output validate_all. One independent
+   Claude scope audit reviews this actual docs diff.
+3. Only after acceptance, explicit bounded recording authorization and exact
+   human docs commit/push may `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS` run.
+4. The one seven-path child centralizes pure candidate geometry, updates only
+   Wizard/overlay consumers plus the host import, and adds focused regressions.
+   Keep all legacy placement/Add-preview behavior and existing assertions fixed.
+5. Validate focused/full Flutter, analyzer baseline, doctor/temporary validator,
+   frozen bytes and actual Windows Wizard-to-Canvas human smoke. Its later
+   implementation-audit packet requires MANUAL SMOKE PASS.
+6. Post-child: NEEDS_USER_DECISION. No candidate editor, draft persistence,
+   Navigator extraction, confirmation, migration or automatic follow-up is armed.
+
+## Historical completed Foundation v1 committed-source Code Map maintenance sequence
 
 The human selected one Lane A / DOCS_MAPS_ONLY maintenance against accepted
 committed Foundation v1 at `ed17663edf60d6f8a55ccd8dafc9efbcf85d4a95`.

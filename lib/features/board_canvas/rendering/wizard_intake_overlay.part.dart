@@ -232,38 +232,17 @@ class _WizardIntakePainter extends CustomPainter {
     Canvas canvas,
     WizardVisualCandidate candidate,
   ) {
-    final center = fitTransform.mapPoint(candidate.position);
-    final minorDimension = math.max(
-      8.0,
-      fitTransform.scale * 0.035 * candidate.sizeScale,
+    final geometry = WizardCandidateGeometry.resolve(
+      referenceRect: fitTransform.normalizedCanvasRect,
+      normalizedCenter: Offset(candidate.position.x, candidate.position.y),
+      shape: candidate.shape,
+      sizeScale: candidate.sizeScale,
+      rotationRadians: candidate.rotationRadians,
     );
-    final aspectRatio = switch (candidate.shape) {
-      WizardVisualCandidateShape.circle => 1.0,
-      WizardVisualCandidateShape.square => 1.0,
-      WizardVisualCandidateShape.rectangle => 1.8,
-      WizardVisualCandidateShape.roundedRectangle => 2.2,
-    };
-    final markerRect = Rect.fromCenter(
-      center: Offset.zero,
-      width: minorDimension * aspectRatio,
-      height: minorDimension,
-    );
-    final markerPath = switch (candidate.shape) {
-      WizardVisualCandidateShape.circle => Path()..addOval(markerRect),
-      WizardVisualCandidateShape.square ||
-      WizardVisualCandidateShape.rectangle =>
-        Path()..addRect(markerRect),
-      WizardVisualCandidateShape.roundedRectangle => Path()
-        ..addRRect(
-          RRect.fromRectAndRadius(
-            markerRect,
-            Radius.circular(minorDimension * 0.32),
-          ),
-        ),
-    };
-    final rotation = candidate.shape == WizardVisualCandidateShape.circle
-        ? 0.0
-        : candidate.rotationRadians;
+    final center = geometry.center;
+    final minorDimension = geometry.minorDimension;
+    final markerPath = geometry.localPath;
+    final rotation = geometry.effectiveRotation;
     canvas.save();
     canvas.translate(center.dx, center.dy);
     canvas.rotate(rotation);

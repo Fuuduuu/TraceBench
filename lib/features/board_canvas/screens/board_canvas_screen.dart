@@ -25,6 +25,7 @@ import '../../photos/widgets/photo_workbench_panel.dart';
 import '../../project/widgets/workbench_shell.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
+import '../../../shared/geometry/wizard_candidate_geometry.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';

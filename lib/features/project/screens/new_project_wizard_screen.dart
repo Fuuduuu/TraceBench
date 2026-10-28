@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/geometry/wizard_candidate_geometry.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/services/project_creator.dart';
@@ -3801,65 +3802,28 @@ class _WizardComponentMarkerGeometry {
     _WizardComponentCandidate candidate,
     Size canvasSize,
   ) {
-    final shortestSide = canvasSize.shortestSide;
-    final relativeMinor = shortestSide.isFinite
-        ? shortestSide * 0.035 * candidate.sizeScale
-        : 0.0;
-    final minorDimension = math.max(8.0, relativeMinor);
-    final aspectRatio = switch (candidate.shape) {
-      _WizardComponentShape.circle => 1.0,
-      _WizardComponentShape.square => 1.0,
-      _WizardComponentShape.rectangle => 1.8,
-      _WizardComponentShape.roundedRectangle => 2.2,
-    };
-    final markerSize = Size(minorDimension * aspectRatio, minorDimension);
-    final localRect = Rect.fromCenter(
-      center: Offset.zero,
-      width: markerSize.width,
-      height: markerSize.height,
-    );
-    final localPath = switch (candidate.shape) {
-      _WizardComponentShape.circle => Path()..addOval(localRect),
-      _WizardComponentShape.square || _WizardComponentShape.rectangle => Path()
-        ..addRect(localRect),
-      _WizardComponentShape.roundedRectangle => Path()
-        ..addRRect(
-          RRect.fromRectAndRadius(
-            localRect,
-            Radius.circular(minorDimension * 0.32),
-          ),
-        ),
-    };
-    final effectiveRotation = candidate.shape == _WizardComponentShape.circle
-        ? 0.0
-        : candidate.rotation;
-    final cosine = math.cos(effectiveRotation).abs();
-    final sine = math.sin(effectiveRotation).abs();
-    final rotatedWidth = markerSize.width * cosine + markerSize.height * sine;
-    final rotatedHeight = markerSize.width * sine + markerSize.height * cosine;
-    final centre = Offset(
-      candidate.position.dx * canvasSize.width,
-      candidate.position.dy * canvasSize.height,
-    );
-    final rotatedBounds = Rect.fromCenter(
-      center: centre,
-      width: rotatedWidth,
-      height: rotatedHeight,
-    );
-    final hitBounds = Rect.fromCenter(
-      center: centre,
-      width: math.max(56.0, rotatedWidth),
-      height: math.max(56.0, rotatedHeight),
+    final geometry = WizardCandidateGeometry.resolve(
+      referenceRect: Offset.zero & canvasSize,
+      normalizedCenter: candidate.position,
+      shape: switch (candidate.shape) {
+        _WizardComponentShape.circle => WizardVisualCandidateShape.circle,
+        _WizardComponentShape.square => WizardVisualCandidateShape.square,
+        _WizardComponentShape.rectangle => WizardVisualCandidateShape.rectangle,
+        _WizardComponentShape.roundedRectangle =>
+          WizardVisualCandidateShape.roundedRectangle,
+      },
+      sizeScale: candidate.sizeScale,
+      rotationRadians: candidate.rotation,
     );
     return _WizardComponentMarkerGeometry._(
       draftKey: candidate.draftKey,
-      centre: centre,
-      minorDimension: minorDimension,
-      markerSize: markerSize,
-      effectiveRotation: effectiveRotation,
-      localPath: localPath,
-      rotatedBounds: rotatedBounds,
-      hitBounds: hitBounds,
+      centre: geometry.center,
+      minorDimension: geometry.minorDimension,
+      markerSize: geometry.markerSize,
+      effectiveRotation: geometry.effectiveRotation,
+      localPath: geometry.localPath,
+      rotatedBounds: geometry.rotatedBounds,
+      hitBounds: geometry.hitBounds,
     );
   }
 

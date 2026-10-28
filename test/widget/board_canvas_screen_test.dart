@@ -1514,6 +1514,8 @@ FootprintTemplate _geometryTemplateWithPinCount(
 }
 
 void main() {
+  _sharedCandidateOverlayGeometryTests();
+  _sharedCandidateOverlayMatrixTests();
   testWidgets('single shell measures routed canvas area', (tester) async {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     for (final viewport in [const Size(1440, 860), const Size(1500, 900)]) {
@@ -17637,4 +17639,307 @@ void main() {
       contains('_addComponentTemplateCanonicalBoundsBlockReason(target)'),
     );
   });
+}
+
+void _sharedCandidateOverlayGeometryTests() {
+  testWidgets(
+    'shared candidate geometry paints portrait body using shortest reference side',
+    (tester) async {
+      final intake = _wizardIntake(
+        referenceFrameAspectRatio: 0.5,
+        contourPoints: const <WizardPoint>[
+          WizardPoint(x: 0, y: 0),
+          WizardPoint(x: 1, y: 0),
+          WizardPoint(x: 1, y: 1),
+          WizardPoint(x: 0, y: 1),
+        ],
+        visualCandidates: const <WizardVisualCandidate>[
+          WizardVisualCandidate(
+            draftKey: 101,
+            position: WizardPoint(x: 0.75, y: 0.25),
+            shape: WizardVisualCandidateShape.rectangle,
+            sizeScale: 2,
+            rotationRadians: math.pi / 3,
+          ),
+        ],
+      );
+      await tester.pumpWidget(
+        _harness(
+          projectState: _inlineProjectState(
+            components: const [],
+            placements: const [],
+            wizardIntake: intake,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final dynamic painter = _wizardIntakePainter(tester);
+      final Rect reference = painter.fitTransform.normalizedCanvasRect as Rect;
+      final recording = TestRecordingCanvas();
+      painter.paint(recording, painter.fitTransform.canvasSize as Size);
+      final bodyCall = recording.invocations
+          .map((record) => record.invocation)
+          .where((call) => call.memberName == #drawPath)
+          .singleWhere((call) {
+            final paint = call.positionalArguments[1] as Paint;
+            return paint.style == PaintingStyle.fill &&
+                paint.color.toARGB32() ==
+                    BoardCanvasPalette.navy.withValues(alpha: 0.94).toARGB32();
+          });
+      final body = bodyCall.positionalArguments.first as Path;
+      final expectedMinor = math.max(8.0, reference.width * 0.035 * 2);
+      expect(reference.width / reference.height, closeTo(0.5, 1e-9));
+      expect(
+        body.getBounds().height,
+        closeTo(expectedMinor, 1e-5),
+        reason: 'A portrait candidate must use reference width, not height.',
+      );
+      expect(body.getBounds().width, closeTo(expectedMinor * 1.8, 1e-5));
+      expect(tester.takeException(), isNull);
+    },
+  );
+}
+
+void _sharedCandidateOverlayMatrixTests() {
+  const frames = <(String, double?)>[
+    ('portrait', 0.5),
+    ('square', 1),
+    ('landscape', 2),
+    ('legacy-square', null),
+  ];
+  const shapes = <(WizardVisualCandidateShape, double)>[
+    (WizardVisualCandidateShape.circle, 1),
+    (WizardVisualCandidateShape.square, 1),
+    (WizardVisualCandidateShape.rectangle, 1.8),
+    (WizardVisualCandidateShape.roundedRectangle, 2.2),
+  ];
+  for (final (name, aspect) in frames) {
+    for (final (shape, ratio) in shapes) {
+      testWidgets('shared candidate overlay $name $shape '
+          'paints the same pose after resize', (tester) async {
+        await tester.binding.setSurfaceSize(const Size(1440, 900));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final intake = _wizardIntake(
+          referenceFrameAspectRatio: aspect,
+          contourPoints: const <WizardPoint>[
+            WizardPoint(x: 0.1, y: 0.2),
+            WizardPoint(x: 0.8, y: 0.2),
+            WizardPoint(x: 0.8, y: 0.9),
+            WizardPoint(x: 0.1, y: 0.9),
+          ],
+          visualCandidates: <WizardVisualCandidate>[
+            WizardVisualCandidate(
+              draftKey: 201,
+              position: const WizardPoint(x: 0.6, y: 0.4),
+              shape: shape,
+              sizeScale: 2,
+              rotationRadians: math.pi / 3,
+            ),
+          ],
+        );
+        final originalIntake = intake.toJsonString();
+        await tester.pumpWidget(
+          _harness(
+            projectState: _inlineProjectState(
+              components: const [],
+              placements: const [],
+              wizardIntake: intake,
+            ),
+          ),
+        );
+        for (final viewport in <Size>[
+          const Size(1440, 900),
+          const Size(720, 900),
+        ]) {
+          await tester.binding.setSurfaceSize(viewport);
+          await tester.pump(const Duration(milliseconds: 100));
+          final dynamic painter = _wizardIntakePainter(tester);
+          final Rect reference =
+              painter.fitTransform.normalizedCanvasRect as Rect;
+          final expectedCenter = Offset(
+            reference.left + reference.width * 0.6,
+            reference.top + reference.height * 0.4,
+          );
+          final expectedMinor = math.max(
+            8.0,
+            reference.size.shortestSide * 0.035 * 2,
+          );
+          final recording = TestRecordingCanvas();
+          painter.paint(recording, painter.fitTransform.canvasSize as Size);
+          final calls = recording.invocations
+              .map((record) => record.invocation)
+              .toList();
+          final bodyCall = calls
+              .where((call) => call.memberName == #drawPath)
+              .singleWhere((call) {
+                final paint = call.positionalArguments[1] as Paint;
+                return paint.style == PaintingStyle.fill &&
+                    paint.color.toARGB32() ==
+                        BoardCanvasPalette.navy
+                            .withValues(alpha: 0.94)
+                            .toARGB32();
+              });
+          final body = bodyCall.positionalArguments.first as Path;
+          final translate = calls.singleWhere(
+            (call) => call.memberName == #translate,
+          );
+          final rotate = calls.singleWhere(
+            (call) => call.memberName == #rotate,
+          );
+          expect(body.getBounds().width, closeTo(expectedMinor * ratio, 1e-5));
+          expect(body.getBounds().height, closeTo(expectedMinor, 1e-5));
+          expect(
+            translate.positionalArguments[0],
+            closeTo(expectedCenter.dx, 1e-9),
+          );
+          expect(
+            translate.positionalArguments[1],
+            closeTo(expectedCenter.dy, 1e-9),
+          );
+          expect(
+            rotate.positionalArguments.single,
+            shape == WizardVisualCandidateShape.circle ? 0 : math.pi / 3,
+          );
+          expect(
+            body.contains(
+              Offset(expectedMinor * ratio * 0.45, expectedMinor * 0.45),
+            ),
+            shape == WizardVisualCandidateShape.square ||
+                shape == WizardVisualCandidateShape.rectangle,
+          );
+          expect(
+            reference.width / reference.height,
+            closeTo(aspect ?? 1, 1e-9),
+          );
+          expect(reference.topLeft, isNot(Offset.zero));
+          expect(painter.readOnly, isTrue);
+          expect(intake.toJsonString(), originalIntake);
+          expect(tester.takeException(), isNull);
+        }
+      });
+    }
+  }
+
+  testWidgets('shared candidate overlay tiny body stays 8px rather than 56px', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _harness(
+        projectState: _inlineProjectState(
+          components: const [],
+          placements: const [],
+          wizardIntake: _wizardIntake(
+            referenceFrameAspectRatio: 0.5,
+            visualCandidates: const <WizardVisualCandidate>[
+              WizardVisualCandidate(
+                draftKey: 202,
+                position: WizardPoint(x: 0.5, y: 0.5),
+                shape: WizardVisualCandidateShape.square,
+                sizeScale: 0.5,
+                rotationRadians: 0,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final dynamic painter = _wizardIntakePainter(tester);
+    final recording = TestRecordingCanvas();
+    painter.paint(recording, painter.fitTransform.canvasSize as Size);
+    final body =
+        recording.invocations
+                .map((record) => record.invocation)
+                .where((call) => call.memberName == #drawPath)
+                .lastWhere(
+                  (call) =>
+                      (call.positionalArguments[1] as Paint).style ==
+                      PaintingStyle.fill,
+                )
+                .positionalArguments
+                .first
+            as Path;
+    expect(body.getBounds().size, const Size(8, 8));
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final withIntake in <bool>[false, true]) {
+    testWidgets(
+      'shared candidate geometry leaves canonical placement upright with intake=$withIntake',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(1440, 900));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        const component = ComponentFact(
+          componentId: 'R_SHARED_FREEZE',
+          designator: 'R1',
+          type: 'resistor',
+        );
+        const placement = ComponentVisualPlacementFact(
+          componentId: 'R_SHARED_FREEZE',
+          coordinateSpace: 'board_normalized',
+          boardSide: 'top',
+          centerX: 0.5,
+          centerY: 0.5,
+          rotationDeg: 90,
+          width: 0.6,
+          height: 0.2,
+          sourceEventId: 'evt_shared_freeze',
+          status: 'user_confirmed_visual',
+        );
+        final state = _inlineProjectState(
+          components: const [component],
+          placements: const [placement],
+          wizardIntake: withIntake ? _wizardIntake() : null,
+        );
+        await tester.pumpWidget(_harness(projectState: state));
+        for (final viewport in <Size>[
+          const Size(1440, 900),
+          const Size(720, 900),
+        ]) {
+          await tester.binding.setSurfaceSize(viewport);
+          await tester.pump(const Duration(milliseconds: 100));
+          final finder = find.byKey(const Key('board_canvas_painter'));
+          final box = tester.renderObject<RenderBox>(finder);
+          final center = Offset(box.size.width / 2, box.size.height / 2);
+          expect(renderedPlacementCenter(placement, box.size), center);
+          expect(
+            renderedPlacementBodySize(placement, null),
+            const Size(36, 12),
+          );
+          expect(
+            renderedPlacementContains(
+              placement: placement,
+              component: component,
+              template: null,
+              position: center + const Offset(20, 0),
+              size: box.size,
+            ),
+            isTrue,
+          );
+          expect(
+            renderedPlacementContains(
+              placement: placement,
+              component: component,
+              template: null,
+              position: center + const Offset(0, 10),
+              size: box.size,
+            ),
+            isFalse,
+          );
+          await tester.tapAt(box.localToGlobal(center));
+          await tester.pump();
+          expect(_painterSelectedComponentId(tester), 'R_SHARED_FREEZE');
+          expect(
+            state.knownFacts.componentVisualPlacements.single,
+            same(placement),
+          );
+          expect(state.events, isEmpty);
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+  }
 }

@@ -19,6 +19,12 @@ import 'package:trace_bench_viewer/shared/models/wizard_intake.dart';
 import 'package:trace_bench_viewer/shared/services/project_creator.dart';
 import 'package:trace_bench_viewer/shared/services/python_runner.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
+import 'package:trace_bench_viewer/shared/session/project_session.dart';
+
+import '../helpers/seeded_project_session.dart';
+
 class _TestPlatformInfo extends PlatformInfo {
   const _TestPlatformInfo(this._isMobile);
 
@@ -594,6 +600,7 @@ Future<void> _setComponentSize(
 }
 
 void main() {
+  _sharedCandidateWizardGeometryTests();
   testWidgets('seven-step shell renders the exact Estonian step labels',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1440, 900));
@@ -4274,4 +4281,265 @@ void main() {
     );
     expect(find.byKey(const ValueKey('test-project')), findsNothing);
   });
+}
+
+void _sharedCandidateWizardGeometryTests() {
+  testWidgets(
+    'shared candidate Wizard keeps rotated hit geometry in a letterboxed frame',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+      );
+      await tester.pump();
+      await _openComponentPlacementStep(tester);
+      await _tapKey(tester, 'wizard-component-shape-rectangle');
+      await _setComponentSize(tester, 2.5);
+      var frame = tester.getRect(
+        find.byKey(const ValueKey('wizard-component-painter')),
+      );
+      await tester.tapAt(
+        frame.topLeft + Offset(frame.width * 0.65, frame.height * 0.35),
+      );
+      await _pumpFrames(tester);
+      for (var turn = 0; turn < 3; turn += 1) {
+        await _tapKey(tester, 'wizard-component-rotate-plus');
+      }
+      final initialStyle = _paintedComponentStyles(tester).single;
+      final latchedAspect = frame.width / frame.height;
+
+      for (final viewport in <Size>[
+        const Size(720, 1000),
+        const Size(1440, 900),
+        const Size(900, 720),
+      ]) {
+        await tester.binding.setSurfaceSize(viewport);
+        await tester.pumpAndSettle();
+        frame = tester.getRect(
+          find.byKey(const ValueKey('wizard-component-painter')),
+        );
+        final dynamic painter = _componentPainter(tester);
+        final dynamic geometry =
+            (painter.markerGeometries(frame.size) as Iterable).single;
+        final minor = math.max(8.0, frame.size.shortestSide * 0.035 * 2.5);
+        expect(frame.width / frame.height, closeTo(latchedAspect, 1e-9));
+        expect(geometry.minorDimension as double, closeTo(minor, 1e-9));
+        expect((geometry.markerSize as Size).width, closeTo(minor * 1.8, 1e-9));
+        expect(
+          geometry.effectiveRotation as double,
+          closeTo(math.pi / 4, 1e-9),
+        );
+        expect(
+          (geometry.centre as Offset).dx,
+          closeTo(frame.width * 0.65, 1e-6),
+        );
+        expect(
+          (geometry.centre as Offset).dy,
+          closeTo(frame.height * 0.35, 1e-6),
+        );
+        expect(_paintedComponentStyles(tester).single, initialStyle);
+      }
+
+      await tester.binding.setSurfaceSize(const Size(720, 1000));
+      await tester.pumpAndSettle();
+      frame = tester.getRect(
+        find.byKey(const ValueKey('wizard-component-painter')),
+      );
+      final dynamic painter = _componentPainter(tester);
+      final dynamic geometry =
+          (painter.markerGeometries(frame.size) as Iterable).single;
+      final Size body = geometry.markerSize as Size;
+      final localCorner = Offset(body.width * 0.45, body.height * 0.45);
+      final rotatedCorner = Offset(
+        (localCorner.dx - localCorner.dy) / math.sqrt2,
+        (localCorner.dx + localCorner.dy) / math.sqrt2,
+      );
+      final start = frame.topLeft + (geometry.centre as Offset) + rotatedCorner;
+      final gesture = await tester.startGesture(start);
+      await gesture.moveTo(start + const Offset(12, 9));
+      await tester.pump(const Duration(milliseconds: 16));
+      await gesture.moveTo(start + const Offset(24, 18));
+      await gesture.up();
+      await _pumpFrames(tester);
+      final moved = _paintedComponentStyles(tester).single;
+      expect(moved.position.dx, greaterThan(initialStyle.position.dx));
+      expect(moved.position.dy, greaterThan(initialStyle.position.dy));
+      expect(moved.shape, 'rectangle');
+      expect(moved.sizeScale, 2.5);
+      expect(moved.rotation, closeTo(math.pi / 4, 1e-9));
+
+      final canvas = _componentCanvasRect(tester);
+      final bar = frame.left > canvas.left + 1
+          ? Offset(canvas.left + 1, canvas.center.dy)
+          : Offset(canvas.center.dx, canvas.top + 1);
+      expect(frame.contains(bar), isFalse);
+      await tester.tapAt(bar);
+      await _pumpFrames(tester);
+      expect(_paintedComponentStyles(tester), <_ComponentStyleSnapshot>[moved]);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('shared candidate Wizard circle keeps an 8px body and 56px hit', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      _buildWizardApp(directoryPicker: () async => 'C:/projects'),
+    );
+    await tester.pump();
+    await _openComponentPlacementStep(tester);
+    await _setComponentSize(tester, 0.5);
+    final frame = tester.getRect(
+      find.byKey(const ValueKey('wizard-component-painter')),
+    );
+    await _tapComponentAt(tester, const Offset(0.5, 0.5));
+    await _pumpFrames(tester);
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    await _tapKey(tester, 'wizard-component-rotate-plus');
+    final dynamic painter = _componentPainter(tester);
+    final dynamic geometry =
+        (painter.markerGeometries(frame.size) as Iterable).single;
+    expect(geometry.markerSize as Size, const Size(8, 8));
+    expect((geometry.hitBounds as Rect).size, const Size(56, 56));
+    expect(geometry.effectiveRotation as double, 0);
+    expect(
+      _paintedComponentStyles(tester).single.rotation,
+      closeTo(math.pi / 6, 1e-9),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'shared candidate Wizard creation reaches the real Canvas painter with the same pose',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      ProjectCreationRequest? request;
+      ProjectState? handedOff;
+      await tester.pumpWidget(
+        _buildWizardApp(
+          directoryPicker: () async => 'C:/projects',
+          createProject: (value) async {
+            request = value;
+            return ProjectCreationSuccess(
+              _createdProjectState(wizardIntake: value.wizardIntake),
+            );
+          },
+          onProjectCreated: (state) => handedOff = state,
+        ),
+      );
+      await tester.pump();
+      await _openComponentPlacementStep(tester);
+      await _tapKey(tester, 'wizard-component-shape-rounded-rectangle');
+      await _setComponentSize(tester, 2.5);
+      var frame = tester.getRect(
+        find.byKey(const ValueKey('wizard-component-painter')),
+      );
+      await tester.tapAt(
+        frame.topLeft + Offset(frame.width * 0.31, frame.height * 0.67),
+      );
+      await _pumpFrames(tester);
+      await _tapKey(tester, 'wizard-component-rotate-plus');
+      await _tapKey(tester, 'wizard-component-rotate-plus');
+      final authored = _paintedComponentStyles(tester).single;
+      await tester.binding.setSurfaceSize(const Size(720, 1000));
+      await tester.pumpAndSettle();
+      frame = tester.getRect(
+        find.byKey(const ValueKey('wizard-component-painter')),
+      );
+      final dynamic wizardPainter = _componentPainter(tester);
+      final dynamic wizardGeometry =
+          (wizardPainter.markerGeometries(frame.size) as Iterable).single;
+      final wizardBody = wizardGeometry.markerSize as Size;
+      final wizardMinor = wizardGeometry.minorDimension as double;
+      expect(wizardMinor, greaterThan(8));
+      expect(_paintedComponentStyles(tester).single, authored);
+      await _tapKey(tester, 'wizard-next');
+      await _completeProblemDescription(tester);
+      await _tapKey(tester, 'wizard-next');
+      await _tapKey(tester, 'wizard-create-project-button');
+
+      final intake = WizardIntake.fromJson(request!.wizardIntake.toJson());
+      final candidate = intake.visualCandidates.single;
+      expect(candidate.position.x, closeTo(0.31, 1e-9));
+      expect(candidate.position.y, closeTo(0.67, 1e-9));
+      expect(candidate.shape, WizardVisualCandidateShape.roundedRectangle);
+      expect(candidate.sizeScale, 2.5);
+      expect(candidate.rotationRadians, closeTo(math.pi / 6, 1e-9));
+      expect(
+        intake.referenceFrameAspectRatio,
+        closeTo(frame.width / frame.height, 1e-9),
+      );
+      expect(handedOff, isNotNull);
+      expect(handedOff!.knownFacts.componentVisualPlacements, isEmpty);
+      expect(handedOff!.events, isEmpty);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectStateProvider.overrideWith(
+              () => SeededProjectSession(handedOff),
+            ),
+          ],
+          child: const MaterialApp(home: BoardCanvasScreen()),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      final dynamic canvasPainter = tester
+          .widget<CustomPaint>(
+            find.byKey(const Key('board_canvas_wizard_intake_painter')),
+          )
+          .painter;
+      final Rect reference =
+          canvasPainter.fitTransform.normalizedCanvasRect as Rect;
+      final recording = TestRecordingCanvas();
+      canvasPainter.paint(
+        recording,
+        canvasPainter.fitTransform.canvasSize as Size,
+      );
+      final calls = recording.invocations
+          .map((record) => record.invocation)
+          .toList();
+      final bodyCall = calls
+          .where((call) => call.memberName == #drawPath)
+          .lastWhere(
+            (call) =>
+                (call.positionalArguments[1] as Paint).style ==
+                PaintingStyle.fill,
+          );
+      final body = (bodyCall.positionalArguments.first as Path).getBounds();
+      expect(body.height, closeTo(reference.size.shortestSide * 0.0875, 1e-5));
+      expect(
+        body.width / reference.size.shortestSide,
+        closeTo(wizardBody.width / frame.size.shortestSide, 1e-6),
+      );
+      expect(
+        body.height / reference.size.shortestSide,
+        closeTo(wizardBody.height / frame.size.shortestSide, 1e-6),
+      );
+      final translate = calls.singleWhere(
+        (call) => call.memberName == #translate,
+      );
+      expect(
+        translate.positionalArguments[0],
+        closeTo(reference.left + reference.width * 0.31, 1e-9),
+      );
+      expect(
+        translate.positionalArguments[1],
+        closeTo(reference.top + reference.height * 0.67, 1e-9),
+      );
+      expect(
+        calls
+            .singleWhere((call) => call.memberName == #rotate)
+            .positionalArguments
+            .single,
+        closeTo(math.pi / 6, 1e-9),
+      );
+      expect(canvasPainter.readOnly, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

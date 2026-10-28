@@ -2,10 +2,34 @@
 
 ## Current route
 
-Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
+Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`
 
-## Wizard to Canvas shared candidate geometry v1 sequence
+## Shared Geometry v1 committed-source Code Map maintenance sequence
+
+Shared Geometry v1 is accepted by the human and committed at
+`7c4542918e21e72469efbc67084bcdaa4199109a`. Preserve that implementation;
+the earlier reservation below is historical.
+
+1. Verify clean main/baseline/origin alignment and empty staged/unmerged sets.
+2. Refresh exactly the four stale Wizard/overlay/widget-test maps against
+   committed source. Recheck the host import-only delta without rewriting its
+   map. Qualify the helper and its unit suite independently: NOT_REQUIRED.
+3. Keep the registry at 62 actual maps/62 rows. The four refreshed header/index
+   pairs use REVIEW_REQUIRED; other pairs and RETIRED history stay fixed.
+4. Validate exact ten-doc material, anchors/ownership, raw source/inverse/history
+   preservation, both Git checks, doctor and temporary-output validate_all.
+5. One independent Claude map/docs audit reviews the actual diff. Later
+   mechanical acceptance recording is bounded to four headers, four matching
+   index cells, the artifact verdict interior and its ledger Status cell.
+   It requires the returned verdict and explicit recording authorization.
+6. After acceptance, recording and exact human commit/push, proceed to
+   `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`. The editor product decision
+   and persistent local draft choice are retained; do not repeat general
+   architecture review or RECON. This is the next docs-only scope, not an
+   activated editor implementation.
+
+## Historical completed Wizard to Canvas shared candidate geometry v1 sequence
 
 The human selected the reduced candidate-only scope at `bf2ff82e0a04bee7b4e380066608abae65b13133`.
 The human selects variant 1: unify only Wizard-candidate and Canvas-overlay

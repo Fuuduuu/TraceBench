@@ -2,10 +2,61 @@
 
 ## Route
 
-Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
-Next: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
+Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS`
+Next: `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`
 
-## Wizard to Canvas shared candidate geometry v1 scope lock
+## Shared Geometry v1 committed-source Code Map maintenance
+
+PASS_ID: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS`. Lane A / DOCS_MAPS_ONLY.
+Baseline main/HEAD/origin/main: `7c4542918e21e72469efbc67084bcdaa4199109a`; divergence 0/0.
+The human authorizes one bounded maintenance against accepted, committed
+Shared Geometry v1. The earlier geometry reservation is historical; do not
+repeat its implementation. This pass changes descriptive docs only.
+Binding maintenance artifact: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+### Exact current docs/map write authority
+
+1. `docs/ACTIVE_SCOPE_LOCK.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/PASS_QUEUE.md`
+4. `docs/AUDIT_INDEX.md`
+5. `docs/code_maps/CODE_MAP_INDEX.md`
+6. `docs/code_maps/lib/features/project/screens/new_project_wizard_screen.dart.md`
+7. `docs/code_maps/lib/features/board_canvas/rendering/wizard_intake_overlay.part.dart.md`
+8. `docs/code_maps/test/widget/new_project_wizard_screen_test.dart.md`
+9. `docs/code_maps/test/widget/board_canvas_screen_test.dart.md`
+10. `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`
+
+Refresh only the four demonstrated geometry/dependency/test drifts. Recheck
+the Canvas host map, but preserve it for the import-only source change.
+Independently qualify the 91-line helper and its cohesive unit suite:
+NOT_REQUIRED / NOT_APPLICABLE; no new map or registry row is created.
+Registry stays 62 maps/62 rows; Phase 1 has 56 MAINTAINED, four
+REVIEW_REQUIRED and two RETIRED. Four header/index pairs use REVIEW_REQUIRED.
+
+Only route tops, this new maintenance section, the completed predecessor
+heading labels, one neutral ledger row, four map refreshes, their index
+Status cells and the new artifact may change. Preserve all prior bodies,
+rows, verdicts, unrelated/RETIRED maps and every source/test/tool/package byte.
+One named empty verdict block follows AUDIT_CONTRACT. Any later acceptance
+recording requires the independent returned verdict and explicit bounded
+authorization: four map headers, four index cells, verdict interior and
+the matching ledger Status cell only.
+
+Validate source anchors/responsibilities, registry parity, exact material,
+raw worktree/inverse/history preservation, both Git whitespace checks, doctor
+and validate_all with generated outputs redirected outside the repository.
+No Flutter run is needed for this docs-only change.
+
+### Selected next docs scope
+
+Next is `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`, only after independent
+acceptance, bounded recording and exact human commit/push of this maintenance.
+The human's already-selected shared editor and persistent local draft remain
+the input to that scope; no new general review or RECON is needed.
+This route pointer creates no editor runtime allowlist or implementation child.
+
+## Historical completed Wizard to Canvas shared candidate geometry v1 scope lock
 
 PASS_ID: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`. Lane A / BOUNDED_DOCS_SCOPE_LOCK_ONLY.
 Entry main/HEAD/origin/main: `bf2ff82e0a04bee7b4e380066608abae65b13133`; divergence 0/0.

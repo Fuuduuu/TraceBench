@@ -4,11 +4,11 @@
 - Type: `test`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — >3000 lines + 3+ behavior families`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PLACEMENT_P1_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 255 declarations: 232 `testWidgets` and 23 `test`.
+Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 259 declarations: 236 `testWidgets` and 23 `test`.
 Eight explicit groups cover import, alignment, placement geometry, Wizard overlays, `M0 Measurement characterization`, `Components C0 characterization`, `Placement P0 characterization` and `Inspector I0 characterization`.
 I0 adds eight declarations generating twelve cases; P0 adds eleven declarations generating twelve cases. Declaration counts are not executed-test totals.
 Placement extraction extends only the existing zone-9 static source-owner guard;
@@ -24,7 +24,7 @@ P0/C0/M0/I0 behavior groups and all existing imports/helpers/fakes remain unchan
 | 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution`, `openAdvancedDetails`, `advancedDetailsState`, `M1 pre-move advanced details preserve empty children`, `M1 pre-move advanced details preserve both READ provenance tiles`, `M1 pre-move advanced details keep traces before measurements`, `M1 pre-move component-only selection cannot authorize a save` | Draft/target/save/session and pure read contracts; four provenance/order/empty/no-placement cases characterize the extracted Measurement workflow through the host. |
 | 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson`, `Components C0 characterization`, `mountComponents`, `createDraft`, `editDraft` | Guards/requests/results plus C0 screen-lived drafts/status, pending/retry, current repeat-save asymmetry, session safety, selection, Placement isolation and rendered create/Placement/edit order. |
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged`, `Placement P0 characterization`, `mountPlacement`, `requestFields`, `addDraft`, `inspectorDraft`, `ghostPosition`, `expectUnchangedFacts`, `expectOperationId` | Module-owned template/ghost/editor workflow through the host, normalized bounds and explicit/duplicate saves; P0 pending/re-entry, panel/screen completion, generation/composition, failure/retry/unlock, current repeat-save, focus/935/936 lifetime, captured-target selection, Add-entry reseeding and independent Add/Inspector drafts. |
-| 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels, footprints and semantics. |
+| 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor`, `_sharedCandidateOverlayGeometryTests`, `_sharedCandidateOverlayMatrixTests` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels/footprints/semantics and shared-candidate body/pose versus unchanged legacy-placement regressions. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel`, `Inspector I0 characterization`, `inspectorState`, `mountInspector`, `expectNoWrites`, `draftCopy`, `changeDraft`, `selected placement order and four 12 px spacers at $size` | Projected metadata/safety plus I0 wide/compact order/spacing, installation/removal rows, measurement/badge copy and Canvas visibility coupling, Placement-holder draft retention/reseeding and component-only placeholder; class-independent rendered-container selection. |
 | 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource`, `componentSource`, `inspectorSource`, `placementSource` | Hidden default, tools/focus, volatile state and ownership/data-path guards across host, Placement, Components, Measurement and Inspector modules, and existing read-only owners. |
 | 10. Additional import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Existing entry/cancel/success, uncertainty, read-only, switch and unsupported-platform cases. |
@@ -123,6 +123,13 @@ source anchors, not claims about generated case counts. No line-number anchors.
     keeps an in-flight request's captured target after selection changes, and
     separates Add-entry projection reseeding/unplaced reset from Inspector draft.
 
+21. [D] Four additive shared-candidate widget declarations generate 20 cases:
+    one portrait body, 16 frame/shape resize combinations, one tiny-body floor
+    and two canonical-placement cases with/without intake. They record actual
+    overlay paint calls using independent arithmetic, retain the read-only
+    intake, and pin upright canonical placement size/hit/selection after resize.
+    These declaration/case counts come from source, not a fresh test run.
+
 ## Direct dependencies
 
 | Dependency | Direction | Purpose |
@@ -136,7 +143,7 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
 | `ProjectSession`, provider and project models | fixture / observation | Generation, current-event composition, freshness, dedup and replacement; P0 keeps the provider alive after screen disposal to observe late handoff. |
 | Measurement/placement libraries | direct pure systems | Deterministic read/geometry contracts. |
-| Wizard part, BoardFact models, `WizardIntake` | render/fixture input | Noncanonical intake and canonical projection. |
+| Wizard part, BoardFact models, `WizardIntake` | render/fixture input | Noncanonical intake and canonical projection; the overlay consumes shared candidate geometry indirectly, while test expectations use independent arithmetic. |
 | Router, `WorkbenchShell`, GoRouter | routed harness | Canvas bypass and stable secondary navigation boundary. |
 | Four V2 and photo doubles | observations | Exact requests and returned-event application; Placement adds optional deferred completion and mutable errors while retaining immediate appended/event/request defaults. |
 | Flutter gestures, semantics, painter/layout APIs | driver | Input, viewport, private painter, pixel and geometry checks. |
@@ -175,7 +182,7 @@ tests do not turn a provisional transform into canonical alignment evidence.
 | Existing writers / Components | [D] unchanged C0 oracle for lifetime/pending/retry/repeat, exact requests, session/selection and rendered order | Components module, host holder lifetime/selection/Placement and Session | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Components C0 characterization` and retained writer families |
 | Placement characterization | [D] P0 pending/re-entry, panel/screen handoff, generation/composition, retry/repeat, lifetime/selection/reseed and independent drafts | Placement module/holder, host eligibility/geometry/Canvas, Session, navigator, Components placement slot, Inspector editor slot and focus/900-content-width branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `Placement P0 characterization` plus retained save/duplicate/bounds/template/ghost tests |
 | Measurement characterization | [D] copy/requests, result/lifetime, provenance/order and no-placement guards | module, two host builders, writer result types, session and 900-content-width host branch | `UI_LOCAL` / exercised `CANONICAL_EVENT` / observed `PROJECTION_STATE` | `M0 Measurement characterization` |
-| Geometry/Wizard | [D] pure and composited output | helper/part/painter ownership | `ZERO_WRITE` / `UI_LOCAL` | geometry and Wizard groups |
+| Geometry/Wizard | [D] pure/composited output and recorded real painter pose after resize | shared helper, Wizard adapter, part/painter ownership and unchanged placement geometry | `ZERO_WRITE` / `UI_LOCAL` | retained geometry/Wizard groups plus portrait, four-frame/four-shape, tiny-body and canonical-preservation cases |
 | Inspector/boundaries | [D] I0 rendered order/spacing, metadata/copy, selected/unrelated badge visibility, Placement-holder draft retention/reseeding and placeholder; retained safety/source assertions | Inspector presentation and Placement draft modules; host selection/local modes, Canvas badges, Components and Measurement owners | `ZERO_WRITE` / `UI_LOCAL` | `Inspector I0 characterization` plus readiness/safety/structural cases |
 
 ## Relevant tests and helpers
@@ -198,6 +205,9 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - `_routerHarness`, `_readProjectState` and `_replaceProjectState` expose context.
 - `_wizardIntakePainter`, `_wizardPhotoLayer` and `_compositedPixelColor` preserve
   separate intake and canonical-placement evidence.
+- `_sharedCandidateOverlayGeometryTests` and `_sharedCandidateOverlayMatrixTests`
+  add 20 generated cases without retargeting existing tests/helpers/fakes.
+  `test/unit/wizard_candidate_geometry_test.dart` owns the pure helper cases.
 - Photo writer/read-model/transform units verify delegated non-widget contracts.
 - Shell tests own all-12 popup navigation, mode/Home and file-byte guards;
   gate tests own the all-15 route matrix and unsettled transition.

@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -23,7 +23,7 @@ active locks remain authoritative.
 contracts: contour/reference-frame fitting with finite scale fallback and
 clamped padding; point and rectangle mapping; photo translation/scale/rotation/
 opacity plus neutral decode fallback; closed-contour painting; candidate
-position/shape/size/rotation/cross rendering; and painter invalidation/read-only
+body/cross rendering using shared candidate geometry; and painter invalidation/read-only
 presentation behavior. These are cohesive rendering responsibilities but have
 distinct inputs and observable outputs, so automatic condition 3 applies
 without a score worksheet.
@@ -35,7 +35,7 @@ without a score worksheet.
 | 1. Fit and reference-frame geometry | `_WizardIntakeFitTransform`, `fromContour`, `mapPoint`, `renderedContourBounds`, `normalizedCanvasRect` | Derives bounds, clamped padding, finite scale and centered offset, then maps normalized Wizard points and rectangles into the Canvas frame. |
 | 2. Photo overlay rendering | `_WizardIntakePhotoLayer`, `photoTranslation`, `photoScale`, `photoRotationRadians`, `photoOpacity` | Clips and renders a local photo through translation, rotation, scale and opacity while exposing the current transform values for read-only observation. |
 | 3. Contour rendering | `_WizardIntakePainter`, `void paint` | Paints a closed eligible contour with the existing fill/stroke vocabulary and dispatches candidate rendering. |
-| 4. Candidate geometry and rendering | `_paintCandidate`, `candidateCenters` | Maps candidate centers and paints shape, size, non-circle rotation, outline and center cross. |
+| 4. Candidate geometry consumption and rendering | `_paintCandidate`, `candidateCenters`, `WizardCandidateGeometry.resolve` | Consumes the shared center/body/path/effective rotation and paints fill, outline and center cross; does not derive marker size or shape paths locally. |
 | 5. Repaint and presentation contract | `shouldRepaint`, `readOnly` | Repaints for intake or fit-input changes and exposes the overlay as read-only presentation. |
 
 ## Anchor inventory and verification
@@ -50,7 +50,7 @@ exact substring in the committed part. The map uses no line-number anchors.
 ```text
 WizardPoint / WizardIntake / WizardPhotoTransform / WizardVisualCandidate
 inputs from the host
--> deterministic fit and geometry derivation
+-> part-owned fit/reference mapping and shared candidate geometry resolution
 -> read-only Flutter photo, contour, and candidate rendering
 -> host-owned Canvas composition beneath canonical placements
 ```
@@ -62,6 +62,11 @@ inputs from the host
   `Image.file`.
 - `[D]` `_WizardIntakePainter` reads intake/fit inputs, paints the eligible
   contour and every visual candidate, and mutates no input or project state.
+  `_paintCandidate` passes `fitTransform.normalizedCanvasRect` to the shared
+  helper, so sizing uses the shorter reference side with the existing 0.035
+  factor and 8 px body floor. The helper supplies effective rotation/path;
+  the part applies Canvas translate/rotate and retains its fill/stroke/cross.
+  The 56 px helper hit envelope is not a Canvas body size or editing affordance.
 - `[D]` The host retains Wizard photo visibility, initial-fit scheduling,
   controls, state lifetime, layer composition, placement interaction, and all
   callbacks.
@@ -71,7 +76,8 @@ inputs from the host
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `board_canvas_screen.dart` | same-library host | Supplies the reciprocal `part` relationship, all consumers, state/control ownership, and shared imports. |
-| `dart:io` `File`, `dart:math` as `math` | shared host-library imports | Read a local photo and derive bounds, scale, marker size, and rotation geometry. |
+| `dart:io` `File`, `dart:math` as `math` | shared host-library imports | Read a local photo and derive contour/reference bounds, scale and padding. |
+| `WizardCandidateGeometry` | pure helper through host import | Adapts explicit reference rectangle and candidate values to one coherent display-geometry result; owns candidate body/path/rotation/bounds derivation. |
 | Flutter widget, geometry, image, and painting APIs | shared host-library imports / output | Build the clipped photo layer and paint read-only contours/candidates. |
 | `WizardPoint`, `WizardIntake`, `WizardPhotoTransform`, `WizardVisualCandidate`, `WizardVisualCandidateShape` | input models through host import | Supply normalized geometry, photo transform, contour, and candidate presentation data. |
 | `BoardCanvasPalette.paper`, `BoardCanvasPalette.muted`, `BoardCanvasPalette.signal`, `BoardCanvasPalette.navy`, `BoardCanvasPalette.signalTint` | immutable presentation input through host import | Reuse the exact Board Canvas visual vocabulary, including neutral image-error presentation, without runtime/theme lookup or palette ownership in this part. |
@@ -111,13 +117,18 @@ mutation, async action, callback ownership, or filesystem write. Its one
 | Fit/reference geometry | `[D]` bounds, fallback, padding, offset and mapping | host canvas size and initial-fit scheduler | `ZERO_WRITE` | landscape/square-reference and true-bounds/padding cases |
 | Photo overlay | `[D]` transform chain, opacity, clipping and neutral error builder | host photo toggle/path resolution and layer order | `ZERO_WRITE` | shared-transform, composite-photo, missing-photo cases |
 | Contour painter | `[D]` closed three-plus-point fill/stroke | host intake gate and canonical placement layering | `ZERO_WRITE` | closed-contour and composite/layer-order cases |
-| Candidate painter | `[D]` mapped centers, shape/size/rotation/cross | host pointer non-actionability and placement painter | `ZERO_WRITE` | candidate composite, geometry/rotation, zero-write interaction, source guard |
+| Candidate painter | `[D]` shared-helper inputs and consumed body/rotation plus part-owned cross/stroke | Wizard adapter, shared helper, host pointer non-actionability and placement painter | `ZERO_WRITE` | portrait body, four-frame/four-shape resize matrix, tiny-body, composite and read-only cases |
 | Repaint/read-only | `[D]` delegate/fit comparison and getter | host widget lifecycle | `ZERO_WRITE` | read-only overlay family; repaint details remain indirectly covered |
 
 ## Relevant tests and helpers
 
 Direct part-behavior evidence in
-`test/widget/board_canvas_screen_test.dart` includes:
+`test/widget/board_canvas_screen_test.dart` includes the additive
+`_sharedCandidateOverlayGeometryTests` portrait-body case and
+`_sharedCandidateOverlayMatrixTests`: 16 frame/shape combinations after resize,
+one tiny-body case and two unchanged-canonical-placement cases. The shared
+helper unit suite independently covers local path, effective rotation, rotated
+bounds and hit envelopes. Existing part evidence includes:
 
 - `_wizardIntakePainter`, `_wizardPhotoLayer`, and `_compositedPixelColor`;
 - `persisted landscape reference frame maps contour and candidates as landscape`;
@@ -158,7 +169,7 @@ controls, project state, placement, or writer ownership into this part.
 | Fit or mapping correction | `_WizardIntakeFitTransform`, exact getter | host canvas size and initial-fit scheduler | reference-frame plus bounds/padding cases |
 | Photo render correction | `_WizardIntakePhotoLayer`, exact transform layer | host toggle/path/z-order | shared-transform plus composite-photo cases |
 | Contour correction | `_WizardIntakePainter`, `void paint` | host intake gate and placement painter | closed-contour/composite cases |
-| Candidate correction | `_paintCandidate`, `candidateCenters` | host hit/non-actionability and placement painter | candidate geometry/composite/rotation cases |
+| Candidate correction | `_paintCandidate`, `candidateCenters` | shared helper, Wizard adapter, host hit/non-actionability and placement painter | portrait/matrix/tiny-body plus candidate composite/rotation cases |
 | Repaint correction | `shouldRepaint` | host widget lifecycle | exact delegate fields plus focused overlay family |
 
 ## Future extraction seams

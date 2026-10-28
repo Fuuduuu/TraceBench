@@ -4,7 +4,7 @@
 - Type: `production`
 - Status: `MAINTAINED`
 - Qualification: `AUTO — production file owns 5+ independently testable behaviors`
-- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CREATION_COMPACT_DESIGN_V1_LOCK_PASS.md`
+- Audit evidence: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
@@ -28,13 +28,13 @@ open action.
 | Review and request | `_buildCreationRequest`, `_buildReviewStep`, `_buildReviewSection`, `_buildReviewValue`, `_editReviewStep`, `wizard-review-summary` | Maps the complete draft to typed intake and renders all values plus five edit routes without ellipsis. |
 | Creation and sanitized failures | `_WizardCreationStatus`, `_createProject`, `_recordCreationFailure`, `ProjectCreationResult`, `sanitizedMessage`, `_WizardCreationError` | Guards activation, invokes creation once, exhaustively handles results, and shows only safe retryable copy. |
 | Handoff and terminal route | `_projectHandoffCompleted`, `widget.onProjectCreated?.call`, `_buildCreatedStep`, `WizardCompactSuccessCard`, `_openCreatedProject`, `context.go('/project')` | Hands successful state to the app once, stays on Step 7, and opens only after `Ava projekt`. |
-| Draft painters and hit testing | `_WizardContourPainter`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry`, `_handleContourPointerDown`, `_handleComponentPointerDown` | Renders and manipulates noncanonical contour/candidates in the shared reference frame only. |
+| Draft painters and hit testing | `_WizardContourPainter`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry`, `WizardCandidateGeometry.resolve`, `_handleContourPointerDown`, `_handleComponentPointerDown` | Retains Wizard painting, pointer and hit-selection ownership; the thin candidate adapter delegates body/path/rotation/bounds derivation to the shared pure helper. |
 
 ## Anchor inventory and verification
 
 Selection rule: extract every backtick-delimited token from the responsibility
 table's Stable symbol anchors column and de-duplicate in first-appearance
-order. All `68/68` selected anchors resolve as exact substrings in the
+order. All `69/69` selected anchors resolve as exact substrings in the
 committed `HEAD` source; zero are missing.
 
 ## State and data flow
@@ -47,6 +47,10 @@ committed `HEAD` source; zero are missing.
    `_referenceFrameRect` center-fits it for Steps 3/4; photo, contour,
    candidates, input, dragging, paint, and hit testing share it, and bars are
    inert. Step 2 retains its independent preview.
+   `_WizardComponentMarkerGeometry` adapts the private candidate to
+   `WizardCandidateGeometry.resolve` using the origin-zero fitted frame.
+   Painting and nearest-hit selection remain Wizard-owned; the helper derives
+   the body/path/effective rotation and hit bounds without changing the draft.
 4. `build` selects overall compact below `1050`, outer padding below `600`,
    and page scroll; Step 3/4 workspaces stack below `780`. Step 1 support
    stacks below `820`, headings/actions below `560`, and review values below
@@ -74,6 +78,7 @@ committed `HEAD` source; zero are missing.
 | File picker and `PlatformInfo` | outbound platform seams | Select desktop parent/photo paths and keep mobile actions honest. |
 | `ProjectCreator` request/results | outbound creation contract | Creates the generated project or returns typed failure. |
 | `WizardIntake` / `ProjectState` | outbound request and success values | Carry noncanonical intake and hydrated success handoff. |
+| `WizardCandidateGeometry` from `shared/geometry/wizard_candidate_geometry.dart` | pure derived value | Resolves the candidate display body and hit envelope; the private adapter retains Wizard field/shape mapping. |
 | Photo/problem editor widgets | child presentation | Emit existing parent-owned Step 2/5 values and callbacks. |
 | Compact tokens/widgets | child presentation | Supply feature-local visual primitives and controlled composites. |
 
@@ -115,13 +120,16 @@ not consume `rawDetail`, stdout, stderr, exception, or stack data.
 
 ## Relevant tests and helpers
 
-`test/widget/new_project_wizard_screen_test.dart` contains 76 widget tests
+`test/widget/new_project_wizard_screen_test.dart` contains 79 widget-test declarations
 covering all seven steps, draft/gates/navigation, shared reference geometry,
 photo/problem integrations, contour/candidates, compact shell/workspaces,
 complete review, creation results, handoff, Step 7, breakpoints, keyboard,
 semantics, drag isolation, and 200% text. Compact primitive/editor suites add
 focused presentation evidence; creator/intake/loader and Project ZIP suites
-own persistent bytes and hydration.
+own persistent bytes and hydration. Three additive shared-candidate cases
+cover rotated letterbox hit/drag, the 8 px body versus 56 px hit minimum, and
+fake-creation intake handoff into the real Canvas painter. That handoff is
+in-memory render evidence, not real filesystem creation.
 
 ## Dangerous combinations
 
@@ -157,7 +165,7 @@ own persistent bytes and hydration.
 Review for `SYMBOL_DRIFT` on gates, breakpoints, frame helpers, step builders,
 creation/result, handoff, or route anchors; `FLOW_DRIFT` on draft-to-review-to-
 request or success ordering; `BOUNDARY_DRIFT` if raw diagnostics/canonical
-writes enter; `TEST_DRIFT` when the 76-test families move; and
+writes enter; `TEST_DRIFT` when the 79-declaration families move; and
 `STRUCTURE_DRIFT` when presentation or creation ownership relocates.
 
 ## Known uncertainty

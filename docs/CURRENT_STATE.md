@@ -1,9 +1,34 @@
 # Current State
 
-Current pass: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`
-Next recommended pass: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_IMPL_PASS`
+Current pass: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS`
+Next recommended pass: `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`
 
-## Wizard to Canvas shared candidate geometry v1 reservation
+## Shared Geometry v1 committed-source Code Map maintenance
+
+The human accepted Shared Geometry v1, committed at
+`7c4542918e21e72469efbc67084bcdaa4199109a`
+(`refactor: unify Wizard Canvas candidate geometry`). Git verifies the commit,
+its seven-file source/test set and main/origin alignment. The prior geometry
+reservation below is historical rather than authorization to rerun it.
+
+Current: `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS`.
+ACTIVE_SCOPE_LOCK names exactly ten docs/map/index/artifact paths.
+Evidence: `docs/audit/TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_CODE_MAP_MAINTENANCE_PASS.md`.
+
+Four maps follow the committed Wizard adapter, Canvas overlay consumption
+and additive Wizard/Canvas geometry regressions. The Canvas host map remains
+unchanged for its import-only delta. The helper and its compact unit suite
+do not require standalone maps under independent Standard qualification.
+Registry remains 62/62; Phase 1 statuses are 56 MAINTAINED, four
+REVIEW_REQUIRED and two RETIRED. No acceptance is inferred from those docs.
+All runtime/test, unrelated-map and prior audit-history bytes are preserved.
+
+Next: `TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS`, conditional on independent
+maintenance acceptance, bounded recording and exact human commit/push.
+The next scope uses the already-decided editor architecture and local durable
+draft choice. No new architecture review, RECON or implementation is activated.
+
+## Historical completed Wizard to Canvas shared candidate geometry v1 reservation
 
 The human selected one bounded Lane A scope at `bf2ff82e0a04bee7b4e380066608abae65b13133`:
 `TRACEBENCH_WIZARD_CANVAS_SHARED_FRAME_V1_SCOPE_LOCK_PASS`. ACTIVE_SCOPE_LOCK owns exactly five docs.

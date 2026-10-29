@@ -19,6 +19,7 @@ import '../features/project/widgets/workbench_shell.dart';
 import '../features/photos/screens/photo_list_screen.dart';
 import '../features/reference_images/screens/reference_images_screen.dart';
 import '../features/report/screens/customer_report_screen.dart';
+import '../shared/widgets/workbench_projection_refresh.dart';
 
 GoRouter buildTraceBenchRouter({
   String initialLocation = '/',
@@ -42,13 +43,15 @@ GoRouter buildTraceBenchRouter({
           ),
           ShellRoute(
             builder: (_, state, child) => ProjectGate(
-              child: state.topRoute?.name == 'board-canvas'
-                  ? Material(
-                      // Outgoing secondary pages may still rebuild here.
-                      type: MaterialType.transparency,
-                      child: child,
-                    )
-                  : WorkbenchShell(child: child),
+              child: WorkbenchProjectionRefresh(
+                child: state.topRoute?.name == 'board-canvas'
+                    ? Material(
+                        // Outgoing secondary pages may still rebuild here.
+                        type: MaterialType.transparency,
+                        child: child,
+                      )
+                    : WorkbenchShell(child: child),
+              ),
             ),
             routes: [
               GoRoute(

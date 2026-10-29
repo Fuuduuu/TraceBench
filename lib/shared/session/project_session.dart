@@ -93,6 +93,57 @@ class ProjectSession extends Notifier<ProjectState?> {
     return true;
   }
 
+  /// Adopt only a fresh projection of the same continuously open project.
+  /// All guards and assignment are synchronous; in-flight saves retain their
+  /// generation, and accepted event/operation dedup identities are not reset.
+  bool adoptRefreshedProjection(
+    ProjectState project, {
+    required ProjectState expectedState,
+    required int generation,
+  }) {
+    final current = state;
+    if (generation != _generation ||
+        current == null ||
+        !identical(current, expectedState) ||
+        current.projectDirectory == null ||
+        current.projectDirectory!.trim().isEmpty ||
+        project.manifest.projectId != current.manifest.projectId ||
+        project.knownFacts.projectId != current.manifest.projectId ||
+        project.projectDirectory != current.projectDirectory ||
+        project.projectionFreshness != ProjectionFreshness.fresh ||
+        project.events.length != current.events.length) {
+      return false;
+    }
+    for (var i = 0; i < current.events.length; i++) {
+      if (!_sameJson(current.events[i].toJson(), project.events[i].toJson())) {
+        return false;
+      }
+    }
+    // Keep the canonical history and all nonprojection Session context exactly
+    // as held in memory. A later writer completion composes onto this state.
+    state = current.copyWith(
+      knownFacts: project.knownFacts,
+      projectionFreshness: ProjectionFreshness.fresh,
+    );
+    return true;
+  }
+
+  static bool _sameJson(Object? a, Object? b) {
+    if (a is Map && b is Map) {
+      return a.length == b.length &&
+          a.keys
+              .every((key) => b.containsKey(key) && _sameJson(a[key], b[key]));
+    }
+    if (a is List && b is List) {
+      if (a.length != b.length) return false;
+      for (var i = 0; i < a.length; i++) {
+        if (!_sameJson(a[i], b[i])) return false;
+      }
+      return true;
+    }
+    return a == b;
+  }
+
   void _installProject(ProjectState project) {
     state = project;
     _acceptedEventIds.clear();

@@ -297,6 +297,289 @@ void main() {
       isTrue,
     );
   });
+  group('same-project projection adoption', () {
+    late ProviderContainer container;
+    late ProjectSession session;
+    late ProjectState expected;
+    late ProjectState refreshed;
+    late int generation;
+
+    setUp(() {
+      container = createContainer();
+      session = container.read(projectStateProvider.notifier);
+      session.openProject(_project('adoption'), generation: 0);
+      session.applyCanonicalEvent(
+        _rawEvent(
+            eventId: 'already-accepted', operationId: 'retained-operation'),
+        generation: session.generation,
+      );
+      expected = container.read(projectStateProvider)!;
+      generation = session.generation;
+      refreshed = expected.copyWith(
+        projectionFreshness: ProjectionFreshness.fresh,
+        events: expected.events
+            .map((event) => TraceBenchEvent.fromJson(event.toJson()))
+            .toList(),
+      );
+    });
+
+    bool adopt(ProjectState project, {ProjectState? snapshot, int? token}) =>
+        session.adoptRefreshedProjection(project,
+            expectedState: snapshot ?? expected,
+            generation: token ?? generation);
+
+    test(
+        'adopts only projection while preserving generation and in-memory history',
+        () {
+      final projected = refreshed.copyWith(
+        knownFacts: KnownFacts.fromJson({
+          'project_id': 'adoption',
+          'components': [
+            {'component_id': 'projected-component'}
+          ],
+        }),
+        customerReport: 'not a projection field',
+      );
+      expect(adopt(projected), isTrue);
+      final current = container.read(projectStateProvider)!;
+      expect(current.knownFacts.components.single.componentId,
+          'projected-component');
+      expect(current.events, same(expected.events));
+      expect(current.manifest, same(expected.manifest));
+      expect(current.customerReport, expected.customerReport);
+      expect(current.projectDirectory, expected.projectDirectory);
+      expect(current.isProjectionStale, isFalse);
+      expect(session.generation, generation);
+    });
+
+    test('late original-generation save and next distinct save are accepted',
+        () {
+      expect(adopt(refreshed), isTrue);
+      for (final id in ['late', 'next']) {
+        expect(
+            session.applyCanonicalEvent(
+              _rawEvent(eventId: id, operationId: 'operation-$id'),
+              generation: generation,
+            ),
+            isTrue);
+      }
+      final current = container.read(projectStateProvider)!;
+      expect(current.events.map((e) => e.eventId),
+          ['already-accepted', 'late', 'next']);
+      expect(current.isProjectionStale, isTrue);
+      expect(session.generation, generation);
+    });
+
+    test('retains top-level operation dedup not recoverable from parsed events',
+        () {
+      expect(expected.events.single.payload.containsKey('client_operation_id'),
+          isFalse);
+      expect(adopt(refreshed), isTrue);
+      expect(
+          session.applyCanonicalEvent(
+            _rawEvent(
+                eventId: 'different-id', operationId: 'retained-operation'),
+            generation: generation,
+          ),
+          isFalse);
+      expect(
+          session.applyCanonicalEvent(
+            _rawEvent(
+                eventId: 'already-accepted',
+                operationId: 'different-operation'),
+            generation: generation,
+          ),
+          isFalse);
+      expect(container.read(projectStateProvider)!.events, hasLength(1));
+      expect(container.read(projectStateProvider)!.isProjectionStale, isFalse);
+    });
+
+    test('rejects a value-equal but nonidentical expected snapshot', () {
+      expect(adopt(refreshed, snapshot: expected.copyWith()), isFalse);
+      expect(container.read(projectStateProvider), same(expected));
+      expect(session.generation, generation);
+    });
+
+    test('rejects wrong generation without mutation', () {
+      expect(adopt(refreshed, token: generation + 1), isFalse);
+      expect(container.read(projectStateProvider), same(expected));
+      expect(session.generation, generation);
+    });
+
+    for (final wrong in ['project', 'facts', 'directory', 'blank-directory']) {
+      test('rejects a mismatching $wrong', () {
+        final candidate = switch (wrong) {
+          'project' => refreshed.copyWith(manifest: _project('other').manifest),
+          'facts' =>
+            refreshed.copyWith(knownFacts: _project('other').knownFacts),
+          'directory' => refreshed.copyWith(
+              projectDirectory: '${expected.projectDirectory}-other'),
+          _ => refreshed.copyWith(projectDirectory: ' '),
+        };
+        expect(adopt(candidate), isFalse);
+        expect(container.read(projectStateProvider), same(expected));
+        expect(session.generation, generation);
+      });
+    }
+
+    for (final freshness in [
+      ProjectionFreshness.stale,
+      ProjectionFreshness.unknown
+    ]) {
+      test('rejects non-fresh projection: $freshness', () {
+        expect(
+            adopt(refreshed.copyWith(projectionFreshness: freshness)), isFalse);
+        expect(container.read(projectStateProvider), same(expected));
+      });
+    }
+
+    for (final mismatch in ['missing', 'extra', 'modified']) {
+      test('requires exact expected event history: $mismatch', () {
+        final modified = refreshed.events.single.toJson();
+        modified['payload'] = {
+          'nested': [1, 2, 999]
+        };
+        final events = switch (mismatch) {
+          'missing' => <TraceBenchEvent>[],
+          'extra' => [...refreshed.events, _storedEvent(eventId: 'extra')],
+          _ => [TraceBenchEvent.fromJson(modified)],
+        };
+        expect(adopt(refreshed.copyWith(events: events)), isFalse);
+        expect(container.read(projectStateProvider), same(expected));
+      });
+    }
+
+    test('new accepted event before adoption invalidates the old snapshot', () {
+      session.applyCanonicalEvent(
+        _rawEvent(eventId: 'during-refresh', operationId: 'during-refresh'),
+        generation: generation,
+      );
+      final current = container.read(projectStateProvider)!;
+      expect(adopt(refreshed), isFalse);
+      expect(container.read(projectStateProvider), same(current));
+      expect(current.events, hasLength(2));
+      expect(current.isProjectionStale, isTrue);
+    });
+
+    for (final changedNestedValue in [false, true]) {
+      test(
+          'compares nested event values independently of map key order ($changedNestedValue)',
+          () {
+        final original = _rawEvent(eventId: 'nested', operationId: 'nested');
+        original['payload'] = {
+          'tag': 'original',
+          'values': [
+            {'left': 1, 'right': 2}
+          ],
+        };
+        final captured =
+            expected.copyWith(events: [TraceBenchEvent.fromJson(original)]);
+        session.openProject(captured, generation: generation);
+        final returned = Map<String, dynamic>.from(original);
+        returned['payload'] = {
+          'values': [
+            {'right': changedNestedValue ? 999 : 2, 'left': 1}
+          ],
+          'tag': 'original',
+        };
+        expect(
+            session.adoptRefreshedProjection(
+              captured.copyWith(
+                  events: [TraceBenchEvent.fromJson(returned)],
+                  projectionFreshness: ProjectionFreshness.fresh),
+              expectedState: captured,
+              generation: session.generation,
+            ),
+            !changedNestedValue);
+        expect(container.read(projectStateProvider)!.events,
+            same(captured.events));
+        expect(container.read(projectStateProvider)!.isProjectionStale,
+            changedNestedValue);
+      });
+    }
+
+    test('rejects reordering of the same event identities', () {
+      final captured = expected.copyWith(events: [
+        _storedEvent(eventId: 'first'),
+        _storedEvent(eventId: 'second'),
+      ]);
+      session.openProject(captured, generation: generation);
+      expect(
+          session.adoptRefreshedProjection(
+            captured.copyWith(
+                events: captured.events.reversed.toList(),
+                projectionFreshness: ProjectionFreshness.fresh),
+            expectedState: captured,
+            generation: session.generation,
+          ),
+          isFalse);
+      expect(container.read(projectStateProvider), same(captured));
+    });
+
+    test('does not adopt a directory-less in-memory project', () {
+      final memoryOnly = ProjectState(
+        manifest: expected.manifest,
+        knownFacts: expected.knownFacts,
+        events: expected.events,
+        customerReport: expected.customerReport,
+        projectionFreshness: ProjectionFreshness.stale,
+      );
+      session.openProject(memoryOnly, generation: generation);
+      expect(
+          session.adoptRefreshedProjection(
+            memoryOnly.copyWith(projectionFreshness: ProjectionFreshness.fresh),
+            expectedState: memoryOnly,
+            generation: session.generation,
+          ),
+          isFalse);
+      expect(container.read(projectStateProvider), same(memoryOnly));
+    });
+
+    test('project switch rejects both adoption and old writer completion', () {
+      final other = _project('other');
+      session.openProject(other, generation: generation);
+      expect(adopt(refreshed), isFalse);
+      expect(
+          session.applyCanonicalEvent(
+            _rawEvent(eventId: 'late-old', operationId: 'late-old'),
+            generation: generation,
+          ),
+          isFalse);
+      expect(container.read(projectStateProvider), same(other));
+      expect(session.generation, generation + 1);
+    });
+
+    test(
+        'close and reopen cannot restore old authority even for the same object',
+        () {
+      session.closeProject();
+      expect(adopt(refreshed), isFalse);
+      session.openProject(expected, generation: session.generation);
+      expect(adopt(refreshed), isFalse);
+      expect(
+          session.applyCanonicalEvent(
+            _rawEvent(eventId: 'late-closed', operationId: 'late-closed'),
+            generation: generation,
+          ),
+          isFalse);
+      expect(container.read(projectStateProvider), same(expected));
+      expect(session.generation, generation + 2);
+    });
+
+    test('ordinary reload still invalidates a same-project in-flight writer',
+        () {
+      expect(session.replaceWithReloaded(refreshed, generation: generation),
+          isTrue);
+      expect(session.generation, generation + 1);
+      expect(adopt(refreshed), isFalse);
+      expect(
+          session.applyCanonicalEvent(
+            _rawEvent(eventId: 'late-replaced', operationId: 'late-replaced'),
+            generation: generation,
+          ),
+          isFalse);
+    });
+  });
 }
 
 ProjectState _project(

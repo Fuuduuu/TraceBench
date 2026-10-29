@@ -2,7 +2,7 @@
 
 ## Purpose
 
-On-demand BenchBeep UX/workflow policy. It does not authorize implementation or canonical writes; active authority comes from `docs/ACTIVE_SCOPE_LOCK.md`.
+On-demand BenchBeep UX/workflow policy. It does not authorize implementation or canonical writes; the latest explicit human task must respect the charter and protected boundaries in `docs/ACTIVE_SCOPE_LOCK.md`.
 
 UI work must preserve `docs/POHIKIRI.md` and stop for human decision on conflict.
 
@@ -21,7 +21,8 @@ Where practical, normal work happens in or beside Board Canvas:
 - measurement
 - component identity creation
 - component metadata editing
-- visual placement confirmation
+- visual placement confirmation for an existing component
+- noncanonical visual candidate editing
 
 Direct visual context should outrank table/form detours.
 
@@ -33,12 +34,32 @@ Standalone Add/Edit/Measure-style pages may remain until scoped replacements exi
 
 The app already has explicit human-triggered Components/Placement/Measurement
 and photo writer workflows. Their render/view code remains read-only.
-An accepted Session event marks known-facts-derived views stale; the current
-materialize/reload path is coupled to report ZIP export. A standalone safe
-Workbench refresh is the first product priority, not behavior enabled here.
-Canvas candidate editing and continuous candidate-to-placement confirmation
-are incomplete. Do not mistake the old canonical Placement preview for the
-shared candidate editor that is still to be implemented.
+An accepted Session event marks known-facts-derived views stale. Workbench now
+offers `Värskenda andmeid` for STALE projects without ZIP export. The explicit
+desktop/local-directory action runs the existing Python materializer, reloads
+with `ProjectLoader.loadFromDirectory` and adopts only a fresh matching
+projection through `ProjectSession.adoptRefreshedProjection`. Duplicate refresh
+is disabled while pending. Failure retains active state/stale presentation and
+offers retry; project replacement and newer accepted events cannot be overwritten.
+Same-project adoption keeps the generation, so a writer already in flight can
+still apply its result and make the projection stale again. UNKNOWN retains
+its separate warning; this control is shown only for STALE.
+
+Wizard Step 4 and Canvas use the same ComponentCandidateEditor controls and
+surface for four shapes, selection, adding, dragging, sizing and rotation.
+Canvas hosts lifecycle and guarded local draft persistence under
+`.tracebench_local/component_candidates.json`; directory reopening restores a
+matching draft. Without a local directory, edits remain session-only. Invalid
+draft load blocks editing with retry; save failure retains the current draft
+and shows retry. Original Wizard intake is preserved.
+
+Candidate editing remains noncanonical. `Komponendi identiteet ja paigutus`
+switches to the existing separate Components/Placement workflow; Navigator's
+`Paiguta canvasele` enters that workflow. Its retained template ghost is a
+canonical-Placement draft preview, not a second candidate editor. Candidate
+confirmation/continuous candidate-to-placement conversion remains unimplemented.
+The read-only Placement template catalogue/preview/painter is now standalone;
+Placement controls, guards and writer handoff retain their existing owner.
 
 - Wizard background: original intake/photo presentation and alignment context;
   it is not automatically canonical photo evidence.
@@ -70,8 +91,8 @@ for current validity.
 - Step 3 retains the closed non-degenerate board-contour draft and owns its
   live creation gate. The first accepted contour action latches the current
   inner-canvas width/height aspect as the authoritative authoring plane.
-- Step 4 retains human-created visual candidates and their presentation
-  geometry. Steps 3 and 4 center-fit the same latched reference rectangle;
+- Step 4 owns the shared editor controller lifetime and human-created draft;
+  ComponentCandidateEditor owns candidate controls, input and painting. Steps 3 and 4 center-fit the same latched reference rectangle;
   photo, contour, candidates, pointer input, dragging, painting, and hit
   testing use that rectangle, and letterbox bars are inert. Step 4 cannot
   establish a second plane. Candidates are noncanonical proposals, not
@@ -116,8 +137,9 @@ New Wizard projects write the optional top-level
 existing Wizard-intake schema `1.0`. Board Canvas maps normalized geometry
 through `(x * aspect, y)` with one uniform fit and gives the photo the complete
 rectangular reference frame. The visible stack order is background/grid,
-optional photo, read-only Wizard contour/candidates, canonical placements,
-then controls. A valid intake or intake warning keeps this presentation
+optional photo, read-only Wizard contour, shared editable candidate surface,
+canonical placements, then controls. The overlay part retains fit/photo/contour
+rendering and compatibility candidate metadata getters, not candidate painting. A valid intake or intake warning keeps this presentation
 available when canonical components are empty.
 
 Legacy intake without the aspect remains loadable. Canvas uses the explicit
@@ -139,6 +161,6 @@ trustworthy migration or project recreation through the updated Wizard.
 - `board_outline_confirmed` = project-level Visual/Layout board-outline confirmation.
 - `measurement_recorded` = measurement write.
 
-The board-outline event foundation currently has no armed wizard or Board Canvas authoring workflow. UI activation, candidate persistence, and confirmation affordances remain deferred to a separate scoped pass.
+The board-outline event foundation has no armed Wizard or Board Canvas canonical authoring workflow. Canonical outline/candidate confirmation remains deferred; local candidate draft persistence is already implemented and does not invoke that event foundation.
 
 Canonical data and AI boundaries: `docs/TRUTH_INDEX.md`.

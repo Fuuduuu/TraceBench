@@ -12,7 +12,9 @@ Owns the seven-step New Project Wizard, its retained Step 1–5 draft, compact
 shell/progress/workspaces/review/success presentation, Step 3-latched shared
 Step 3/4 reference plane, live gates, typed creation request/result handling,
 exactly-once success handoff, persistent Step 7, and sole explicit `/project`
-open action.
+open action. Step 4 delegates candidate controls/input/painting to the shared
+ComponentCandidateEditor; the Wizard retains its controller lifetime, reference
+frame, creation request and project lifecycle.
 
 ## Responsibility zones
 
@@ -24,18 +26,18 @@ open action.
 | Compact shell and responsive progress | `build`, `WizardCompactShell`, `_buildHeader`, `_buildWideProgress`, `_buildCompactProgress`, `wizard-compact-progress-scroll`, `_buildEditorCard` | Composes wide/compact shell, header, custom progress, page scroll, and step body without using `WizardCompactNavigation`. |
 | Step 1 and child editors | `_buildStepOne`, `_buildPhotoAlignmentStep`, `NewProjectWizardPhotoEditor`, `_buildProblemDescriptionStep`, `NewProjectWizardProblemDescription` | Hosts primary/advanced fields plus accepted compact Step 2 and Step 5 children while retaining parent values/callbacks. |
 | Step 3 contour workspace | `_buildContourStep`, `_buildContourCanvas`, `_buildContourControls`, `WizardCompactWorkspace`, `wizard-contour-workspace-panel`, `wizard-contour-inspector-panel` | Presents fitted contour canvas and inspector, with stacked layout below the workspace threshold. |
-| Step 4 candidate workspace | `_buildComponentPlacementStep`, `_buildComponentCanvas`, `_buildComponentControls`, `_buildComponentRotationControl`, `wizard-component-workspace-panel`, `wizard-component-inspector-panel` | Presents noncanonical visual candidates, 2×2 shape order, curved rotation controls, and fitted canvas/inspector. |
+| Step 4 candidate workspace | `_buildComponentPlacementStep`, `_buildComponentCanvas`, `_buildComponentControls`, `ComponentCandidateEditor.surface`, `ComponentCandidateEditor.controls`, `wizard-component-workspace-panel`, `wizard-component-inspector-panel` | Composes the shared four-shape editor surface/controls in the fitted frame; candidate selection/editing belongs to that library, not a duplicate Wizard painter. |
 | Review and request | `_buildCreationRequest`, `_buildReviewStep`, `_buildReviewSection`, `_buildReviewValue`, `_editReviewStep`, `wizard-review-summary` | Maps the complete draft to typed intake and renders all values plus five edit routes without ellipsis. |
 | Creation and sanitized failures | `_WizardCreationStatus`, `_createProject`, `_recordCreationFailure`, `ProjectCreationResult`, `sanitizedMessage`, `_WizardCreationError` | Guards activation, invokes creation once, exhaustively handles results, and shows only safe retryable copy. |
 | Handoff and terminal route | `_projectHandoffCompleted`, `widget.onProjectCreated?.call`, `_buildCreatedStep`, `WizardCompactSuccessCard`, `_openCreatedProject`, `context.go('/project')` | Hands successful state to the app once, stays on Step 7, and opens only after `Ava projekt`. |
-| Draft painters and hit testing | `_WizardContourPainter`, `_WizardComponentPlacementPainter`, `_WizardComponentMarkerGeometry`, `WizardCandidateGeometry.resolve`, `_handleContourPointerDown`, `_handleComponentPointerDown` | Retains Wizard painting, pointer and hit-selection ownership; the thin candidate adapter delegates body/path/rotation/bounds derivation to the shared pure helper. |
+| Draft painters and hit testing | `_WizardContourPainter`, `_WizardComponentGuidePainter`, `_handleContourPointerDown`, `_candidateEditor` | Owns contour/guide painting and contour input. Shared editor owns candidate drawing, gestures and hit selection; it consumes WizardCandidateGeometry internally. |
 
 ## Anchor inventory and verification
 
 Selection rule: extract every backtick-delimited token from the responsibility
 table's Stable symbol anchors column and de-duplicate in first-appearance
-order. All `69/69` selected anchors resolve as exact substrings in the
-committed `HEAD` source; zero are missing.
+order. All selected anchors resolve as exact substrings in the committed
+source; deleted private candidate painter/adapter anchors are not retained.
 
 ## State and data flow
 
@@ -47,10 +49,10 @@ committed `HEAD` source; zero are missing.
    `_referenceFrameRect` center-fits it for Steps 3/4; photo, contour,
    candidates, input, dragging, paint, and hit testing share it, and bars are
    inert. Step 2 retains its independent preview.
-   `_WizardComponentMarkerGeometry` adapts the private candidate to
-   `WizardCandidateGeometry.resolve` using the origin-zero fitted frame.
-   Painting and nearest-hit selection remain Wizard-owned; the helper derives
-   the body/path/effective rotation and hit bounds without changing the draft.
+   The Wizard passes the origin-zero fitted reference rectangle to
+   `ComponentCandidateEditor.surface` and its screen-lived controller to both
+   surface and controls. Candidate hit testing, body/path/rotation and gestures
+   live in the shared editor and its geometry helper, not private Wizard adapters.
 4. `build` selects overall compact below `1050`, outer padding below `600`,
    and page scroll; Step 3/4 workspaces stack below `780`. Step 1 support
    stacks below `820`, headings/actions below `560`, and review values below
@@ -59,8 +61,9 @@ committed `HEAD` source; zero are missing.
    parent-owned progress tiles. Status derives from current, visited, and live
    gates; parent forward copy remains `Järgmine samm`.
 6. Step 2 and Step 5 children emit callbacks into parent state. Step 3/4
-   inspectors use compact controlled primitives; candidate canvas dragging
-   temporarily disables ancestor page scrolling.
+   inspectors use compact controlled primitives; candidate document changes
+   mark the Wizard draft touched. Candidate gestures are delegated to the shared
+   editor; contour pointer/drag handling remains Wizard-owned.
 7. Step 6 renders every draft field and five `Muuda` routes, then revalidates
    all gates before one typed request.
 8. Pending/succeeded guards prevent duplicate creation. Every failure remains
@@ -78,7 +81,7 @@ committed `HEAD` source; zero are missing.
 | File picker and `PlatformInfo` | outbound platform seams | Select desktop parent/photo paths and keep mobile actions honest. |
 | `ProjectCreator` request/results | outbound creation contract | Creates the generated project or returns typed failure. |
 | `WizardIntake` / `ProjectState` | outbound request and success values | Carry noncanonical intake and hydrated success handoff. |
-| `WizardCandidateGeometry` from `shared/geometry/wizard_candidate_geometry.dart` | pure derived value | Resolves the candidate display body and hit envelope; the private adapter retains Wizard field/shape mapping. |
+| `component_candidate_editor.dart`, `component_candidate_draft.dart` | imported feature UI/value owners | Shared surface/controls/controller and candidate document. Wizard retains controller lifetime, latched-frame synchronization and conversion to original Wizard intake; geometry is an internal editor dependency. |
 | Photo/problem editor widgets | child presentation | Emit existing parent-owned Step 2/5 values and callbacks. |
 | Compact tokens/widgets | child presentation | Supply feature-local visual primitives and controlled composites. |
 
@@ -102,7 +105,8 @@ not consume `rawDetail`, stdout, stderr, exception, or stack data.
 
 - Gates, progress, compact layout, semantics, review, result display, and
   reference-frame fit persist nothing.
-- Painters and hit tests affect only UI-local contour/candidate drafts.
+- Local contour/guide painters are zero-write; shared editor gestures mutate
+  only candidate drafts. This screen imports no candidate sidecar store.
 - Step 7 display and route activation add no project content.
 - Mobile-unavailable actions do not invoke desktop pickers.
 
@@ -112,7 +116,7 @@ not consume `rawDetail`, stdout, stderr, exception, or stack data.
 | --- | --- | --- | --- | --- |
 | Draft/reference/gates | `[D]` Local fields and fitted helpers own the values. | Step 2, both canvases, progress, request | `UI_LOCAL` | latch/resize/inert-bar, retention, live-gate tests |
 | Shell/progress | `[D]` Breakpoints and tiles are parent-defined. | action bar and child layouts | `ZERO_WRITE` / `UI_LOCAL` | exact labels, visited semantics, breakpoints, 200% tests |
-| Step 3/4 workspaces | `[D]` Both use `WizardCompactWorkspace` and one fitted frame. | painters, hit testing, page scroll | `UI_LOCAL` | wide/stacked geometry, drag isolation, candidate families |
+| Step 3/4 workspaces | `[D]` Both use `WizardCompactWorkspace` and one fitted frame. | contour/guide painters, shared editor, page scroll | `UI_LOCAL` | wide/stacked geometry, drag isolation, candidate families |
 | Child editors | `[D]` Parent passes values/callbacks. | compact primitive file | `UI_LOCAL` | photo/problem focused suites and integration |
 | Review/request | `[D]` Five sections map complete draft fields. | creator/intake model | `ZERO_WRITE` / `UI_LOCAL` | complete review/five edits and exact request tests |
 | Creation/failure | `[D]` Guard and exhaustive switch are local. | ProjectCreator results | `NONCANONICAL_FILE` / `UI_LOCAL` | gate revalidation, duplicate, all failure tests |
@@ -163,7 +167,7 @@ in-memory render evidence, not real filesystem creation.
 ## Freshness and review triggers
 
 Review for `SYMBOL_DRIFT` on gates, breakpoints, frame helpers, step builders,
-creation/result, handoff, or route anchors; `FLOW_DRIFT` on draft-to-review-to-
+creation/result, handoff, shared-editor controller/surface/controls, or route anchors; `FLOW_DRIFT` on draft-to-review-to-
 request or success ordering; `BOUNDARY_DRIFT` if raw diagnostics/canonical
 writes enter; `TEST_DRIFT` when the 79-declaration families move; and
 `STRUCTURE_DRIFT` when presentation or creation ownership relocates.

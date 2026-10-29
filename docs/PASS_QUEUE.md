@@ -1,29 +1,35 @@
 # Pass Queue
 
-Current: `DOCS_WORKFLOW_CONSOLIDATION`
-Next: `P1_WORKBENCH_PROJECTION_REFRESH`
+Current: `NEEDS_USER_DECISION`
+Next: `SHARED_VOCABULARY_EXTRACTION`
 
 ## Immediate sequence
 
-1. Finish the one human-authorized documentation consolidation: compact active
-   owners, byte-preserved archives, corrected roadmap and consistent risk rules.
-2. Review the actual documentation diff once, then let the human commit exact
-   accepted files. No new scope/audit-recording/closeout pass is required for
-   this cleanup. Preserve the unaccepted editor draft files outside its commit set.
-3. The next user-visible development task is a safe explicit projection refresh
-   from Workbench, reusing materialization and guarded reload without ZIP export.
-   A new human implementation request must state its exact data/UI boundary,
-   relevant regression tests and independent review; this queue authorizes no code.
-4. Then pursue the selected shared editor and continuous candidate/identity/
-   placement workflow. The prepared editor draft may inform that work but does
-   not authorize implementation. Do not start another general architecture
-   review or speculative infrastructure programme.
+Projection refresh (`46ce43e`), shared candidate editor (`aaf26da`), standalone
+Navigator (`10c63ce`) and Placement template/preview extraction (`db1003f`) are
+committed implementation, not pending queue items. Documentation consolidation
+(`49c65b9`) is also completed; do not restart it.
+
+The planned next technical work is a small shared-vocabulary extraction for
+component types, labels/normalization and measurement units, continuing
+modularization and real code reuse. This documentation sync authorizes no code.
+
+Candidate -> component identity -> confirmed visual placement continuity is a
+deferred product feature, not the next technical task. Local candidate editing/persistence is
+already available. Before canonical confirmation, an explicit protected human
+task must settle persisted geometry compatibility and reuse the accepted
+Components/Placement writers without moving existing placements. This queue
+reserves no implementation, migration, scope-lock child or architecture review.
+
+Other product backlog items remain under the priority owner: editable ZIP
+acquisition, legacy destination content, Home/resume and photo-role clarity.
+Selection of the next executable task remains with the human.
 
 ## Priority owner
 
 [CURRENT_STATE product priorities](CURRENT_STATE.md#product-priorities) is the
-single current product-order list. Do not copy historical pass descriptions
-or maintain a competing roadmap here.
+single product-order list. Do not duplicate historical pass descriptions or
+maintain a competing roadmap here.
 
 ## Execution policy
 
@@ -33,21 +39,20 @@ or maintain a competing roadmap here.
 - Protected data/canonical work: explicit protected scope, regression/recovery
   evidence and independent review remain mandatory. New/changed canonical,
   writer, migration or ZIP contracts need the formal protected scope gate.
-- Map updates, if materially needed, belong with the bounded change and its
-  review. Do not generate standalone maintenance or verdict-copy children
-  for every small UI change.
-- No automatic RECON, architecture review, map programme or follow-up task.
-  Escalate only a named data/scope conflict or actual technical blocker.
+- Material map corrections belong with their bounded task and review, not an
+  automatic maintenance/verdict-recording programme.
+- No automatic RECON, architecture review or follow-up pass. Escalate only a
+  named protected-data/scope conflict or actual technical blocker.
 
-## Deferred
+## Deferred and preserved
 
-No implementation is active in this documentation task. Candidate confirmation
-awaits explicit persistent-geometry compatibility; ZIP editing, resume, photo
-clarity and future AI/capture remain governed by the priority owner and their
-protected boundaries.
+Candidate confirmation, persisted-geometry changes, ZIP workspace acquisition,
+durable resume and future AI/capture remain unimplemented priorities; this queue
+authorizes none of them. The two foreign editor-draft documents remain outside
+this task and any proposed commit set.
 
 ## History
 
 [Complete committed queue snapshot](archive/PASS_QUEUE_HISTORY_2026-10-29.md)
-preserves every committed PASS_ID, decision and reference at the stated baseline.
-It excludes the unaccepted editor draft and is not an executable backlog.
+preserves the pre-consolidation committed queue at `69e5bd4`. It excludes the
+unaccepted editor scope draft and is not an executable backlog.

@@ -76,7 +76,7 @@ infer measurements, or write project files directly.
 | Responsive board context | `ZERO_WRITE` | `[D]` Displays selected target only. |
 | `ProjectionStaleBanner` | `ZERO_WRITE` | `[D]` Reads projection metadata and does not gate selection, form, or writer actions. |
 
-Measurement-event semantics, confirmation, sequence allocation, validation,
+Measurement-event semantics, confirmation, validation,
 locking, append behavior, schema, `events.jsonl`, and materialized
 `known_facts.json` remain owned by the writer/tool/schema chain. This screen
 must not infer a value from a reference or candidate.
@@ -116,8 +116,10 @@ must not infer a value from a reference or candidate.
   guided copy, and selected source-boundary guards.
 - `test/unit/v2_save_measurement_writer_test.dart` owns writer validation,
   command, append, locking, and result behavior.
-- `test/integration/measurement_write_end_to_end_test.dart` covers the accepted
-  measurement writer chain beyond the screen.
+- `test/integration/workbench_projection_refresh_end_to_end_test.dart`
+  exercises real measurement writer/materializer/Session refresh behavior;
+  it does not drive this Measure Sheet form. The previously named
+  dedicated measurement-write integration file does not exist.
 - `test/widget/project_overview_screen_test.dart` covers navigation into this
   independently reachable screen.
 

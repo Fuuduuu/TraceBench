@@ -72,7 +72,7 @@ never invokes the real canonical persistence chain.
 | Reference/guided/layout tests | `ZERO_WRITE` | `[D]` Perform no save action. |
 | Source-file guard | `ZERO_WRITE` | `[D]` Reads source text and writes nothing. |
 
-The fake does not validate schema, allocate sequence, lock, append, or
+The fake does not validate schema, lock, append, or
 materialize. Those remain writer/tool/schema responsibilities. Static source
 strings supplement but do not replace behavioral evidence.
 
@@ -103,8 +103,10 @@ strings supplement but do not replace behavioral evidence.
 
 - This file contains 27 widget tests plus one source-boundary unit test.
 - `test/unit/v2_save_measurement_writer_test.dart` owns real writer behavior.
-- `test/integration/measurement_write_end_to_end_test.dart` covers the accepted
-  end-to-end writer chain.
+- `test/integration/workbench_projection_refresh_end_to_end_test.dart`
+  exercises real measurement writer/materializer/Session refresh behavior;
+  it does not drive this Measure Sheet form. The previously named
+  dedicated measurement-write integration file does not exist.
 - `test/widget/project_overview_screen_test.dart` covers navigation into this
   screen.
 - Production counterpart:

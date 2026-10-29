@@ -30,7 +30,9 @@ live merge.
 - ZIP must exclude local sidecar reference-image paths under
   `.tracebench_local/` (for example `.tracebench_local/reference_images/`
   and `.tracebench_local/reference_images.json`) and local Canvas preferences
-  at `.tracebench_local/canvas_preferences.json`.
+  at `.tracebench_local/canvas_preferences.json`, plus candidate drafts at
+  `.tracebench_local/component_candidates.json`. The entire local directory,
+  including its candidate lock/temporary files, is excluded.
 - `notes/wizard_intake.json` is `NON_CANONICAL`, `HUMAN_PROVIDED`, and
   `PRESENTATION_INPUT`. Supported Project ZIP export/import round-trips must
   preserve the optional entry and its file content without interpreting it as
@@ -75,13 +77,38 @@ live merge.
 - Import validates content before accepting output.
 - Export regenerates `known_facts.json` from `events.jsonl` before packaging,
   unless explicitly told not to.
-- After local event writes, refresh still follows the policy in
-  `docs/PROJECTION_REFRESH_SPEC.md` before packaging.
+- Workbench can refresh after local event writes without exporting ZIP. Export
+  still materializes before packaging under
+  [PROJECTION_REFRESH_SPEC](PROJECTION_REFRESH_SPEC.md); explicit UI refresh does
+  not replace export validation or change archive paths.
 - Mobile export remains a V1 placeholder and is deferred in this scope.
 - `board_graph.json` and `view_state.json` are never included in V1 ZIP output.
 - ZIP entry order is deterministic in V1 packaging; byte-for-byte
   determinism is not guaranteed across tools/environments.
 - V1 import/export is file-copy and file-copy based; no cloud sync.
+
+## Local component candidate drafts
+
+`.tracebench_local/component_candidates.json` is implemented local presentation
+state, not an optional Project ZIP entry. `ComponentCandidateDraftStore` stores
+the draft document with project/reference-frame/original-intake context and
+candidate identities/geometry. Canvas reloads matching drafts when the local
+project directory is reopened; load/save errors do not promote them to facts.
+
+- `tools/export_project_zip.py` excludes `.tracebench_local` while collecting
+  project files. ZIP export therefore omits local candidate additions/edits,
+  just as it omits local reference images and Canvas preferences.
+- Original optional `notes/wizard_intake.json` remains byte-preserved transport
+  input. Saving the Canvas draft does not rewrite it; ZIP may carry the original
+  Wizard candidates without carrying subsequent local edits.
+- ZIP loading currently yields an in-memory project with no local directory.
+  Candidate edits there are session-only; it does not restore an excluded sidecar
+  or create an editable local workspace automatically.
+- Candidates remain noncanonical visual proposals. A sidecar or ZIP round-trip
+  confirms no component, Placement, contact, measurement or electrical fact.
+
+This describes existing behavior, not a ZIP expansion, migration or new draft
+format. Editable ZIP workspace acquisition remains a separate product priority.
 
 ## Customer report boundary (V1)
 

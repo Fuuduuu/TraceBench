@@ -11,6 +11,7 @@
 Builds the single application route graph. It keeps `/` and `/new-project`
 outside one pathless `ShellRoute`, places only the existing `/project` subtree
 inside that shell, and keeps `ProjectGate` outside the matched navigator.
+`WorkbenchProjectionRefresh` sits inside the gate around every project target.
 When `state.topRoute?.name` is `board-canvas`, a transparent `Material` wraps
 the child; other project targets retain `WorkbenchShell` around the child. All 15 real project targets,
 their paths and names, and both compatibility redirects remain registered. The
@@ -24,7 +25,7 @@ project recovery, destination behavior, and canonical writes remain outside.
 | Route factory contract | `buildTraceBenchRouter`, `initialLocation`, `homeBuilder`, `newProjectBuilder` | Exposes initial-route, required root-Home, and optional Wizard-construction seams. |
 | Root Home route | `path: '/'`, `name: 'home'`, `homeBuilder` | Builds only the caller-supplied canonical root surface. |
 | New Project Wizard route | `path: 'new-project'`, `name: 'new-project'`, `NewProjectWizardScreen` | Builds the injected Wizard when supplied or the unchanged const default. |
-| Project gate and conditional chrome | `ShellRoute`, `ProjectGate`, `state.topRoute?.name`, `MaterialType.transparency`, `WorkbenchShell` | Gates every project target; primary Canvas bypasses shared chrome while secondary targets retain it. |
+| Project gate and conditional chrome | `ShellRoute`, `ProjectGate`, `state.topRoute?.name`, `MaterialType.transparency`, `WorkbenchShell`, `WorkbenchProjectionRefresh` | Gates every project target and delegates the explicit stale-projection action; primary Canvas bypasses shared chrome while secondary targets retain it. |
 | Canonical Board Canvas route | `path: 'project'`, `name: 'board-canvas'`, `BoardCanvasScreen` | Keeps `/project` as the canonical Canvas destination and parent of its existing child routes. |
 | Overview and component routes | `project-overview`, `component-list`, `add-component`, `edit-component` | Registers four unchanged project destinations as bare matched children. |
 | Measurement and pin routes | `measurement-list`, `measure-sheet`, `not-populated`, `pin-list` | Registers four unchanged measurement/population/pin destinations. |
@@ -49,6 +50,7 @@ exact substring in committed source. The map uses no line-number anchors.
 4. One pathless `ShellRoute` contains only the `project` route and its existing
    descendants; it introduces no public path or name.
 5. The shell builder checks the top matched route name inside `ProjectGate`.
+   `WorkbenchProjectionRefresh` wraps both branches beneath the gate.
    Canonical Canvas receives transparent `Material`; secondary targets receive
    `WorkbenchShell`. Null state mounts neither destination nor shared chrome.
    The Material ancestor also supports outgoing secondary-page rebuilds during
@@ -95,6 +97,7 @@ The two compatibility aliases are not additional real targets.
 | caller-supplied `homeBuilder` | required inbound contract | Keeps canonical launcher ownership in `app.dart`. |
 | `NewProjectWizardScreen` | default outbound destination | Preserves default Wizard construction. |
 | `ProjectGate` | outer project wrapper | Applies loaded-project recovery before shared chrome mounts. |
+| `WorkbenchProjectionRefresh` | delegated project wrapper | Owns explicit stale refresh UI/service invocation and guarded Session adoption outside both primary and secondary content; the router only constructs it. |
 | `WorkbenchShell` | inner project wrapper | Supplies shared navigation/chrome only for secondary project targets. |
 | Project destination screens | outbound destinations | Implement behavior behind the unchanged route inventory. |
 | `lib/app/app.dart` | production caller | Supplies Home and Wizard builders and owns router lifetime. |
@@ -108,13 +111,13 @@ The two compatibility aliases are not additional real targets.
 | `buildTraceBenchRouter` and route declarations | `ZERO_WRITE` | Construct navigation objects and widget builders only. |
 | `initialLocation` and redirects | `UI_LOCAL` | Select transient URI presentation. |
 | `homeBuilder` and `newProjectBuilder` | `ZERO_WRITE` | Invoke widget factories; downstream widgets own any effects. |
-| `ShellRoute` builder | `ZERO_WRITE` | Composes gate, shell, and child without reading providers or invoking writers. |
+| `ShellRoute` builder | `ZERO_WRITE` | Composes gate, refresh widget, conditional shell/Material and child without itself reading providers or invoking writers. |
 | Destination builders | `ZERO_WRITE` | Instantiate existing screens only. |
 | `errorBuilder` | `ZERO_WRITE` | Reads routing failure and renders text. |
 
-The file imports neither Riverpod nor `ProjectState`. Importing `ProjectGate`
-and `WorkbenchShell` does not transfer their downstream provider/UI ownership
-into the router. There is no event/fact append, filesystem write, Project ZIP
+The file imports neither Riverpod nor `ProjectState`. Importing `ProjectGate`,
+`WorkbenchProjectionRefresh` and `WorkbenchShell` does not transfer their
+downstream provider/UI ownership into the router. There is no event/fact append, filesystem write, Project ZIP
 operation, creator call, materializer call, coordinate conversion, or
 electrical-semantic mutation here.
 
@@ -130,7 +133,7 @@ electrical-semantic mutation here.
 | Change zone | Evidence | Inspect-only coupled zones | Write class | Relevant tests |
 | --- | --- | --- | --- | --- |
 | Factory/root/Wizard | `[D]` parameters invoke exact builders | app lifecycle, launcher, Wizard handoff | `ZERO_WRITE` / `UI_LOCAL` | Home and Wizard route suites |
-| Shared project composition | `[D]` one pathless shell builder wraps one project parent | gate source, shell source, provider scope | `ZERO_WRITE` | gate and shell suites |
+| Shared project composition | `[D]` one pathless shell builder wraps one project parent | gate/refresh/shell source, provider scope | `ZERO_WRITE` construction | gate/shell and refresh suites |
 | Project route inventory | `[D]` 15 exact builders remain beneath `project` | every destination screen | `ZERO_WRITE` | loaded/null 15-route matrices |
 | Nested navigation | `[D]` `ShellRoute` adds the shared route navigator | GoRouter stack behavior | `UI_LOCAL` | focused push/pop regression |
 | Redirects | `[D]` two exact target strings remain | canonical Canvas and Measure Sheet | `UI_LOCAL` | alias settlement tests |
@@ -148,6 +151,9 @@ electrical-semantic mutation here.
   Home behavior, workflow-parent selection, and no-write navigation.
 - `test/widget/benchbeep_home_screen_test.dart` retains the real app lifetime,
   Wizard handoff, canonical Home, and provider-survival contract.
+- `test/widget/workbench_projection_refresh_test.dart` covers the action and
+  guards; `test/integration/workbench_projection_refresh_end_to_end_test.dart`
+  exercises actual routed Canvas after real writes/materialization/reload.
 - Overview, Board Canvas, edit-component, Wizard, and freshness harnesses remain
   direct callers/consumers of the unchanged route paths.
 
@@ -169,7 +175,8 @@ electrical-semantic mutation here.
 - Factory/root contract: `buildTraceBenchRouter`, builders, production caller,
   and Home/Wizard route evidence.
 - Shared composition: `ShellRoute`, its builder, `ProjectGate`,
-  `WorkbenchShell`, and gate/shell identity tests.
+  `WorkbenchProjectionRefresh`, `WorkbenchShell`, and gate/shell identity plus
+  refresh caller tests.
 - One project leaf: its path/name/builder plus the exact 15-target matrix.
 - One alias: redirect callback, canonical target, and alias settlement test.
 - Nested stack only: shell structure plus the focused push/pop case.
@@ -184,7 +191,7 @@ electrical-semantic mutation here.
 ## Freshness and review triggers
 
 Review for `SYMBOL_DRIFT` when factory parameters, route paths/names,
-`ShellRoute`, `ProjectGate`, `WorkbenchShell`, top-route selection, transparent
+`ShellRoute`, `ProjectGate`, `WorkbenchProjectionRefresh`, `WorkbenchShell`, top-route selection, transparent
 `Material`, or screen constructors change;
 `FLOW_DRIFT` when wrapper order, null/loaded reveal, redirect, or nested stack
 behavior changes; `BOUNDARY_DRIFT` if provider/write ownership enters;

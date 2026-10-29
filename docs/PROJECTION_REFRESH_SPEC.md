@@ -1,5 +1,65 @@
 # PROJECTION_REFRESH_SPEC.md
 
+## Implemented runtime contract
+
+This section describes the committed implementation. The earlier provenance/UI
+decision is retained below as historical evidence: its future tense, display-only
+restrictions, out-of-scope list and proposed next scope were limits of that
+decision, not the current capability or an active reservation. Current product
+priorities are in [CURRENT_STATE](CURRENT_STATE.md#product-priorities).
+
+- `ProjectState.projectionFreshness` is the implemented FRESH/STALE/UNKNOWN
+  authority; `isProjectionStale` is a getter for STALE, not proof of FRESH.
+  `ProjectLoader` classifies freshness from exact loaded event bytes and persisted
+  provenance. Flutter never supplies provenance or a Dart materializer.
+- `ProjectionStaleBanner` remains display-only and distinguishes STALE/UNKNOWN.
+  Separately, the router wraps all project destinations in
+  `WorkbenchProjectionRefresh` inside `ProjectGate`, outside primary Canvas or
+  secondary shell. The explicit `Värskenda andmeid` control appears only for
+  STALE. UNKNOWN does not acquire an implicit refresh action.
+- `ProjectProjectionRefresher.refresh` requires a local project directory and
+  desktop Python. It invokes the existing `tools/materialize_known_facts.py`
+  against local events/known facts, then `ProjectLoader.loadFromDirectory`.
+  No ZIP export or canonical event write is involved.
+- The service checks project/directory identity, complete captured event prefix
+  and FRESH classification. The final synchronous
+  `ProjectSession.adoptRefreshedProjection` additionally requires current generation,
+  identical expected Session state, exact directory/project identity and equivalent
+  ordered full event history. Guards and assignment have no await between them.
+- Adoption replaces only known facts/freshness on the current state. It retains
+  events, manifest, directory, customer report, intake and accepted event/operation
+  dedup identities, without advancing generation. `replaceWithReloaded` remains
+  full replacement with generation advance; open/close behavior is unchanged.
+- A canonical save already in flight can complete at the retained generation,
+  apply its accepted event and make the just-refreshed projection stale again.
+  A newer accepted event before adoption invalidates the expected snapshot;
+  project switch or close/reopen invalidates the generation. No accepted event
+  is silently dropped or represented by a false FRESH claim.
+- One pending attempt disables duplicate activation. Missing directory/Python,
+  unsupported platform, materializer/reload failure, identity/history mismatch
+  or nonfresh output leaves active state intact and shows safe error/retry copy.
+  Guards protect Session adoption; derived output may already have been written
+  on disk before a later load/guard failure. No canonical rollback is claimed.
+- This refresh does not rebuild customerReport or automatically materialize in
+  the background. Existing export materialization/transport remains separate.
+
+Source owners: [ProjectProjectionRefresher](../lib/shared/services/project_projection_refresher.dart),
+[refresh widget](../lib/shared/widgets/workbench_projection_refresh.dart),
+[ProjectSession](../lib/shared/session/project_session.dart),
+[ProjectState](../lib/shared/models/project_state.dart) and
+[ProjectLoader](../lib/shared/services/project_loader.dart).
+Focused evidence: [Session tests](../test/unit/project_session_test.dart),
+[refresh UI tests](../test/widget/workbench_projection_refresh_test.dart) and
+[real-writer integration](../test/integration/workbench_projection_refresh_end_to_end_test.dart).
+These are source/test references, not a claim of new test execution in a docs task.
+
+## Historical provenance and display-only decision
+
+The complete earlier decision follows unchanged. Its proposed scope/pass is
+historical and does not arm implementation; the implemented section above
+supersedes its descriptions of future runtime work or unavailable refresh UI.
+
+
 ## Purpose
 
 Define the durable V1 contract that proves whether a loaded

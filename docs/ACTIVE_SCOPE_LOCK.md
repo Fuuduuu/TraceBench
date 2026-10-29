@@ -1,70 +1,68 @@
 # Active task boundary and protected scope
 
-Current: `DOCS_WORKFLOW_CONSOLIDATION`
-Next: `P1_WORKBENCH_PROJECTION_REFRESH`
+Current: `NEEDS_USER_DECISION`
+Next: `SHARED_VOCABULARY_EXTRACTION`
 
-## Current human authorization
+## Authorization state
 
-One-time DOCS_ONLY consolidation at baseline
-`69e5bd4112c478ac904f1da70c40018325da53cf`. This is a compact task boundary,
-not a new implementation scope-lock programme. No runtime work is authorized.
+No runtime implementation pass is currently reserved by this document. The
+documentation consolidation at `49c65b9` is completed and supplies no continuing
+authorization. Accepted implementation now includes projection refresh,
+ComponentCandidateEditor, standalone Navigator and Placement template/preview
+extraction through `db1003f401424d98c09a9ab3609129fd0a892a43`.
 
-Allowed documentation paths:
+The latest human request permits one bounded docs-only reality sync of the seven
+named active documents and verified corrections in eight existing Code Maps.
+It creates no new scope-lock programme, audit artifact, runtime authorization or
+automatic child. Human approval is required before staging or committing.
 
-- `AGENTS.md`
-- `docs/CURRENT_STATE.md`
-- `docs/PASS_QUEUE.md`
-- `docs/ACTIVE_SCOPE_LOCK.md`
-- `docs/PROJECT_MEMORY.md`
-- `docs/UI_WORKFLOWS.md`
-- `docs/ARCHITECTURE_BOUNDARIES.md`
-- `docs/FLUTTER_UI_SPEC.md`
-- `docs/PASS_LIFECYCLE.md`
-- `docs/PROMPTING_PROTOCOL.md`
-- `docs/code_maps/CODE_MAP_STANDARD.md`
-- `docs/AUDIT_CONTRACT.md`
-- `docs/MODEL_ROUTING.md`
-- `docs/archive/CURRENT_STATE_HISTORY_2026-10-29.md`
-- `docs/archive/PASS_QUEUE_HISTORY_2026-10-29.md`
-- `docs/archive/ACTIVE_SCOPE_LOCK_HISTORY_2026-10-29.md`
+The Next entry is planned technical modularization only: a small shared-vocabulary
+extraction for component types, labels/normalization and measurement units. This
+documentation sync authorizes no implementation of that work.
 
-MODEL_ROUTING is included only to remove binding routing contradictions and
-its stale claim that no UI writer flows exist. The archive wildcard is already
-registered by MEMORY_REGISTRY/FILE_MAP; no new registry programme is needed.
+Candidate-to-canonical confirmation is a deferred product feature and
+needs a new explicit protected task and a persistent geometry compatibility
+decision; an old draft, archive or queue entry cannot authorize it.
 
-## Existing changes and history
+## Protected boundaries
 
-Preserve the existing uncommitted editor scope draft and its AUDIT_INDEX change
-byte-for-byte, outside the documentation-consolidation commit set. The draft
-was prepared but not independently accepted or committed. Its contents may
-inform future work, but do not authorize implementation.
+- POHIKIRI and human-confirmation requirements remain unchanged.
+- No Dart, Python, runtime, test, generated code, tool, asset, dependency, schema,
+  fixture, user-project or sidecar edit is authorized by this sync.
+- Existing event envelopes/payloads, V1/V2 semantics, canonical writers,
+  ProjectSession guards, materializer algorithms, persisted placement coordinates,
+  evidence lifecycle and Project ZIP implementation remain fixed.
+- Editable candidate drafts are noncanonical. Their local sidecar is not an
+  event, confirmed component/placement, evidence promotion or new ZIP path.
+- Future new/changed writer, canonical data, migration, persistence compatibility
+  or ZIP contracts still require explicit protected scope, regression/recovery
+  evidence and independent review. Existing accepted contracts may be reused
+  unchanged under a compact, explicit human task.
+- No staging, commit, push, reset, stash, clean or destructive cleanup.
 
-The named archives contain the complete corresponding committed operational
-files from the stated baseline, copied directly from HEAD blobs. Exclude
-uncommitted draft edits. Preserve historical bodies, references and completed
-audit artifacts and verdicts.
+## Foreign material and history
 
-## Frozen surfaces
+Preserve byte-for-byte and exclude from any proposed staging set:
 
-- No Dart, Python, runtime, tests, tools, assets, package, schema or fixture edit.
-- POHIKIRI remains unchanged.
-- All Code Maps and CODE_MAP_INDEX remain unchanged; only CODE_MAP_STANDARD
-  process guidance may change. No new maps.
-- Canonical events/facts, writers, Session behavior, materializer semantics,
-  persisted coordinates, evidence/migration and Project ZIP behavior stay fixed.
-- Existing user projects and local sidecars are not modified.
-- No staging, commit, push, reset, stash or clean.
+- `docs/AUDIT_INDEX.md`
+- `docs/audit/TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS.md`
+
+The uncommitted editor scope draft is not authority for the already committed
+editor or future confirmation work. Accepted implementation is established by
+Git and current source. Preserve all previous audit artifacts/verdicts and
+archives; this correction does not rewrite accepted history.
+
+Historical reservations:
+[complete committed scope snapshot](archive/ACTIVE_SCOPE_LOCK_HISTORY_2026-10-29.md),
+captured at `69e5bd4` before consolidation.
 
 ## Validation and next work
 
-Verify live baseline/remote, exact docs-only material, full history copies,
-preserved incoming drafts, source-byte freeze, current claims, links/owner
-pointers, consistent risk policy and Git whitespace. Use proportionate docs
-validation; do not run unrelated Flutter suites for text changes.
+Verify committed-source evidence, exact docs-only material, frozen source and
+foreign drafts, changed links/paths and map anchors, consistent Current/Next
+pointers and both Git whitespace checks. Do not run Flutter suites for this
+text-only correction. Keep validation output outside the repository.
 
-Next is the explicit safe Workbench projection-refresh feature. It is a product
-priority only. Ordinary UI tasks can use a new compact human task boundary;
-protected data/canonical contract changes still require their explicit scope
-and review. No implementation child is activated by this cleanup.
-
-Historical reservations: [complete committed scope snapshot](archive/ACTIVE_SCOPE_LOCK_HISTORY_2026-10-29.md).
+After independent review and exact human commit, the route remains
+NEEDS_USER_DECISION. CURRENT_STATE owns priorities; PASS_QUEUE sequences them.
+No further implementation or preparatory pass is armed.

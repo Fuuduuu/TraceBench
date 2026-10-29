@@ -12,7 +12,9 @@ Owns the nullable loaded-project session behind the public
 `projectStateProvider`. `ProjectSession` provides generation-guarded full
 replacement, explicit close, current-state canonical-event application,
 event/operation identity deduplication, dedup-sidecar reset/reseed, and
-projection-stale promotion. It owns only in-memory projection/session state;
+projection-stale promotion. Same-project `adoptRefreshedProjection` adopts only
+known facts/freshness under synchronous snapshot/history guards without
+advancing generation or reseeding dedup. It owns only in-memory projection/session state;
 canonical persistence, project loading/creation, filesystem, navigation,
 writers, models, and schemas remain external.
 
@@ -26,6 +28,7 @@ writers, models, and schemas remain external.
 | Explicit close | `closeProject` | Clears state and dedup sidecars, then advances generation once. |
 | Current-state event application | `applyCanonicalEvent`, `TraceBenchEvent.fromJson`, `projectionFreshness: current.projectionFreshness`, `isProjectionStale: true` | Rejects stale/null/duplicate results, composes an accepted returned event against current state, preserves explicit freshness input to `copyWith`, and promotes stale. |
 | Guarded reload replacement | `replaceWithReloaded` | Replaces only a non-null current session at the matching generation, then advances once. |
+| Same-project projection adoption | `adoptRefreshedProjection`, `expectedState`, `_sameJson` | Verifies generation, expected-state identity, directory/project, fresh output and complete ordered event equivalence; adopts projection only while retaining history/context/dedup and generation. |
 | Dedup reset and normalization | `_installProject`, `_nonEmptyId`, `event.payload['client_operation_id']` | Resets/reseeds event and operation identities from every installed full state and normalizes blank IDs to absent. |
 
 ## Anchor inventory and verification
@@ -55,6 +58,15 @@ source. The map uses no line-number anchors.
    events, preserves the current explicit `projectionFreshness` argument, and
    sets compatibility `isProjectionStale: true`; generation does not advance.
 7. Accepted identities enter sidecars only after state replacement succeeds.
+8. `adoptRefreshedProjection` requires the exact current expected-state object,
+   matching generation/project/directory, fresh loaded projection and equivalent
+   full ordered event history. `_sameJson` ignores map-key order but preserves
+   nested values/list order. Guards and assignment are synchronous.
+9. Adoption copies only known facts/freshness into current state; it does not
+   call `_installProject`, clear dedup, replace events/context or advance generation.
+   A late same-generation save composes onto it and marks stale again. A newer
+   accepted event changes snapshot identity; close/open/full reload invalidates
+   the captured generation. Both reject the old adoption without mutation.
 
 ## Direct dependencies
 
@@ -64,6 +76,7 @@ source. The map uses no line-number anchors.
 | `ProjectState` | owned in-memory state | Carries the active hydrated project, events, and projection freshness. |
 | `TraceBenchEvent` | returned-event parser/model | Validates/parses a writer-returned map before in-memory composition. |
 | App/acquisition/report/writer screens | inbound callers | Capture generation and request guarded open, reload, close, or event application. |
+| `WorkbenchProjectionRefresh` | inbound refresh caller | Captures Session state/generation and asks for synchronous same-project projection adoption after the external service finishes. |
 | `SeededProjectSession` | test-only subclass | Overrides `build` only in tests; production exposes no seeding API. |
 
 ## Write and protected boundaries
@@ -71,6 +84,7 @@ source. The map uses no line-number anchors.
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
 | `openProject`, `replaceWithReloaded`, `closeProject` | `PROJECTION_STATE` | Replace or clear only the in-memory hydrated session and generation/dedup sidecars. |
+| `adoptRefreshedProjection` accepted result | `PROJECTION_STATE` | [D] Replaces only known facts/freshness; keeps generation, events, context and dedup identities. No filesystem/materializer call. |
 | `applyCanonicalEvent` accepted result | `PROJECTION_STATE` | Mirrors an already writer-returned canonical event into current in-memory state and promotes stale; it does not append the canonical log. |
 | Stale/null/duplicate result paths | `ZERO_WRITE` | Return false before state or sidecar mutation. |
 | Generation and identity getters/helpers | `ZERO_WRITE` | Read or normalize in-memory values only. |
@@ -84,7 +98,8 @@ accepted returned event, not canonical persistence.
 ## Zero-write zones
 
 - `generation` and `_nonEmptyId` are read/normalization only.
-- Rejected open/reload/apply paths mutate neither state, generation, nor dedup.
+- Rejected open/reload/apply/adoption paths mutate neither state, generation, nor dedup.
+- `_sameJson` compares in-memory JSON values only.
 - Sidecar membership is recoverable process state and is never serialized.
 - Provider declaration and `build` perform no project-file or event write.
 
@@ -98,13 +113,18 @@ accepted returned event, not canonical persistence.
 | Event-ID dedup | `[D]` sidecar/current-event membership | writer result identity | `ZERO_WRITE` on duplicate | event-ID and full-replacement tests |
 | Operation-ID dedup | `[D]` payload membership and sidecar | writer client-operation contracts | `ZERO_WRITE` on duplicate | operation-ID and full-replacement tests |
 | Reload replacement | `[D]` non-null/matching-generation guard | customer report export/reload | `PROJECTION_STATE` | reload success/stale/null plus report widget tests |
+| Same-project projection adoption | [D] expected-state/generation/project/directory/fresh/history guards and projection-only copy | refresh service/widget; in-flight writer completions | `PROJECTION_STATE` | adoption unit group plus refresh UI/real-writer integration |
 | Install/reseed | `[D]` clear then current-event scan | full replacement and close | `PROJECTION_STATE` sidecar | close and replacement-reset tests |
 
 ## Relevant tests and helpers
 
-- `test/unit/project_session_test.dart` supplies 13 direct tests for lifecycle,
-  generation, current-state composition, event/operation dedup, stale/null
-  no-ops, freshness promotion, and full-replacement reseeding.
+- `test/unit/project_session_test.dart` retains lifecycle/generation/dedup/
+  freshness/reseed cases and adds the `same-project projection adoption` group:
+  projection-only preservation, late/next saves, strict history/context guards,
+  top-level operation dedup and close/reopen/full-reload rejection.
+- `test/widget/workbench_projection_refresh_test.dart` and
+  `test/integration/workbench_projection_refresh_end_to_end_test.dart` cover
+  refresh caller behavior and a real late writer append after adoption.
 - `test/helpers/seeded_project_session.dart` is a 14-line test-only adapter that
   calls `super.build()` before returning a supplied initial state.
 - App/Home/acquisition/report widget suites cover stale awaited results and
@@ -114,6 +134,9 @@ accepted returned event, not canonical persistence.
 
 - Advancing generation for accepted events would invalidate other legitimate
   same-generation writer completions.
+- Reusing full replacement for refresh advances generation and rejects valid
+  same-project in-flight saves; bypassing expected-state/history guards can
+  incorrectly mark unrepresented events fresh.
 - Composing from caller-captured state can drop a distinct event that completed
   earlier or overwrite a newer full session.
 - Updating dedup sidecars before stale/null/duplicate checks can poison a later
@@ -133,6 +156,7 @@ accepted returned event, not canonical persistence.
 | One generation transition | `openProject`, `closeProject`, or `replaceWithReloaded` | async caller using it | matching/stale/null lifecycle tests |
 | One dedup rule | `applyCanonicalEvent`, matching sidecar | writer event contract | event- or operation-ID tests plus replacement reset |
 | Freshness promotion | accepted `copyWith` block | `ProjectState.copyWith` semantics | freshness test plus writer widget families |
+| Projection adoption | `adoptRefreshedProjection`, `_sameJson` | refresher snapshot and writer generation | adoption group + refresh race regressions |
 | Full-state reseed | `_installProject` | event payload identity | close/replacement tests |
 
 ## Future extraction seams
@@ -147,7 +171,7 @@ accepted returned event, not canonical persistence.
 Review for `SYMBOL_DRIFT` when provider/session/public-operation anchors move;
 `FLOW_DRIFT` when generation, current-state composition, reset, or reseed
 ordering changes; `BOUNDARY_DRIFT` when canonical writers/filesystem/schema or
-freshness semantics enter; `TEST_DRIFT` when the 13 direct contracts or caller
+freshness semantics enter; `TEST_DRIFT` when lifecycle/adoption contracts or caller
 guard tests move; and `STRUCTURE_DRIFT` when provider ownership splits.
 
 ## Known uncertainty

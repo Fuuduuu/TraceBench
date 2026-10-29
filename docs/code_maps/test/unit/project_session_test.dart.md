@@ -3,16 +3,18 @@
 - Source: `test/unit/project_session_test.dart`
 - Type: `test`
 - Status: `MAINTAINED`
-- Qualification: `SCORE 7/12 — 13 tests across lifecycle, generation, dedup, freshness, replacement, and stale/null guard families`
+- Qualification: `SCORE 7/12 — lifecycle, generation, dedup, freshness, full replacement and guarded same-project adoption families`
 - Audit evidence: `docs/audit/TRACEBENCH_PROJECT_SESSION_OWNER_CODE_MAP_MAINTENANCE_PASS.md`
 
 ## File purpose
 
-Provides direct in-memory contract evidence for `ProjectSession`. Thirteen
-unit tests use isolated `ProviderContainer` instances to prove null/zero
+Provides direct in-memory contract evidence for `ProjectSession`. The 28 source
+`test` declarations include generated cases and use isolated `ProviderContainer`
+instances to prove null/zero
 initialization, guarded open/reload/close generation transitions, current-state
 multi-event composition, event and operation dedup, projection-stale promotion,
-stale/null no-ops, and full-replacement dedup reset/reseed. No filesystem,
+stale/null no-ops, full-replacement dedup reset/reseed and same-project projection
+adoption without invalidating in-flight saves. No filesystem,
 writer, router, or production test-seeding API is used.
 
 ## Responsibility zones
@@ -27,6 +29,7 @@ writer, router, or production test-seeding API is used.
 | Freshness promotion | `accepted event promotes projection freshness to stale` | Locks authoritative stale plus compatibility boolean after accepted application. |
 | Stale/null guards | `stale generation cannot apply an event or mutate dedup`, `null-session event apply and reload are no-ops` | Proves rejected operations mutate neither state, generation, nor recoverable identities. |
 | Reload and full replacement | `matching-generation reload replaces state and advances once`, `stale reload cannot overwrite a newer session`, `full replacement resets and reseeds session dedup` | Proves guarded replacement, newer-session survival, and exact dedup reseeding. |
+| Same-project projection adoption | `same-project projection adoption`, `adopt`, `adopts only projection while preserving generation and in-memory history`, `late original-generation save and next distinct save are accepted`, `retains top-level operation dedup not recoverable from parsed events` | Proves projection-only adoption, retained generation/history/context/dedup, strict snapshot/context/history guards and invalidation on project switch/close/full reload. |
 | Typed fixtures | `_project`, `_rawEvent`, `_storedEvent` | Builds minimal hydrated projects, raw returned events, and stored payload-operation variants. |
 
 ## Anchor inventory and verification
@@ -40,12 +43,12 @@ literal resolves in committed test source. The map uses no line-number anchors.
 
 Reproducible vector: `0/2/2/2/0/1 = 7/12`.
 
-- Physical size `0`: 365 lines, below 800.
+- Physical size `0`: under 800 physical lines.
 - Independent responsibilities `2`: lifecycle, generation, event composition,
   two identity channels, freshness, stale/null guards, and replacement reseed.
 - Canonical/protected boundaries `2`: returned canonical-event projection,
   generation ownership, dedup, and freshness coexist.
-- Regression surface `2`: 13 tests across five-plus behavior families.
+- Regression surface `2`: 28 declarations with generated cases across lifecycle and adoption families.
 - Whole-file analysis tax `0`: no recurring broad-reconstruction evidence.
 - Blast-radius ambiguity `1`: production session plus one caller family is
   normally required to estimate a behavior change.
@@ -65,6 +68,15 @@ Reproducible vector: `0/2/2/2/0/1 = 7/12`.
    operation identity constant, isolating each rejection rule.
 7. Stale/null cases retry the same raw event at a later valid generation to
    prove rejection did not poison dedup state.
+8. The adoption group seeds an open local project with an accepted event and
+   constructs a fresh reload. It proves only known facts/freshness are adopted,
+   while events/manifest/directory/report and generation remain current.
+9. A late original-generation event and next distinct event are accepted after
+   adoption and mark stale. A separate top-level operation-ID case proves dedup
+   identities survive even when they cannot be reconstructed from parsed payloads.
+10. Nonidentical snapshot, wrong generation/project/facts/directory, nonfresh
+    output, missing/extra/modified/reordered events and changed nested values are
+    rejected. Close/reopen/project switch/full reload retain invalidation rules.
 
 ## Direct dependencies
 
@@ -107,11 +119,15 @@ tested through the production provider itself.
 | Event/operation dedup | `[D]` independent identity changes | raw/stored event shapes | no-op duplicate | both dedup plus replacement case |
 | Freshness | `[D]` explicit fresh input becomes stale | `ProjectState.copyWith` | observed `PROJECTION_STATE` | exact case + writer widget tests |
 | Stale/null guards | `[D]` false result and later valid retry | caller generation capture | `ZERO_WRITE` rejection | guard cases + async widget regressions |
+| Same-project adoption | [D] strict snapshot/history guards, projection-only copy and late/next save assertions | refresher and writer callers | observed `PROJECTION_STATE` | adoption group + refresh UI/integration |
 | Reload/reseed | `[D]` identity/generation/replacement assertions | customer report and open flows | observed `PROJECTION_STATE` | reload/reseed + report suite |
 
 ## Relevant tests and helpers
 
-- All 13 `test` declarations are direct unit evidence; no widget pump occurs.
+- All 28 `test` declarations are direct unit evidence; generated loops mean
+  declaration counts are not executed-case totals. No widget pump occurs.
+- Refresh UI and real-writer integration suites complement the adoption/race
+  evidence without changing this file into a persistence test.
 - App/Home/acquisition/report suites complement async caller behavior.
 - Add/Edit/Measure/Board suites complement writer-result integration.
 - `test/helpers/seeded_project_session.dart` is intentionally absent from this
@@ -138,6 +154,7 @@ tested through the production provider itself.
 | One identity channel | matching duplicate title and raw fixture | other identity channel | exact dedup + reseed case |
 | Current-state composition | two-event title | `applyCanonicalEvent` | exact case + writer caller family |
 | One stale guard | stale-event, stale-reload, or null title | caller capture site | exact unit + matching widget regression |
+| Same-project adoption | adoption group and local `adopt` helper | service snapshot, unchanged full-reload contract | guard/late-save unit and caller regressions |
 | Freshness promotion | freshness title | `ProjectState.copyWith` | exact case + writer widget families |
 
 ## Future extraction seams
@@ -152,7 +169,7 @@ tested through the production provider itself.
 Review for `SYMBOL_DRIFT` when helper or exact test-title anchors move;
 `FLOW_DRIFT` when generation/current-state/dedup ordering changes;
 `BOUNDARY_DRIFT` when writers/filesystem/schema enter; `TEST_DRIFT` when the
-13-case inventory changes; and `STRUCTURE_DRIFT` when fixtures or behavior
+lifecycle/adoption inventory changes; and `STRUCTURE_DRIFT` when fixtures or behavior
 families split.
 
 ## Known uncertainty

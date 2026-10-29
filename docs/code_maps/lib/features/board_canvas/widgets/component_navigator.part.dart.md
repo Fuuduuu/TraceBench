@@ -2,9 +2,17 @@
 
 - Source: `lib/features/board_canvas/widgets/component_navigator.part.dart`
 - Type: `production`
-- Status: `MAINTAINED`
+- Status: `RETIRED`
 - Qualification: `AUTO — 5+ independently testable production behaviors`
 - Audit evidence: `docs/audit/TRACEBENCH_BOARD_CANVAS_PALETTE_CODE_MAP_MAINTENANCE_PASS.md`
+
+## Retirement
+
+Historical map retained after removal of the same-library source. Current
+ownership is documented in
+[the standalone Navigator map](component_navigator.dart.md). The body below
+preserves the former part contract and evidence; it does not describe or
+constrain the replacement library.
 
 ## File purpose
 

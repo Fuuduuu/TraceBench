@@ -19,7 +19,8 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/board_canvas_inspector_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/board_canvas_placement_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/board_canvas_placement_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/component_identity_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_identity_panel.dart.md` | production | `MAINTAINED` |
-| `lib/features/board_canvas/widgets/component_navigator.part.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` | production | `MAINTAINED` |
+| `lib/features/board_canvas/widgets/component_navigator.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.dart.md` | production | `MAINTAINED` |
+| `lib/features/board_canvas/widgets/component_navigator.part.dart` | `docs/code_maps/lib/features/board_canvas/widgets/component_navigator.part.dart.md` | production | `RETIRED` |
 | `lib/features/board_canvas/widgets/integrated_measure_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/integrated_measure_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_graph/screens/board_graph_screen.dart` | `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/add_component_screen.dart` | `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` | production | `MAINTAINED` |

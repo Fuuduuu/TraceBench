@@ -135,6 +135,7 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
 | `BoardCanvasScreen` | system under test | Host layout, interaction and orchestration. |
+| `ComponentNavigator` / `component_navigator.dart` | indirect child | Existing Navigator characterization exercises the public fact/ID adapter through the unchanged host harness. Direct standalone API tests live separately in `test/widget/component_navigator_test.dart`. |
 | `IntegratedMeasurePanel` / `integrated_measure_panel.dart` | indirect child / direct source read | Measurement workflow through host composition and physical ownership via `measurementSource`. |
 | `ComponentIdentityPanel` / `component_identity_panel.dart` | indirect child / direct source read | Create/edit behavior through host composition; `componentSource` verifies holder/workflow ownership and host/module boundaries. |
 | `BoardCanvasInspectorPanel` / `board_canvas_inspector_panel.dart` | indirect child / direct source read | Frozen I0 behavior through host composition; `inspectorSource` verifies stateless presentation ownership and host/module boundaries. |

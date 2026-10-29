@@ -1,15 +1,228 @@
-part of '../screens/board_canvas_screen.dart';
+import 'dart:math' as math;
 
-class _ComponentNavigatorPanel extends StatelessWidget {
-  const _ComponentNavigatorPanel({
+import 'package:flutter/material.dart';
+
+import '../../../shared/models/known_facts.dart';
+import '../theme/board_canvas_palette.dart';
+
+enum ComponentCategory {
+  resistors,
+  capacitors,
+  diodes,
+  transistors,
+  integratedCircuits,
+  connectors,
+  inductorsTransformers,
+  fuses,
+  testPoints,
+  otherUnknown,
+}
+
+extension ComponentCategoryPresentation on ComponentCategory {
+  String get stableId {
+    switch (this) {
+      case ComponentCategory.resistors:
+        return 'resistors';
+      case ComponentCategory.capacitors:
+        return 'capacitors';
+      case ComponentCategory.diodes:
+        return 'diodes';
+      case ComponentCategory.transistors:
+        return 'transistors';
+      case ComponentCategory.integratedCircuits:
+        return 'integrated_circuits';
+      case ComponentCategory.connectors:
+        return 'connectors';
+      case ComponentCategory.inductorsTransformers:
+        return 'inductors_transformers';
+      case ComponentCategory.fuses:
+        return 'fuses';
+      case ComponentCategory.testPoints:
+        return 'test_points';
+      case ComponentCategory.otherUnknown:
+        return 'other_unknown';
+    }
+  }
+
+  String get label {
+    switch (this) {
+      case ComponentCategory.resistors:
+        return 'Takistid';
+      case ComponentCategory.capacitors:
+        return 'Kondensaatorid';
+      case ComponentCategory.diodes:
+        return 'Dioodid';
+      case ComponentCategory.transistors:
+        return 'Transistorid';
+      case ComponentCategory.integratedCircuits:
+        return 'Mikroskeemid';
+      case ComponentCategory.connectors:
+        return 'Konnektorid';
+      case ComponentCategory.inductorsTransformers:
+        return 'Poolid ja trafod';
+      case ComponentCategory.fuses:
+        return 'Kaitsmed';
+      case ComponentCategory.testPoints:
+        return 'Testpunktid';
+      case ComponentCategory.otherUnknown:
+        return 'Muud / tundmatu';
+    }
+  }
+}
+
+ComponentCategory componentCategoryFor(ComponentFact component) {
+  final kind = component.type?.trim().toLowerCase() ?? '';
+  if (kind == 'resistor' ||
+      kind == 'takisti' ||
+      kind == 'res' ||
+      kind.contains('pull-up') ||
+      kind.contains('pull down') ||
+      kind.contains('pull-down') ||
+      kind.contains('pull up') ||
+      kind.contains('shunt')) {
+    return ComponentCategory.resistors;
+  }
+  if (kind == 'capacitor' || kind == 'cap' || kind == 'kondensaator') {
+    return ComponentCategory.capacitors;
+  }
+  if (kind == 'diode' ||
+      kind == 'diood' ||
+      kind == 'zener' ||
+      kind == 'schottky' ||
+      kind == 'led') {
+    return ComponentCategory.diodes;
+  }
+  if (kind == 'transistor' ||
+      kind == 'mosfet' ||
+      kind == 'fet' ||
+      kind == 'bjt') {
+    return ComponentCategory.transistors;
+  }
+  if (kind == 'ic' ||
+      kind == 'mcu' ||
+      kind == 'controller' ||
+      kind == 'chip' ||
+      kind == 'regulator' ||
+      kind == 'opamp' ||
+      kind == 'mikroskeem') {
+    return ComponentCategory.integratedCircuits;
+  }
+  if (kind == 'connector' ||
+      kind == 'socket' ||
+      kind == 'header' ||
+      kind == 'plug' ||
+      kind == 'konnektor') {
+    return ComponentCategory.connectors;
+  }
+  if (kind == 'inductor' ||
+      kind == 'coil' ||
+      kind == 'choke' ||
+      kind == 'transformer' ||
+      kind.contains('induktiiv')) {
+    return ComponentCategory.inductorsTransformers;
+  }
+  if (kind == 'fuse' || kind == 'kaitse' || kind == 'ptc') {
+    return ComponentCategory.fuses;
+  }
+  if (kind == 'testpoint' ||
+      kind == 'test point' ||
+      kind == 'tp' ||
+      kind == 'testpunkt') {
+    return ComponentCategory.testPoints;
+  }
+  return ComponentCategory.otherUnknown;
+}
+
+String componentPrimaryLabel(ComponentFact component) {
+  final designator = component.designator?.trim();
+  return designator == null || designator.isEmpty
+      ? component.componentId
+      : designator;
+}
+
+String _componentKindLabel(ComponentFact component) {
+  final kind = component.type?.trim();
+  return kind == null || kind.isEmpty ? 'tundmatu' : kind;
+}
+
+int _naturalComponentIdCompare(String left, String right) {
+  final tokenPattern = RegExp(r'\d+|\D+');
+  final leftTokens = tokenPattern
+      .allMatches(left.toLowerCase())
+      .map((match) => match.group(0)!)
+      .toList(growable: false);
+  final rightTokens = tokenPattern
+      .allMatches(right.toLowerCase())
+      .map((match) => match.group(0)!)
+      .toList(growable: false);
+  final commonLength = math.min(leftTokens.length, rightTokens.length);
+  for (var index = 0; index < commonLength; index++) {
+    final leftToken = leftTokens[index];
+    final rightToken = rightTokens[index];
+    final leftNumber = int.tryParse(leftToken);
+    final rightNumber = int.tryParse(rightToken);
+    final comparison = leftNumber != null && rightNumber != null
+        ? leftNumber.compareTo(rightNumber)
+        : leftToken.compareTo(rightToken);
+    if (comparison != 0) {
+      return comparison;
+    }
+  }
+  return leftTokens.length.compareTo(rightTokens.length);
+}
+
+/// The existing Canvas presentation key, shared by the host adapter and Navigator.
+String componentNavigatorPlacementId(ComponentVisualPlacementFact placement) =>
+    '${placement.componentId}|${placement.sourceEventId}';
+
+ButtonStyle _benchBeepNavigatorControlStyle({required bool filled}) {
+  return ButtonStyle(
+    foregroundColor: const WidgetStatePropertyAll(BoardCanvasPalette.signal),
+    backgroundColor: WidgetStatePropertyAll(
+      filled ? BoardCanvasPalette.signalTint : Colors.transparent,
+    ),
+    overlayColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.pressed)) {
+        return BoardCanvasPalette.signal.withValues(alpha: 0.28);
+      }
+      if (states.contains(WidgetState.focused)) {
+        return BoardCanvasPalette.signal.withValues(alpha: 0.2);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return BoardCanvasPalette.signal.withValues(alpha: 0.12);
+      }
+      return Colors.transparent;
+    }),
+    side: WidgetStateProperty.resolveWith((states) {
+      final emphasized = states.contains(WidgetState.focused) ||
+          states.contains(WidgetState.pressed);
+      return BorderSide(
+        color: emphasized
+            ? BoardCanvasPalette.signal.withValues(alpha: 0.86)
+            : BoardCanvasPalette.ruleStrong.withValues(alpha: 0.6),
+        width: emphasized ? 1.2 : 1,
+      );
+    }),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+    ),
+  );
+}
+
+/// Stateless Navigator presentation. The caller owns selection, filters,
+/// previews, project lifecycle and placement actions; callbacks express intent.
+class ComponentNavigator extends StatelessWidget {
+  const ComponentNavigator({
+    super.key,
     required this.components,
-    required this.entries,
-    required this.canvasEntries,
+    required this.placements,
+    required this.canvasPlacements,
     required this.visibleComponentIds,
     required this.hideUnmeasured,
     required this.measurementCountsByComponentId,
     required this.selectedCategory,
-    required this.selection,
+    required this.selectedComponentId,
+    required this.selectedPlacementId,
     required this.onCategorySelected,
     required this.onBackToCategories,
     required this.onBackToCategory,
@@ -20,27 +233,28 @@ class _ComponentNavigatorPanel extends StatelessWidget {
   });
 
   final List<ComponentFact> components;
-  final List<_PlacementEntry> entries;
-  final List<_PlacementEntry> canvasEntries;
+  final List<ComponentVisualPlacementFact> placements;
+  final List<ComponentVisualPlacementFact> canvasPlacements;
   final Set<String> visibleComponentIds;
   final bool hideUnmeasured;
   final Map<String, int> measurementCountsByComponentId;
-  final _ComponentCategory? selectedCategory;
-  final CanvasSelection selection;
-  final ValueChanged<_ComponentCategory> onCategorySelected;
+  final ComponentCategory? selectedCategory;
+  final String? selectedComponentId;
+  final String? selectedPlacementId;
+  final ValueChanged<ComponentCategory> onCategorySelected;
   final VoidCallback onBackToCategories;
   final VoidCallback onBackToCategory;
   final ValueChanged<ComponentFact> onComponentSelected;
-  final ValueChanged<_PlacementEntry> onPlacementSelected;
+  final ValueChanged<String> onPlacementSelected;
   final VoidCallback onPlaceComponent;
   final ValueChanged<Set<String>> onPreviewKeysChanged;
 
   Set<String> get _placedComponentIds =>
-      entries.map((entry) => entry.placement.componentId).toSet();
+      placements.map((placement) => placement.componentId).toSet();
 
-  List<ComponentFact> _componentsInCategory(_ComponentCategory category) {
+  List<ComponentFact> _componentsInCategory(ComponentCategory category) {
     return components
-        .where((component) => _componentCategoryFor(component) == category)
+        .where((component) => componentCategoryFor(component) == category)
         .toList(growable: false);
   }
 
@@ -58,18 +272,13 @@ class _ComponentNavigatorPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final category = selectedCategory;
-    final selectedComponentId = switch (selection) {
-      ComponentSelection(:final componentId) => componentId,
-      ComponentPlacementSelection(:final componentId) => componentId,
-      _ => null,
-    };
     ComponentFact? selectedComponent;
     if (category != null &&
         selectedComponentId != null &&
         visibleComponentIds.contains(selectedComponentId)) {
       for (final component in components) {
         if (component.componentId == selectedComponentId &&
-            _componentCategoryFor(component) == category) {
+            componentCategoryFor(component) == category) {
           selectedComponent = component;
           break;
         }
@@ -91,7 +300,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildCategoryOverview(BuildContext context) {
     final theme = Theme.of(context);
-    final visibleCategories = _ComponentCategory.values
+    final visibleCategories = ComponentCategory.values
         .where((category) => _componentsInCategory(category).isNotEmpty)
         .toList(growable: false);
 
@@ -126,7 +335,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildCategoryRow(
     BuildContext context,
-    _ComponentCategory category,
+    ComponentCategory category,
   ) {
     final theme = Theme.of(context);
     final categoryComponents = _componentsInCategory(category);
@@ -141,13 +350,16 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         .where((component) => placedIds.contains(component.componentId))
         .length;
     final unplacedCount = categoryComponents.length - placedCount;
-    final previewKeys = canvasEntries
-        .where(
-          (entry) =>
-              entry.component != null &&
-              _componentCategoryFor(entry.component!) == category,
-        )
-        .map((entry) => entry.key)
+    final componentsById = {
+      for (final component in components) component.componentId: component
+    };
+    final previewKeys = canvasPlacements
+        .where((placement) {
+          final component = componentsById[placement.componentId];
+          return component != null &&
+              componentCategoryFor(component) == category;
+        })
+        .map(componentNavigatorPlacementId)
         .toSet();
 
     return MouseRegion(
@@ -222,7 +434,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildCategoryList(
     BuildContext context,
-    _ComponentCategory category,
+    ComponentCategory category,
   ) {
     final theme = Theme.of(context);
     final placedIds = _placedComponentIds;
@@ -351,11 +563,11 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         measurementCountsByComponentId[component.componentId] ?? 0;
     final measurementLabel =
         measurementCount == 0 ? 'Mõõtmata' : '$measurementCount mõõtmist';
-    final previewKeys = canvasEntries
+    final previewKeys = canvasPlacements
         .where(
-          (entry) => entry.placement.componentId == component.componentId,
+          (placement) => placement.componentId == component.componentId,
         )
-        .map((entry) => entry.key)
+        .map((placement) => componentNavigatorPlacementId(placement))
         .toSet();
 
     return MouseRegion(
@@ -383,7 +595,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _componentPrimaryLabel(component),
+                          componentPrimaryLabel(component),
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: BoardCanvasPalette.navy,
                             fontWeight: FontWeight.w700,
@@ -421,23 +633,20 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildComponentInspector(
     BuildContext context,
-    _ComponentCategory category,
+    ComponentCategory category,
     ComponentFact component,
   ) {
     final theme = Theme.of(context);
-    final componentEntries = entries
+    final componentPlacements = placements
         .where(
-          (entry) => entry.placement.componentId == component.componentId,
+          (placement) => placement.componentId == component.componentId,
         )
         .toList(growable: false);
-    final visibleComponentEntries = canvasEntries
+    final visibleComponentPlacements = canvasPlacements
         .where(
-          (entry) => entry.placement.componentId == component.componentId,
+          (placement) => placement.componentId == component.componentId,
         )
         .toList(growable: false);
-    final selectedPlacementKey = selection is ComponentPlacementSelection
-        ? (selection as ComponentPlacementSelection).placementKey
-        : null;
     final measurementCount =
         measurementCountsByComponentId[component.componentId] ?? 0;
 
@@ -456,7 +665,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
           ),
         ),
         Text(
-          _componentPrimaryLabel(component),
+          componentPrimaryLabel(component),
           style: theme.textTheme.titleMedium?.copyWith(
             color: BoardCanvasPalette.navy,
             fontWeight: FontWeight.w800,
@@ -480,7 +689,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        if (componentEntries.isEmpty) ...[
+        if (componentPlacements.isEmpty) ...[
           Text(
             'Pole veel canvasele paigutatud',
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -495,17 +704,17 @@ class _ComponentNavigatorPanel extends StatelessWidget {
             icon: const Icon(Icons.add_location_alt_outlined),
             label: const Text('Paiguta canvasele'),
           ),
-        ] else if (visibleComponentEntries.isEmpty) ...[
+        ] else if (visibleComponentPlacements.isEmpty) ...[
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   for (var index = 0;
-                      index < componentEntries.length;
+                      index < componentPlacements.length;
                       index++) ...[
-                    _buildPlacementSummary(context, componentEntries[index]),
-                    if (index != componentEntries.length - 1)
+                    _buildPlacementSummary(context, componentPlacements[index]),
+                    if (index != componentPlacements.length - 1)
                       const SizedBox(height: 6),
                   ],
                   const SizedBox(height: 8),
@@ -519,13 +728,13 @@ class _ComponentNavigatorPanel extends StatelessWidget {
               ),
             ),
           ),
-        ] else if (visibleComponentEntries.length == 1) ...[
-          _buildPlacementSummary(context, visibleComponentEntries.single),
+        ] else if (visibleComponentPlacements.length == 1) ...[
+          _buildPlacementSummary(context, visibleComponentPlacements.single),
           const SizedBox(height: 8),
           FilledButton.icon(
             key: const Key('board_canvas_component_view_placement'),
-            onPressed: () =>
-                onPlacementSelected(visibleComponentEntries.single),
+            onPressed: () => onPlacementSelected(componentNavigatorPlacementId(
+                visibleComponentPlacements.single)),
             style: _benchBeepNavigatorControlStyle(filled: true),
             icon: const Icon(Icons.center_focus_strong),
             label: const Text('Vaata canvasel'),
@@ -544,16 +753,17 @@ class _ComponentNavigatorPanel extends StatelessWidget {
               child: Column(
                 children: [
                   for (var index = 0;
-                      index < visibleComponentEntries.length;
+                      index < visibleComponentPlacements.length;
                       index++) ...[
                     _buildPlacementChoice(
                       context,
-                      visibleComponentEntries[index],
+                      visibleComponentPlacements[index],
                       index: index,
-                      selected: visibleComponentEntries[index].key ==
-                          selectedPlacementKey,
+                      selected: componentNavigatorPlacementId(
+                              visibleComponentPlacements[index]) ==
+                          selectedPlacementId,
                     ),
-                    if (index != visibleComponentEntries.length - 1)
+                    if (index != visibleComponentPlacements.length - 1)
                       const SizedBox(height: 6),
                   ],
                 ],
@@ -567,7 +777,7 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildPlacementSummary(
     BuildContext context,
-    _PlacementEntry entry,
+    ComponentVisualPlacementFact placement,
   ) {
     final theme = Theme.of(context);
     return Container(
@@ -578,8 +788,8 @@ class _ComponentNavigatorPanel extends StatelessWidget {
         border: Border.all(color: BoardCanvasPalette.rule),
       ),
       child: Text(
-        '${entry.placement.boardSide} · '
-        '${entry.placement.coordinateSpace}',
+        '${placement.boardSide} · '
+        '${placement.coordinateSpace}',
         style: theme.textTheme.bodySmall?.copyWith(
           color: BoardCanvasPalette.muted,
         ),
@@ -589,13 +799,14 @@ class _ComponentNavigatorPanel extends StatelessWidget {
 
   Widget _buildPlacementChoice(
     BuildContext context,
-    _PlacementEntry entry, {
+    ComponentVisualPlacementFact placement, {
     required int index,
     required bool selected,
   }) {
     final theme = Theme.of(context);
     return MouseRegion(
-      onEnter: (_) => onPreviewKeysChanged(<String>{entry.key}),
+      onEnter: (_) => onPreviewKeysChanged(
+          <String>{componentNavigatorPlacementId(placement)}),
       onExit: (_) => onPreviewKeysChanged(const <String>{}),
       child: Semantics(
         selected: selected,
@@ -606,9 +817,11 @@ class _ComponentNavigatorPanel extends StatelessWidget {
               : BoardCanvasPalette.tile,
           borderRadius: BorderRadius.circular(7),
           child: InkWell(
-            key: Key('board_canvas_component_placement_${entry.key}'),
+            key: Key(
+                'board_canvas_component_placement_${componentNavigatorPlacementId(placement)}'),
             borderRadius: BorderRadius.circular(7),
-            onTap: () => onPlacementSelected(entry),
+            onTap: () =>
+                onPlacementSelected(componentNavigatorPlacementId(placement)),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
               decoration: BoxDecoration(
@@ -628,14 +841,14 @@ class _ComponentNavigatorPanel extends StatelessWidget {
                       children: [
                         Text(
                           '${index + 1}. paigutus · '
-                          '${entry.placement.boardSide}',
+                          '${placement.boardSide}',
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: BoardCanvasPalette.navy,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          entry.placement.coordinateSpace,
+                          placement.coordinateSpace,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: BoardCanvasPalette.muted,
                           ),

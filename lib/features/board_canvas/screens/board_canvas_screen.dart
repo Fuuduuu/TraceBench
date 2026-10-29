@@ -15,6 +15,7 @@ import '../rendering/aligned_photo_layer.dart';
 import '../theme/board_canvas_palette.dart';
 import '../widgets/board_canvas_inspector_panel.dart';
 import '../widgets/component_identity_panel.dart';
+import '../widgets/component_navigator.dart';
 import '../widgets/board_canvas_placement_panel.dart';
 import '../widgets/integrated_measure_panel.dart';
 import '../../photos/logic/photo_event_read_model.dart';
@@ -37,7 +38,6 @@ import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 
 part '../rendering/wizard_intake_overlay.part.dart';
-part '../widgets/component_navigator.part.dart';
 
 const double _kCompactBoardCanvasAppBarHeight = 44;
 const double _kCompactControlTileHeight = 34;
@@ -57,40 +57,6 @@ const EdgeInsets _kCompactControlTilePadding =
 const EdgeInsets _kCompactControlChildrenPadding =
     EdgeInsets.fromLTRB(8, 0, 8, 6);
 
-ButtonStyle _benchBeepNavigatorControlStyle({required bool filled}) {
-  return ButtonStyle(
-    foregroundColor: const WidgetStatePropertyAll(BoardCanvasPalette.signal),
-    backgroundColor: WidgetStatePropertyAll(
-      filled ? BoardCanvasPalette.signalTint : Colors.transparent,
-    ),
-    overlayColor: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.pressed)) {
-        return BoardCanvasPalette.signal.withValues(alpha: 0.28);
-      }
-      if (states.contains(WidgetState.focused)) {
-        return BoardCanvasPalette.signal.withValues(alpha: 0.2);
-      }
-      if (states.contains(WidgetState.hovered)) {
-        return BoardCanvasPalette.signal.withValues(alpha: 0.12);
-      }
-      return Colors.transparent;
-    }),
-    side: WidgetStateProperty.resolveWith((states) {
-      final emphasized = states.contains(WidgetState.focused) ||
-          states.contains(WidgetState.pressed);
-      return BorderSide(
-        color: emphasized
-            ? BoardCanvasPalette.signal.withValues(alpha: 0.86)
-            : BoardCanvasPalette.ruleStrong.withValues(alpha: 0.6),
-        width: emphasized ? 1.2 : 1,
-      );
-    }),
-    shape: WidgetStatePropertyAll(
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-    ),
-  );
-}
-
 enum _WorkbenchContextPanelMode {
   hidden,
   inspector,
@@ -99,172 +65,6 @@ enum _WorkbenchContextPanelMode {
   addComponentTemplates,
   safetyEvidence,
   photos,
-}
-
-enum _ComponentCategory {
-  resistors,
-  capacitors,
-  diodes,
-  transistors,
-  integratedCircuits,
-  connectors,
-  inductorsTransformers,
-  fuses,
-  testPoints,
-  otherUnknown,
-}
-
-extension on _ComponentCategory {
-  String get stableId {
-    switch (this) {
-      case _ComponentCategory.resistors:
-        return 'resistors';
-      case _ComponentCategory.capacitors:
-        return 'capacitors';
-      case _ComponentCategory.diodes:
-        return 'diodes';
-      case _ComponentCategory.transistors:
-        return 'transistors';
-      case _ComponentCategory.integratedCircuits:
-        return 'integrated_circuits';
-      case _ComponentCategory.connectors:
-        return 'connectors';
-      case _ComponentCategory.inductorsTransformers:
-        return 'inductors_transformers';
-      case _ComponentCategory.fuses:
-        return 'fuses';
-      case _ComponentCategory.testPoints:
-        return 'test_points';
-      case _ComponentCategory.otherUnknown:
-        return 'other_unknown';
-    }
-  }
-
-  String get label {
-    switch (this) {
-      case _ComponentCategory.resistors:
-        return 'Takistid';
-      case _ComponentCategory.capacitors:
-        return 'Kondensaatorid';
-      case _ComponentCategory.diodes:
-        return 'Dioodid';
-      case _ComponentCategory.transistors:
-        return 'Transistorid';
-      case _ComponentCategory.integratedCircuits:
-        return 'Mikroskeemid';
-      case _ComponentCategory.connectors:
-        return 'Konnektorid';
-      case _ComponentCategory.inductorsTransformers:
-        return 'Poolid ja trafod';
-      case _ComponentCategory.fuses:
-        return 'Kaitsmed';
-      case _ComponentCategory.testPoints:
-        return 'Testpunktid';
-      case _ComponentCategory.otherUnknown:
-        return 'Muud / tundmatu';
-    }
-  }
-}
-
-_ComponentCategory _componentCategoryFor(ComponentFact component) {
-  final kind = component.type?.trim().toLowerCase() ?? '';
-  if (kind == 'resistor' ||
-      kind == 'takisti' ||
-      kind == 'res' ||
-      kind.contains('pull-up') ||
-      kind.contains('pull down') ||
-      kind.contains('pull-down') ||
-      kind.contains('pull up') ||
-      kind.contains('shunt')) {
-    return _ComponentCategory.resistors;
-  }
-  if (kind == 'capacitor' || kind == 'cap' || kind == 'kondensaator') {
-    return _ComponentCategory.capacitors;
-  }
-  if (kind == 'diode' ||
-      kind == 'diood' ||
-      kind == 'zener' ||
-      kind == 'schottky' ||
-      kind == 'led') {
-    return _ComponentCategory.diodes;
-  }
-  if (kind == 'transistor' ||
-      kind == 'mosfet' ||
-      kind == 'fet' ||
-      kind == 'bjt') {
-    return _ComponentCategory.transistors;
-  }
-  if (kind == 'ic' ||
-      kind == 'mcu' ||
-      kind == 'controller' ||
-      kind == 'chip' ||
-      kind == 'regulator' ||
-      kind == 'opamp' ||
-      kind == 'mikroskeem') {
-    return _ComponentCategory.integratedCircuits;
-  }
-  if (kind == 'connector' ||
-      kind == 'socket' ||
-      kind == 'header' ||
-      kind == 'plug' ||
-      kind == 'konnektor') {
-    return _ComponentCategory.connectors;
-  }
-  if (kind == 'inductor' ||
-      kind == 'coil' ||
-      kind == 'choke' ||
-      kind == 'transformer' ||
-      kind.contains('induktiiv')) {
-    return _ComponentCategory.inductorsTransformers;
-  }
-  if (kind == 'fuse' || kind == 'kaitse' || kind == 'ptc') {
-    return _ComponentCategory.fuses;
-  }
-  if (kind == 'testpoint' ||
-      kind == 'test point' ||
-      kind == 'tp' ||
-      kind == 'testpunkt') {
-    return _ComponentCategory.testPoints;
-  }
-  return _ComponentCategory.otherUnknown;
-}
-
-String _componentPrimaryLabel(ComponentFact component) {
-  final designator = component.designator?.trim();
-  return designator == null || designator.isEmpty
-      ? component.componentId
-      : designator;
-}
-
-String _componentKindLabel(ComponentFact component) {
-  final kind = component.type?.trim();
-  return kind == null || kind.isEmpty ? 'tundmatu' : kind;
-}
-
-int _naturalComponentIdCompare(String left, String right) {
-  final tokenPattern = RegExp(r'\d+|\D+');
-  final leftTokens = tokenPattern
-      .allMatches(left.toLowerCase())
-      .map((match) => match.group(0)!)
-      .toList(growable: false);
-  final rightTokens = tokenPattern
-      .allMatches(right.toLowerCase())
-      .map((match) => match.group(0)!)
-      .toList(growable: false);
-  final commonLength = math.min(leftTokens.length, rightTokens.length);
-  for (var index = 0; index < commonLength; index++) {
-    final leftToken = leftTokens[index];
-    final rightToken = rightTokens[index];
-    final leftNumber = int.tryParse(leftToken);
-    final rightNumber = int.tryParse(rightToken);
-    final comparison = leftNumber != null && rightNumber != null
-        ? leftNumber.compareTo(rightNumber)
-        : leftToken.compareTo(rightToken);
-    if (comparison != 0) {
-      return comparison;
-    }
-  }
-  return leftTokens.length.compareTo(rightTokens.length);
 }
 
 abstract class CanvasSelection {
@@ -484,7 +284,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   CanvasSelection _canvasSelection = const EmptyCanvasSelection();
-  _ComponentCategory? _componentNavigatorCategory;
+  ComponentCategory? _componentNavigatorCategory;
   Set<String> _previewPlacementKeys = const <String>{};
   bool _hideUnmeasuredComponents = false;
   final BoardCanvasPlacementHolder _placementHolder =
@@ -919,7 +719,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
           _clearCanvasSelection();
           _componentNavigatorCategory = selectedComponent == null
               ? null
-              : _componentCategoryFor(selectedComponent);
+              : componentCategoryFor(selectedComponent);
           _contextPanelMode = _WorkbenchContextPanelMode.placements;
           _inspectorVisible = true;
           _canvasFocusMode = false;
@@ -936,7 +736,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       _contextPanelMode = _WorkbenchContextPanelMode.addComponentTemplates;
       _inspectorVisible = true;
       _canvasFocusMode = false;
-      _placementHolder.beginUnplaced(_componentPrimaryLabel(component));
+      _placementHolder.beginUnplaced(componentPrimaryLabel(component));
       _previewPlacementKeys = const <String>{};
     });
   }
@@ -1681,16 +1481,25 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       contextPanel = metadata;
                       break;
                     case _WorkbenchContextPanelMode.placements:
-                      contextPanel = _ComponentNavigatorPanel(
+                      contextPanel = ComponentNavigator(
                         components: knownFacts.components,
-                        entries: allEntries,
-                        canvasEntries: visibleEntries,
+                        placements: allEntries
+                            .map((entry) => entry.placement)
+                            .toList(growable: false),
+                        canvasPlacements: visibleEntries
+                            .map((entry) => entry.placement)
+                            .toList(growable: false),
                         visibleComponentIds: visibleComponentIds,
                         hideUnmeasured: _hideUnmeasuredComponents,
                         measurementCountsByComponentId:
                             measurementCountByComponent,
                         selectedCategory: _componentNavigatorCategory,
-                        selection: _canvasSelection,
+                        selectedComponentId: _selectedComponentId,
+                        selectedPlacementId: switch (_canvasSelection) {
+                          ComponentPlacementSelection(:final placementKey) =>
+                            placementKey,
+                          _ => null,
+                        },
                         onCategorySelected: (category) {
                           setState(() {
                             _clearCanvasSelection();
@@ -1717,9 +1526,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             _previewPlacementKeys = const <String>{};
                           });
                         },
-                        onPlacementSelected: (entry) {
+                        onPlacementSelected: (placementId) {
                           setState(() {
-                            _selectComponentPlacement(entry);
+                            _selectComponentPlacementByKey(
+                                placementId, allEntries);
                             _previewPlacementKeys = const <String>{};
                           });
                         },
@@ -1851,7 +1661,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                             ?.selectorLabel ??
                                         (placementSaveTarget == null
                                             ? null
-                                            : _componentPrimaryLabel(
+                                            : componentPrimaryLabel(
                                                 componentsById[
                                                         placementSaveTarget
                                                             .componentId] ??
@@ -5464,7 +5274,7 @@ class _PlacementEntry {
   final FootprintTemplate? template;
   final List<_KnownPinVisualRef> knownPins;
 
-  String get key => '${placement.componentId}|${placement.sourceEventId}';
+  String get key => componentNavigatorPlacementId(placement);
 
   String get selectorLabel {
     final designator = component?.designator?.trim();

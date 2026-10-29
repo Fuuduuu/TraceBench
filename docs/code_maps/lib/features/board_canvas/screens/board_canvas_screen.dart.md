@@ -21,8 +21,10 @@ confirmation are delegated to `PhotoWorkbenchPanel` and its writers.
 The host loads the Wizard primary asset, selects event-derived alignments and
 composes provisional/confirmed photo rendering without promoting visual evidence.
 
-Pure measurement/placement libraries and two same-library parts retain their
-existing ownership. The instrument bar replaces shared outer chrome only on
+Pure measurement/placement libraries and the Wizard same-library part retain
+their existing ownership. `ComponentNavigator` is a normal imported library;
+the host adapts public facts and selected IDs and retains all transient state
+and placement actions. The instrument bar replaces shared outer chrome only on
 the primary route; secondary pages still use the router's `WorkbenchShell`.
 
 ## Responsibility zones
@@ -31,7 +33,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | --- | --- | --- |
 | 1. Screen and freshness | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_buildScaffold`, `ProjectionStaleBanner` | Watches project state, composes branches and inserts freshness directly below the instrument bar. |
 | 2. Selection/preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Volatile selection/hover/clear behavior. |
-| 3. Navigator/filter | `_ComponentCategory`, `_ComponentNavigatorPanel`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host callbacks/filter state and delegated navigator/projection. |
+| 3. Navigator/filter | `ComponentCategory`, `ComponentNavigator`, `componentCategoryFor`, `componentPrimaryLabel`, `componentNavigatorPlacementId`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host category/filter/selection/preview state; public fact-list/selected-ID adapter and intent callbacks. Classification and Navigator presentation belong to the imported library. |
 | 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel`, `InspectorMeasurementSummaryTile`, `InspectorVisualTraceSummaryTile` | Constructs the child from one resolved placement; builds provenance children using imported Inspector presentation widgets and supplies private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Components composition/lifetime | `ComponentIdentityHolder`, `_componentIdentityHolder.dispose()`, `_rightPanelSelectedMetadataComponent`, `_AddComponentTemplateListPanel`, `ComponentIdentityPanel`, `placementSectionBuilder` | Creates/disposes one screen-lived holder, resolves a nullable edit target, retains the Add frame/scroll and supplies Placement children; the module owns create/edit state and writes. |
 | 6. Placement composition/lifetime | `BoardCanvasPlacementHolder`, `_placementHolder`, `_onPlacementChanged`, `_PlacementSaveTarget`, `_placementSaveTarget`, `_placementSeedFor`, `_resolvedPlacementSaveValues`, `buildBoardCanvasPlacementChildren`, `buildBoardCanvasPlacementEditor` | Creates/listens/disposes one screen-lived holder; retains selection/eligibility, immutable seeding, current-snapshot center conversion and catalogue/preview builders. Module owns drafts, controls, guards and writer/Session workflow. |
@@ -44,8 +46,9 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 
 ## Anchor inventory and verification
 
-Every anchor resolves as a host substring. Wizard/navigator part types and
-imported Components, Placement, Measurement, Inspector, geometry, photo, mode and destination-model names are consumer
+Every anchor resolves as a host substring. Wizard part types and imported
+Navigator/category/label/placement-ID, Components, Placement, Measurement,
+Inspector, geometry, photo, mode and destination-model names are consumer
 references; their declarations remain in the named dependency owners.
 No line-number anchors are maintained.
 
@@ -149,7 +152,8 @@ No line-number anchors are maintained.
 | `photo_event_writer.dart`, `photo_import_service.dart` | injected seams | Delegated canonical/file workflow types. |
 | `aligned_photo_layer.dart`, `photo_alignment_transform.dart` | read/render/value seams | Primary asset loading, matrix renderer, typed points and solution data. |
 | `measurement_projection.dart`, `placement_geometry.dart` | pure helpers | Counts/badges/caution and geometry/hit tests. |
-| `wizard_intake_overlay.part.dart`, `component_navigator.part.dart` | same-library parts | Wizard rendering and Stateless navigator declarations. |
+| `wizard_intake_overlay.part.dart` | same-library part | Wizard rendering declarations. |
+| `component_navigator.dart` | imported presentation library | Public `ComponentFact`/`ComponentVisualPlacementFact` inputs, selected component/placement IDs, shared category policy, display label and unchanged placement-key format. Seven intent callbacks leave state and placement actions in this host. |
 | `BoardCanvasPalette`, facts, `WizardIntake` | read input | Static colors, canonical projection and noncanonical intake. |
 | `board_canvas_placement_panel.dart` | normal workflow / immutable-value library | Screen-lived Placement holder, Add children/editor, guards and explicit writer/Session workflow; host resolves target/geometry and supplies catalogue/preview adapters. |
 | `board_canvas_inspector_panel.dart` | normal child / presentation library | Resolved Inspector facts, counts/visibility and opaque Placement editor slot; declares presentation widgets consumed by host Measurement and the separate Placement editor. |
@@ -198,7 +202,7 @@ that evidence comes only from the explicit delegated confirmation writer.
 | Components composition/lifetime | [D] one screen holder, nullable target and spread Placement children | module guards/add-edit writers/Session, host selection and Placement frame | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; construction `ZERO_WRITE` | `Components C0 characterization` and host/module source guards |
 | Measurement composition | [D] placement-derived inputs and two host builders | module State/writer/session, Inspector tiles and preview painter | delegated `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE`; builders `ZERO_WRITE` | M0 group, four advanced-details/no-placement cases and source-owner guards |
 | Inspector composition | [D] one resolved entry, module-built editor Widget and imported presentation declarations | Inspector/Placement libraries, host selection/badge state, Measurement reuse and safety | `ZERO_WRITE` / host `UI_LOCAL` | frozen I0, M0 provenance and source-owner guards |
-| Navigator/geometry | [D] helper/part consumers | pure owners and painter hits | `UI_LOCAL` / `ZERO_WRITE` | navigator and geometry families |
+| Navigator/geometry | [D] public fact/ID adapter, shared classifier/label/key consumers and Wizard part | Stateless Navigator/pure owners, host state/actions and painter hits | `UI_LOCAL` / `ZERO_WRITE` | unchanged host Navigator/geometry families; direct `component_navigator_test.dart` |
 | Responsive/freshness | [D] separate bar/content thresholds | router/body padding/banner | `ZERO_WRITE` / `UI_LOCAL` | width matrix, focus and banner cases |
 
 ## Relevant tests and helpers

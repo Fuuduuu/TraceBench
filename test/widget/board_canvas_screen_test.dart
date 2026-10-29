@@ -13,6 +13,9 @@ import 'package:trace_bench_viewer/shared/session/project_session.dart';
 
 import '../helpers/seeded_project_session.dart';
 import 'package:trace_bench_viewer/app/router.dart';
+import 'package:trace_bench_viewer/features/component_candidates/models/component_candidate_draft.dart';
+import 'package:trace_bench_viewer/features/component_candidates/services/component_candidate_draft_store.dart';
+import 'package:trace_bench_viewer/features/component_candidates/widgets/component_candidate_editor.dart';
 import 'package:trace_bench_viewer/features/board_canvas/geometry/placement_geometry.dart';
 import 'package:trace_bench_viewer/features/board_canvas/logic/measurement_projection.dart';
 import 'package:trace_bench_viewer/features/board_canvas/rendering/aligned_photo_layer.dart';
@@ -650,6 +653,7 @@ PhotoImportResult _photoImportResult(
 Widget _harness({
   required ProjectState? projectState,
   Key? boardCanvasKey,
+  ComponentCandidateDraftStore? candidateDraftStore,
   V2AddComponentWriter? addComponentWriter,
   V2EditComponentWriter? editComponentWriter,
   V2PlacementWriter? placementWriter,
@@ -678,6 +682,7 @@ Widget _harness({
     child: MaterialApp(
       home: BoardCanvasScreen(
         key: boardCanvasKey,
+        candidateDraftStore: candidateDraftStore,
         photoSourcePicker: photoSourcePicker,
         photoSourcePreviewLoader: photoSourcePreviewLoader,
         photoImportService: photoImportService,
@@ -1514,6 +1519,7 @@ FootprintTemplate _geometryTemplateWithPinCount(
 }
 
 void main() {
+  _componentCandidateEditorIntegrationTests();
   _sharedCandidateOverlayGeometryTests();
   _sharedCandidateOverlayMatrixTests();
   testWidgets('single shell measures routed canvas area', (tester) async {
@@ -3997,7 +4003,7 @@ void main() {
 
       expect(
         candidatePixel,
-        const Color(0xFF2A2416),
+        WorkbenchColors.navyDeep,
         reason: 'The opaque center cross of the Wizard candidate must survive '
             'the final Stack composite.',
       );
@@ -7608,7 +7614,8 @@ void main() {
       expect(
           find.descendant(
               of: advanced,
-              matching: find.text('No advanced details for selected component.')),
+              matching:
+                  find.text('No advanced details for selected component.')),
           findsOneWidget);
       expect(find.descendant(of: advanced, matching: find.text('READ')),
           findsNothing);
@@ -7617,7 +7624,8 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('M1 pre-move advanced details preserve both READ provenance tiles',
+    testWidgets(
+        'M1 pre-move advanced details preserve both READ provenance tiles',
         (tester) async {
       final writer = _FakeSaveMeasurementWriter();
       final state = advancedDetailsState();
@@ -7637,7 +7645,8 @@ void main() {
       expect(
           find.descendant(
               of: advanced,
-              matching: find.text('No advanced details for selected component.')),
+              matching:
+                  find.text('No advanced details for selected component.')),
           findsNothing);
       expect(writer.requests, isEmpty);
       expect(_readProjectState(tester), same(state));
@@ -7723,7 +7732,6 @@ void main() {
       expect(state.events, isEmpty);
       expect(tester.takeException(), isNull);
     });
-
   });
 
   testWidgets(
@@ -8258,9 +8266,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
@@ -8483,9 +8489,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.textContaining('template family'), findsNothing);
@@ -8583,8 +8587,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester
-        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -8635,9 +8638,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -8746,9 +8747,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -8995,9 +8994,9 @@ void main() {
     Finder section(bool editing) =>
         find.byKey(Key('${prefix(editing)}_section'));
     Finder action(bool editing) => find.descendant(
-      of: find.byKey(Key('${prefix(editing)}_save')),
-      matching: find.byType(OutlinedButton),
-    );
+          of: find.byKey(Key('${prefix(editing)}_save')),
+          matching: find.byType(OutlinedButton),
+        );
 
     String copy(WidgetTester tester, String key) =>
         tester.widget<Text>(find.byKey(Key(key))).data!;
@@ -9021,24 +9020,22 @@ void main() {
       String? designator = 'R101',
       String? storedKind = 'passive',
       List<TraceBenchEvent> events = const [],
-    }) => _inlineProjectState(
-      components: [
-        ComponentFact(
-          componentId: 'cmp_r101',
-          designator: designator,
-          type: storedKind,
-        ),
-      ],
-      placements: const [boardPlacement],
-      projectDirectory: projectDirectory,
-      events: events,
-    );
+    }) =>
+        _inlineProjectState(
+          components: [
+            ComponentFact(
+              componentId: 'cmp_r101',
+              designator: designator,
+              type: storedKind,
+            ),
+          ],
+          placements: const [boardPlacement],
+          projectDirectory: projectDirectory,
+          events: events,
+        );
 
     Future<void> openAdd(WidgetTester tester) async {
-      await _tapWidgetByKey(
-        tester,
-        const Key('board_canvas_rail_add_component_tool'),
-      );
+      await _openCanonicalPlacementAdd(tester);
       await tester.pumpAndSettle();
       expect(section(false), findsOneWidget);
       expect(section(true), findsOneWidget);
@@ -9083,9 +9080,8 @@ void main() {
       await tester.pumpAndSettle();
       if (selectPlacement) {
         final designator = state.knownFacts.components.first.designator?.trim();
-        final label = designator == null || designator.isEmpty
-            ? 'cmp_r101'
-            : designator;
+        final label =
+            designator == null || designator.isEmpty ? 'cmp_r101' : designator;
         await _selectPlacement(tester, '$label (cmp_r101)');
       }
       await openAdd(tester);
@@ -9277,9 +9273,8 @@ void main() {
           } else {
             await createDraft(tester);
           }
-          final oldCallback = tester
-              .widget<OutlinedButton>(action(editing))
-              .onPressed!;
+          final oldCallback =
+              tester.widget<OutlinedButton>(action(editing)).onPressed!;
           await save(tester, editing);
           oldCallback();
           await tester.pump();
@@ -9351,11 +9346,11 @@ void main() {
             await tester.pumpAndSettle();
             final expected = editing
                 ? existing
-                      ? 'Komponendi andmed olid juba salvestatud. Projektsioon vajab värskendamist.'
-                      : editSuccess
+                    ? 'Komponendi andmed olid juba salvestatud. Projektsioon vajab värskendamist.'
+                    : editSuccess
                 : existing
-                ? 'Komponent oli juba salvestatud. Projektsioon vajab värskendamist.'
-                : createSuccess;
+                    ? 'Komponent oli juba salvestatud. Projektsioon vajab värskendamist.'
+                    : createSuccess;
             expectSuccess(tester, editing, expected);
             expect(copy(tester, '${editPrefix}_selected_component'), selected);
             final accepted = _readProjectState(tester);
@@ -9992,8 +9987,8 @@ void main() {
         );
         expect(
           _readProjectState(tester).knownFacts.components.any(
-            (component) => component.componentId == 'cmp_c900',
-          ),
+                (component) => component.componentId == 'cmp_c900',
+              ),
           isFalse,
         );
         expect(tester.widget<OutlinedButton>(action(true)).onPressed, isNull);
@@ -10283,9 +10278,7 @@ void main() {
       _harness(projectState: state, addComponentWriter: addComponentWriter),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
@@ -10379,9 +10372,7 @@ void main() {
     await _selectPlacement(tester, 'R101 (cmp_r101)');
     expect(addComponentWriter.requests, isEmpty);
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.enterText(
       find.byKey(const Key('board_canvas_create_component_id_input')),
@@ -10466,9 +10457,7 @@ void main() {
       _harness(projectState: state, addComponentWriter: addComponentWriter),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     await tester.enterText(
@@ -10540,9 +10529,7 @@ void main() {
         _harness(projectState: state, addComponentWriter: addComponentWriter),
       );
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const Key('board_canvas_rail_add_component_tool')),
-      );
+      await _openCanonicalPlacementAdd(tester);
       await tester.pump(const Duration(milliseconds: 16));
 
       await tester.enterText(
@@ -10623,9 +10610,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
@@ -10711,9 +10696,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     await tester.enterText(
@@ -10786,9 +10769,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.text('Metaandmete komponent: R101 (cmp_r101)'), findsOneWidget);
@@ -10914,9 +10895,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       await _selectPlacement(tester, 'R101 (cmp_r101)');
-      await tester.tap(
-        find.byKey(const Key('board_canvas_rail_add_component_tool')),
-      );
+      await _openCanonicalPlacementAdd(tester);
       await tester.pump(const Duration(milliseconds: 16));
 
       await tester.ensureVisible(
@@ -10975,9 +10954,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11055,9 +11032,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11212,9 +11187,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11271,9 +11244,7 @@ void main() {
       _harness(projectState: state, placementWriter: placementWriter),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11352,9 +11323,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11483,9 +11452,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'RXLOW (cmp_x_low)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11548,9 +11515,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11656,9 +11621,7 @@ void main() {
       'R101 (cmp_r101)',
       placementIndex: 1,
     );
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(find.text('Valitud komponent: R101 (cmp_r101)'), findsOneWidget);
@@ -11717,9 +11680,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11786,9 +11747,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await _selectPlacement(tester, 'R101 (cmp_r101)');
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11839,9 +11798,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11925,9 +11882,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -11984,8 +11939,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester
-        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -12067,9 +12021,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -12163,8 +12115,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester
-        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
@@ -12353,9 +12304,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     for (final templateId in orderedTemplates) {
@@ -12453,8 +12402,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester
-        .tap(find.byKey(const Key('board_canvas_rail_add_component_tool')));
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
@@ -12573,9 +12521,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -12670,9 +12616,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await tester.tap(
       find.byKey(
@@ -12727,9 +12671,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
 
     expect(
@@ -12783,9 +12725,9 @@ void main() {
       ),
     );
     final ghostPainter = ghostPaint.painter as dynamic;
-    expect(ghostPainter.boundaryColor, const Color(0xFF7B3FF2));
-    expect(ghostPainter.markerColor, const Color(0xFF5E35B1));
-    expect(ghostPainter.fillColor, const Color(0x227B3FF2));
+    expect(ghostPainter.boundaryColor, BoardCanvasPalette.signal);
+    expect(ghostPainter.markerColor, BoardCanvasPalette.navy);
+    expect(ghostPainter.fillColor, BoardCanvasPalette.signalTint);
     await tester.enterText(
       find.byKey(
         const Key('board_canvas_add_component_template_draft_label_input'),
@@ -12853,9 +12795,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
@@ -12945,9 +12885,7 @@ void main() {
     await tester.pumpWidget(_harness(projectState: state));
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const Key('board_canvas_rail_add_component_tool')),
-    );
+    await _openCanonicalPlacementAdd(tester);
     await tester.pump(const Duration(milliseconds: 16));
     await _tapWidgetByKey(
       tester,
@@ -15687,7 +15625,9 @@ void main() {
     }
 
     Future<void> tap(WidgetTester tester, String key) =>
-        _tapWidgetByKey(tester, Key(key));
+        key == 'board_canvas_rail_add_component_tool'
+            ? _openCanonicalPlacementAdd(tester)
+            : _tapWidgetByKey(tester, Key(key));
 
     String copy(WidgetTester tester, String key) =>
         tester.widget<Text>(find.byKey(Key(key))).data!;
@@ -16339,20 +16279,19 @@ void main() {
               unit: 'V',
             ),
         ],
-        photoToBoardAlignments: readiness
-            ? const [readinessAlignment]
-            : const [],
+        photoToBoardAlignments:
+            readiness ? const [readinessAlignment] : const [],
       );
     }
 
     Widget inspectorHarness({Key? boardCanvasKey}) => _harness(
-      projectState: initialState,
-      boardCanvasKey: boardCanvasKey,
-      addComponentWriter: addWriter,
-      editComponentWriter: editWriter,
-      placementWriter: placementWriter,
-      measurementWriter: measurementWriter,
-    );
+          projectState: initialState,
+          boardCanvasKey: boardCanvasKey,
+          addComponentWriter: addWriter,
+          editComponentWriter: editWriter,
+          placementWriter: placementWriter,
+          measurementWriter: measurementWriter,
+        );
 
     Future<void> mountInspector(
       WidgetTester tester, {
@@ -16411,13 +16350,13 @@ void main() {
     ];
 
     List<String?> draftCopy(WidgetTester tester) => [
-      for (final field in draftFields)
-        tester
-            .widget<Text>(
-              find.byKey(Key('board_canvas_placement_draft_$field')),
-            )
-            .data,
-    ];
+          for (final field in draftFields)
+            tester
+                .widget<Text>(
+                  find.byKey(Key('board_canvas_placement_draft_$field')),
+                )
+                .data,
+        ];
 
     Future<void> changeDraft(WidgetTester tester) async {
       expect(draftCopy(tester), sourceDraft);
@@ -17080,8 +17019,14 @@ void main() {
     final wizardPainterSource = wizardOverlaySource.substring(
       wizardPainterStart,
     );
-    expect(wizardPainterSource, contains('candidate.rotationRadians'));
-    expect(wizardPainterSource, contains('canvas.rotate(rotation);'));
+    expect(wizardPainterSource, isNot(contains('void _paintCandidate(')));
+    final candidatePainterSource = File(
+      'lib/features/component_candidates/widgets/component_candidate_editor.dart',
+    ).readAsStringSync();
+    expect(candidatePainterSource,
+        contains('rotationRadians: candidate.rotationRadians'));
+    expect(candidatePainterSource,
+        contains('canvas.rotate(geometry.effectiveRotation);'));
 
     final boardPlacementPainterStart = hostSource.indexOf(
       'class _BoardPlacementPainter',
@@ -17677,16 +17622,16 @@ void _sharedCandidateOverlayGeometryTests() {
       final dynamic painter = _wizardIntakePainter(tester);
       final Rect reference = painter.fitTransform.normalizedCanvasRect as Rect;
       final recording = TestRecordingCanvas();
-      painter.paint(recording, painter.fitTransform.canvasSize as Size);
+      _sharedCandidatePainter(tester)
+          .paint(recording, painter.fitTransform.canvasSize as Size);
       final bodyCall = recording.invocations
           .map((record) => record.invocation)
           .where((call) => call.memberName == #drawPath)
           .singleWhere((call) {
-            final paint = call.positionalArguments[1] as Paint;
-            return paint.style == PaintingStyle.fill &&
-                paint.color.toARGB32() ==
-                    BoardCanvasPalette.navy.withValues(alpha: 0.94).toARGB32();
-          });
+        final paint = call.positionalArguments[1] as Paint;
+        return paint.style == PaintingStyle.fill &&
+            paint.color.toARGB32() == WorkbenchColors.navy.toARGB32();
+      });
       final body = bodyCall.positionalArguments.first as Path;
       final expectedMinor = math.max(8.0, reference.width * 0.035 * 2);
       expect(reference.width / reference.height, closeTo(0.5, 1e-9));
@@ -17716,7 +17661,8 @@ void _sharedCandidateOverlayMatrixTests() {
   ];
   for (final (name, aspect) in frames) {
     for (final (shape, ratio) in shapes) {
-      testWidgets('shared candidate overlay $name $shape '
+      testWidgets(
+          'shared candidate overlay $name $shape '
           'paints the same pose after resize', (tester) async {
         await tester.binding.setSurfaceSize(const Size(1440, 900));
         addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -17766,20 +17712,17 @@ void _sharedCandidateOverlayMatrixTests() {
             reference.size.shortestSide * 0.035 * 2,
           );
           final recording = TestRecordingCanvas();
-          painter.paint(recording, painter.fitTransform.canvasSize as Size);
-          final calls = recording.invocations
-              .map((record) => record.invocation)
-              .toList();
+          _sharedCandidatePainter(tester)
+              .paint(recording, painter.fitTransform.canvasSize as Size);
+          final calls =
+              recording.invocations.map((record) => record.invocation).toList();
           final bodyCall = calls
               .where((call) => call.memberName == #drawPath)
               .singleWhere((call) {
-                final paint = call.positionalArguments[1] as Paint;
-                return paint.style == PaintingStyle.fill &&
-                    paint.color.toARGB32() ==
-                        BoardCanvasPalette.navy
-                            .withValues(alpha: 0.94)
-                            .toARGB32();
-              });
+            final paint = call.positionalArguments[1] as Paint;
+            return paint.style == PaintingStyle.fill &&
+                paint.color.toARGB32() == WorkbenchColors.navy.toARGB32();
+          });
           final body = bodyCall.positionalArguments.first as Path;
           final translate = calls.singleWhere(
             (call) => call.memberName == #translate,
@@ -17849,19 +17792,18 @@ void _sharedCandidateOverlayMatrixTests() {
     await tester.pump(const Duration(milliseconds: 100));
     final dynamic painter = _wizardIntakePainter(tester);
     final recording = TestRecordingCanvas();
-    painter.paint(recording, painter.fitTransform.canvasSize as Size);
-    final body =
-        recording.invocations
-                .map((record) => record.invocation)
-                .where((call) => call.memberName == #drawPath)
-                .lastWhere(
-                  (call) =>
-                      (call.positionalArguments[1] as Paint).style ==
-                      PaintingStyle.fill,
-                )
-                .positionalArguments
-                .first
-            as Path;
+    _sharedCandidatePainter(tester)
+        .paint(recording, painter.fitTransform.canvasSize as Size);
+    final body = recording.invocations
+        .map((record) => record.invocation)
+        .where((call) => call.memberName == #drawPath)
+        .lastWhere(
+          (call) =>
+              (call.positionalArguments[1] as Paint).style ==
+              PaintingStyle.fill,
+        )
+        .positionalArguments
+        .first as Path;
     expect(body.getBounds().size, const Size(8, 8));
     expect(tester.takeException(), isNull);
   });
@@ -17942,4 +17884,272 @@ void _sharedCandidateOverlayMatrixTests() {
       },
     );
   }
+}
+
+ComponentCandidatePainter _sharedCandidatePainter(WidgetTester tester) => tester
+    .widget<CustomPaint>(
+        find.byKey(const ValueKey('board_canvas_candidate-painter')))
+    .painter! as ComponentCandidatePainter;
+
+class _RealCandidateStoreProbe extends ComponentCandidateDraftStore {
+  bool finished = true;
+  Future<ComponentCandidateDraftSnapshot>? operation;
+  @override
+  Future<ComponentCandidateDraftSnapshot> load(
+          String directory, ComponentCandidateDocument seed) =>
+      operation = track(() => super.load(directory, seed));
+  @override
+  Future<ComponentCandidateDraftSnapshot> save(
+          String directory, ComponentCandidateDocument document,
+          {required String? expectedRevision}) =>
+      operation = track(() =>
+          super.save(directory, document, expectedRevision: expectedRevision));
+  Future<ComponentCandidateDraftSnapshot> track(
+      Future<ComponentCandidateDraftSnapshot> Function() action) async {
+    finished = false;
+    try {
+      return await action();
+    } finally {
+      finished = true;
+    }
+  }
+}
+
+class _ControlledCandidateStore extends ComponentCandidateDraftStore {
+  bool failLoad = false;
+  bool failSave = false;
+  Completer<ComponentCandidateDraftSnapshot>? delayedLoad;
+  Completer<ComponentCandidateDraftSnapshot>? delayedSave;
+  final saves = <(String, ComponentCandidateDocument)>[];
+  final loadedSeeds = <ComponentCandidateDocument>[];
+
+  @override
+  Future<ComponentCandidateDraftSnapshot> load(
+      String directory, ComponentCandidateDocument seed) async {
+    loadedSeeds.add(seed);
+    if (failLoad) throw const FormatException('corrupt draft');
+    final pending = delayedLoad;
+    delayedLoad = null;
+    return pending == null
+        ? ComponentCandidateDraftSnapshot(seed, null)
+        : await pending.future;
+  }
+
+  @override
+  Future<ComponentCandidateDraftSnapshot> save(
+      String directory, ComponentCandidateDocument document,
+      {required String? expectedRevision}) async {
+    saves.add((directory, document));
+    if (failSave) throw const FileSystemException('retryable write failure');
+    final pending = delayedSave;
+    delayedSave = null;
+    return pending == null
+        ? ComponentCandidateDraftSnapshot(document, 'revision-${saves.length}')
+        : await pending.future;
+  }
+}
+
+void _componentCandidateEditorIntegrationTests() {
+  ComponentCandidateEditorController editor(WidgetTester tester) => tester
+      .widget<ComponentCandidateEditor>(find.byWidgetPredicate(
+          (widget) => widget is ComponentCandidateEditor && !widget.controls))
+      .controller;
+
+  Offset globalPoint(WidgetTester tester, Offset normalized) {
+    final painter = _sharedCandidatePainter(tester);
+    final frame = painter.referenceRect;
+    final box = tester.renderObject<RenderBox>(
+        find.byKey(const ValueKey('board_canvas_candidate-painter')));
+    return box.localToGlobal(Offset(frame.left + frame.width * normalized.dx,
+        frame.top + frame.height * normalized.dy));
+  }
+
+  Future<void> tapCandidate(WidgetTester tester, Offset normalized) async {
+    await tester.tapAt(globalPoint(tester, normalized));
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> settleRealDraft(
+      WidgetTester tester, _RealCandidateStoreProbe store) async {
+    for (var attempt = 0; attempt < 100; attempt++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 5)));
+      await tester.pump();
+      if (store.finished) return;
+    }
+    fail('Local draft I/O did not complete.');
+  }
+
+  testWidgets(
+      'candidate editor Canvas edits survive real sidecar reopen with zero canonical writes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final directory =
+        Directory.systemTemp.createTempSync('candidate-canvas-reopen-');
+    addTearDown(() => directory.deleteSync(recursive: true));
+    final intake = _wizardIntake(visualCandidates: const [
+      WizardVisualCandidate(
+          draftKey: 19,
+          position: WizardPoint(x: .3, y: .4),
+          shape: WizardVisualCandidateShape.rectangle,
+          sizeScale: 1.8,
+          rotationRadians: math.pi / 6),
+    ]);
+    final source = intake.toJsonString();
+    final notes = Directory('${directory.path}/notes')..createSync();
+    final intakeFile = File('${notes.path}/wizard_intake.json')
+      ..writeAsStringSync(source);
+    final eventsFile = File('${directory.path}/events.jsonl')
+      ..writeAsStringSync('sentinel event history\n');
+    final state = _inlineProjectState(
+        components: const [],
+        placements: const [],
+        projectDirectory: directory.path,
+        wizardIntake: intake);
+    final store = _RealCandidateStoreProbe();
+    await tester
+        .pumpWidget(_harness(projectState: state, candidateDraftStore: store));
+    await settleRealDraft(tester, store);
+    await tester.pumpAndSettle();
+    final initial = editor(tester).document.candidates.single;
+    expect(initial.draftKey, 19);
+    expect(initial.position, const Offset(.3, .4));
+    expect(initial.rotationRadians, math.pi / 6);
+    await tapCandidate(tester, initial.position);
+    expect(editor(tester).selectedDraftKey, 19);
+    expect(editor(tester).document.candidates.length, 1,
+        reason:
+            'Opening the context panel must not add a second candidate on pointer-up.');
+    final rotate =
+        find.byKey(const ValueKey('board_canvas_candidate-rotate-plus'));
+    await tester.ensureVisible(rotate);
+    await tester.tap(rotate);
+    await tester.pump();
+    await settleRealDraft(tester, store);
+    await tester.pumpAndSettle();
+    expect(editor(tester).document.candidates.single.rotationRadians,
+        closeTo(math.pi / 4, 1e-9));
+    await tapCandidate(tester, const Offset(.65, .5));
+    await settleRealDraft(tester, store);
+    await tester.pumpAndSettle();
+    expect(editor(tester).document.candidates.map((c) => c.draftKey), [19, 20]);
+    expect(_readProjectState(tester).events, isEmpty);
+    expect(_readProjectState(tester).knownFacts.componentVisualPlacements,
+        isEmpty);
+    expect(intakeFile.readAsStringSync(), source);
+    expect(eventsFile.readAsStringSync(), 'sentinel event history\n');
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester
+        .pumpWidget(_harness(projectState: state, candidateDraftStore: store));
+    await settleRealDraft(tester, store);
+    await tester.pumpAndSettle();
+    expect(editor(tester).document.candidates.map((c) => c.draftKey), [19, 20]);
+    expect(editor(tester).document.candidates.first.rotationRadians,
+        closeTo(math.pi / 4, 1e-9));
+    expect(editor(tester).document.nextDraftKey, 21);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+      'candidate editor load failure is blocked and visibly retryable; save failure retains draft',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1440, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final store = _ControlledCandidateStore()..failLoad = true;
+    final state = _inlineProjectState(
+        components: const [],
+        placements: const [],
+        projectDirectory: r'C:\candidate-project',
+        wizardIntake: _wizardIntake());
+    await tester
+        .pumpWidget(_harness(projectState: state, candidateDraftStore: store));
+    await tester.pumpAndSettle();
+    await _tapWidgetByKey(
+        tester, const Key('board_canvas_rail_add_component_tool'));
+    expect(find.textContaining('laadimine ebaõnnestus'), findsOneWidget);
+    await tapCandidate(tester, const Offset(.65, .5));
+    expect(store.saves, isEmpty);
+    store.failLoad = false;
+    await _tapWidgetByKey(
+        tester, const Key('board_canvas_candidate_draft_retry'));
+    store.failSave = true;
+    await tester.pumpAndSettle();
+    await tapCandidate(tester, const Offset(.65, .5));
+    final snapshot = editor(tester).document;
+    expect(find.textContaining('salvestamine ebaõnnestus'), findsOneWidget);
+    expect(store.saves.length, 1);
+    store.failSave = false;
+    await _tapWidgetByKey(
+        tester, const Key('board_canvas_candidate_draft_retry'));
+    await tester.pumpAndSettle();
+    expect(store.saves.length, 2);
+    expect(identical(editor(tester).document, snapshot), isTrue);
+    expect(find.textContaining('salvestamine ebaõnnestus'), findsNothing);
+    expect(_readProjectState(tester).events, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final reopenSame in [false, true]) {
+    for (final duringSave in [false, true]) {
+      testWidgets(
+          'candidate editor ${reopenSame ? 'close/reopen' : 'project switch'} ignores late ${duringSave ? 'save' : 'load'}',
+          (tester) async {
+        await tester.binding.setSurfaceSize(const Size(1440, 1000));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        final store = _ControlledCandidateStore();
+        final pending = Completer<ComponentCandidateDraftSnapshot>();
+        if (duringSave) {
+          store.delayedSave = pending;
+        } else {
+          store.delayedLoad = pending;
+        }
+        ProjectState project(String id) => _inlineProjectState(
+            components: const [],
+            placements: const [],
+            projectId: id,
+            projectDirectory: 'C:\\$id',
+            wizardIntake: _wizardIntake());
+        final first = project('candidate-first');
+        await tester.pumpWidget(
+            _harness(projectState: first, candidateDraftStore: store));
+        await tester.pumpAndSettle();
+        ComponentCandidateDocument oldDocument = store.loadedSeeds.single;
+        if (duringSave) {
+          await _tapWidgetByKey(
+              tester, const Key('board_canvas_rail_add_component_tool'));
+          await tapCandidate(tester, const Offset(.65, .5));
+          oldDocument = editor(tester).document;
+          expect(store.saves.single.$1, first.projectDirectory);
+        }
+        final session = ProviderScope.containerOf(
+                tester.element(find.byType(BoardCanvasScreen)),
+                listen: false)
+            .read(projectStateProvider.notifier);
+        if (reopenSame) session.closeProject();
+        final nextId = reopenSame ? 'candidate-first' : 'candidate-second';
+        expect(
+            session.openProject(project(nextId),
+                generation: session.generation),
+            isTrue);
+        await tester.pumpAndSettle();
+        pending.complete(
+            ComponentCandidateDraftSnapshot(oldDocument, 'old-revision'));
+        await tester.pumpAndSettle();
+        expect(editor(tester).document.projectId, nextId);
+        expect(editor(tester).document.candidates.length,
+            _wizardIntake().visualCandidates.length);
+        expect(_readProjectState(tester).events, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
+}
+
+// Placement regressions explicitly enter the unchanged canonical module.
+Future<void> _openCanonicalPlacementAdd(WidgetTester tester) async {
+  await _tapWidgetByKey(
+      tester, const Key('board_canvas_rail_add_component_tool'));
+  await _tapWidgetByKey(
+      tester, const Key('board_canvas_canonical_placement_mode'));
 }

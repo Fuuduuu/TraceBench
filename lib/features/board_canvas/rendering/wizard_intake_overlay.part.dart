@@ -222,60 +222,6 @@ class _WizardIntakePainter extends CustomPainter {
           ..strokeJoin = StrokeJoin.round,
       );
     }
-
-    for (final candidate in intake.visualCandidates) {
-      _paintCandidate(canvas, candidate);
-    }
-  }
-
-  void _paintCandidate(
-    Canvas canvas,
-    WizardVisualCandidate candidate,
-  ) {
-    final geometry = WizardCandidateGeometry.resolve(
-      referenceRect: fitTransform.normalizedCanvasRect,
-      normalizedCenter: Offset(candidate.position.x, candidate.position.y),
-      shape: candidate.shape,
-      sizeScale: candidate.sizeScale,
-      rotationRadians: candidate.rotationRadians,
-    );
-    final center = geometry.center;
-    final minorDimension = geometry.minorDimension;
-    final markerPath = geometry.localPath;
-    final rotation = geometry.effectiveRotation;
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.rotate(rotation);
-    canvas.drawPath(
-      markerPath,
-      Paint()
-        ..color = BoardCanvasPalette.navy.withValues(alpha: 0.94)
-        ..style = PaintingStyle.fill,
-    );
-    canvas.drawPath(
-      markerPath,
-      Paint()
-        ..color = BoardCanvasPalette.signal
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.6
-        ..strokeJoin = StrokeJoin.round,
-    );
-    final markerArm = math.max(2.0, minorDimension * 0.28);
-    final markerPaint = Paint()
-      ..color = BoardCanvasPalette.signalTint
-      ..strokeWidth = math.max(1.2, minorDimension * 0.1)
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(
-      Offset(-markerArm, 0),
-      Offset(markerArm, 0),
-      markerPaint,
-    );
-    canvas.drawLine(
-      Offset(0, -markerArm),
-      Offset(0, markerArm),
-      markerPaint,
-    );
-    canvas.restore();
   }
 
   @override

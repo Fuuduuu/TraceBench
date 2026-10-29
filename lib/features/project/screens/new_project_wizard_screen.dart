@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../shared/geometry/wizard_candidate_geometry.dart';
+import '../../component_candidates/models/component_candidate_draft.dart';
+import '../../component_candidates/widgets/component_candidate_editor.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/services/project_creator.dart';
@@ -97,15 +98,22 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   int? _draggingContourPointer;
   bool _contourClosed = false;
   double? _referenceFrameAspectRatio;
-  final List<_WizardComponentCandidate> _componentCandidates =
-      <_WizardComponentCandidate>[];
-  int _nextComponentDraftKey = 1;
-  int? _selectedComponentDraftKey;
-  int? _draggingComponentDraftKey;
-  int? _draggingComponentPointer;
-  _WizardComponentShape _componentCurrentShape = _WizardComponentShape.circle;
-  double _componentCurrentSizeScale = 1.0;
-  double _componentCurrentRotation = 0.0;
+  late final ComponentCandidateEditorController _candidateEditor =
+      ComponentCandidateEditorController(
+    ComponentCandidateDocument.seed(projectId: 'wizard-local'),
+  )..addListener(_onCandidateEditorChanged);
+  ComponentCandidateDocument? _lastCandidateDocument;
+  List<ComponentCandidateDraft> get _componentCandidates =>
+      _candidateEditor.document.candidates;
+
+  void _onCandidateEditorChanged() {
+    final document = _candidateEditor.document;
+    setState(() {
+      if (_lastCandidateDocument != document) _draftTouched = true;
+      _lastCandidateDocument = document;
+    });
+  }
+
   String? _photoPath;
   NewProjectWizardPhotoTransform _photoTransform =
       const NewProjectWizardPhotoTransform();
@@ -224,25 +232,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
         ],
       ),
       backgroundPhoto: backgroundPhoto,
-      visualCandidates: <WizardVisualCandidate>[
-        for (final candidate in _componentCandidates)
-          WizardVisualCandidate(
-            draftKey: candidate.draftKey,
-            position: WizardPoint(
-              x: candidate.position.dx,
-              y: candidate.position.dy,
-            ),
-            shape: switch (candidate.shape) {
-              _WizardComponentShape.circle => WizardVisualCandidateShape.circle,
-              _WizardComponentShape.square => WizardVisualCandidateShape.square,
-              _WizardComponentShape.rectangle =>
-                WizardVisualCandidateShape.rectangle,
-              _WizardComponentShape.roundedRectangle =>
-                WizardVisualCandidateShape.roundedRectangle,
-            },
-            sizeScale: candidate.sizeScale,
-            rotationRadians: candidate.rotation,
-          ),
+      visualCandidates: [
+        for (final candidate in _componentCandidates) candidate.toWizard(),
       ],
     );
 
@@ -803,256 +794,6 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
     });
   }
 
-  Offset? _normalizedComponentPosition(
-    Offset localPosition,
-    Size editorSize,
-  ) {
-    return _normalizedReferenceFramePoint(localPosition, editorSize);
-  }
-
-  String _componentShapeLabel(_WizardComponentShape shape) {
-    return switch (shape) {
-      _WizardComponentShape.circle => 'Ümar',
-      _WizardComponentShape.square => 'Ruut',
-      _WizardComponentShape.rectangle => 'Ristkülik',
-      _WizardComponentShape.roundedRectangle => 'Ümardatud ristkülik',
-    };
-  }
-
-  double _normalizedComponentRotation(double rotation) {
-    if (!rotation.isFinite) {
-      return _componentCurrentRotation;
-    }
-    const fullTurn = 2 * math.pi;
-    final normalized = (rotation + math.pi) % fullTurn - math.pi;
-    return normalized == -0.0 ? 0.0 : normalized;
-  }
-
-  void _setComponentShape(_WizardComponentShape shape) {
-    if (shape == _componentCurrentShape) {
-      return;
-    }
-    setState(() {
-      _componentCurrentShape = shape;
-      final selectedIndex = _selectedComponentCandidateIndex;
-      if (selectedIndex != null) {
-        _componentCandidates[selectedIndex] =
-            _componentCandidates[selectedIndex].copyWith(shape: shape);
-        _draftTouched = true;
-      }
-    });
-  }
-
-  void _setComponentSizeScale(double sizeScale) {
-    if (!sizeScale.isFinite) {
-      return;
-    }
-    final next = sizeScale.clamp(0.5, 2.5).toDouble();
-    if (next == _componentCurrentSizeScale) {
-      return;
-    }
-    setState(() {
-      _componentCurrentSizeScale = next;
-      final selectedIndex = _selectedComponentCandidateIndex;
-      if (selectedIndex != null) {
-        _componentCandidates[selectedIndex] =
-            _componentCandidates[selectedIndex].copyWith(sizeScale: next);
-        _draftTouched = true;
-      }
-    });
-  }
-
-  void _setComponentRotation(double rotation) {
-    final next = _normalizedComponentRotation(rotation);
-    if (next == _componentCurrentRotation) {
-      return;
-    }
-    setState(() {
-      _componentCurrentRotation = next;
-      final selectedIndex = _selectedComponentCandidateIndex;
-      if (selectedIndex != null) {
-        _componentCandidates[selectedIndex] =
-            _componentCandidates[selectedIndex].copyWith(rotation: next);
-        _draftTouched = true;
-      }
-    });
-  }
-
-  int? get _selectedComponentCandidateIndex {
-    final selectedKey = _selectedComponentDraftKey;
-    if (selectedKey == null) {
-      return null;
-    }
-    final index = _componentCandidates.indexWhere(
-      (candidate) => candidate.draftKey == selectedKey,
-    );
-    return index < 0 ? null : index;
-  }
-
-  void _loadComponentCurrentStyle(_WizardComponentCandidate candidate) {
-    _componentCurrentShape = candidate.shape;
-    _componentCurrentSizeScale = candidate.sizeScale;
-    _componentCurrentRotation = candidate.rotation;
-  }
-
-  int? _componentCandidateKeyAt(
-    Offset localPosition,
-    Size editorSize,
-  ) {
-    final referenceFrame = _referenceFrameRect(editorSize);
-    if (!referenceFrame.contains(localPosition)) {
-      return null;
-    }
-    final framePosition = localPosition - referenceFrame.topLeft;
-    int? closestKey;
-    var closestDistance = double.infinity;
-    for (final candidate in _componentCandidates) {
-      final geometry = _WizardComponentMarkerGeometry.fromCandidate(
-        candidate,
-        referenceFrame.size,
-      );
-      if (!geometry.hitBounds.contains(framePosition)) {
-        continue;
-      }
-      final distance = (geometry.centre - framePosition).distance;
-      if (distance < closestDistance) {
-        closestKey = candidate.draftKey;
-        closestDistance = distance;
-      }
-    }
-    return closestKey;
-  }
-
-  void _handleComponentTap(TapUpDetails details, Size editorSize) {
-    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
-      return;
-    }
-    final selectedKey = _componentCandidateKeyAt(
-      details.localPosition,
-      editorSize,
-    );
-    if (selectedKey != null) {
-      final selectedCandidate = _componentCandidates.firstWhere(
-        (candidate) => candidate.draftKey == selectedKey,
-      );
-      setState(() {
-        _selectedComponentDraftKey = selectedKey;
-        _loadComponentCurrentStyle(selectedCandidate);
-      });
-      return;
-    }
-
-    final normalized = _normalizedComponentPosition(
-      details.localPosition,
-      editorSize,
-    );
-    if (normalized == null) {
-      return;
-    }
-    setState(() {
-      final candidate = _WizardComponentCandidate(
-        draftKey: _nextComponentDraftKey,
-        position: normalized,
-        shape: _componentCurrentShape,
-        sizeScale: _componentCurrentSizeScale,
-        rotation: _componentCurrentRotation,
-      );
-      _nextComponentDraftKey += 1;
-      _componentCandidates.add(candidate);
-      _selectedComponentDraftKey = candidate.draftKey;
-      _draftTouched = true;
-    });
-  }
-
-  void _handleComponentPointerDown(
-    PointerDownEvent details,
-    Size editorSize,
-  ) {
-    if (!_referenceFrameRect(editorSize).contains(details.localPosition)) {
-      return;
-    }
-    final selectedKey = _componentCandidateKeyAt(
-      details.localPosition,
-      editorSize,
-    );
-    if (selectedKey == null) {
-      return;
-    }
-    final selectedCandidate = _componentCandidates.firstWhere(
-      (candidate) => candidate.draftKey == selectedKey,
-    );
-    setState(() {
-      _selectedComponentDraftKey = selectedKey;
-      _draggingComponentDraftKey = selectedKey;
-      _draggingComponentPointer = details.pointer;
-      _loadComponentCurrentStyle(selectedCandidate);
-    });
-  }
-
-  void _handleComponentPointerMove(
-    PointerMoveEvent details,
-    Size editorSize,
-  ) {
-    if (details.pointer != _draggingComponentPointer) {
-      return;
-    }
-    final draggingKey = _draggingComponentDraftKey;
-    if (draggingKey == null) {
-      return;
-    }
-    final candidateIndex = _componentCandidates.indexWhere(
-      (candidate) => candidate.draftKey == draggingKey,
-    );
-    if (candidateIndex < 0) {
-      return;
-    }
-    final nextPosition = _normalizedComponentPosition(
-      details.localPosition,
-      editorSize,
-    );
-    if (nextPosition == null) {
-      return;
-    }
-    if (_componentCandidates[candidateIndex].position == nextPosition) {
-      return;
-    }
-    setState(() {
-      _componentCandidates[candidateIndex] =
-          _componentCandidates[candidateIndex].movedTo(nextPosition);
-      _draftTouched = true;
-    });
-  }
-
-  void _handleComponentPointerEnd(PointerEvent details) {
-    if (details.pointer != _draggingComponentPointer) {
-      return;
-    }
-    setState(() {
-      _draggingComponentDraftKey = null;
-      _draggingComponentPointer = null;
-    });
-  }
-
-  void _deleteSelectedComponentCandidate() {
-    final selectedKey = _selectedComponentDraftKey;
-    if (selectedKey == null) {
-      return;
-    }
-    final candidateIndex = _componentCandidates.indexWhere(
-      (candidate) => candidate.draftKey == selectedKey,
-    );
-    if (candidateIndex < 0) {
-      return;
-    }
-    setState(() {
-      _componentCandidates.removeAt(candidateIndex);
-      _selectedComponentDraftKey = null;
-      _draggingComponentDraftKey = null;
-      _draggingComponentPointer = null;
-      _draftTouched = true;
-    });
-  }
-
   Future<void> _cancelWizard() async {
     if (_creationStatus == _WizardCreationStatus.creating ||
         _creationStatus == _WizardCreationStatus.succeeded) {
@@ -1118,6 +859,8 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
 
   @override
   void dispose() {
+    _candidateEditor.removeListener(_onCandidateEditorChanged);
+    _candidateEditor.dispose();
     _projectNameController.dispose();
     _deviceNameController.dispose();
     _additionalInfoController.dispose();
@@ -1163,7 +906,7 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
                 ),
               ),
               child: SingleChildScrollView(
-                physics: _draggingComponentDraftKey == null
+                physics: !_candidateEditor.isDragging
                     ? null
                     : const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(padding),
@@ -2119,405 +1862,74 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
   }
 
   Widget _buildComponentCanvas({required double height}) {
-    final count = _componentCandidates.length;
-    final countLabel = count == 1 ? '1 kandidaat' : '$count kandidaati';
-    final selectedKey = _selectedComponentDraftKey;
-    final selection = selectedKey == null
-        ? 'ühtegi kandidaati pole valitud'
-        : 'kandidaat $selectedKey valitud';
-    return Semantics(
-      container: true,
-      label: 'Komponentide asetuse redaktor',
-      value: '$countLabel, $selection',
-      child: Container(
-        height: height,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: _WizardPalette.inset,
-          border: Border.all(color: _WizardPalette.edgeGold),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final editorSize = constraints.biggest;
-            final referenceFrame = _referenceFrameRect(editorSize);
-            return Listener(
-              onPointerDown: (details) =>
-                  _handleComponentPointerDown(details, editorSize),
-              onPointerMove: (details) =>
-                  _handleComponentPointerMove(details, editorSize),
-              onPointerUp: _handleComponentPointerEnd,
-              onPointerCancel: _handleComponentPointerEnd,
-              child: GestureDetector(
-                key: const ValueKey('wizard-component-canvas'),
-                behavior: HitTestBehavior.opaque,
-                onTapUp: (details) => _handleComponentTap(details, editorSize),
-                child: Stack(
-                  key: const ValueKey('wizard-component-stack'),
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    Positioned.fromRect(
-                      rect: referenceFrame,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          if (_photoPath != null)
-                            Positioned.fill(
-                              key: const ValueKey(
-                                'wizard-component-photo-layer',
-                              ),
-                              child: IgnorePointer(
-                                child: NewProjectWizardPhotoLayer(
-                                  key: const ValueKey(
-                                    'wizard-component-photo-view',
-                                  ),
-                                  photoPath: _photoPath!,
-                                  transform: _photoTransform,
-                                ),
-                              ),
-                            ),
-                          CustomPaint(
-                            key: const ValueKey('wizard-component-painter'),
-                            painter: _WizardComponentPlacementPainter(
-                              guideContourPoints:
-                                  List<Offset>.unmodifiable(_contourPoints),
-                              guideClosed: _contourClosed,
-                              candidates:
-                                  List<_WizardComponentCandidate>.unmodifiable(
-                                      _componentCandidates),
-                              selectedDraftKey: _selectedComponentDraftKey,
-                            ),
-                          ),
-                          if (_componentCandidates.isEmpty)
-                            const IgnorePointer(
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(24),
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.add_location_alt_outlined,
-                                          color: _WizardPalette.goldDim,
-                                          size: 34,
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          'Puuduta tühja ala, et lisada üldine '
-                                          'komponent-kandidaat.',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: _WizardPalette.muted,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildComponentControls() {
-    final candidateCount = _componentCandidates.length;
-    final candidateCountLabel = switch (candidateCount) {
-      0 => '0 komponent-kandidaati',
-      1 => '1 komponent-kandidaat',
-      _ => '$candidateCount komponent-kandidaati',
-    };
-    final selectedKey = _selectedComponentDraftKey;
-    final selectionLabel = selectedKey == null
-        ? 'Ühtegi kandidaati pole valitud'
-        : 'Kandidaat $selectedKey valitud';
-    final stylePrefix = selectedKey == null ? 'Järgmine' : 'Valitud';
-    final sizePercent = (_componentCurrentSizeScale * 100).round();
-    final rotationDegrees = (_componentCurrentRotation * 180 / math.pi).round();
-    final styleSummary =
-        '$stylePrefix: ${_componentShapeLabel(_componentCurrentShape)} · '
-        '$sizePercent% · $rotationDegrees°';
-    final signedRotation =
-        rotationDegrees > 0 ? '+$rotationDegrees' : '$rotationDegrees';
-
     return Container(
+      height: height,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _WizardPalette.panel2,
-        border: Border.all(color: _WizardPalette.edge),
+        color: _WizardPalette.inset,
+        border: Border.all(color: _WizardPalette.edgeGold),
         borderRadius: BorderRadius.circular(14),
       ),
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            key: const ValueKey('wizard-component-status'),
-            decoration: BoxDecoration(
-              color: _WizardPalette.inset,
-              border: Border.all(color: _WizardPalette.edge),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: _buildComponentStateRow(
-                        key: const ValueKey('wizard-component-count'),
-                        icon: Icons.widgets_outlined,
-                        label: candidateCountLabel,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _buildComponentStateRow(
-                        key: const ValueKey('wizard-component-selection'),
-                        icon: selectedKey == null
-                            ? Icons.touch_app_outlined
-                            : Icons.ads_click_outlined,
-                        label: selectionLabel,
-                      ),
-                    ),
-                  ],
+      child: LayoutBuilder(
+          key: const ValueKey('wizard-component-canvas'),
+          builder: (context, constraints) {
+            final referenceFrame = _referenceFrameRect(constraints.biggest);
+            return Stack(
+              key: const ValueKey('wizard-component-stack'),
+              fit: StackFit.expand,
+              children: [
+                Positioned.fromRect(
+                  rect: referenceFrame,
+                  child: IgnorePointer(
+                    child: Stack(fit: StackFit.expand, children: [
+                      if (_photoPath != null)
+                        Positioned.fill(
+                          key: const ValueKey('wizard-component-photo-layer'),
+                          child: NewProjectWizardPhotoLayer(
+                            key: const ValueKey('wizard-component-photo-view'),
+                            photoPath: _photoPath!,
+                            transform: _photoTransform,
+                          ),
+                        ),
+                      CustomPaint(
+                          key: const ValueKey('wizard-component-guide-painter'),
+                          painter: _WizardComponentGuidePainter(
+                              points: List.of(_contourPoints),
+                              closed: _contourClosed)),
+                      if (_componentCandidates.isEmpty)
+                        const Center(
+                            child: Padding(
+                                padding: EdgeInsets.all(24),
+                                child: Text(
+                                    'Puuduta tühja ala, et lisada üldine komponent-kandidaat.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: _WizardPalette.muted,
+                                        fontWeight: FontWeight.w600)))),
+                    ]),
+                  ),
                 ),
-                const SizedBox(height: 7),
-                _buildComponentStateRow(
-                  key: const ValueKey('wizard-component-contour-guide'),
-                  icon: Icons.visibility_outlined,
-                  label: _contourClosed
-                      ? 'Suletud kontuur on ainult visuaalne juhis'
-                      : 'Kontuur pole suletud',
-                ),
-                const SizedBox(height: 7),
-                Semantics(
-                  key: const ValueKey('wizard-component-style-summary'),
-                  container: true,
-                  label: styleSummary,
-                  child: Text(
-                    styleSummary,
-                    style: const TextStyle(
-                      color: _WizardPalette.cream,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w800,
-                    ),
+                Positioned.fromRect(
+                  key: const ValueKey('wizard-component-candidate-layer'),
+                  rect: referenceFrame,
+                  child: ComponentCandidateEditor.surface(
+                    controller: _candidateEditor,
+                    inputKey: const ValueKey('wizard-component-input'),
+                    keyPrefix: 'wizard-component',
+                    referenceRect: Offset.zero & referenceFrame.size,
                   ),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          KeyedSubtree(
-            key: const ValueKey('wizard-component-shape-grid'),
-            child: WizardCompactTileSelector<_WizardComponentShape>(
-              label: 'Kuju',
-              value: _componentCurrentShape,
-              onChanged: _setComponentShape,
-              tiles: const <WizardCompactTile<_WizardComponentShape>>[
-                WizardCompactTile<_WizardComponentShape>(
-                  key: ValueKey('wizard-component-shape-circle'),
-                  value: _WizardComponentShape.circle,
-                  label: 'Ümar',
-                  icon: Icons.circle_outlined,
-                ),
-                WizardCompactTile<_WizardComponentShape>(
-                  key: ValueKey('wizard-component-shape-square'),
-                  value: _WizardComponentShape.square,
-                  label: 'Ruut',
-                  icon: Icons.crop_square,
-                ),
-                WizardCompactTile<_WizardComponentShape>(
-                  key: ValueKey('wizard-component-shape-rectangle'),
-                  value: _WizardComponentShape.rectangle,
-                  label: 'Ristkülik',
-                  icon: Icons.crop_16_9,
-                ),
-                WizardCompactTile<_WizardComponentShape>(
-                  key: ValueKey(
-                    'wizard-component-shape-rounded-rectangle',
-                  ),
-                  value: _WizardComponentShape.roundedRectangle,
-                  label: 'Ümardatud ristkülik',
-                  icon: Icons.rounded_corner,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Suurus · $sizePercent%',
-            style: const TextStyle(
-              color: _WizardPalette.goldDim,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Semantics(
-            label: 'Markeri suurus',
-            value: '$sizePercent%',
-            slider: true,
-            child: Slider(
-              key: const ValueKey('wizard-component-size-slider'),
-              value: _componentCurrentSizeScale,
-              min: 0.5,
-              max: 2.5,
-              divisions: 200,
-              label: '$sizePercent%',
-              semanticFormatterCallback: (value) => '${(value * 100).round()}%',
-              onChanged: _setComponentSizeScale,
-              activeColor: _WizardPalette.goldBright,
-              inactiveColor: _WizardPalette.edge,
-            ),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            'Pööre',
-            style: TextStyle(
-              color: _WizardPalette.goldDim,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: <Widget>[
-              _buildComponentRotationControl(
-                key: const ValueKey('wizard-component-rotate-minus'),
-                tooltip: 'Pööra markerit 15° vasakule',
-                icon: Icons.rotate_left,
-                onPressed: () => _setComponentRotation(
-                  _componentCurrentRotation - math.pi / 12,
-                ),
-              ),
-              const SizedBox(width: 5),
-              _buildComponentRotationControl(
-                key: const ValueKey('wizard-component-rotate-plus'),
-                tooltip: 'Pööra markerit 15° paremale',
-                icon: Icons.rotate_right,
-                onPressed: () => _setComponentRotation(
-                  _componentCurrentRotation + math.pi / 12,
-                ),
-              ),
-              const SizedBox(width: 5),
-              _buildComponentRotationControl(
-                key: const ValueKey('wizard-component-rotate-reset'),
-                tooltip: 'Nulli markeri pööre 0°',
-                icon: Icons.refresh,
-                onPressed: () => _setComponentRotation(0),
-              ),
-              const Spacer(),
-              Semantics(
-                key: const ValueKey('wizard-component-rotation-value'),
-                label: 'Markeri pööre: $signedRotation°',
-                excludeSemantics: true,
-                child: Container(
-                  constraints: const BoxConstraints(minWidth: 48),
-                  decoration: BoxDecoration(
-                    color: _WizardPalette.inset,
-                    border: Border.all(color: _WizardPalette.edgeGold),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-                  child: Text(
-                    '$signedRotation°',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: _WizardPalette.cream,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton.icon(
-            key: const ValueKey('wizard-component-delete'),
-            onPressed:
-                selectedKey == null ? null : _deleteSelectedComponentCandidate,
-            icon: const Icon(Icons.delete_outline),
-            label: const Text('Kustuta valitud kandidaat'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: _WizardPalette.warningBright,
-              side: const BorderSide(color: _WizardPalette.warning),
-              padding: const EdgeInsets.symmetric(vertical: 13),
-            ),
-          ),
-          const SizedBox(height: 14),
-          const Text(
-            'Tühja ala puudutus lisab kandidaadi. Valimiseks puuduta '
-            'kandidaati ning liigutamiseks lohista seda. Kontuur ei piira '
-            'paigutust.',
-            style: TextStyle(
-              color: _WizardPalette.faint,
-              fontSize: 12.5,
-              height: 1.45,
-            ),
-          ),
-        ],
-      ),
+            );
+          }),
     );
   }
 
-  Widget _buildComponentRotationControl({
-    required Key key,
-    required String tooltip,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Semantics(
-      key: key,
-      button: true,
-      label: tooltip,
-      excludeSemantics: true,
-      child: IconButton.outlined(
-        tooltip: tooltip,
-        onPressed: onPressed,
-        icon: Icon(icon),
-        color: _WizardPalette.goldBright,
-      ),
-    );
-  }
-
-  Widget _buildComponentStateRow({
-    required Key key,
-    required IconData icon,
-    required String label,
-  }) {
-    return Row(
-      key: key,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Icon(icon, color: _WizardPalette.goldDim, size: 16),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: _WizardPalette.cream,
-              fontSize: 11.5,
-              height: 1.25,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildComponentControls() => ComponentCandidateEditor.controls(
+        controller: _candidateEditor,
+        keyPrefix: 'wizard-component',
+        contourClosed: _contourClosed,
+      );
 
   Widget _buildPhotoAlignmentStep({required bool compact}) {
     final path = _photoPath;
@@ -2847,9 +2259,9 @@ class _NewProjectWizardScreenState extends State<NewProjectWizardScreen> {
               for (final candidate in _componentCandidates)
                 _buildReviewValue(
                   'Kandidaat #${candidate.draftKey}',
-                  '${_componentShapeLabel(candidate.shape)} · '
+                  '${componentCandidateShapeLabel(candidate.shape)} · '
                       '${(candidate.sizeScale * 100).round()}% · '
-                      '${_formatReviewNumber(candidate.rotation)} rad',
+                      '${_formatReviewNumber(candidate.rotationRadians)} rad',
                 ),
               const Padding(
                 padding: EdgeInsets.only(top: 8),
@@ -3576,265 +2988,41 @@ class _WizardContourPainter extends CustomPainter {
   }
 }
 
-enum _WizardComponentShape {
-  circle,
-  square,
-  rectangle,
-  roundedRectangle,
-}
-
-class _WizardComponentCandidate {
-  factory _WizardComponentCandidate({
-    required int draftKey,
-    required Offset position,
-    _WizardComponentShape shape = _WizardComponentShape.circle,
-    double sizeScale = 1.0,
-    double rotation = 0.0,
-  }) {
-    return _WizardComponentCandidate._(
-      draftKey: draftKey,
-      position: position,
-      shape: shape,
-      sizeScale: _normalizedSizeScale(sizeScale, fallback: 1.0),
-      rotation: _normalizedRotation(rotation, fallback: 0.0),
-    );
-  }
-
-  const _WizardComponentCandidate._({
-    required this.draftKey,
-    required this.position,
-    required this.shape,
-    required this.sizeScale,
-    required this.rotation,
-  });
-
-  final int draftKey;
-  final Offset position;
-  final _WizardComponentShape shape;
-  final double sizeScale;
-  final double rotation;
-
-  static double _normalizedSizeScale(
-    double value, {
-    required double fallback,
-  }) {
-    if (!value.isFinite) {
-      return fallback;
-    }
-    return value.clamp(0.5, 2.5).toDouble();
-  }
-
-  static double _normalizedRotation(
-    double value, {
-    required double fallback,
-  }) {
-    if (!value.isFinite) {
-      return fallback;
-    }
-    const fullTurn = 2 * math.pi;
-    final normalized = (value + math.pi) % fullTurn - math.pi;
-    return normalized == -0.0 ? 0.0 : normalized;
-  }
-
-  _WizardComponentCandidate copyWith({
-    Offset? position,
-    _WizardComponentShape? shape,
-    double? sizeScale,
-    double? rotation,
-  }) {
-    return _WizardComponentCandidate._(
-      draftKey: draftKey,
-      position: position ?? this.position,
-      shape: shape ?? this.shape,
-      sizeScale: sizeScale == null
-          ? this.sizeScale
-          : _normalizedSizeScale(sizeScale, fallback: this.sizeScale),
-      rotation: rotation == null
-          ? this.rotation
-          : _normalizedRotation(rotation, fallback: this.rotation),
-    );
-  }
-
-  _WizardComponentCandidate movedTo(Offset nextPosition) {
-    return copyWith(position: nextPosition);
-  }
-}
-
-class _WizardComponentPlacementPainter extends CustomPainter {
-  const _WizardComponentPlacementPainter({
-    required this.guideContourPoints,
-    required this.guideClosed,
-    required this.candidates,
-    required this.selectedDraftKey,
-  });
-
-  final List<Offset> guideContourPoints;
-  final bool guideClosed;
-  final List<_WizardComponentCandidate> candidates;
-  final int? selectedDraftKey;
-
-  Offset _onCanvas(Offset point, Size size) {
-    return Offset(point.dx * size.width, point.dy * size.height);
-  }
-
-  Iterable<_WizardComponentMarkerGeometry> markerGeometries(Size size) sync* {
-    for (final candidate in candidates) {
-      yield _WizardComponentMarkerGeometry.fromCandidate(candidate, size);
-    }
-  }
+class _WizardComponentGuidePainter extends CustomPainter {
+  const _WizardComponentGuidePainter(
+      {required this.points, required this.closed});
+  final List<Offset> points;
+  final bool closed;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (guideClosed && guideContourPoints.length >= 3) {
-      final path = Path();
-      final first = _onCanvas(guideContourPoints.first, size);
-      path.moveTo(first.dx, first.dy);
-      for (final point in guideContourPoints.skip(1)) {
-        final canvasPoint = _onCanvas(point, size);
-        path.lineTo(canvasPoint.dx, canvasPoint.dy);
-      }
-      path.close();
-      canvas.drawPath(
+    if (!closed || points.length < 3) return;
+    Offset onCanvas(Offset point) =>
+        Offset(point.dx * size.width, point.dy * size.height);
+    final first = onCanvas(points.first);
+    final path = Path()..moveTo(first.dx, first.dy);
+    for (final point in points.skip(1)) {
+      final next = onCanvas(point);
+      path.lineTo(next.dx, next.dy);
+    }
+    path.close();
+    canvas.drawPath(
         path,
         Paint()
-          ..color = _WizardPalette.gold.withValues(alpha: 0.07)
-          ..style = PaintingStyle.fill,
-      );
-      canvas.drawPath(
+          ..color = _WizardPalette.gold.withValues(alpha: .07)
+          ..style = PaintingStyle.fill);
+    canvas.drawPath(
         path,
         Paint()
-          ..color = _WizardPalette.goldDim.withValues(alpha: 0.72)
+          ..color = _WizardPalette.goldDim.withValues(alpha: .72)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
-          ..strokeJoin = StrokeJoin.round,
-      );
-    }
-
-    for (final geometry in markerGeometries(size)) {
-      final selected = geometry.draftKey == selectedDraftKey;
-      canvas.save();
-      canvas.translate(geometry.centre.dx, geometry.centre.dy);
-      canvas.rotate(geometry.effectiveRotation);
-      if (selected) {
-        canvas.drawPath(
-          geometry.localPath,
-          Paint()
-            ..color = _WizardPalette.gold.withValues(alpha: 0.72)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 5
-            ..strokeJoin = StrokeJoin.round,
-        );
-      }
-      canvas.drawPath(
-        geometry.localPath,
-        Paint()
-          ..color = selected ? _WizardPalette.goldBright : _WizardPalette.cream
-          ..style = PaintingStyle.fill,
-      );
-      canvas.drawPath(
-        geometry.localPath,
-        Paint()
-          ..color = _WizardPalette.background
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5
-          ..strokeJoin = StrokeJoin.round,
-      );
-      final markerArm = math.max(2.0, geometry.minorDimension * 0.28);
-      final markerPaint = Paint()
-        ..color = _WizardPalette.background
-        ..strokeWidth = math.max(1.2, geometry.minorDimension * 0.1)
-        ..strokeCap = StrokeCap.round;
-      canvas.drawLine(
-        Offset(-markerArm, 0),
-        Offset(markerArm, 0),
-        markerPaint,
-      );
-      canvas.drawLine(
-        Offset(0, -markerArm),
-        Offset(0, markerArm),
-        markerPaint,
-      );
-      canvas.restore();
-    }
+          ..strokeJoin = StrokeJoin.round);
   }
 
   @override
-  bool shouldRepaint(covariant _WizardComponentPlacementPainter oldDelegate) {
-    if (oldDelegate.guideClosed != guideClosed ||
-        oldDelegate.selectedDraftKey != selectedDraftKey ||
-        oldDelegate.guideContourPoints.length != guideContourPoints.length ||
-        oldDelegate.candidates.length != candidates.length) {
-      return true;
-    }
-    for (var index = 0; index < guideContourPoints.length; index += 1) {
-      if (oldDelegate.guideContourPoints[index] != guideContourPoints[index]) {
-        return true;
-      }
-    }
-    for (var index = 0; index < candidates.length; index += 1) {
-      final candidate = candidates[index];
-      final oldCandidate = oldDelegate.candidates[index];
-      if (oldCandidate.draftKey != candidate.draftKey ||
-          oldCandidate.position != candidate.position ||
-          oldCandidate.shape != candidate.shape ||
-          oldCandidate.sizeScale != candidate.sizeScale ||
-          oldCandidate.rotation != candidate.rotation) {
-        return true;
-      }
-    }
-    return false;
-  }
-}
-
-class _WizardComponentMarkerGeometry {
-  const _WizardComponentMarkerGeometry._({
-    required this.draftKey,
-    required this.centre,
-    required this.minorDimension,
-    required this.markerSize,
-    required this.effectiveRotation,
-    required this.localPath,
-    required this.rotatedBounds,
-    required this.hitBounds,
-  });
-
-  factory _WizardComponentMarkerGeometry.fromCandidate(
-    _WizardComponentCandidate candidate,
-    Size canvasSize,
-  ) {
-    final geometry = WizardCandidateGeometry.resolve(
-      referenceRect: Offset.zero & canvasSize,
-      normalizedCenter: candidate.position,
-      shape: switch (candidate.shape) {
-        _WizardComponentShape.circle => WizardVisualCandidateShape.circle,
-        _WizardComponentShape.square => WizardVisualCandidateShape.square,
-        _WizardComponentShape.rectangle => WizardVisualCandidateShape.rectangle,
-        _WizardComponentShape.roundedRectangle =>
-          WizardVisualCandidateShape.roundedRectangle,
-      },
-      sizeScale: candidate.sizeScale,
-      rotationRadians: candidate.rotation,
-    );
-    return _WizardComponentMarkerGeometry._(
-      draftKey: candidate.draftKey,
-      centre: geometry.center,
-      minorDimension: geometry.minorDimension,
-      markerSize: geometry.markerSize,
-      effectiveRotation: geometry.effectiveRotation,
-      localPath: geometry.localPath,
-      rotatedBounds: geometry.rotatedBounds,
-      hitBounds: geometry.hitBounds,
-    );
-  }
-
-  final int draftKey;
-  final Offset centre;
-  final double minorDimension;
-  final Size markerSize;
-  final double effectiveRotation;
-  final Path localPath;
-  final Rect rotatedBounds;
-  final Rect hitBounds;
+  bool shouldRepaint(covariant _WizardComponentGuidePainter oldDelegate) =>
+      oldDelegate.closed != closed || !listEquals(oldDelegate.points, points);
 }
 
 class _WizardCreationProgress extends StatelessWidget {

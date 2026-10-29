@@ -524,13 +524,13 @@ dynamic _componentGeometry(
   int draftKey,
 ) {
   final geometries = List<dynamic>.from(
-    (_componentPainter(tester) as dynamic).markerGeometries(
-      _componentCanvasRect(tester).size,
-    ) as Iterable,
+    (_componentPainter(tester) as dynamic).markerGeometries() as Iterable,
   );
-  return geometries.singleWhere(
-    (geometry) => (geometry as dynamic).draftKey == draftKey,
-  );
+  return geometries
+      .singleWhere(
+        (marker) => (marker as dynamic).draftKey == draftKey,
+      )
+      .geometry;
 }
 
 List<dynamic> _paintedComponentCandidates(WidgetTester tester) {
@@ -557,12 +557,20 @@ int? _paintedSelectedComponentDraftKey(WidgetTester tester) {
 
 List<Offset> _paintedComponentGuidePoints(WidgetTester tester) {
   return List<Offset>.from(
-    (_componentPainter(tester) as dynamic).guideContourPoints as Iterable,
+    (tester
+            .widget<CustomPaint>(
+                find.byKey(const ValueKey('wizard-component-guide-painter')))
+            .painter as dynamic)
+        .points as Iterable,
   );
 }
 
 bool _paintedComponentGuideIsClosed(WidgetTester tester) {
-  return (_componentPainter(tester) as dynamic).guideClosed as bool;
+  return (tester
+          .widget<CustomPaint>(
+              find.byKey(const ValueKey('wizard-component-guide-painter')))
+          .painter as dynamic)
+      .closed as bool;
 }
 
 typedef _ComponentStyleSnapshot = ({
@@ -583,7 +591,7 @@ List<_ComponentStyleSnapshot> _paintedComponentStyles(
       position: value.position as Offset,
       shape: value.shape.toString().split('.').last,
       sizeScale: value.sizeScale as double,
-      rotation: value.rotation as double,
+      rotation: value.rotationRadians as double,
     );
   }).toList(growable: false);
 }
@@ -1570,7 +1578,7 @@ void main() {
     expect(_paintedSelectedComponentDraftKey(tester), 1);
     expect(
       (geometry.rotatedBounds as Rect).contains(
-        (geometry.centre as Offset) + rotatedCorner,
+        (geometry.center as Offset) + rotatedCorner,
       ),
       isTrue,
     );
@@ -2137,17 +2145,22 @@ void main() {
         )
         .firstWhere(
           (stack) => stack.children.any(
-            (child) => child.key == const ValueKey('wizard-component-painter'),
+            (child) =>
+                child.key == const ValueKey('wizard-component-guide-painter'),
           ),
         );
     final componentPhotoIndex = componentStack.children.indexWhere(
       (child) => child.key == const ValueKey('wizard-component-photo-layer'),
     );
     final componentPainterIndex = componentStack.children.indexWhere(
-      (child) => child.key == const ValueKey('wizard-component-painter'),
+      (child) => child.key == const ValueKey('wizard-component-guide-painter'),
     );
     expect(componentPhotoIndex, greaterThanOrEqualTo(0));
     expect(componentPhotoIndex, lessThan(componentPainterIndex));
+    final editorStack = tester
+        .widget<Stack>(find.byKey(const ValueKey('wizard-component-stack')));
+    expect(editorStack.children.last.key,
+        const ValueKey('wizard-component-candidate-layer'));
     final componentPhotoView = tester.widget(
       find.byKey(const ValueKey('wizard-component-photo-view')),
     ) as dynamic;
@@ -4321,7 +4334,7 @@ void _sharedCandidateWizardGeometryTests() {
         );
         final dynamic painter = _componentPainter(tester);
         final dynamic geometry =
-            (painter.markerGeometries(frame.size) as Iterable).single;
+            (painter.markerGeometries() as Iterable).single.geometry;
         final minor = math.max(8.0, frame.size.shortestSide * 0.035 * 2.5);
         expect(frame.width / frame.height, closeTo(latchedAspect, 1e-9));
         expect(geometry.minorDimension as double, closeTo(minor, 1e-9));
@@ -4331,11 +4344,11 @@ void _sharedCandidateWizardGeometryTests() {
           closeTo(math.pi / 4, 1e-9),
         );
         expect(
-          (geometry.centre as Offset).dx,
+          (geometry.center as Offset).dx,
           closeTo(frame.width * 0.65, 1e-6),
         );
         expect(
-          (geometry.centre as Offset).dy,
+          (geometry.center as Offset).dy,
           closeTo(frame.height * 0.35, 1e-6),
         );
         expect(_paintedComponentStyles(tester).single, initialStyle);
@@ -4348,14 +4361,14 @@ void _sharedCandidateWizardGeometryTests() {
       );
       final dynamic painter = _componentPainter(tester);
       final dynamic geometry =
-          (painter.markerGeometries(frame.size) as Iterable).single;
+          (painter.markerGeometries() as Iterable).single.geometry;
       final Size body = geometry.markerSize as Size;
       final localCorner = Offset(body.width * 0.45, body.height * 0.45);
       final rotatedCorner = Offset(
         (localCorner.dx - localCorner.dy) / math.sqrt2,
         (localCorner.dx + localCorner.dy) / math.sqrt2,
       );
-      final start = frame.topLeft + (geometry.centre as Offset) + rotatedCorner;
+      final start = frame.topLeft + (geometry.center as Offset) + rotatedCorner;
       final gesture = await tester.startGesture(start);
       await gesture.moveTo(start + const Offset(12, 9));
       await tester.pump(const Duration(milliseconds: 16));
@@ -4392,16 +4405,13 @@ void _sharedCandidateWizardGeometryTests() {
     await tester.pump();
     await _openComponentPlacementStep(tester);
     await _setComponentSize(tester, 0.5);
-    final frame = tester.getRect(
-      find.byKey(const ValueKey('wizard-component-painter')),
-    );
     await _tapComponentAt(tester, const Offset(0.5, 0.5));
     await _pumpFrames(tester);
     await _tapKey(tester, 'wizard-component-rotate-plus');
     await _tapKey(tester, 'wizard-component-rotate-plus');
     final dynamic painter = _componentPainter(tester);
     final dynamic geometry =
-        (painter.markerGeometries(frame.size) as Iterable).single;
+        (painter.markerGeometries() as Iterable).single.geometry;
     expect(geometry.markerSize as Size, const Size(8, 8));
     expect((geometry.hitBounds as Rect).size, const Size(56, 56));
     expect(geometry.effectiveRotation as double, 0);
@@ -4452,7 +4462,7 @@ void _sharedCandidateWizardGeometryTests() {
       );
       final dynamic wizardPainter = _componentPainter(tester);
       final dynamic wizardGeometry =
-          (wizardPainter.markerGeometries(frame.size) as Iterable).single;
+          (wizardPainter.markerGeometries() as Iterable).single.geometry;
       final wizardBody = wizardGeometry.markerSize as Size;
       final wizardMinor = wizardGeometry.minorDimension as double;
       expect(wizardMinor, greaterThan(8));
@@ -4496,20 +4506,20 @@ void _sharedCandidateWizardGeometryTests() {
       final Rect reference =
           canvasPainter.fitTransform.normalizedCanvasRect as Rect;
       final recording = TestRecordingCanvas();
-      canvasPainter.paint(
-        recording,
-        canvasPainter.fitTransform.canvasSize as Size,
-      );
-      final calls = recording.invocations
-          .map((record) => record.invocation)
-          .toList();
-      final bodyCall = calls
-          .where((call) => call.memberName == #drawPath)
-          .lastWhere(
-            (call) =>
-                (call.positionalArguments[1] as Paint).style ==
-                PaintingStyle.fill,
-          );
+      final dynamic candidatePainter = tester
+          .widget<CustomPaint>(
+              find.byKey(const ValueKey('board_canvas_candidate-painter')))
+          .painter;
+      candidatePainter.paint(
+          recording, canvasPainter.fitTransform.canvasSize as Size);
+      final calls =
+          recording.invocations.map((record) => record.invocation).toList();
+      final bodyCall =
+          calls.where((call) => call.memberName == #drawPath).lastWhere(
+                (call) =>
+                    (call.positionalArguments[1] as Paint).style ==
+                    PaintingStyle.fill,
+              );
       final body = (bodyCall.positionalArguments.first as Path).getBounds();
       expect(body.height, closeTo(reference.size.shortestSide * 0.0875, 1e-5));
       expect(

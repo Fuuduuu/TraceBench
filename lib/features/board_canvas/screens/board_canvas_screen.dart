@@ -25,7 +25,9 @@ import '../../photos/widgets/photo_workbench_panel.dart';
 import '../../project/widgets/workbench_shell.dart';
 import '../../../shared/footprints/footprint_models.dart';
 import '../../../shared/footprints/vector_footprint_library.dart';
-import '../../../shared/geometry/wizard_candidate_geometry.dart';
+import '../../component_candidates/models/component_candidate_draft.dart';
+import '../../component_candidates/services/component_candidate_draft_store.dart';
+import '../../component_candidates/widgets/component_candidate_editor.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/models/wizard_intake.dart';
@@ -465,6 +467,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
     this.photoAlignmentEventWriter,
     this.alignedPhotoAssetLoader,
     this.alignedPhotoImageBuilder,
+    this.candidateDraftStore,
   });
 
   final PhotoSourcePicker? photoSourcePicker;
@@ -473,6 +476,7 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
   final PhotoAlignmentEventWriter? photoAlignmentEventWriter;
   final AlignedPhotoAssetLoader? alignedPhotoAssetLoader;
   final AlignedPhotoImageBuilder? alignedPhotoImageBuilder;
+  final ComponentCandidateDraftStore? candidateDraftStore;
 
   @override
   ConsumerState<BoardCanvasScreen> createState() => _BoardCanvasScreenState();
@@ -505,6 +509,204 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _primaryPhotoLoading = false;
   bool _primaryPhotoUnavailable = false;
 
+  final ComponentCandidateEditorController _candidateEditor =
+      ComponentCandidateEditorController(
+          ComponentCandidateDocument.seed(projectId: 'unopened'));
+  String? _candidateIdentity;
+  int _candidateEpoch = 0;
+  int _candidateGeneration = 0;
+  String? _candidateRevision;
+  bool _candidateLoading = false;
+  bool _candidateSaving = false;
+  bool _candidateDirty = false;
+  bool _candidateAuthoring = true;
+  String? _candidateLoadError;
+  String? _candidateSaveError;
+
+  ComponentCandidateDraftStore get _candidateStore =>
+      widget.candidateDraftStore ?? const ComponentCandidateDraftStore();
+
+  bool _candidateContextIsCurrent(int epoch) =>
+      mounted &&
+      _candidateEpoch == epoch &&
+      _candidateIdentity != null &&
+      ref.read(projectStateProvider.notifier).generation ==
+          _candidateGeneration;
+
+  void _reconcileCandidateDraft(ProjectState project) {
+    final seed = ComponentCandidateDocument.seed(
+        projectId: project.manifest.projectId, intake: project.wizardIntake);
+    final generation = ref.read(projectStateProvider.notifier).generation;
+    final identity =
+        '${project.manifest.projectId}\n${project.projectDirectory}\n'
+        '$generation\n${seed.sourceFingerprint}';
+    if (_candidateIdentity == identity) return;
+    _candidateIdentity = identity;
+    _candidateGeneration = generation;
+    _candidateEpoch++;
+    _candidateRevision = null;
+    _candidateDirty = false;
+    _candidateSaving = false;
+    _candidateLoadError = null;
+    _candidateSaveError = null;
+    _candidateEditor.replaceDocument(seed);
+    final directory = project.projectDirectory;
+    _candidateLoading = directory != null && directory.trim().isNotEmpty;
+    if (_candidateLoading) {
+      unawaited(_loadCandidateDraft(directory!, seed, _candidateEpoch));
+    }
+  }
+
+  Future<void> _loadCandidateDraft(
+      String directory, ComponentCandidateDocument seed, int epoch) async {
+    try {
+      final result = await _candidateStore.load(directory, seed);
+      if (!_candidateContextIsCurrent(epoch)) return;
+      setState(() {
+        _candidateEditor.replaceDocument(result.document);
+        _candidateRevision = result.revision;
+        _candidateLoading = false;
+        _candidateLoadError = null;
+      });
+    } catch (_) {
+      if (!_candidateContextIsCurrent(epoch)) return;
+      setState(() {
+        _candidateLoading = false;
+        _candidateLoadError =
+            'Kohaliku kandidaadimustandi laadimine ebaõnnestus. '
+            'Olemasolev fail on säilitatud; redigeerimine on peatatud.';
+      });
+    }
+  }
+
+  void _candidateEditCompleted() {
+    if (_candidateLoading || _candidateLoadError != null) return;
+    setState(() {
+      _candidateDirty = true;
+    });
+    unawaited(_saveCandidateDraft());
+  }
+
+  Future<void> _saveCandidateDraft() async {
+    if (_candidateSaving || _candidateLoading || _candidateLoadError != null) {
+      return;
+    }
+    final project = ref.read(projectStateProvider);
+    final directory = project?.projectDirectory;
+    final epoch = _candidateEpoch;
+    if (directory == null ||
+        directory.trim().isEmpty ||
+        !_candidateContextIsCurrent(epoch)) {
+      return;
+    }
+    setState(() {
+      _candidateSaving = true;
+      _candidateSaveError = null;
+    });
+    try {
+      while (_candidateDirty && _candidateContextIsCurrent(epoch)) {
+        final document = _candidateEditor.document;
+        final result = await _candidateStore.save(directory, document,
+            expectedRevision: _candidateRevision);
+        if (!_candidateContextIsCurrent(epoch)) return;
+        setState(() {
+          _candidateRevision = result.revision;
+          _candidateDirty = !identical(document, _candidateEditor.document);
+        });
+      }
+    } catch (_) {
+      if (!_candidateContextIsCurrent(epoch)) return;
+      setState(() {
+        _candidateSaveError = 'Kandidaadimustandi salvestamine ebaõnnestus. '
+            'Muudatused on selles aknas alles.';
+      });
+    } finally {
+      if (_candidateContextIsCurrent(epoch)) {
+        setState(() {
+          _candidateSaving = false;
+        });
+      }
+    }
+  }
+
+  Widget _candidateContextPanel(ProjectState project) {
+    final hasDirectory = project.projectDirectory?.trim().isNotEmpty ?? false;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const Text('Visuaalsed kandidaadid',
+          style: TextStyle(
+              color: BoardCanvasPalette.signal,
+              fontWeight: FontWeight.w800,
+              fontSize: 17)),
+      const SizedBox(height: 8),
+      const Text('Mittekanoniline visuaalne mustand. See ei kinnita komponendi '
+          'identiteeti, kontakte ega elektrilisi mõõtmisi.'),
+      const SizedBox(height: 8),
+      Semantics(
+          liveRegion: true,
+          child: Text(
+              _candidateLoadError ??
+                  _candidateSaveError ??
+                  (_candidateLoading
+                      ? 'Laadin kohalikku mustandit…'
+                      : !hasDirectory
+                          ? 'Seansimustand: projekti kaust puudub; muudatused ei säili uuestiavamisel.'
+                          : _candidateSaving
+                              ? 'Salvestan kohalikku mustandit…'
+                              : _candidateDirty
+                                  ? 'Kohalik mustand salvestamata'
+                                  : 'Kohalik mustand · ei muuda projekti fakte'),
+              key: const Key('board_canvas_candidate_draft_status'),
+              style: TextStyle(
+                  color:
+                      _candidateLoadError != null || _candidateSaveError != null
+                          ? WorkbenchColors.danger
+                          : BoardCanvasPalette.navy))),
+      if (_candidateLoadError != null || _candidateSaveError != null)
+        OutlinedButton.icon(
+            key: const Key('board_canvas_candidate_draft_retry'),
+            onPressed: _candidateSaving
+                ? null
+                : () {
+                    if (_candidateLoadError != null) {
+                      setState(() {
+                        _candidateLoading = true;
+                        _candidateLoadError = null;
+                      });
+                      unawaited(_loadCandidateDraft(
+                          project.projectDirectory!,
+                          ComponentCandidateDocument.seed(
+                              projectId: project.manifest.projectId,
+                              intake: project.wizardIntake),
+                          _candidateEpoch));
+                    } else {
+                      unawaited(_saveCandidateDraft());
+                    }
+                  },
+            icon: const Icon(Icons.refresh),
+            label: const Text('Proovi uuesti')),
+      const SizedBox(height: 12),
+      ComponentCandidateEditor.controls(
+          controller: _candidateEditor,
+          keyPrefix: 'board_canvas_candidate',
+          enabled: !_candidateLoading && _candidateLoadError == null,
+          contourClosed: project.wizardIntake?.contour.closed ?? false,
+          onEditCompleted: _candidateEditCompleted),
+      const SizedBox(height: 12),
+      OutlinedButton.icon(
+          key: const Key('board_canvas_canonical_placement_mode'),
+          onPressed: () {
+            if (_addComponentContextScrollController.hasClients) {
+              _addComponentContextScrollController.jumpTo(0);
+            }
+            setState(() {
+              _candidateAuthoring = false;
+            });
+          },
+          icon: const Icon(Icons.add_box_outlined),
+          label: const Text('Komponendi identiteet ja paigutus')),
+    ]);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -519,6 +721,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         when !completer.isCompleted) {
       completer.complete(null);
     }
+    _candidateEditor.dispose();
     _placementHolder.removeListener(_onPlacementChanged);
     _placementHolder.dispose();
     _componentIdentityHolder.dispose();
@@ -729,6 +932,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
   void _beginUnplacedComponentPlacement(ComponentFact component) {
     setState(() {
+      _candidateAuthoring = false;
       _contextPanelMode = _WorkbenchContextPanelMode.addComponentTemplates;
       _inspectorVisible = true;
       _canvasFocusMode = false;
@@ -1008,6 +1212,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     final ProjectState? projectState = ref.watch(projectStateProvider);
 
     if (projectState == null) {
+      _candidateIdentity = null;
+      _candidateEpoch++;
       return _buildScaffold(
         context,
         const _EmptyState(
@@ -1016,6 +1222,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       );
     }
 
+    _reconcileCandidateDraft(projectState);
     final knownFacts = projectState.knownFacts;
     final photoEventItems = photoEventItemsFromEvents(projectState.events);
     _reconcilePrimaryPhotoAsset(projectState);
@@ -1238,9 +1445,45 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                 );
                 final canvas = _CanvasPanel(
+                  key: ValueKey(
+                      'board_canvas_candidate_context_$_candidateEpoch'),
                   projectId: projectState.manifest.projectId,
                   projectDirectory: projectState.projectDirectory,
                   wizardIntake: projectState.wizardIntake,
+                  candidateEditor: _candidateEditor,
+                  candidateNotice: _contextPanelMode ==
+                              _WorkbenchContextPanelMode.photos ||
+                          _contextPanelMode ==
+                              _WorkbenchContextPanelMode.measure ||
+                          (!_candidateAuthoring &&
+                              _contextPanelMode ==
+                                  _WorkbenchContextPanelMode
+                                      .addComponentTemplates)
+                      ? null
+                      : _candidateLoadError != null
+                          ? 'Kohaliku mustandi laadimine peatatud · Ava redaktor'
+                          : _candidateSaveError != null
+                              ? 'Kohalik mustand salvestamata · Ava redaktor'
+                              : null,
+                  candidateEditorEnabled: !_candidateLoading &&
+                      _candidateLoadError == null &&
+                      _contextPanelMode != _WorkbenchContextPanelMode.photos &&
+                      _contextPanelMode != _WorkbenchContextPanelMode.measure &&
+                      !(_contextPanelMode ==
+                              _WorkbenchContextPanelMode
+                                  .addComponentTemplates &&
+                          !_candidateAuthoring),
+                  candidateAllowAdd: _candidateAuthoring &&
+                      _contextPanelMode ==
+                          _WorkbenchContextPanelMode.addComponentTemplates,
+                  onCandidateSelected: () => setState(() {
+                    _candidateAuthoring = true;
+                    _clearCanvasSelection();
+                    _contextPanelMode =
+                        _WorkbenchContextPanelMode.addComponentTemplates;
+                    _inspectorVisible = true;
+                  }),
+                  onCandidateEditCompleted: _candidateEditCompleted,
                   wizardIntakeWarning: projectState.wizardIntakeWarning,
                   activePhotoAlignment: activePhotoAlignment,
                   primaryPhotoAsset: primaryPhotoAsset,
@@ -1299,6 +1542,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     });
                   },
                   onCanvasTapEmpty: () {
+                    if (_candidateAuthoring &&
+                        _contextPanelMode ==
+                            _WorkbenchContextPanelMode.addComponentTemplates) {
+                      return;
+                    }
                     setState(() {
                       _clearCanvasSelection();
                       if (_contextPanelMode !=
@@ -1311,7 +1559,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       }
                     });
                   },
-                  showAddComponentTemplateGhost: _contextPanelMode ==
+                  showAddComponentTemplateGhost: !_candidateAuthoring &&
+                      _contextPanelMode ==
                           _WorkbenchContextPanelMode.addComponentTemplates &&
                       _placementHolder.ghostDraft.templateId != null,
                   addComponentTemplateGhostTopContactMarkers:
@@ -1491,7 +1740,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         selectedComponent: selectedEntry?.component,
                         relatedMeasurements: relatedMeasurements,
                         relatedVisualTraces: relatedVisualTraces,
-                        onContinueToMeasureSheet: () => context.push('/project/measure-sheet'),
+                        onContinueToMeasureSheet: () =>
+                            context.push('/project/measure-sheet'),
                         advancedDetailsBuilder: (panelContext) {
                           final theme = Theme.of(panelContext);
                           return [
@@ -1514,7 +1764,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 ...relatedVisualTraces.map(
-                                  (trace) => InspectorVisualTraceSummaryTile(trace: trace),
+                                  (trace) => InspectorVisualTraceSummaryTile(
+                                      trace: trace),
                                 ),
                               ],
                               if (relatedMeasurements.isNotEmpty) ...[
@@ -1526,7 +1777,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 ...relatedMeasurements.map(
-                                  (measurement) => InspectorMeasurementSummaryTile(
+                                  (measurement) =>
+                                      InspectorMeasurementSummaryTile(
                                     measurement: measurement,
                                   ),
                                 ),
@@ -1534,10 +1786,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             ],
                           ];
                         },
-                        footprintPreviewBuilder:
-                            (selectedTarget, selectedTargetLabel, measurementCount) {
+                        footprintPreviewBuilder: (selectedTarget,
+                            selectedTargetLabel, measurementCount) {
                           return Semantics(
-                            label: _componentPreviewSemanticsLabel(selectedEntry),
+                            label:
+                                _componentPreviewSemanticsLabel(selectedEntry),
                             child: CustomPaint(
                               key: const Key(
                                 'board_canvas_measure_component_footprint_preview',
@@ -1561,49 +1814,55 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             addComponentTemplatePlacementContextEntry
                                 ?.placement.componentId,
                       );
-                      contextPanel = _AddComponentTemplateListPanel(
-                        projectState: projectState,
-                        metadataEditComponent: metadataEditComponent,
-                        componentIdentityHolder: _componentIdentityHolder,
-                        hasSelectedTemplate:
-                            selectedAddComponentTemplate != null,
-                        placementSectionBuilder: (context) =>
-                            buildBoardCanvasPlacementChildren(
-                          context,
-                          holder: _placementHolder,
-                          projectState: projectState,
-                          resolveSaveValues: (draft) =>
-                              _resolvedPlacementSaveValues(
-                                  placementSaveTarget, draft),
-                          placementSeed:
-                              addComponentTemplatePlacementContextEntry == null
-                                  ? null
-                                  : _placementSeedFor(
-                                      addComponentTemplatePlacementContextEntry),
-                          templates: _kStarterAddComponentTemplates
-                              .map(_placementTemplateValues)
-                              .toList(growable: false),
-                          chooserBuilder: _buildPlacementTemplateChooser,
-                          selectedSummaryBuilder:
-                              _buildPlacementSelectedSummary,
-                          templatePreviewBuilder:
-                              _buildPlacementTemplatePreview,
-                          draftPreviewBuilder: _buildPlacementDraftPreview,
-                          saveContextLabel:
-                            addComponentTemplatePlacementContextEntry
-                                    ?.selectorLabel ??
-                                (placementSaveTarget == null
-                                    ? null
-                                    : _componentPrimaryLabel(
-                                        componentsById[placementSaveTarget
-                                                .componentId] ??
-                                            ComponentFact(
-                                              componentId: placementSaveTarget
-                                                  .componentId,
-                                            ),
-                                      )),
-                        ),
-                      );
+                      contextPanel = _candidateAuthoring
+                          ? _candidateContextPanel(projectState)
+                          : _AddComponentTemplateListPanel(
+                              projectState: projectState,
+                              metadataEditComponent: metadataEditComponent,
+                              componentIdentityHolder: _componentIdentityHolder,
+                              hasSelectedTemplate:
+                                  selectedAddComponentTemplate != null,
+                              placementSectionBuilder: (context) =>
+                                  buildBoardCanvasPlacementChildren(
+                                context,
+                                holder: _placementHolder,
+                                projectState: projectState,
+                                resolveSaveValues: (draft) =>
+                                    _resolvedPlacementSaveValues(
+                                        placementSaveTarget, draft),
+                                placementSeed:
+                                    addComponentTemplatePlacementContextEntry ==
+                                            null
+                                        ? null
+                                        : _placementSeedFor(
+                                            addComponentTemplatePlacementContextEntry),
+                                templates: _kStarterAddComponentTemplates
+                                    .map(_placementTemplateValues)
+                                    .toList(growable: false),
+                                chooserBuilder: _buildPlacementTemplateChooser,
+                                selectedSummaryBuilder:
+                                    _buildPlacementSelectedSummary,
+                                templatePreviewBuilder:
+                                    _buildPlacementTemplatePreview,
+                                draftPreviewBuilder:
+                                    _buildPlacementDraftPreview,
+                                saveContextLabel:
+                                    addComponentTemplatePlacementContextEntry
+                                            ?.selectorLabel ??
+                                        (placementSaveTarget == null
+                                            ? null
+                                            : _componentPrimaryLabel(
+                                                componentsById[
+                                                        placementSaveTarget
+                                                            .componentId] ??
+                                                    ComponentFact(
+                                                      componentId:
+                                                          placementSaveTarget
+                                                              .componentId,
+                                                    ),
+                                              )),
+                              ),
+                            );
                       break;
                     case _WorkbenchContextPanelMode.safetyEvidence:
                       contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
@@ -1687,6 +1946,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     onPressed: () {
                       final placementContextEntry = selectedEntry;
                       setState(() {
+                        _candidateAuthoring = true;
                         if (placementContextEntry != null) {
                           _placementHolder.seedAddFromPlacement(
                               _placementSeedFor(placementContextEntry));
@@ -3735,9 +3995,16 @@ class _CanvasStatusPill extends StatelessWidget {
 
 class _CanvasPanel extends StatefulWidget {
   const _CanvasPanel({
+    super.key,
     required this.projectId,
     required this.projectDirectory,
     required this.wizardIntake,
+    required this.candidateEditor,
+    this.candidateNotice,
+    required this.candidateEditorEnabled,
+    required this.candidateAllowAdd,
+    required this.onCandidateSelected,
+    required this.onCandidateEditCompleted,
     required this.wizardIntakeWarning,
     required this.activePhotoAlignment,
     required this.primaryPhotoAsset,
@@ -3777,6 +4044,12 @@ class _CanvasPanel extends StatefulWidget {
   final String projectId;
   final String? projectDirectory;
   final WizardIntake? wizardIntake;
+  final ComponentCandidateEditorController candidateEditor;
+  final String? candidateNotice;
+  final bool candidateEditorEnabled;
+  final bool candidateAllowAdd;
+  final VoidCallback onCandidateSelected;
+  final VoidCallback onCandidateEditCompleted;
   final String? wizardIntakeWarning;
   final PhotoAlignmentEventItem? activePhotoAlignment;
   final AlignedPhotoAsset? primaryPhotoAsset;
@@ -4043,7 +4316,29 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   ),
                 ),
               Positioned.fill(
-                child: CustomPaint(
+                child: ComponentCandidateEditor.surface(
+                  controller: widget.candidateEditor,
+                  keyPrefix: 'board_canvas_candidate',
+                  referenceRect: wizardFitTransform?.normalizedCanvasRect ??
+                      _candidateReferenceRect(canvasSize),
+                  enabled: widget.candidateEditorEnabled &&
+                      !widget.alignmentBoardPointCaptureActive,
+                  allowAdd: widget.candidateAllowAdd,
+                  canInteractAt: (point) =>
+                      widget.candidateAllowAdd ||
+                      !widget.entries.any((entry) => renderedPlacementContains(
+                          placement: entry.placement,
+                          component: entry.component,
+                          template: entry.template,
+                          size: canvasSize,
+                          position: point)),
+                  onSelectionChanged: widget.onCandidateSelected,
+                  onEditCompleted: widget.onCandidateEditCompleted,
+                ),
+              ),
+              Positioned.fill(
+                child: IgnorePointer(
+                    child: CustomPaint(
                   key: const Key('board_canvas_painter'),
                   painter: _BoardPlacementPainter(
                     entries: widget.entries,
@@ -4054,7 +4349,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                         widget.measurementCountsByComponentId,
                     colorScheme: theme.colorScheme,
                   ),
-                ),
+                )),
               ),
               if (widget.showAddComponentTemplateGhost &&
                   widget.selectedAddComponentTemplate != null) ...[
@@ -4136,6 +4431,13 @@ class _CanvasPanelState extends State<_CanvasPanel> {
         ),
       ),
     );
+  }
+
+  Rect _candidateReferenceRect(Size size) {
+    final aspect = widget.candidateEditor.document.referenceFrameAspectRatio;
+    final width = math.min(size.width, size.height * aspect);
+    return Rect.fromCenter(
+        center: size.center(Offset.zero), width: width, height: width / aspect);
   }
 
   Widget _buildLocalAddComponentTemplateGhostLayer(
@@ -4282,9 +4584,9 @@ class _CanvasPanelState extends State<_CanvasPanel> {
   Widget _buildLocalAddComponentTemplateGhost(BuildContext context) {
     final theme = Theme.of(context);
     final String draftLabel = widget.addComponentTemplateGhostDraftLabel.trim();
-    const addComponentDraftGhostBoundaryColor = Color(0xFF7B3FF2);
-    const addComponentDraftGhostMarkerColor = Color(0xFF5E35B1);
-    const addComponentDraftGhostFillColor = Color(0x227B3FF2);
+    const addComponentDraftGhostBoundaryColor = BoardCanvasPalette.signal;
+    const addComponentDraftGhostMarkerColor = BoardCanvasPalette.navy;
+    const addComponentDraftGhostFillColor = BoardCanvasPalette.signalTint;
     final ghostPreview = widget.selectedAddComponentTemplate == null
         ? null
         : ConstrainedBox(
@@ -4435,7 +4737,7 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '${intake.visualCandidates.length}',
+                        '${widget.candidateEditor.document.candidates.length}',
                         key: const Key(
                           'board_canvas_wizard_candidate_count',
                         ),
@@ -4688,6 +4990,28 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                   _buildWizardPresentationControls(context),
                 if (widget.wizardIntakeWarning != null)
                   _buildWizardWarning(context),
+                if (widget.candidateNotice != null)
+                  Positioned(
+                    left: 6,
+                    right: 6,
+                    bottom: widget.wizardIntake == null ? 6 : 100,
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Material(
+                        color: BoardCanvasPalette.tile,
+                        borderRadius: BorderRadius.circular(8),
+                        child: OutlinedButton.icon(
+                          key: const Key('board_canvas_candidate_draft_notice'),
+                          onPressed: widget.onCandidateSelected,
+                          icon: const Icon(Icons.warning_amber_outlined,
+                              color: WorkbenchColors.danger),
+                          label: Text(widget.candidateNotice!,
+                              style: const TextStyle(
+                                  color: BoardCanvasPalette.navy)),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             );
           },

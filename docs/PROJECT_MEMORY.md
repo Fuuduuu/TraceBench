@@ -74,6 +74,29 @@ The `board_outline_confirmed` Python schema/validator/materializer foundation is
 - Project ZIP, writer, validator, materializer, projection, repair, and evidence-status behavior are protected and change only through dedicated scope.
 - Reference images and design/source material are sidecar/provenance unless separately confirmed through a canonical evidence path.
 
+## Future AI/photo return conditions
+
+Future capabilities remain product directions, not enabled behavior: phone
+capture guidance, photo-based candidate proposals, visual traces/repair maps,
+AI-assisted next steps and technician-controlled AI memory.
+
+- First make the local technician loop dependable: saved events can be safely
+  reflected in views, candidate identity/geometry survives the workflow, and
+  reopening/acquisition does not lose data or disguise a read-only workspace.
+- Clearly label Wizard background, canonical photo evidence and local reference
+  images; retain provenance and the visual-versus-electrical evidence boundary.
+- Any proposal must be inspectable and rejectable. Only explicit human action
+  through the accepted writer may create canonical truth; AI must not infer
+  measured values, connectivity, identity or repair conclusions as facts.
+- Phone/photo/AI intake needs a separately authorized data/privacy/error contract
+  and relevant validation before activation; no implicit upload, camera or model
+  integration follows from a roadmap entry.
+- AI memory updates remain technician-triggered and distinguish confirmed facts
+  from noncanonical notes/proposals. No background canonical memory writer.
+
+Current priority order has one owner:
+[CURRENT_STATE product priorities](CURRENT_STATE.md#product-priorities).
+
 ## Canonical pointers
 
 - Product charter and human/AI rule: `docs/POHIKIRI.md`

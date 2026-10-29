@@ -6,78 +6,60 @@ Repo docs remain canonical. Old chat memory, old uploaded snippets, and summary-
 
 ## Common audit checks
 
-Apply these checks to every contract unless the pass explicitly narrows them further.
+Risk-based applicability: ordinary low-risk UI/docs uses one independent diff
+review recorded in thread/PR/review output, then exact human commit. A new audit
+artifact, ledger row, formal packet or separate verdict-recording/closeout pass
+is not mandatory. Formal protected/human-requested artifacts use the recording
+contract below. Existing historical records are not rewritten by this policy.
 
-- Scope compliance: changed files must stay inside the pass allowlist and outside every forbidden surface.
-- Governance route consistency: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`, and `docs/ACTIVE_SCOPE_LOCK.md` must agree on current and next pass.
-- No self-loop: current pass and next recommended pass must not be the same.
-- AUDIT_INDEX row check: new audit artifacts must have a ledger row; folded route-review rows are allowed only when explicit and traceable.
-- No completed pass reopened/pruned: prior audit history must not be deleted, rewritten, or marked active again unless a recovery pass explicitly authorizes it.
-- No self-referential lifecycle claims: an artifact or ledger row may state
-  time-invariant actions the pass performed and verifiable pushed-Git facts
-  such as commit hash, parent, subject, file set, and stat. It must not assert
-  its own current staging or audit-pipeline position with `is unstaged`,
-  `uncommitted`, `unpushed`, `not yet audited`, `awaits audit`, `stops before
-  staging`, or an equivalent claim. Git reports staging position; prose does
-  not.
-- Attestation representation: every published hash or byte-length value must
-  name the byte representation it measured and the command that produced it,
-  per the attestation rules below. An unlabelled value is a finding.
-- Binding-source check: when a pass cites specs, schemas, tools, or audit files, the diff must remain compatible with those binding sources.
-- Future allowlist / forbidden surfaces check: future implementation scopes must state exact allowed surfaces and forbidden surfaces.
-- Validation/log sanity: claimed validation must match command output; expected non-blocking warnings should be classified explicitly.
-- Artifact/docs hygiene: no generated artifacts, literal newline artifacts, tag/release mutations, or accidental runtime files unless scoped.
-- Findings ranking: rank findings as `BLOCKER`, `HIGH`, `MEDIUM`, `LOW`, or `NIT`.
-- Verdict and safety gate: return `AUDIT_VERDICT`, `SAFE_FOR_STAGING`, and the
-  exact `SAFE_STAGING_SET` using the canonical packet shape below.
-- Audit-packet handoff: apply the Prompting Protocol's post-change trigger; a
-  paste-ready `CLAUDE_AUDIT_PACKET` accompanies an actual changed-file diff, not
-  strategy, design, ordinary answers, new-chat context, or prompt drafting.
-- Visual/manual-smoke gate: visual or product-surface packets must be marked `USE ONLY AFTER MANUAL SMOKE PASS`; Claude audit must not approve a known-wrong visual draft.
-- Exact staging: accepted staging sets must list exact files; `git add .`, `git add -A`, and broad staging are forbidden.
-- Capability preflight: verify `TOOL_SKILL_CHECK` exists, the reported
-  capability was applicable, and its use did not widen the active allowlist.
-- Conditional code-map preflight: for implementation, repair, diagnostic, QA,
-  refactor, or review work targeting or materially depending on Dart
-  production/test files, verify `CODE_MAP_PREFLIGHT` against
-  `docs/code_maps/CODE_MAP_STANDARD.md`.
-- Code-map evidence: verify the index lookup and map status; named zones and
-  stable symbols against map and source; the diff against the declared zone and
-  active allowlist; and that inspect-only and excluded zones stayed unchanged.
-- Code-map impact: verify write class from actual call-path evidence, affected
-  tests against the impact matrix, and exactly one justified disposition per
-  relevant target. Block silent reliance on missing, stale, or conflicting maps
-  and verify that no such map authorized work.
-- Code-map lifecycle: verify `UPDATE_REQUIRED` routes to later docs-only map
-  maintenance against accepted committed source, and multi-zone work had a new
-  explicit human scope decision or stopped with `DECOMPOSE_REQUIRED`.
+- Check the explicit compact/protected task boundary, exact changed material
+  and preservation of unrelated work. A new product priority is not write authority.
+- Verify canonical/data protection: writers, events, evidence, Session guards,
+  materialization, migrations, user files and ZIP compatibility. Escalate real
+  ambiguity; do not classify data changes as cosmetic.
+- Verify current route owners agree without a self-loop. Prior evidence stays
+  historical; completed passes are not reopened by implication.
+- If an audit artifact is explicitly created/updated, preserve its ledger link,
+  markers, prior verdicts and bounded recording contract. No mandatory new row
+  or artifact is inferred for an ordinary task that uses review-output evidence.
+- Do not invent acceptance/pushed state or assert an artifact's own staging/
+  audit-pipeline position. Git reports staging. Generic recording policy and
+  frozen historical snapshots are distinct from current-pass claims.
+- Published hash/byte attestations name blob/worktree representation and the
+  exact command under the attestation rules below.
+- Compare actual source/tests with the changed claims; inspect named dependency
+  hops only. Use maps where useful, and review material source/map drift together
+  in the same authorized diff. No automatic standalone maintenance audit.
+- Confirm actual validation output, classify existing warnings, and require
+  human visual acceptance for changed product surfaces where applicable.
+- Rank findings BLOCKER/HIGH/MEDIUM/LOW/NIT. Address material fixes in the same
+  bounded review cycle, not an automatic new documentation programme.
+- Only the human stages/commits/pushes exact accepted files; broad staging and
+  destructive cleanup are forbidden.
+
+Formal packets still use the canonical shape below. A packet describes an
+actual diff, not a preparation answer. CLAUDE_SNIPER_PACKET is an optional
+read envelope for complex reviews, not a second required audit schema.
+Tool/Code Map preflight detail follows risk and PROMPTING_PROTOCOL, not a
+blanket reporting obligation for every minor presentation edit.
 
 ## Verdict-recording gate: audit -> record verdict -> stage
 
-For every pass that creates or updates an audit artifact and ledger row, use
-this order:
+This gate applies when a protected contract or explicit human request uses a
+formal artifact and ledger. It is not the default for ordinary UI/docs work.
 
-1. Prepare the complete Phase 1 diff. The artifact contains exactly one named,
-   clearly delimited, empty verdict block, and the ledger row describes what
-   the pass is without asserting its pipeline position.
-2. Name the verdict block's file, marker text, and current line range in the
-   `CLAUDE_AUDIT_PACKET`. The independent auditor reviews the complete Phase 1
-   diff except the empty block and returns the canonical `AUDIT_VERDICT`,
-   `SAFE_FOR_STAGING`, and `SAFE_STAGING_SET`.
-3. After that audit returns and before any staging, copy the returned verdict
-   into the designated block and mirror the same verdict, safety result, and
-   exact safe staging set in the pass's existing ledger Status cell. The block
-   is the only discretionary content filled after audit; the ledger edit is a
-   mechanical mirror of it. Both edits belong to the same exact staged set as
-   the audited pass.
-4. Freeze and compare the Phase 1 and Phase 2 forms. Prove that no byte outside
-   the designated block and the one named ledger Status cell moved, that the
-   changed-file set did not expand, and that the two verdict records agree.
-   This is the same bounded-exception principle as the map-body freeze: name
-   the exception, bound it, and prove that everything outside it stayed fixed.
+1. Prepare the real diff and, when that contract requires it, one empty named
+   verdict block and neutral ledger row.
+2. Independent review returns the verdict, safety result and exact file set;
+   it may expressly authorize only the bounded mechanical recording.
+3. Copy that result into the designated block and ledger Status, preserving
+   Description/history and proving no bytes outside authorized coordinates move.
+4. The human commits the exact accepted material. Mechanical recording may be
+   the tail of the same task; no new PASS_ID, separate recording project or
+   second audit is needed if the authorized content alone changes.
 
-The auditor's Phase 1 result must expressly authorize only that bounded,
-mechanical Phase 2 recording. Any other content change requires another audit.
+Explicit existing Phase 1/Phase 2 contracts retain their exact coordinates.
+Other material edits need review of that changed diff, not invented acceptance.
 
 The first validated use of the no-self-referential-lifecycle rule was
 `TRACEBENCH_AUDIT_EVIDENCE_RECONCILIATION`: its mechanical
@@ -171,6 +153,12 @@ condition that lets an unverifiable value survive review.
 
 ## Protected implementation activation gate
 
+This gate applies when a separate protected scope-lock artifact is required
+for a new/changed protected contract or explicitly requested by the human.
+Reusing an unchanged accepted contract still needs explicit protected task
+bounds, regression tests and independent review, without automatically adding
+another preparatory docs programme.
+
 The scope-lock diff must already name the future implementation PASS_ID and its
 exact runtime/test allowlist. Auditors verify that activation remains
 conditional until independent acceptance and push of that exact lock. After
@@ -180,27 +168,21 @@ sync-pass ceremony.
 
 ## Lane audit implications
 
-`docs/PROMPTING_PROTOCOL.md` is the sole owner of Lane classification (`A` or
-`B`) and Mode work classes. This contract consumes that classification:
+PROMPTING_PROTOCOL owns risk classification. Ordinary Lane A changes use one
+independent actual-diff review; review-output/thread/PR evidence is sufficient.
+Protected Lane B keeps explicit scope, relevant regression/recovery evidence
+and independent review. Do not weaken data or evidence boundaries in either lane.
 
-- Lane A still requires independent Claude audit before routing onward.
-- Even in Lane A, protected-surface checks in `docs/PROTECTED_SURFACES.md` and routing consistency checks in `docs/MODEL_ROUTING.md` remain mandatory.
-- Lane A outputs should include explicit audit evidence handoff:
-  - post-change Codex reports with a real diff include `CLAUDE_AUDIT_PACKET`;
-  - For routine child passes, prefer batched audit evidence or commit-trailer notes.
-  - Do not drop existing audit evidence or suppress previous findings.
-- Do not create a new PASS_ID merely to copy a verdict. A docs closeout is
-  exceptional and justified only by a real route, authority, or durable-risk
-  transition; it must not spawn another routine closeout.
+No standalone map maintenance, audit-recording or closeout pass is mandatory
+for minor UI work. Keep meaningful current pointers in the bounded task when
+needed; do not spawn a pass merely to copy a verdict.
 
 ## Lane A evidence handoff requirement
 
-- `CLAUDE_AUDIT_PACKET` is required when a Lane A changed-file diff is handed
-  to independent audit.
-- The packet should include: pass ID, lane, mode, expected diff, focus,
-  validation/run commands, and safety gate.
-- For routine bundle child passes, a combined milestone audit record is acceptable when risk and scope are unchanged.
-- Evidence may not be overwritten as "closed" without explicitly recording the boundary change reason.
+Provide exact changed material, actual checks and any acceptance limits to the
+independent reviewer. A lean review summary is sufficient; the canonical formal
+packet below remains available when explicitly requested or risk warrants it.
+Do not fabricate an artifact/ledger just to satisfy an optional template.
 
 ## Compact `CLAUDE_AUDIT_PACKET` for clean audits
 
@@ -255,7 +237,7 @@ Use after code, tests, tools, schema, validator, materializer, or runtime implem
 Checks:
 
 - Apply all common audit checks.
-- Audit the actual diff, including untracked implementation files added with `git add -N` or explicit file upload.
+- Audit the actual diff and explicitly read the named untracked files; no staging or intent-to-add is required for a local read-only review.
 - Confirm implementation creates only the scoped behavior and no adjacent product behavior.
 - Confirm event/evidence semantics remain compatible with binding specs and protected-surface rules.
 - Confirm validation output covers focused tests and broader baseline tests required by the scope.
@@ -303,8 +285,8 @@ Checks:
 - Confirm no files changed unless the route review is explicitly docs-sync.
 - Confirm route decision is based on current repo docs and accepted audit state.
 - Confirm blocked or deferred work remains deferred unless the pass explicitly promotes it.
-- Confirm protected-surface work routes to scope lock first.
-- Confirm no direct implementation route is selected for a protected write surface.
+- Confirm new/changed protected contracts route through the formal scope gate.
+- Confirm reuse of accepted protected contracts has explicit task bounds, tests and independent review.
 
 Verdict options: `PASS`, `PASS_WITH_NITS`, `NEEDS_ROUTE_FIX`, `BLOCK`.
 
@@ -331,8 +313,8 @@ Return: recovery summary and remaining risk plus canonical `AUDIT_VERDICT`,
 
 ## Canonical `CLAUDE_AUDIT_PACKET` input shape
 
-Use this single header/template when a changed-file diff is ready for
-repo-local independent audit:
+When a formal packet is requested, use this single header/template for the
+actual changed-file diff. Ordinary review may use the lean summary above:
 
 ```text
 CLAUDE_AUDIT_PACKET
@@ -368,7 +350,7 @@ SAFE_STAGING_SET: <exact files or NONE>
 - Treat repo docs as source of truth.
 - Treat old chat memory and old uploads as non-canonical unless captured in repo docs.
 - Treat summary-only evidence as insufficient for protected implementation audits.
-- Require `git add -N` or explicit file upload for untracked implementation files before diff audit.
+- Explicitly read named untracked files alongside the tracked diff. If repo access is unavailable, require their exact file content; do not stage merely to make them visible.
 
 ## When full prompts are still required
 

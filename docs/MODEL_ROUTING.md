@@ -10,15 +10,14 @@ Choose the right helper/model for each pass type and risk profile.
 Prompt docs and operating docs should reference this file instead of duplicating long role blocks.
 
 - **Codex**
-  - Repo-local writer for scoped docs/code changes inside locked allowlists.
+  - Repo-local writer for docs/code inside the explicit compact or protected task boundary.
   - Local validation execution and deterministic patching.
   - Does not self-approve final acceptance for route-changing implementation/docs passes.
-  - Best for `DOCS_SYNC`, scoped `FLUTTER_PASS`, `SCHEMA_PASS`, `VALIDATOR_FIX`, `TOOLS_PASS` after scope lock.
+  - Implements bounded UI/docs work directly; protected contract changes follow the explicit protected scope gate.
 
 - **Claude Code**
-  - Final repo-local audit gate before staging/commit/push for implementation/docs route changes unless repo convention explicitly says otherwise.
-  - Repo-local audits, second-review checks, implementation-readiness checks.
-  - Best for independent `AUDIT_ONLY` passes and closeout confidence.
+  - Normal independent actual-diff reviewer, mandatory where a protected/human-requested contract names Claude.
+  - One independent review is sufficient for ordinary UI/docs; no automatic second audit or closeout task.
 
 - **ChatGPT / GPT Pro**
   - Strategy, route/risk review, prompt construction, and non-final pre-audit.
@@ -42,9 +41,9 @@ Prompt docs and operating docs should reference this file instead of duplicating
 
 | Situation | Route |
 |---|---|
-| Narrow deterministic edit with locked scope | Codex |
-| Lane A doc/polish/corrective pass | Codex first, then Claude Code |
-| Lane B protected/high-risk work | ChatGPT / GPT Pro first, then Codex, then Claude Code |
+| Narrow deterministic edit with compact task boundary | Codex |
+| Lane A ordinary UI/docs | Codex, then one independent diff review (normally Claude Code) |
+| Lane B protected/high-risk work | Explicit protected scope, Codex, independent review; GPT Pro only for unresolved new architecture/risk |
 | Independent repo-local compliance audit | Claude Code |
 | Architecture/evidence-floor decision | ChatGPT / GPT Pro |
 | Prompt construction or non-final pre-audit | ChatGPT / GPT Pro |
@@ -54,36 +53,32 @@ Prompt docs and operating docs should reference this file instead of duplicating
 
 ## Mandatory routing constraints
 
-- Repo docs are source of truth over chat memory.
-- If task conflicts with `ACTIVE_SCOPE_LOCK`, stop and request decision.
-- If protected surfaces are implicated, route to GPT Pro or explicit user decision before implementation.
-- If a docs-only pass requires non-doc edits, stop and escalate.
-- Use one narrow pass at a time.
-- Use exact staging sets only; never use broad staging.
-- High-risk Codex implementation must receive non-Codex review before acceptance (typically Claude Code, and GPT Pro when evidence/architecture boundaries are at risk).
-- V2 backend surfaces are accepted through validator -> materializer -> writer service; UI write flows remain separately scoped/audited and not yet implemented.
+- Use the human's explicit compact/protected task boundary and canonical owners.
+- Preserve pre-existing work and resolve an explicitly authorized docs-policy
+  conflict in its owner; ask only for authorization that is genuinely missing.
+- Protected data/canonical changes require explicit scope and independent review.
+- A docs-only task never edits runtime, schema, tests or tools.
+- Use one bounded task and one independent actual-diff review by default.
+- Only the human stages/commits/pushes exact accepted files; no broad staging.
+- The author cannot self-approve high-risk work; Claude Code is the normal
+  independent reviewer, with GPT Pro for unresolved new protected architecture.
+- V2 validator/materializer/writer owners and explicit UI writer modules exist.
+  Rendering is read-only; no UI/painter bypass may mutate canonical facts.
 
 ## Lane consumption
 
-`docs/PROMPTING_PROTOCOL.md` is the sole owner of Lane classification (`A` or
-`B`) and `Mode` work classes. This file consumes that classification only to
-choose helpers: Lane A normally routes Codex to Claude Code; Lane B normally
-adds ChatGPT / GPT Pro risk review before Codex and Claude Code. These routing
-defaults do not define semantic risk or write authority.
+PROMPTING_PROTOCOL owns risk classification. Ordinary Lane A work does not
+require a new GPT/model-routing hop, parent lock or docs programme. Lane B
+retains explicit protected scope/tests and independent review. Do not repeat
+architecture review when the human decision/accepted contract already exists.
 
-### Lane A parent-lock / bundle mechanism
-
-- GPT may define one parent lock covering a bounded child bundle (typically 2–4 child passes).
-- Parent lock records the explicit child PASS_ID sequence and exact allowlists.
-- Child passes may execute Codex → Claude directly when scope is unchanged and risk remains low.
-- Parent lock must define clear escalation conditions and parent closure criteria.
-
-Model ownership still comes from this file; Lane/Mode semantics remain in the
-Prompting Protocol and prompts remain pointer-based.
+An explicitly requested complex bundle may still use a parent lock, but it
+is optional; it does not create mandatory maintenance/recording/closeout
+children for small UI changes.
 
 ### Accepted shorthand guard (Lane A)
 
-- Compact `Accepted` can be used by user handoff only when the current Lane A pass is clean:
+- When a formal audit packet is used, compact `Accepted` can be used by user handoff only when that reviewed diff is clean:
   - `AUDIT_VERDICT` is `ACCEPT_AS_IS`;
   - `SAFE_FOR_STAGING: YES`;
   - no blockers;
@@ -124,15 +119,10 @@ This diagram is orientation only; canonical repo docs win.
 
 ## Minimal handoff payload requirements
 
-When routing to another model/helper, include:
-
-- `PASS_ID`, `Lane`, `Mode`
-- current accepted state summary
-- explicit audit/review questions
-- exact boundaries and forbidden surfaces
-- required validation commands
-- expected output format/verdict enum
-- routing sequence (`who reviews what`) before execution
+Provide the task/goal, baseline, actual diff, exact boundaries, validation and
+specific review questions. For ordinary work, no separate PASS_ID/Lane/Mode,
+model-routing report or full formal packet is mandatory. A protected or
+explicitly formal handoff retains the exact fields required by its contract.
 
 ### No self-approval rule (high-risk paths)
 
@@ -141,7 +131,6 @@ When routing to another model/helper, include:
 
 ## MODEL_ROUTING_CHECK convention
 
-Every pass output should explicitly report:
-
-- `MODEL_ROUTING_CHECK result: PASS` when route matches this policy.
-- `MODEL_ROUTING_CHECK result: ESCALATED` when work is intentionally handed off.
+Report a routing conflict or escalation when it materially affects the task.
+Formal protected prompts may retain MODEL_ROUTING_CHECK; ordinary low-risk
+work does not need the field as boilerplate.

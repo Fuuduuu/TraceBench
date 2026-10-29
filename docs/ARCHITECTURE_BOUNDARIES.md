@@ -1,45 +1,53 @@
 # Architecture boundaries
 
-This diagram is orientation only; canonical repo docs win.
+This is an ownership summary of accepted source, not authorization to change
+data contracts. Product priorities live in CURRENT_STATE.
 
-## Evidence boundary map (compact)
+## Truth, commands and rendering
 
 ```mermaid
 flowchart LR
-  H["Human-confirmed accepted action/event"] --> E[events.jsonl]
+  H["Explicit human command"] --> W["Accepted workflow module / writer service"]
+  W --> E[events.jsonl]
   E --> M[materializer]
   M --> K[known_facts.json]
-  K --> UI[read-only UI / renderer]
-  UI --> U[User consumption]
-
-  UI -.->|no write / no canonical mutation| E
-  UI -.->|no evidence promotion| M
-  UI -.->|no geometry or fact creation| K
+  K --> V["Read-only view / renderer"]
+  W --> S["Guarded Session event handoff"]
+  S --> ST["Current events + stale projection flag"]
 ```
+
+- Existing Components, Placement, Measurement and photo UI modules invoke their
+  accepted writers after explicit human actions. They are implemented.
+- Read-only renderers/painters do not write facts or events. UI-local drafts,
+  selection and previews are not canonical confirmation.
+- Session event application does not regenerate knownFacts. The existing
+  exporter materializes, then report export reloads guarded state. A separate
+  Workbench refresh is a product gap, not a new contract introduced here.
+- ProjectSession owns generation/dedup/current-state replacement; writers own
+  canonical persistence and materializer owns the derived projection.
+
+## Reference and evidence boundary
 
 ```mermaid
-flowchart TD
-  RI["Reference image sidecar data<br/>.tracebench_local/reference_images*"] -->|local-only| FS["local sidecar files"]
-  RI -->|not canonical| NI["not in events.jsonl / known_facts.json"]
-  RI -->|not in ZIP| ZIP["Project ZIP contract"]
-  RI -->|not fed to| MAT["materializer"]
-  RI -->|not fed to| BC["Board Canvas evidence rendering"]
-  RI -->|not fed to| AI["AI/OCR/CV"]
+flowchart LR
+  RI["Local reference image sidecar"] --> FS[".tracebench_local files"]
+  RI --> NC["Noncanonical personal context"]
+  RI -. "excluded" .-> ZIP["Project ZIP"]
+  RI -. "no automatic promotion" .-> E["Facts / electrical evidence / AI input"]
 ```
 
-## Boundary notes
+Wizard backgrounds, canonical photo events and local reference images have
+different owners and evidence meaning; UI_WORKFLOWS records their distinction.
+Visual traces, photo alignment and package/template metadata do not prove
+identity, pins, measured nets, fault or repair conclusions.
+Current local reference sidecars do not feed the materializer, Board Canvas
+evidence rendering or AI/OCR/CV. Changing that boundary needs explicit
+protected scope.
 
-- Canonical state pointers:
-  - current/next: `docs/CURRENT_STATE.md`, `docs/PASS_QUEUE.md`
-  - history: `docs/AUDIT_INDEX.md`, `docs/audit/*.md`
-  - durable boundaries: `docs/PROJECT_MEMORY.md`, `docs/PROTECTED_SURFACES.md`
-- V2 backend is implemented through validator -> materializer -> writer service; UI write flows remain separately scoped/audited and not yet implemented.
-- `events.jsonl` is canonical truth.
-- `known_facts.json` is a materialized projection, not a writer.
-- Renderer/UI are read-only and cannot write canonical facts.
-- `visual_trace` is not a net.
-- `visual_trace` cannot promote to electrical truth.
-- `template_id / footprint family` is not electrical identity.
-- `photo alignment` is not component identity, pin mapping, net confirmation, measurement, or fault proof.
-- `board_graph.json` and `view_state.json` remain forbidden across V1/V1.1/V2 unless separately scoped.
-- AI suggestions and reference images are non-factual unless a separately scoped canonical event path approves them.
+## Canonical pointers
+
+- Product charter: POHIKIRI; semantic invariants: TRUTH_INDEX/PROTECTED_SURFACES.
+- Runtime/state/priority: CURRENT_STATE; task boundary: ACTIVE_SCOPE_LOCK.
+- Event/fact contracts: exact schema/spec/runtime owners, not a diagram.
+- Historical decisions and review evidence: AUDIT_INDEX/audit/archive on demand.
+- board_graph.json and view_state.json remain forbidden unless separately scoped.

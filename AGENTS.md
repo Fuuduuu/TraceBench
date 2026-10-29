@@ -1,173 +1,112 @@
-# AGENTS.md — TraceBench AI / BoardFact / BenchBeep
+# AGENTS.md — TraceBench / BenchBeep
 
-## Repository identity
+## Repository and charter
 
-- Path: `C:\dev\TraceBench`
-- Owner: `Fuuduuu/TraceBench`
-- Branch: `main`
+- Workspace: `C:\dev\TraceBench`; repository: `Fuuduuu/TraceBench`; branch: `main`.
+- BenchBeep is the technician-facing product; TraceBench is the platform and
+  BoardFact the fact subsystem.
+- Read `docs/POHIKIRI.md` fully. It owns the product/human-confirmation boundary
+  and is not changed by workflow simplification.
 
-TraceBench is a local-first, measurement-backed PCB repair documentation and schematic-reconstruction workbench. `BenchBeep` is the user-facing product; `BoardFact` is the data-fact subsystem.
+## Compact entry and authority
 
-## Charter and default read set
+Read these compact owners once at task entry, in order:
 
-`docs/POHIKIRI.md` is the canonical product charter and scope anchor. If a task conflicts with it, stop and ask the human. AI may propose, guide, and organize; only human-confirmed information becomes canonical truth.
+1. AGENTS.md
+2. docs/POHIKIRI.md
+3. docs/CURRENT_STATE.md
+4. docs/PASS_QUEUE.md
+5. docs/ACTIVE_SCOPE_LOCK.md
 
-Always read exactly these five files by default, in this order:
+Read other owners only for the named task. Do not reload historical operational
+sections, archives or full large source/test files by default. Use rg and exact
+symbols/call paths; expand one dependency hop for a concrete unresolved risk.
 
-1. `AGENTS.md`
-2. `docs/POHIKIRI.md`
-3. `docs/CURRENT_STATE.md`
-4. `docs/PASS_QUEUE.md`
-5. `docs/ACTIVE_SCOPE_LOCK.md`
+The latest explicit human request defines the task, subject to the charter and
+protected contracts. An explicitly authorized docs change may resolve an older
+route/policy conflict; do not ask for the same authorization again. An archive,
+old reservation or unfinished draft does not activate implementation.
 
-All other documentation, memory, semantic, prompt/model, audit, source/design, map, spec, schema, archive, and implementation-owner material is task-specific. Load it only when the active scope or a canonical pointer requires it.
+## Risk-based execution
 
-## SNIPER reading and Claude handoff discipline
+Ordinary low-risk UI/docs work uses one compact task boundary: goal, exact
+paths/responsibility, frozen areas and proportionate validation. Implement,
+run focused tests, obtain human visual review where applicable, then one
+independent diff review and exact human commit. No mandatory standalone
+scope-lock, Code Map maintenance, verdict-recording or closeout child.
 
-For every bounded `PASS_ID`:
+Protected data/canonical work needs explicit protected scope, exact permitted
+writes, relevant regression/recovery tests and independent review. New or
+changed event/writer/materializer, migration, persistence compatibility or ZIP
+contracts require the formal protected-scope gate. Reusing an unchanged
+accepted contract still needs explicit task bounds and tests; it does not
+automatically require another docs programme.
 
-- Read the five mandatory owner files above fully.
-- Everything else is read narrowly through the exact task-specific canonical
-  owner or applicable maintained map, the exact diff, and the exact
-  symbol/responsibility zones.
-- Handoff construction is map/canonical-owner-first bounding: Codex uses the
-  applicable owner or map to find the exact responsibilities and symbols.
-- Audit execution is exact-diff-first primary evidence: Claude starts with the
-  actual diff under `docs/AUDIT_CONTRACT.md`, then uses owners/maps to verify
-  claims and bound any expansion.
-- Do not whole-file-read large source, test, or docs files just in case.
-- Expand only after a named stale/conflicting map, failed anchor or
-  caller/symbol closure, material-set mismatch, evidence/validation conflict,
-  or concrete finding. Expand one dependency hop at a time and state why.
-- Broad repository or architecture rediscovery is not the default.
+Do not classify data writes/lifecycle changes as cosmetic UI work. Do not
+silently expand exact paths, add features, change data meaning or skip protected
+validation. Stop for a specific unresolved contract, user-data or technical risk.
 
-Independent Claude audit means independently verify important claims, not
-rediscover the repository. The canonical and binding handoff is the
-`CLAUDE_AUDIT_PACKET` defined by `docs/AUDIT_CONTRACT.md`.
-`CLAUDE_SNIPER_PACKET`, defined in `docs/PROMPTING_PROTOCOL.md`, accompanies
-and optimizes that packet. It never replaces or competes with it and never
-becomes a second canonical header, schema, gate, or authority.
+## Maps, tools and review
 
-The handoff supplies exact authority, material set, applicable maps/owners,
-changed zones, symbols, direct commands, frozen areas when applicable, and
-expansion triggers. These rules cannot widen an active allowlist or outrank
-`docs/POHIKIRI.md`, `docs/ACTIVE_SCOPE_LOCK.md`, source/tests,
-`docs/AUDIT_CONTRACT.md`, or `docs/code_maps/CODE_MAP_STANDARD.md`.
+Source/tests and canonical owners outrank Code Maps. Read a relevant map when
+it helps bound complex ownership. Verify stale claims against targeted source;
+a stale/missing map is not an automatic blocker for a small presentation edit.
+Do not count related calculated properties as independent behaviors just to
+create a map. CODE_MAP_STANDARD owns qualification and proportionate updates.
 
-## Agent orientation entry points
+Material map drift can be updated with the same bounded source change and
+review when authorized. No separate maintenance audit/status-promotion pass
+is mandatory for ordinary work. Preserve retired maps and prior evidence.
 
-`CLAUDE.md` is the compact auto-loaded Claude Code pointer into this file and
-the five-file default read set. `docs/PROJECT_MINI_MAP.md` is the pasteable
-orientation card for an assistant without repo access. Both are pointers only:
-neither owns current state, route, authority, or product truth.
+Inspect applicable skills/helpers; use the narrowest useful capability.
+Capabilities cannot expand scope. Report tool/skill detail when relevant to
+risk, unavailable tooling or a formal protected handoff, not as boilerplate
+for every small change. No unrequested installs, downloads or dependencies.
 
-## Task-specific routing
+The author does not self-approve acceptance. Use one independent diff review,
+normally Claude Code for protected work. Ordinary review may be recorded in
+the review output/thread/PR; no new audit artifact/ledger row is required.
+When the human explicitly uses a formal artifact/verdict block, preserve its
+contract and bounded recording; do not create another pass merely to copy it.
 
-- Semantics, events, or writers: `docs/TRUTH_INDEX.md`, `docs/PROTECTED_SURFACES.md`, and the exact relevant spec/schema/runtime owner.
-- Product or architecture: `docs/PROJECT_MEMORY.md` and the exact relevant spec.
-- UI workflow: `docs/UI_WORKFLOWS.md` plus the target screen and test.
-- Prompt or helper routing: `docs/PROMPTING_PROTOCOL.md` and `docs/MODEL_ROUTING.md`.
-- Design/source intake: `docs/SOURCES_INDEX_CURRENT.md` plus the exact source.
-- Audit: `docs/AUDIT_CONTRACT.md`, `docs/AUDIT_INDEX.md`, and one exact audit artifact.
-- Documentation governance: `docs/FILE_MAP.md`, `docs/MEMORY_PROTOCOL.md`, `docs/MEMORY_MAINTENANCE.md`, and `docs/MEMORY_REGISTRY.yml` as needed.
+## Data and behavior protection
 
-## Capability and code-map preflight
+- events.jsonl is append-only canonical truth; known_facts.json is materialized.
+- Only explicit accepted human actions write through the existing owners.
+- Rendering, selection, candidates and local/reference drafts do not become facts.
+- Never promote photo/AI/reference/visual traces into measured electrical truth.
+- Preserve Session generation/dedup, event envelopes, evidence lifecycle,
+  valid_from/valid_until, repair/stale_after_repair, conflict/not_populated,
+  forbidden_ai_actions, device fallback and Project ZIP compatibility.
+- No V2 sequence field, new migration or direct canonical-file bypass.
+- Preserve original intake, user files and unrelated work; no destructive cleanup.
+- UI remains local-first and technician-controlled; POHIKIRI is authoritative.
 
-Before every Codex `PASS_ID` action, inspect loader-qualified repo-local skills
-at `.agents/skills/**`, using `docs/CODEX_TOOLING_POLICY.md` as their inventory
-owner, plus available tools, helpers, fixtures, and scripts. Use the narrowest
-applicable capability and include `TOOL_SKILL_CHECK` in both the prompt and
-final report as defined by `docs/PROMPTING_PROTOCOL.md`. `none applicable` is
-valid with evidence. A capability cannot expand the active allowlist, and
-reporting an external tool as required is descriptive rather than
-authorization.
+## Git and validation
 
-For implementation, repair, diagnostic, QA, refactor, or review work targeting
-or materially depending on Dart production/test files:
+Verify repository, baseline, branch, working/staged/unmerged state first.
+Keep pre-existing work intact. Never stage/commit/push without explicit human
+instruction. Never use git add ., git add -A or git commit -am.
+Do not stash/reset/clean/discard unrelated work. Use git --no-pager.
 
-1. Check `docs/code_maps/CODE_MAP_INDEX.md` for the target.
-2. Load `docs/code_maps/CODE_MAP_STANDARD.md` for qualification or lifecycle
-   questions and the applicable `MAINTAINED` map for exact zones and impact.
-3. Complete the conditional `CODE_MAP_PREFLIGHT` required by
-   `docs/PROMPTING_PROTOCOL.md`.
+Run checks justified by the changed behavior and protected risks. Once they
+pass, broaden/repeat only for a new change, failure or unresolved concern.
+Never substitute green tests for human visual acceptance or claim tests ran
+when they did not. Keep generated validation output outside the repo.
 
-Code maps remain task-specific and outside the default five-file read set. They
-are descriptive and non-authorizing; source, tests, canonical owners,
-`docs/POHIKIRI.md`, and the active lock outrank them. Stop with the applicable
-`BLOCKED_CODE_MAP_REQUIRED`, `BLOCKED_CODE_MAP_STALE`,
-`BLOCKED_CODE_MAP_CONFLICT`, `BLOCKED_ALLOWLIST_MISMATCH`, or
-`DECOMPOSE_REQUIRED` outcome defined by the Standard and current scope.
+## Canonical pointers
 
-## Workflow and pass discipline
-
-- One narrow PASS_ID at a time.
-- Codex writes only inside the active lock and exact allowlist.
-- Claude Code performs the independent repo-local audit before staging/commit/push unless an accepted repo convention says otherwise.
-- ChatGPT / GPT Pro provide strategy, routing, risk review, prompts, and non-final pre-audit.
-- Claude Design is design review only; Gemini is research/input only.
-- The human stages, commits, and pushes exact accepted files.
-- Stop when live git state or route docs disagree with the task.
+- Current product priorities: CURRENT_STATE; sequencing: PASS_QUEUE.
+- Stable product: PROJECT_MEMORY; semantics: TRUTH_INDEX/PROTECTED_SURFACES.
+- UI behavior: UI_WORKFLOWS and exact source/test owner.
+- Workflow/risk: PASS_LIFECYCLE and PROMPTING_PROTOCOL.
+- Audit contracts: AUDIT_CONTRACT; map guidance: CODE_MAP_STANDARD.
+- Model roles: MODEL_ROUTING; tooling inventory: CODEX_TOOLING_POLICY.
+- Historical evidence: AUDIT_INDEX and exact audit/archive artifact, on demand.
 
 ## Response provenance
 
-Start each user-facing result with one plain sentence that identifies the
-actual author and state. Use `Codex finished — here are the results.`, `Codex
-is blocked — <reason>.`, or `Codex finished reviewing Claude Fable 5's audit —
-here are the results.` as applicable. When relaying another helper's result
-without changing it, name that helper and add `relayed unchanged by Codex`.
-This is response copy, not a new audit field or governance schema.
-
-## Git discipline
-
-Never use:
-
-- `git add .`
-- `git add -A`
-- `git commit -am`
-
-If staging is explicitly authorized, use exact `git add <file>` commands only. Do not stage, commit, or push without explicit human instruction.
-
-## Protected surfaces
-
-These require a dedicated protected-surface scope lock and post-audit:
-
-- event envelope semantics and evidence-status lifecycle
-- Visual/Layout Graph versus Electrical Net Graph boundary
-- `valid_from_event_id` / `valid_until_event_id`
-- repair semantics and `stale_after_repair`
-- conflict workflow, `not_populated`, and `forbidden_ai_actions`
-- generic device-profile fallback
-- Project ZIP contract
-
-Canonical semantic boundaries are task-specifically routed through `docs/TRUTH_INDEX.md`. Do not add `sequence` to V2 events.
-
-## New-fact intake
-
-Before recording a new fact, identify its canonical owner, what it replaces, whether the old fact remains useful evidence, and whether the old text should be deleted, compressed, repointed, or preserved in audit history.
-
-## Scratch artifacts
-
-Known scratch/untracked artifacts must not be staged unless explicitly scoped:
-
-- `.idea/`
-- `.metadata`
-- `_incoming/`
-- `audit_tmp/`
-- `audit_tmp_small_patch/`
-- `windows/`
-- `assets/samples/pelle_pv20_minimal/metadata/`
-- `TraceBench*.txt`
-- `missing_untracked.diff`
-- `status_after_addN.txt`
-- `trace_bench_viewer.iml`
-
-## Stop conditions
-
-Stop and report when:
-
-- scope expands beyond the current PASS_ID or allowlist
-- a protected semantic change lacks dedicated scope
-- live route docs or git state conflict with the request
-- validation fails outside the authorized scope
-- a docs-only pass would require runtime, test, asset, schema, tool, package, or `_incoming` edits
-- Flutter implementation is requested without an armed implementation pass
+Begin results with `Codex finished — here are the results.` or
+`Codex is blocked — <specific reason>.` State what changed, actual checks,
+material limits and the next user-visible task. Do not invent acceptance or
+turn an ordinary task into another scope-preparation loop.

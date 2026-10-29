@@ -29,6 +29,28 @@ Direct visual context should outrank table/form detours.
 
 Standalone Add/Edit/Measure-style pages may remain until scoped replacements exist, but they are transitional and must not be duplicated as a second primary workflow inside Board Canvas.
 
+## Current workflow gaps and photo roles
+
+The app already has explicit human-triggered Components/Placement/Measurement
+and photo writer workflows. Their render/view code remains read-only.
+An accepted Session event marks known-facts-derived views stale; the current
+materialize/reload path is coupled to report ZIP export. A standalone safe
+Workbench refresh is the first product priority, not behavior enabled here.
+Canvas candidate editing and continuous candidate-to-placement confirmation
+are incomplete. Do not mistake the old canonical Placement preview for the
+shared candidate editor that is still to be implemented.
+
+- Wizard background: original intake/photo presentation and alignment context;
+  it is not automatically canonical photo evidence.
+- Canonical photo evidence: accepted photo events and their scoped writer/
+  alignment flow; visual evidence never proves electrical connectivity.
+- Local reference images: personal sidecar context, noncanonical and excluded
+  from Project ZIP; no automatic materializer/AI evidence promotion.
+
+Priority order: [CURRENT_STATE](CURRENT_STATE.md#product-priorities). The
+existing Wizard contract below remains implemented behavior; future workflow
+work must preserve its input, geometry and confirmation boundaries.
+
 ## New Project Wizard creation workflow
 
 The committed New Project Wizard creation cycle opens from the launcher at

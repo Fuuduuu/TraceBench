@@ -11,6 +11,9 @@ locks outrank every map. A map cannot authorize writes, refactors, new files,
 protected-surface changes, test changes, or scope expansion. When a map and its
 source disagree, the source wins and the map requires review.
 
+Map maintenance may accompany its authorized source diff and one independent
+review; ordinary UI work does not require a standalone map pass.
+
 Maps live under `docs/code_maps/**`. They are task-specific references outside
 the default five-file operational read set and are read only when the mapped
 file or its impact surface is relevant.
@@ -68,6 +71,9 @@ A file qualifies without calculating the score when any one condition is true:
 2. Canonical writer paths and read-only renderer, painter, or UI-local
    responsibilities coexist in the same file.
 3. A production file owns five or more independently testable behaviors.
+   Count independently owned behavior, not five related calculated properties
+   from one cohesive resolution contract. Apply the small-cohesive-adapter
+   exclusion before treating returned fields or shape branches as separate work.
 4. A test file exceeds approximately 3,000 lines and contains at least three
    test families.
 5. Repeated scope mistakes occurred because agents treated the file as one
@@ -193,88 +199,67 @@ verified, record uncertainty rather than upgrading the class.
 
 ## Prompt and SNIPER integration
 
-For implementation, repair, diagnostic, QA, refactor, or review work targeting
-or materially depending on Dart production/test files, look up the target in
-`CODE_MAP_INDEX.md`. If no map exists, apply this Standard's qualification
-rules rather than assuming every Dart file needs a map. Only a verified
-`MAINTAINED` map may supply mapped-file planning inputs.
+Use maps where they help bound ownership. Source, tests and canonical contracts
+remain primary. A missing/stale map alone does not block a small presentation
+change whose actual behavior and scope are verified from targeted source.
 
-For each relevant mapped target, the prompt and final report's
-`CODE_MAP_PREFLIGHT`, including any SNIPER form, names:
+For ordinary copy/style/layout work, no standalone qualification worksheet,
+CODE_MAP_PREFLIGHT report, registry promotion or maintenance child is mandatory.
+Import/format/copy-only changes with unchanged mapped semantics need no update.
 
-- target map path and index status;
-- changed responsibility zone and stable symbols, or
-  `changed responsibility zone: none` for read-only diagnostic/review work;
-- inspect-only coupled zones;
-- explicitly excluded zones;
-- direct dependencies;
-- expected blast radius and evidence classes;
-- write class from verified call paths;
-- affected tests and helpers; and
-- exactly one map disposition: `REVIEWED_NO_CHANGE`, `UPDATE_REQUIRED`, or
-  `NOT_APPLICABLE`.
+For complex or protected work, name exact changed symbols, actual write class,
+coupled/frozen boundaries and relevant tests. Consult current maps where useful
+and independently verify protected claims. If a map is missing or stale, use
+bounded source/caller/test closure, and update genuinely material drift in the
+same authorized task and diff review. Do not waive protected source verification
+or silently add map paths outside an exact allowlist.
 
-`REVIEWED_NO_CHANGE` requires actual map review showing the proposed or
-accepted work would not materially stale the map. `UPDATE_REQUIRED` applies
-when the current map is valid but the proposed or accepted work would
-materially stale it; maintain the map later in a separately scoped docs-only
-pass against accepted committed source. `NOT_APPLICABLE` requires index and
-qualification evidence that no applicable qualifying map exists or the target
-does not qualify. It is invalid when a qualifying target lacks its required
-current map.
+Formal preflight can retain REVIEWED_NO_CHANGE / UPDATE_REQUIRED /
+NOT_APPLICABLE dispositions. A qualifying owner can need a map, but creating
+it is not automatically a separate preliminary project. Report a specific
+BLOCKED_CODE_MAP_REQUIRED / STALE / CONFLICT condition only when unresolved
+ownership affects the permitted boundary or safety of protected data, rather
+than turning a harmless presentation edit into a bookkeeping loop.
 
-Use `BLOCKED_CODE_MAP_REQUIRED` when a qualifying relevant target lacks its
-required current map; `BLOCKED_CODE_MAP_STALE` when the pre-existing map is
-stale, `REVIEW_REQUIRED`, or unverifiable; `BLOCKED_CODE_MAP_CONFLICT` when map
-claims conflict with source, tests, canonical owners, or active authority; and
-`BLOCKED_ALLOWLIST_MISMATCH` when required work falls outside the active
-allowlist. These conditions stop before implementation. A current map that the
-proposed work would stale uses `UPDATE_REQUIRED`, not the stale-map blocker.
-
-Work crossing more than one independent changed responsibility zone stops with
-`DECOMPOSE_REQUIRED` unless a new explicit human scope decision authorizes the
-combination. `DECOMPOSE_REQUIRED` is not a disposition. A map narrows
-investigation but never expands the active allowlist; source, tests, canonical
-owners, `docs/POHIKIRI.md`, and the active lock outrank it. Speculation cannot
-authorize scope, and unfinished local work cannot update a map.
+An actual unauthorized scope expansion still stops with
+BLOCKED_ALLOWLIST_MISMATCH. Unrelated responsibility zones are not silently
+combined; the human task decision must cover the changed work.
 
 ## Update and drift policy
 
-Maps describe accepted committed state only. Do not create or refresh a map
-from temporary, unfinished, staged-only, or otherwise unaccepted local work.
+Maps describe accepted source and may be updated with the exact bounded source
+diff being reviewed. Review source/map together before the human commit; do not
+document speculative unfinished designs as accepted behavior. This replaces the
+old blanket requirement for a later standalone committed-source maintenance pass.
 
-Semantic review triggers include renamed, moved, added, or removed anchors;
-changed responsibility ownership, state/data flow, direct dependencies, write
-classes, protected boundaries, zero-write claims, dangerous combinations, or
-test coverage. Formatting, imports, comments, physical line movement, and
-simple copy edits do not require an update when mapped semantics are unchanged.
+Review for actual symbol/ownership, data flow, dependency, write-boundary or
+test-coverage drift. Do not rewrite maps for line movement or harmless copying.
+Keep unrelated/RETIRED maps and historical evidence intact.
 
-Use these drift classes when useful:
+Use MAINTAINED when the map has been verified against the named baseline/final
+task source; it is a content-freshness label, not audit/staging acceptance.
+Use REVIEW_REQUIRED for unresolved material drift. Restore a verified pair in
+the same bounded task/review when authorized; no separate status-recording pass
+is mandatory for ordinary changes. Explicit existing formal recording contracts
+still preserve their designated coordinates and history.
 
-- `SYMBOL_DRIFT`: anchors no longer resolve or ownership moved;
-- `FLOW_DRIFT`: state, data, or call flow changed;
-- `BOUNDARY_DRIFT`: write or protected-boundary claims changed;
-- `TEST_DRIFT`: mapped behavior-to-test links changed; and
-- `STRUCTURE_DRIFT`: responsibility zones or dependencies changed.
-
-Set the index status to `REVIEW_REQUIRED` when material drift exists, an anchor
-cannot be verified, or accepted source changes make the map uncertain. The
-source remains authoritative. Repair drift by inspecting accepted committed
-source and tests, updating the map in a separately scoped docs-only map pass by
-default, and completing map audit before restoring `MAINTAINED`.
-
-Use `RETIRED` only for an actual map retained as history after its source or map
+Use RETIRED only for an actual map retained as history after its source or map
 is intentionally retired. The index lists actual map files only.
+
+Retain drift labels SYMBOL_DRIFT, FLOW_DRIFT, BOUNDARY_DRIFT, TEST_DRIFT and
+STRUCTURE_DRIFT where useful. Do not create a map for file novelty, related
+calculated outputs, or a small cohesive adapter fully explained by its contract.
 
 ## Claude map-audit model
 
-Claude performs a read-only comparison of the map against accepted committed
-source, relevant tests, canonical owners, and active boundaries. The audit
+The independent reviewer compares the map with the named committed baseline and
+actual authorized source/test diff, canonical owners, and active boundaries.
+For a dedicated Code Map audit, Claude performs this read-only comparison. The audit
 checks stable symbols, responsibility ownership, flows, direct dependencies,
 write classes, protected boundaries, zero-write zones, linked tests, evidence
 labels, speculation handling, non-authorization, and concision.
 
-Required map-audit verdict:
+For an explicitly requested dedicated map audit (not every minor UI diff), return:
 
 ```text
 MAP_VERDICT: ACCEPT_AS_IS / ACCEPT_WITH_NITS / BLOCKED_MAP_DRIFT

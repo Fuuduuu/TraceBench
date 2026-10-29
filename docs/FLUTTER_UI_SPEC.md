@@ -1,5 +1,14 @@
 # FLUTTER_UI_SPEC.md
 
+> Historical milestone specification, not the current product roadmap.
+> The viewer-only scope, exclusions, sequence-era planning and next-pass lists
+> below record earlier milestones. They do not mean today's app lacks Wizard,
+> folder loading or human-triggered writer modules. The original text is
+> preserved as design history. Current accepted source and canonical semantic/
+> freshness/ZIP owners govern behavior; V2 still has no sequence field.
+> Current status/priorities: [CURRENT_STATE](CURRENT_STATE.md#product-priorities).
+> No new refresh, writer, AI or acquisition behavior is enabled by this notice.
+
 ## 1. Milestone name and scope
 
 Milestone:

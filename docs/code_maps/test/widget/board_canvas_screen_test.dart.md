@@ -11,7 +11,7 @@
 Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 259 declarations: 236 `testWidgets` and 23 `test`.
 Eight explicit groups cover import, alignment, placement geometry, Wizard overlays, `M0 Measurement characterization`, `Components C0 characterization`, `Placement P0 characterization` and `Inspector I0 characterization`.
 I0 adds eight declarations generating twelve cases; P0 adds eleven declarations generating twelve cases. Declaration counts are not executed-test totals.
-Placement extraction extends only the existing zone-9 static source-owner guard;
+Template-preview extraction retargets only existing static source-owner checks;
 P0/C0/M0/I0 behavior groups and all existing imports/helpers/fakes remain unchanged.
 
 ## Responsibility zones
@@ -26,7 +26,7 @@ P0/C0/M0/I0 behavior groups and all existing imports/helpers/fakes remain unchan
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged`, `Placement P0 characterization`, `mountPlacement`, `requestFields`, `addDraft`, `inspectorDraft`, `ghostPosition`, `expectUnchangedFacts`, `expectOperationId` | Module-owned template/ghost/editor workflow through the host, normalized bounds and explicit/duplicate saves; P0 pending/re-entry, panel/screen completion, generation/composition, failure/retry/unlock, current repeat-save, focus/935/936 lifetime, captured-target selection, Add-entry reseeding and independent Add/Inspector drafts. |
 | 7. Geometry/Wizard/painters | `_wizardIntakePainter`, `_wizardPhotoLayer`, `placement geometry read model`, `_geometryPlacement`, `_boardCanvasPainter`, `_compositedPixelColor`, `_sharedCandidateOverlayGeometryTests`, `_sharedCandidateOverlayMatrixTests` | Pan/zoom/fit, pure geometry, optional Wizard layers, pixels/footprints/semantics and shared-candidate body/pose versus unchanged legacy-placement regressions. |
 | 8. Inspector/evidence | `_openSafetyEvidence`, `_openWideContextMode`, `readiness panel`, `Inspector I0 characterization`, `inspectorState`, `mountInspector`, `expectNoWrites`, `draftCopy`, `changeDraft`, `selected placement order and four 12 px spacers at $size` | Projected metadata/safety plus I0 wide/compact order/spacing, installation/removal rows, measurement/badge copy and Canvas visibility coupling, Placement-holder draft retention/reseeding and component-only placeholder; class-independent rendered-container selection. |
-| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource`, `componentSource`, `inspectorSource`, `placementSource` | Hidden default, tools/focus, volatile state and ownership/data-path guards across host, Placement, Components, Measurement and Inspector modules, and existing read-only owners. |
+| 9. Local panels/boundaries | `Workbench panel modes preserve focus restoration`, `wide Workbench starts with hidden right context panel`, `selection state is volatile in memory only`, `board canvas source keeps read-only data-path boundaries`, `measurementSource`, `componentSource`, `inspectorSource`, `placementSource`, `templatePreviewSource` | Hidden default, tools/focus, volatile state and ownership/data-path guards across host, Placement, Components, Measurement and Inspector modules, and existing read-only owners. |
 | 10. Additional import | `canonical photo import workbench`, `_FakePhotoSourcePicker`, `_FakePhotoSourcePreviewLoader`, `_FakePhotoImportService`, `_photoImportResult` | Existing entry/cancel/success, uncertainty, read-only, switch and unsupported-platform cases. |
 | 11. Primary alignment authoring | `canonical photo alignment workbench`, `_FakePhotoAlignmentWriter`, `_FakeAlignedPhotoAssetLoader`, `_primaryPhotoWriteResult` | Primary-only source, point draft, ensure/confirm/retry, single-shot and stale-result boundaries. |
 | 12. Alignment rendering/lifecycle | `intrinsic raster basis survives ${fixture.name} Canvas layout`, `reopen selects newest alignment and keeps layer controls UI-local with Wizard coexistence`, `missing canonical photo shows warning without canonical write` | Intrinsic raster, exit/capture, reopen, layer controls, missing/non-directory/bounds and dark-theme evidence. |
@@ -99,7 +99,10 @@ source anchors, not claims about generated case counts. No line-number anchors.
     placement. A valid directory prevents masking the selection guard; disabled
     save, unchanged session and zero writer requests establish that boundary.
 15. [D] Source reads retain host painter/selection/safety and Placement integration
-    ownership and all prior negatives. The `placementSource` observation verifies
+    ownership and all prior negatives. `templatePreviewSource` verifies moved
+    catalogue/widget/painter declarations, host declaration absence and forbidden
+    workflow/Session/writer/candidate dependencies. The Eelvaade copy assertion
+    follows its new source owner. The `placementSource` observation verifies
     holder/draft/controls/confirmation ownership, host-private/render/file
     exclusions, current-ghost center resolution and Session-before-disposal order.
     `measurementSource` / `componentSource` retain workflow
@@ -140,6 +143,7 @@ source anchors, not claims about generated case counts. No line-number anchors.
 | `ComponentIdentityPanel` / `component_identity_panel.dart` | indirect child / direct source read | Create/edit behavior through host composition; `componentSource` verifies holder/workflow ownership and host/module boundaries. |
 | `BoardCanvasInspectorPanel` / `board_canvas_inspector_panel.dart` | indirect child / direct source read | Frozen I0 behavior through host composition; `inspectorSource` verifies stateless presentation ownership and host/module boundaries. |
 | `BoardCanvasPlacementHolder` / `board_canvas_placement_panel.dart` | indirect workflow / direct source read | Frozen P0 and retained Placement behavior through host composition; `placementSource` verifies moved ownership, center freshness and handoff ordering without importing the new module. |
+| `placement_template_preview.dart` | indirect presentation / direct source read | Existing rendered template/preview/ghost assertions run through the host; source guards follow the extracted catalogue/widgets/painter. Direct standalone catalogue/widget/paint tests live in `test/widget/placement_template_preview_test.dart`. |
 | Photo panel/read model/writer/import types | child / injected seam | Explicit import and primary alignment workflow. |
 | `AlignedPhotoLayer` and asset/image interfaces | rendered/injected seam | Intrinsic matrix/raster and unavailable handling. |
 | `ProjectSession`, provider and project models | fixture / observation | Generation, current-event composition, freshness, dedup and replacement; P0 keeps the provider alive after screen disposal to observe late handoff. |
@@ -238,7 +242,7 @@ tests do not turn a provisional transform into canonical alignment evidence.
 - One I0 case: rendered container/geometry, metadata/copy/badge or Placement-holder draft observation; preserve no-write/session and unrelated badge checks.
 - One source boundary: exact host/part/imported-owner string checks, including
   Inspector public/private stateless ownership, resolved slot, Placement holder/workflow,
-  tap-time center resolution and data-path negatives.
+  tap-time center resolution, standalone template-preview ownership and data-path negatives.
 
 ## Future extraction seams
 

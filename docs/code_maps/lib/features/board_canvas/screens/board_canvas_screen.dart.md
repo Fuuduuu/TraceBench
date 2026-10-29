@@ -11,6 +11,9 @@
 Owns the primary Board Canvas workbench shell, rendering/interaction, Inspector
 composition, Wizard intake and freshness presentation. Placement workflow/drafts
 and explicit writer/Session handling belong to the normal Placement library.
+Read-only template catalogue, chooser, summaries and preview painter belong to
+`placement_template_preview.dart`; the host adapts draft values and reuses its
+painter for the existing Canvas ghost.
 Component create/edit workflow belongs to
 `ComponentIdentityPanel` and its screen-lived holder; Measurement State/save/session
 workflow belongs to `IntegratedMeasurePanel`. Read-only Inspector presentation
@@ -36,7 +39,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | 3. Navigator/filter | `ComponentCategory`, `ComponentNavigator`, `componentCategoryFor`, `componentPrimaryLabel`, `componentNavigatorPlacementId`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host category/filter/selection/preview state; public fact-list/selected-ID adapter and intent callbacks. Classification and Navigator presentation belong to the imported library. |
 | 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel`, `InspectorMeasurementSummaryTile`, `InspectorVisualTraceSummaryTile` | Constructs the child from one resolved placement; builds provenance children using imported Inspector presentation widgets and supplies private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Components composition/lifetime | `ComponentIdentityHolder`, `_componentIdentityHolder.dispose()`, `_rightPanelSelectedMetadataComponent`, `_AddComponentTemplateListPanel`, `ComponentIdentityPanel`, `placementSectionBuilder` | Creates/disposes one screen-lived holder, resolves a nullable edit target, retains the Add frame/scroll and supplies Placement children; the module owns create/edit state and writes. |
-| 6. Placement composition/lifetime | `BoardCanvasPlacementHolder`, `_placementHolder`, `_onPlacementChanged`, `_PlacementSaveTarget`, `_placementSaveTarget`, `_placementSeedFor`, `_resolvedPlacementSaveValues`, `buildBoardCanvasPlacementChildren`, `buildBoardCanvasPlacementEditor` | Creates/listens/disposes one screen-lived holder; retains selection/eligibility, immutable seeding, current-snapshot center conversion and catalogue/preview builders. Module owns drafts, controls, guards and writer/Session workflow. |
+| 6. Placement composition/lifetime | `BoardCanvasPlacementHolder`, `_placementHolder`, `_onPlacementChanged`, `_PlacementSaveTarget`, `_placementSaveTarget`, `_placementSeedFor`, `_resolvedPlacementSaveValues`, `buildBoardCanvasPlacementChildren`, `buildBoardCanvasPlacementEditor` | Creates/listens/disposes one screen-lived holder; retains selection/eligibility, immutable seeding, current-snapshot center conversion and thin catalogue/preview value adapters. The imported preview library owns catalogue/presentation/painter; the Placement workflow module owns drafts, controls, guards and writer/Session workflow. |
 | 7. Interaction/Wizard | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile` | Zero-component intake, pan/zoom/tap/fit and read-only Wizard input. |
 | 8. General rendering/geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Delegated Wizard/pure geometry plus host Board painters and semantics. |
 | 9. Inspector composition/evidence | `BoardCanvasInspectorPanel`, `placement: selectedEntry?.placement`, `component: selectedEntry?.component`, `template: selectedEntry?.template`, `placementDraftSection`, `_BoardCanvasSafetyEvidenceDisclosure` | Resolves Inspector inputs from one selected entry, passes the module-built Placement editor slot and keeps safety disclosure; the imported library declares summaries/readiness without evidence promotion. |
@@ -131,7 +134,10 @@ No line-number anchors are maintained.
 18. [D] One `BoardCanvasPlacementHolder` survives Add/focus/responsive removal;
     the host subscribes once and removes the listener before screen disposal.
     Gesture forwarding writes its anchor/captured Canvas size; rendering reads
-    immutable `ghostDraft` values. Catalogue and every painter remain host-owned.
+    immutable `ghostDraft` values. `PlacementTemplatePreviewPainter` is imported
+    from the read-only preview module; ghost position/gestures and Board painters
+    remain host-owned. The four `_buildPlacement` presentation adapters pass
+    explicit values/callbacks without moving holder state or target resolution.
 19. [D] Host `resolveSaveValues` captures eligible target identity, not a center.
     The module invokes it again at Save with the current snapshot; X/Y conversion
     uses that same anchor/size pair. The resolved value feeds module bounds and
@@ -156,6 +162,7 @@ No line-number anchors are maintained.
 | `component_navigator.dart` | imported presentation library | Public `ComponentFact`/`ComponentVisualPlacementFact` inputs, selected component/placement IDs, shared category policy, display label and unchanged placement-key format. Seven intent callbacks leave state and placement actions in this host. |
 | `BoardCanvasPalette`, facts, `WizardIntake` | read input | Static colors, canonical projection and noncanonical intake. |
 | `board_canvas_placement_panel.dart` | normal workflow / immutable-value library | Screen-lived Placement holder, Add children/editor, guards and explicit writer/Session workflow; host resolves target/geometry and supplies catalogue/preview adapters. |
+| `placement_template_preview.dart` | imported read-only presentation library | Single starter catalogue/lookup, chooser, selected summary, scalar draft preview and shared preview/ghost painter. No Placement workflow or host import. |
 | `board_canvas_inspector_panel.dart` | normal child / presentation library | Resolved Inspector facts, counts/visibility and opaque Placement editor slot; declares presentation widgets consumed by host Measurement and the separate Placement editor. |
 | `component_identity_panel.dart` | normal child library | Component create/edit UI, holder and writer/session workflow; host owns holder lifetime, nullable edit-target resolution and one-way Placement children construction. |
 | `integrated_measure_panel.dart` | normal child library | Measurement widget/State/writer/session workflow; stable nullable component inputs, navigation callback and two one-way host builders. |
@@ -166,7 +173,7 @@ No line-number anchors are maintained.
 | Symbol or flow | Write class | Boundary evidence |
 | --- | --- | --- |
 | delegated Placement workflow | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Module owns drafts and explicit confirmation plus captured Session handoff; host supplies no writer or save callback. |
-| Placement holder lifetime / target / geometry / presentation adapters | `UI_LOCAL` / `ZERO_WRITE` | [D] Host subscribes/disposes, resolves eligibility and center conversion, and constructs catalogue/preview widgets without canonical mutation. |
+| Placement holder lifetime / target / geometry / presentation adapters | `UI_LOCAL` / `ZERO_WRITE` | [D] Host subscribes/disposes, resolves eligibility and center conversion, and adapts explicit values to imported catalogue/preview widgets without canonical mutation. |
 | delegated Components panel | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Module owns drafts and explicit add/edit calls plus Session handoff; host supplies no save/session callback. |
 | Components holder lifetime / Placement children builder | `UI_LOCAL` / `ZERO_WRITE` | [D] Host creates/disposes the holder and delegates Placement children construction; Components and Placement retain their own workflow state/writes. |
 | delegated Measurement panel | `UI_LOCAL` / `CANONICAL_EVENT` / `PROJECTION_STATE` | [D] Child owns drafts, explicit V2 writer and generation-guarded Session result; host supplies no save/session callback. |
@@ -244,6 +251,8 @@ that evidence comes only from the explicit delegated confirmation writer.
 - Primary loading: reconcile/load identity plus changed-byte/reopen cases.
 - Preview exit/capture: host clear/completer plus exit/capture cases.
 - One delegated photo result: child callback and matching session case.
+- Template presentation: the imported preview library plus the four thin host
+  builders and ghost painter consumer; keep target resolution and gestures fixed.
 - Placement composition/center: host resolver/holder bridge plus module guard/request,
   P0 and retained coordinate/bounds evidence; a pure helper uses its own owner.
 - One Components input/lifetime/builder seam: inspect module ownership and the
@@ -263,7 +272,7 @@ state already form distinct review boundaries. No extraction is prescribed.
 
 Review instrument/menu/Home/mode, primary source/identity, event selection,
 capture/layer/preview lifecycle, z-order, holder/target/builder and write/session ownership, thresholds,
-freshness, Inspector input/slot/presentation ownership, helper/part contracts and linked test evidence.
+freshness, Inspector input/slot/presentation ownership, template-preview imports/adapters/ghost styling, helper/part contracts and linked test evidence.
 
 ## Known uncertainty
 

@@ -14,8 +14,10 @@ Inspector draft, guards/status/pending/failure and explicit writer/Session
 handoff. Public immutable values bridge host-resolved eligibility, template
 display/default counts, geometry and read-only ghost snapshots.
 The module constructs direct Add children and the opaque Inspector editor.
-Selection, eligibility lookup, catalogue, preview/painter algorithms, gestures,
-Canvas rendering, frames/scroll and screen lifetime stay in the host.
+Selection, eligibility lookup, gestures, Canvas rendering, frames/scroll and
+screen lifetime stay in the host. The read-only catalogue and preview/painter
+algorithms belong to `placement_template_preview.dart`, reached through host
+value/widget adapters rather than a direct workflow dependency.
 Source, tests and canonical owners outrank this descriptive map.
 
 ## Qualification
@@ -38,7 +40,7 @@ physical size alone is not the reason for this map.
 | 5. Guards/status | `_hasExcessiveCounts`, `_hasZeroMarkers`, `_saveBlockReason`, `_addComponentTemplateCanonicalBoundsBlockReason`, `_showStatus` | Existing marker guidance and selection/label/anchor/directory/bounds gating plus status copy. |
 | 6. Explicit confirm/request | `_confirmAddComponentTemplatePlacement`, `V2PlacementWriterRequest`, `_placementClientOperationIdFor` | Pending suppression, current resolved-center bounds/null checks, request and operation identity. |
 | 7. Captured async handoff | `projectStateProvider.notifier`, `v2PlacementWriterProvider`, `projectSession.applyCanonicalEvent`, `generation: generation` | Capture before await; apply returned event before disposed UI guard; preserve result/error/finally handling. |
-| 8. Add presentation seam | `buildBoardCanvasPlacementChildren`, `resolveSaveValues`, `chooserBuilder`, `selectedSummaryBuilder`, `templatePreviewBuilder`, `draftPreviewBuilder`, `Consumer` | Direct children for unchanged Components list spread; one-way host presentation/geometry adapters and module-local provider access. |
+| 8. Add presentation seam | `buildBoardCanvasPlacementChildren`, `resolveSaveValues`, `chooserBuilder`, `selectedSummaryBuilder`, `templatePreviewBuilder`, `draftPreviewBuilder`, `Consumer` | Direct children for unchanged Components list spread; one-way host value/widget adapters to read-only preview presentation, unchanged geometry adapter and module-local provider access. |
 | 9. Independent Inspector editor | `PlacementEditorDraft`, `reseedInspector`, `_placementEditorDraftFor`, `_updateInspector`, `buildBoardCanvasPlacementEditor`, `_PlacementEditorShellCard` | One current-entry draft with silent reseed and local-only editor callbacks; no per-entry cache or save action. |
 | 10. Private controls/formatting | `_AddComponentTemplateBuilderPanel`, `_ContactMarkerCountRow`, `_AddComponentDraftSizeControls`, `_AddComponentDraftRotationControls`, `_AddComponentDraftActionBar`, `_PlacementDraftButton`, `_formatPlacementDraftRotation`, `_formatPlacementDraftSize` | Existing keyed controls, guidance, actions and editor formatting; catalogue-dependent visual previews arrive as Widgets. |
 
@@ -93,8 +95,9 @@ No line-number anchors are maintained.
     imposed on Inspector copyWith values.
 12. [D] Add returns the existing List<Widget>, not a wrapping Column.
     Module-local Consumer supplies ref to its private confirm path without
-    adding a render object. Host-owned chooser/summary/preview builders
-    receive immutable values and narrow local action callbacks.
+    adding a render object. Host chooser/summary/preview adapters forward
+    immutable values and narrow local action callbacks to the standalone
+    read-only preview library; this workflow retains the draft and controls.
 13. [D] Inspector returns an opaque editor using imported InspectorSectionHeader.
     The Inspector panel only composes that Widget in its existing ordered
     scroll/Column; this module owns its callbacks and unsaved copy.
@@ -109,7 +112,7 @@ No line-number anchors are maintained.
 | `project_state.dart`, `project_session.dart` | resolved project / projection handoff | Captured request input and generation-guarded returned-event application. |
 | `board_canvas_inspector_panel.dart` | shared presentation | InspectorSectionHeader only; no Inspector workflow/state transfer. |
 | `board_canvas_palette.dart`, `dart:math` | static presentation / sizing | Existing colors and private control width calculations. |
-| `board_canvas_screen.dart` | constructing caller (not imported) | Holder lifetime, selection/eligibility, current-snapshot conversion, catalogue and painter builders. |
+| `board_canvas_screen.dart` | constructing caller (not imported) | Holder lifetime, selection/eligibility, current-snapshot conversion and value/widget adapters to the separate catalogue/preview library. |
 | `component_identity_panel.dart` | indirect composition consumer (not imported) | Spreads supplied Add children between create/edit in one Column. |
 | `board_canvas_screen_test.dart` | indirect widget/direct source observation | P0 and retained Placement contracts plus physical ownership/negative boundary guard. |
 
@@ -134,8 +137,8 @@ or write from ghost gestures, template preview or painter work.
 
 - Immutable values/snapshots, bounds/marker guidance and operation-ID formatting.
 - Child construction, labels, keys, spacing, private control formatting.
-- Host catalogue/preview builders and geometry resolution are construction/read
-  seams; UI mutators and explicit confirmation have separate write classes.
+- Host adapters to standalone catalogue/preview widgets and geometry resolution
+  are construction/read seams; UI mutators and explicit confirmation have separate write classes.
 - Inspector editor is session-only; canonical facts/placements are unchanged
   until the separate Add confirmation invokes the existing writer.
 
@@ -186,7 +189,7 @@ or write from ghost gestures, template preview or painter work.
 - One center/guard field: host resolver, module request and focused bounds case.
 - One await: capture/Session/disposed sequence plus matching P0 deferred case.
 - One presentation/Inspector control: private control, immutable input/slot and
-  C0/I0/rendered-key evidence; keep host painter and sibling workflow untouched.
+  C0/I0/rendered-key evidence; keep imported preview painter, host ghost gestures and sibling workflow untouched.
 
 ## Future extraction seams
 

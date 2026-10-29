@@ -17100,7 +17100,11 @@ void main() {
     expect(placementSource, contains('Lohista nurgast suuruse muutmiseks'));
     expect(placementSource, contains('Pööramine'));
     expect(placementSource, contains(r'Pööre: $rotationDeg°'));
-    expect(hostSource, contains('Eelvaade'));
+    expect(
+      File('lib/features/board_canvas/widgets/placement_template_preview.dart')
+          .readAsStringSync(),
+      contains('Eelvaade'),
+    );
     expect(hostSource, contains('Draft / unsaved'));
     expect(
       placementSource,
@@ -17519,8 +17523,8 @@ void main() {
       'board_canvas_screen.dart',
       'CanvasSelection',
       '_PlacementEntry',
-      '_AddComponentTemplateDefinition',
-      '_RectangularPerimeterTemplatePreviewPainter',
+      'PlacementTemplateDefinition',
+      'PlacementTemplatePreviewPainter',
       '_BoardPlacementPainter',
       '_FootprintPreviewPainter',
       'CustomPaint(',
@@ -17567,7 +17571,36 @@ void main() {
       placementSource,
       contains('target: resolveSaveValues(holder.ghostDraft)!,'),
     );
-    expect(hostSource, contains('_RectangularPerimeterTemplatePreviewPainter'));
+    expect(hostSource, contains('PlacementTemplatePreviewPainter('));
+    expect(
+      hostSource,
+      contains("import '../widgets/placement_template_preview.dart';"),
+    );
+    final templatePreviewSource = File(
+      'lib/features/board_canvas/widgets/placement_template_preview.dart',
+    ).readAsStringSync();
+    for (final symbol in [
+      'class PlacementTemplateDefinition',
+      'enum PlacementTemplateBodyShape',
+      'const starterPlacementTemplates',
+      'class PlacementTemplatePreviewPainter',
+      'class PlacementTemplateChooser',
+      'class PlacementTemplateSelectedSummary',
+      'class PlacementTemplatePreview',
+      'class PlacementDraftPreviewCard',
+    ]) {
+      expect(templatePreviewSource, contains(symbol));
+      expect(hostSource, isNot(contains(symbol)));
+    }
+    for (final forbidden in [
+      'board_canvas_screen.dart',
+      'board_canvas_placement_panel.dart',
+      'project_session.dart',
+      'v2_placement_writer.dart',
+      'component_candidates/',
+    ]) {
+      expect(templatePreviewSource, isNot(contains(forbidden)));
+    }
     final placementConfirm = placementSource.substring(
       placementSource.indexOf(
         'Future<void> _confirmAddComponentTemplatePlacement(',

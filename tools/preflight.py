@@ -96,6 +96,14 @@ def is_protected(path):
                         "lib/shared/services/project_projection_refresher.dart",
                         "lib/shared/widgets/workbench_projection_refresh.dart",
                         "lib/features/photos/services/photo_import_service.dart",
+                        "lib/features/board_canvas/widgets/board_canvas_placement_panel.dart",
+                        "lib/features/board_canvas/widgets/component_identity_panel.dart",
+                        "lib/features/board_canvas/widgets/integrated_measure_panel.dart",
+                        "lib/features/components/screens/add_component_screen.dart",
+                        "lib/features/components/screens/edit_component_screen.dart",
+                        "lib/features/measure_sheet/screens/measure_sheet_screen.dart",
+                        "lib/features/photos/widgets/photo_workbench_panel.dart",
+                        "lib/features/report/screens/customer_report_screen.dart",
                         "lib/features/board_canvas/geometry/placement_geometry.dart"}
             or name in {"events.jsonl", "known_facts.json"}
             or (path.startswith("lib/") and
@@ -234,7 +242,7 @@ def main(argv=None):
     if report["failures"]:
         for failure in report["failures"]:
             print("FAIL: " + failure)
-    else:
+    elif not report["PROTECTED"]:
         print("PRECHECK_PASS: Executed repository/Git checks passed; local origin/main was not fetched. This is not test or review acceptance.")
     if report["PROTECTED"]:
         print("REVIEW_REQUIRED: Protected paths changed; this is not semantic or staging approval.")

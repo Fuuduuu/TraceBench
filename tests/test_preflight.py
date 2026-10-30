@@ -105,6 +105,8 @@ class PreflightTests(unittest.TestCase):
         self.assertEqual(data["UNSTAGED"], [])
         self.assertEqual(data["UNTRACKED"], [])
         self.assertIn("PRECHECK_PASS:", result.stdout)
+        self.assertNotIn("FAIL:", result.stdout)
+        self.assertNotIn("REVIEW_REQUIRED:", result.stdout)
         self.assertIn("VERIFY_PENDING:", result.stdout)
         self.assertNotIn("All tests passed", result.stdout)
 
@@ -240,6 +242,63 @@ class PreflightTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stdout)
         self.assertEqual(fields(result)["WORK_KIND"], "DOCS_ONLY")
         self.assertNotIn("flutter test", result.stdout)
+
+    def test_canonical_handoff_ui_paths_each_require_protected_review(self):
+        for name in [
+                "lib/features/board_canvas/widgets/board_canvas_placement_panel.dart",
+                "lib/features/board_canvas/widgets/component_identity_panel.dart",
+                "lib/features/board_canvas/widgets/integrated_measure_panel.dart",
+                "lib/features/components/screens/add_component_screen.dart",
+                "lib/features/components/screens/edit_component_screen.dart",
+                "lib/features/measure_sheet/screens/measure_sheet_screen.dart",
+                "lib/features/photos/widgets/photo_workbench_panel.dart",
+                "lib/features/report/screens/customer_report_screen.dart"]:
+            with self.subTest(path=name):
+                self.write(name, "// canonical handoff UI\n")
+                try:
+                    result = self.run_tool()
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertEqual(fields(result)["RISK"], "PROTECTED")
+                    self.assertEqual(fields(result)["PROTECTED"], [name])
+                    self.assertIn("REVIEW_REQUIRED:", result.stdout)
+                    self.assertIn("VERIFY_PENDING:", result.stdout)
+                finally:
+                    (self.repo / name).unlink()
+
+    def test_ordinary_feature_ui_paths_remain_runtime(self):
+        for name in [HOST,
+                     "lib/features/board_canvas/widgets/placement_template_preview.dart",
+                     "lib/features/board_canvas/widgets/component_navigator.dart",
+                     "lib/features/photos/screens/photo_list_screen.dart"]:
+            with self.subTest(path=name):
+                self.write(name, "// ordinary presentation\n")
+                result = self.run_tool()
+                self.assertEqual(result.returncode, 0, result.stdout)
+                self.assertEqual(fields(result)["RISK"], "RUNTIME")
+                self.assertEqual(fields(result)["PROTECTED"], [])
+
+    def test_protected_review_does_not_emit_precheck_pass(self):
+        self.write("lib/shared/session/project_session.dart", "// protected\n")
+        before = self.snapshot()
+        result = self.run_tool()
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertIn("REVIEW_REQUIRED:", result.stdout)
+        self.assertNotIn("PRECHECK_PASS:", result.stdout)
+        self.assertNotIn("FAIL:", result.stdout)
+        self.assertIn("VERIFY_PENDING:", result.stdout)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_failure_takes_precedence_over_protected_review(self):
+        self.write("schemas/events.schema.json", "changed\n")
+        before = self.snapshot()
+        result = self.run_tool("--baseline", "0" * 40)
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertEqual(fields(result)["RISK"], "PROTECTED")
+        self.assertIn("FAIL:", result.stdout)
+        self.assertIn("REVIEW_REQUIRED:", result.stdout)
+        self.assertNotIn("PRECHECK_PASS:", result.stdout)
+        self.assertIn("VERIFY_PENDING:", result.stdout)
+        self.assertEqual(self.snapshot(), before)
 
     def test_runtime_file_recommends_flutter_checks_without_running_them(self):
         self.write("lib/new_widget.dart", "// new UI\n")

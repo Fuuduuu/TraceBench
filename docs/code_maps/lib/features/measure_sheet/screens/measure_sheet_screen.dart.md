@@ -28,7 +28,7 @@ infer measurements, or write project files directly.
 | 5. Selection projection | `_MeasureSheetSelection.fromProject`, `_firstPinLabel`, `_firstRelatedMeasurement` | Derives initial context and existing-reading presentation from known facts. |
 | 6. Target inventory | `_buildTargetOptions`, `_TargetChoice`, `_selectedTarget` | Builds explicit component/pin choices, including pins whose component fact is absent. |
 | 7. Responsive screen composition | `build`, `_BoardContextPanel`, `_NarrowBoardContext` | Preserves selected context across wide and narrow layouts. |
-| 8. Measurement form | `_MeasureSheetPanel`, `_UnitOption`, `measure-sheet-save-button` | Presents target, value, unit, save, success/error, and technical-detail controls. |
+| 8. Measurement form | `_MeasureSheetPanel`, `MeasurementUnitOption`, `measure-sheet-save-button` | Presents target, value, shared unit choices, save, success/error, and technical-detail controls; nullable unit selection stays screen-owned. |
 | 9. Read-only evidence context | `_ReferenceValuesPanel`, `_HierarchyTile`, `_RecordedReadingDot` | Keeps measured values visually distinct from source, candidate, and note context. |
 | 10. Guided prompts | `_GuidedMeasurementPanel`, `_GuidedPromptTile` | Offers neutral next-check copy without creating conclusions or writes. |
 | 11. Safety and semantics | `_SafetyBanner`, `_FlowField`, `_TechnicalDetailsTile` | States human authority, explicit-save behavior, field semantics, and event type. |
@@ -57,6 +57,7 @@ infer measurements, or write project files directly.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
+| `shared/vocabulary/measurement_units.dart` | ordered read-only vocabulary | Supplies `MeasurementUnitOption` and the existing four label/mode/schema-unit choices; no automatic initial selection. |
 | `projectStateProvider` / `ProjectSession` | input / projection-state owner | Supplies loaded facts/freshness and owns guarded returned-event application. |
 | `ProjectionStaleBanner` | child presentation | Renders authoritative stale/unknown state independently of save-result copy. |
 | `V2SaveMeasurementWriter` provider | canonical boundary | Validates and appends the explicitly confirmed measurement event outside this screen. |

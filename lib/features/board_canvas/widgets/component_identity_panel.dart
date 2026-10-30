@@ -9,6 +9,7 @@ import '../../components/services/v2_edit_component_writer.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/vocabulary/component_types.dart';
 
 /// Create/edit workflow state owned for the lifetime of one Board Canvas screen.
 class ComponentIdentityHolder extends ChangeNotifier {
@@ -204,11 +205,7 @@ class ComponentIdentityHolder extends ChangeNotifier {
   }
 
   String _canonicalRightPanelComponentKind(String? rawValue) {
-    final value = rawValue?.trim().toLowerCase() ?? '';
-    if (_RightPanelComponentCreationSection._componentKinds.contains(value)) {
-      return value;
-    }
-    return 'unknown';
+    return normalizeComponentType(rawValue);
   }
 
   List<V2ComponentChange> _rightPanelMetadataEditChanges(
@@ -524,20 +521,9 @@ class _RightPanelComponentCreationSection extends StatelessWidget {
     required this.onCreateComponent,
   });
 
-  static const List<String> _componentKinds = <String>[
-    'unknown',
-    'passive',
-    'ic',
-    'connector',
-    'regulator',
-  ];
-  static const Map<String, String> _componentKindLabels = <String, String>{
-    'unknown': 'Generic / unclassified',
-    'passive': 'Resistor / capacitor / diode / passive',
-    'ic': 'IC dual-side / quad-side / dense grid',
-    'connector': 'Connector / header',
-    'regulator': 'Regulator / relay / module',
-  };
+  static final List<String> _componentKinds =
+      componentTypeLabels.keys.toList(growable: false);
+  static const Map<String, String> _componentKindLabels = componentTypeLabels;
 
   final String componentId;
   final ValueChanged<String> onComponentIdChanged;

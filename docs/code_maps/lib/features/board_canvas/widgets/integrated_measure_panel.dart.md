@@ -28,7 +28,7 @@ UI-local condition independently of physical size.
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
 | 1. Widget inputs and State ownership | `IntegratedMeasurePanel`, `_IntegratedMeasurePanelState`, `createState`, `selectedComponentId`, `selectedComponent` | Owns ConsumerState; receives stable project/component/fact inputs, a navigation callback and two host builders. |
-| 2. Local drafts and conversion | `_selectedTarget`, `_draftValuesByTarget`, `_draftUnitsByTarget`, `_unitSelection`, `_readingValue` | Keeps target-indexed drafts and maps V/ohms/diode/beep labels to request modes/units; parses numeric input or retains text. |
+| 2. Local drafts and conversion | `_selectedTarget`, `_draftValuesByTarget`, `_draftUnitsByTarget`, `_unitSelection`, `_readingValue` | Keeps target-indexed drafts, delegates unit lookup to the shared vocabulary with the existing V fallback, and parses numeric input or retains text. |
 | 3. Target/context and label derivation | `_measureTargetRows`, `_measureContextRows`, `_effectiveSelectedTargetRow`, `_componentSelectorLabel`, `_preferredComponentLabel`, `measurementEndpointMatchesComponent` | Measurements take target-row precedence over visual proposals; derives effective selection and display-only context. |
 | 4. Save eligibility and operation identity | `_formKeyFor`, `_saveBlockReason`, `_measurementClientOperationIdFor`, `_saveInFlight`, `_lastSuccessfulFormKey` | Checks placement-derived identity, row/value/unit/directory and repeat-form/in-flight guards; creates the timestamped operation ID. |
 | 5. Writer and captured-session handoff | `_saveMeasurement`, `V2SaveMeasurementRequest`, `v2SaveMeasurementWriterProvider`, `projectStateProvider`, `applyCanonicalEvent` | Builds the human-entered request, calls the writer and applies its event with captured generation before the mounted check. |
@@ -80,6 +80,7 @@ No line-number anchors are maintained.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
+| `shared/vocabulary/measurement_units.dart` | ordered read-only vocabulary | Supplies labels and `MeasurementUnitOption` mode/schema-unit values; `_unitSelection` delegates exact-label lookup and V fallback without changing drafts or save orchestration. |
 | Flutter Material and Riverpod | widget / State / provider access | ConsumerStatefulWidget, layout, callbacks and existing providers. |
 | `measurement_projection.dart` | pure helper input | `measurementEndpointMatchesComponent` for target/component and endpoint association. |
 | `board_canvas_palette.dart` | static presentation input | Existing shared colors alongside private Measurement tokens. |

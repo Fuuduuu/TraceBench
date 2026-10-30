@@ -22,7 +22,7 @@ its independent holder, controls, editor and writer/Session workflow. Source, te
 | --- | --- | --- |
 | 1. Holder lifecycle and notification | `ComponentIdentityHolder`, `_disposed`, `_update`, `dispose`, `notifyListeners` | ChangeNotifier state survives panel absence; disposal suppresses local mutation/notification without cancelling captured session handoff. |
 | 2. Create draft and gate | `_rightPanelCreateComponentId`, `_rightPanelCreateComponentLabel`, `_rightPanelCreateComponentKind`, `_rightPanelCreateComponentBlockReason` | Required ID/label/kind and local-directory gate; transient create input and results. |
-| 3. Edit target and change derivation | `_seedRightPanelMetadataEditDraft`, `_componentMetadataEditBaselineLabel`, `_canonicalRightPanelComponentKind`, `_rightPanelMetadataEditChanges`, `_rightPanelMetadataEditFormKey` | Silent ID-based reseeding, projected-label/kind normalization and ordered observed-value changes. |
+| 3. Edit target and change derivation | `_seedRightPanelMetadataEditDraft`, `_componentMetadataEditBaselineLabel`, `_canonicalRightPanelComponentKind`, `_rightPanelMetadataEditChanges`, `_rightPanelMetadataEditFormKey` | Silent ID-based reseeding, shared kind normalization and ordered observed-value changes. |
 | 4. Explicit create workflow | `_confirmRightPanelComponentCreation`, `V2AddComponentRequest`, `v2AddComponentWriterProvider` | In-flight guard, normalized request and accepted add-writer invocation. |
 | 5. Explicit edit workflow and repeat gate | `_rightPanelMetadataEditBlockReason`, `_rightPanelMetadataEditLastSuccessfulFormKey`, `_confirmRightPanelMetadataEdit`, `V2EditComponentRequest`, `v2EditComponentWriterProvider` | Existing target/nonempty changes/directory and successful-form gates; accepted edit-writer invocation. |
 | 6. Operation identity and failure copy | `_componentCreationClientOperationIdFor`, `_metadataEditClientOperationIdFor`, `_componentCreationFailureMessage`, `_componentMetadataEditFailureMessage` | Current ID normalization/timestamp pattern and typed/generic result presentation. |
@@ -74,6 +74,7 @@ The host and writer/session types remain separate owners; no line-number anchors
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
+| `shared/vocabulary/component_types.dart` | ordered read-only vocabulary | Supplies kind codes/descriptive labels and trimmed, case-insensitive normalization with `unknown` fallback; holder state and change derivation stay here. |
 | Flutter Material / ChangeNotifier / ListenableBuilder | UI / holder / subscription | Transient state, rebuild notification and existing form presentation. |
 | Riverpod ConsumerWidget / WidgetRef | existing provider access | Reads writer and Session objects synchronously before each writer await. |
 | `v2_add_component_writer.dart` | canonical output / result contract | Existing provider, request, add call and typed result/failure vocabulary. |

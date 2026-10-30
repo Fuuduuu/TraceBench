@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/vocabulary/measurement_units.dart';
 import '../../../shared/widgets/projection_stale_banner.dart';
 import '../services/v2_save_measurement_writer.dart';
 
@@ -22,7 +23,7 @@ class _MeasureSheetScreenState extends ConsumerState<MeasureSheetScreen> {
       'Komponente või jalgusid pole saadaval. Vali mõõtmise koht enne salvestamist.';
 
   final TextEditingController _valueController = TextEditingController();
-  _UnitOption? _selectedUnit;
+  MeasurementUnitOption? _selectedUnit;
   String? _selectedTargetKey;
   bool _isSaving = false;
   String? _lastSuccessfulFormKey;
@@ -556,18 +557,6 @@ class _SafetyBanner extends StatelessWidget {
   }
 }
 
-class _UnitOption {
-  const _UnitOption({
-    required this.label,
-    required this.mode,
-    required this.schemaUnit,
-  });
-
-  final String label;
-  final String mode;
-  final String schemaUnit;
-}
-
 class _TargetChoice {
   const _TargetChoice({
     required this.key,
@@ -693,23 +682,18 @@ class _MeasureSheetPanel extends StatelessWidget {
   final String? selectedTargetKey;
   final String noTargetCopy;
   final String noTargetHint;
-  static const List<_UnitOption> _unitOptions = <_UnitOption>[
-    _UnitOption(label: 'V', mode: 'voltage', schemaUnit: 'V'),
-    _UnitOption(label: 'Ω', mode: 'resistance', schemaUnit: 'Ω'),
-    _UnitOption(label: 'Diode', mode: 'diode', schemaUnit: 'diode'),
-    _UnitOption(label: 'Beep', mode: 'continuity', schemaUnit: 'beep'),
-  ];
+  static const List<MeasurementUnitOption> _unitOptions = measurementUnitOptions;
 
   final _MeasureSheetSelection selection;
   final TextEditingController valueController;
-  final _UnitOption? selectedUnit;
+  final MeasurementUnitOption? selectedUnit;
   final bool isSaving;
   final String? successMessage;
   final String? errorMessage;
   final bool canSave;
   final VoidCallback onValueChanged;
   final ValueChanged<String?> onTargetChanged;
-  final ValueChanged<_UnitOption?> onUnitChanged;
+  final ValueChanged<MeasurementUnitOption?> onUnitChanged;
   final VoidCallback onSave;
 
   @override
@@ -770,13 +754,13 @@ class _MeasureSheetPanel extends StatelessWidget {
               onChanged: (_) => onValueChanged(),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<_UnitOption>(
+            DropdownButtonFormField<MeasurementUnitOption>(
               key: const ValueKey('measure-sheet-unit-dropdown'),
               initialValue: selectedUnit,
               decoration: const InputDecoration(labelText: 'Ühik'),
               items: _unitOptions
                   .map(
-                    (option) => DropdownMenuItem<_UnitOption>(
+                    (option) => DropdownMenuItem<MeasurementUnitOption>(
                       value: option,
                       child: Text(option.label),
                     ),

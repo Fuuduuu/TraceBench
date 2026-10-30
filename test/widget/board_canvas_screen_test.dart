@@ -17219,7 +17219,7 @@ void main() {
     expect(measurementSource, contains('class _IntegratedMeasurePanelState'));
     for (final symbol in [
       '_MeasureTargetRowData',
-      '_MeasureUnitSelection',
+      'MeasurementUnitOption',
       '_MeasureContextRowData',
       '_MeasurePanelDivider',
       '_MeasurePanelPill',

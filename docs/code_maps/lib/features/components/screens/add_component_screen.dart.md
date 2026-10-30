@@ -47,6 +47,7 @@ local/read-only, and the screen does not write project files directly.
 
 | Dependency | Direction | Purpose |
 | --- | --- | --- |
+| `shared/vocabulary/component_types.dart` | ordered read-only vocabulary | Supplies `_componentKinds` through catalogue keys; this screen continues to display raw codes and starts with no selected kind. |
 | `projectStateProvider` / `ProjectSession` | input / projection-state owner | Supplies the loaded project and owns generation-guarded returned-event application. |
 | `V2AddComponentWriter` provider | canonical boundary | Validates and appends the explicit component-created event outside the screen. |
 | `V2AddComponentRequest` and writer result/error types | outbound / inbound contract | Carry normalized human input, operation identity, result status, event, and typed failure. |

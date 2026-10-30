@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/models/project_state.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/vocabulary/component_types.dart';
 import '../services/v2_add_component_writer.dart';
 
 class AddComponentScreen extends ConsumerStatefulWidget {
@@ -13,13 +14,8 @@ class AddComponentScreen extends ConsumerStatefulWidget {
 }
 
 class _AddComponentScreenState extends ConsumerState<AddComponentScreen> {
-  static const List<String> _componentKinds = <String>[
-    'unknown',
-    'passive',
-    'ic',
-    'connector',
-    'regulator',
-  ];
+  static final List<String> _componentKinds =
+      componentTypeLabels.keys.toList(growable: false);
 
   final TextEditingController _componentIdController = TextEditingController();
   final TextEditingController _labelController = TextEditingController();

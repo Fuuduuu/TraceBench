@@ -7,6 +7,7 @@ import '../../measure_sheet/services/v2_save_measurement_writer.dart';
 import '../../../shared/models/known_facts.dart';
 import '../../../shared/models/project_state.dart';
 import '../../../shared/session/project_session.dart';
+import '../../../shared/vocabulary/measurement_units.dart';
 
 String _displayDirectionLabel(String from, String? to) {
   final trimmedFrom = from.trim();
@@ -70,7 +71,9 @@ class IntegratedMeasurePanel extends ConsumerStatefulWidget {
 
 class _IntegratedMeasurePanelState
     extends ConsumerState<IntegratedMeasurePanel> {
-  static const List<String> _draftUnitOptions = ['V', 'Ω', 'Diode', 'Beep'];
+  static final List<String> _draftUnitOptions = measurementUnitOptions
+      .map((option) => option.label)
+      .toList(growable: false);
 
   String? _selectedTarget;
   final Map<String, String> _draftValuesByTarget = {};
@@ -80,34 +83,8 @@ class _IntegratedMeasurePanelState
   String? _saveErrorMessage;
   String? _lastSuccessfulFormKey;
 
-  _MeasureUnitSelection _unitSelection(String unitLabel) {
-    switch (unitLabel) {
-      case 'Ω':
-        return const _MeasureUnitSelection(
-          label: 'Ω',
-          mode: 'resistance',
-          schemaUnit: 'Ω',
-        );
-      case 'Diode':
-        return const _MeasureUnitSelection(
-          label: 'Diode',
-          mode: 'diode',
-          schemaUnit: 'diode',
-        );
-      case 'Beep':
-        return const _MeasureUnitSelection(
-          label: 'Beep',
-          mode: 'continuity',
-          schemaUnit: 'beep',
-        );
-      case 'V':
-      default:
-        return const _MeasureUnitSelection(
-          label: 'V',
-          mode: 'voltage',
-          schemaUnit: 'V',
-        );
-    }
+  MeasurementUnitOption _unitSelection(String unitLabel) {
+    return measurementUnitForLabel(unitLabel);
   }
 
   Object _readingValue(String rawValue) {
@@ -990,18 +967,6 @@ class _MeasureTargetRowData {
   final String? unit;
   final bool showExistingUnit;
   final String? suggestedUnit;
-}
-
-class _MeasureUnitSelection {
-  const _MeasureUnitSelection({
-    required this.label,
-    required this.mode,
-    required this.schemaUnit,
-  });
-
-  final String label;
-  final String mode;
-  final String schemaUnit;
 }
 
 class _MeasureContextRowData {

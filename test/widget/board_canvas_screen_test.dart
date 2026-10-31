@@ -21,6 +21,7 @@ import 'package:trace_bench_viewer/features/board_canvas/logic/measurement_proje
 import 'package:trace_bench_viewer/features/board_canvas/rendering/aligned_photo_layer.dart';
 import 'package:trace_bench_viewer/features/board_canvas/screens/board_canvas_screen.dart';
 import 'package:trace_bench_viewer/features/board_canvas/theme/board_canvas_palette.dart';
+import 'package:trace_bench_viewer/features/board_canvas/widgets/component_navigator.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_add_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_edit_component_writer.dart';
 import 'package:trace_bench_viewer/features/components/services/v2_placement_writer.dart';
@@ -715,6 +716,20 @@ Widget _routerHarness({
   );
 }
 
+Future<void> _showNavigatorCategories(WidgetTester tester) async {
+  // Opening Navigator follows Canvas selection; explicit back actions choose
+  // the category overview when the test is about selecting another component.
+  for (final key in [
+    const Key('board_canvas_component_inspector_back'),
+    const Key('board_canvas_component_category_back'),
+  ]) {
+    if (find.byKey(key).evaluate().isNotEmpty) {
+      await _tapWidgetByKey(tester, key);
+      await tester.pumpAndSettle();
+    }
+  }
+}
+
 Future<void> _selectPlacement(
   WidgetTester tester,
   String label, {
@@ -729,6 +744,7 @@ Future<void> _selectPlacement(
     await tester.tap(railPlacementFinder);
     await tester.pumpAndSettle();
 
+    await _showNavigatorCategories(tester);
     final categoryKeys = find
         .byWidgetPredicate((widget) {
           final key = widget.key;
@@ -5042,7 +5058,7 @@ void main() {
     );
   });
 
-  testWidgets('category hover previews matches and preserves canvas selection',
+  testWidgets('category hover previews matches without creating a Canvas selection',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1400, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -5050,14 +5066,13 @@ void main() {
     await tester.pumpWidget(_harness(projectState: _componentNavigatorState()));
     await tester.pumpAndSettle();
     await _openWideContextMode(tester, placements: true);
-    await _tapCanvasAtNormalized(tester, x: 0.12, y: 0.18);
 
     expect(
       find.byKey(const Key('board_canvas_component_category_resistors')),
       findsOneWidget,
     );
     final selectedBeforeHover = _painterSelectedPlacementKey(tester);
-    expect(selectedBeforeHover, 'R1|evt_nav_r1');
+    expect(selectedBeforeHover, isNull);
 
     final hover = await _hoverWidgetByKey(
       tester,
@@ -7077,6 +7092,188 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  group('selection routing module integration', () {
+    Future<void> mount(
+      WidgetTester tester,
+      ProjectState state, {
+      _FakeSaveMeasurementWriter? writer,
+    }) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        _harness(projectState: state, measurementWriter: writer),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets(
+      'BB-08 canonical and candidate selection are mutually exclusive',
+      (tester) async {
+        final state = _inlineProjectState(
+          components: _navigatorComponents,
+          placements: _navigatorPlacements,
+          wizardIntake: _wizardIntake(),
+        );
+        await mount(tester, state);
+        ComponentCandidateEditor surface() =>
+            tester.widget<ComponentCandidateEditor>(
+              find.byWidgetPredicate(
+                (widget) =>
+                    widget is ComponentCandidateEditor && !widget.controls,
+              ),
+            );
+        final editor = surface().controller;
+        final document = editor.document;
+        editor.select(7);
+        surface().onSelectionChanged!();
+        await tester.pumpAndSettle();
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_rail_placements_tool'),
+        );
+        await _tapCanvasAtNormalized(tester, x: .12, y: .18);
+        await tester.pumpAndSettle();
+        expect(_painterSelectedComponentId(tester), 'R1');
+        expect(editor.selectedDraftKey, isNull);
+        editor.select(7);
+        surface().onSelectionChanged!();
+        await tester.pumpAndSettle();
+        expect(_painterSelectedPlacementKey(tester), isNull);
+        expect(_painterSelectedComponentId(tester), isNull);
+        expect(editor.selectedDraftKey, 7);
+        expect(editor.document, same(document));
+        expect(_readProjectState(tester), same(state));
+        expect(state.events, isEmpty);
+      },
+    );
+
+    testWidgets('BB-09 Navigator follows Canvas selection across categories', (
+      tester,
+    ) async {
+      final state = _componentNavigatorState();
+      await mount(tester, state);
+      await _openWideContextMode(tester, placements: true);
+      await _tapWidgetByKey(
+        tester,
+        const Key('board_canvas_component_category_resistors'),
+      );
+      await _tapCanvasAtNormalized(tester, x: .82, y: .62);
+      await tester.pumpAndSettle();
+      expect(_painterSelectedComponentId(tester), 'J1');
+      expect(
+        find.byKey(const Key('board_canvas_component_inspector')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('board_canvas_component_view_placement')),
+        findsOneWidget,
+      );
+      expect(_readProjectState(tester), same(state));
+    });
+
+    testWidgets('BB-09 opening Navigator retains the exact Canvas placement', (
+      tester,
+    ) async {
+      final state = _componentNavigatorState();
+      await mount(tester, state);
+      await _tapCanvasAtNormalized(tester, x: .82, y: .62);
+      await _openWideContextMode(tester, placements: true);
+      expect(_painterSelectedPlacementKey(tester), 'J1|evt_nav_j1');
+      expect(
+        find.byKey(const Key('board_canvas_component_inspector')),
+        findsOneWidget,
+      );
+      expect(_readProjectState(tester), same(state));
+    });
+
+    testWidgets(
+      'BB-11 filtering a measurement target keeps mode and blocks saving',
+      (tester) async {
+        final writer = _FakeSaveMeasurementWriter();
+        final state = _componentNavigatorState();
+        await mount(tester, state, writer: writer);
+        await _selectPlacement(tester, 'R1');
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_measure_sheet_button'),
+        );
+        await _tapWidgetByKey(
+          tester,
+          const Key('board_canvas_hide_unmeasured_toggle'),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const Key('board_canvas_integrated_measure_panel')),
+          findsOneWidget,
+        );
+        expect(_painterSelectedComponentId(tester), isNull);
+        expect(
+          tester
+              .widget<OutlinedButton>(
+                find.byKey(const Key('board_canvas_measure_save_button')),
+              )
+              .onPressed,
+          isNull,
+        );
+        expect(writer.requests, isEmpty);
+        expect(_readProjectState(tester), same(state));
+      },
+    );
+
+    testWidgets(
+      'BB-16 user intent rejects a non-Board placement before build',
+      (tester) async {
+        final state = _inlineProjectState(
+          components: _navigatorComponents,
+          placements: [
+            ..._navigatorPlacements,
+            const ComponentVisualPlacementFact(
+              componentId: 'J1',
+              coordinateSpace: 'photo_normalized',
+              boardSide: 'top',
+              centerX: .5,
+              centerY: .5,
+              rotationDeg: 0,
+              width: .1,
+              height: .05,
+              sourceEventId: 'evt_non_board',
+              status: 'user_confirmed_visual',
+            ),
+          ],
+        );
+        await mount(tester, state);
+        await _openWideContextMode(tester, placements: true);
+        final navigator = tester.widget<ComponentNavigator>(
+          find.byType(ComponentNavigator),
+        );
+        navigator.onPlacementSelected('J1|evt_non_board');
+        await tester.pumpAndSettle();
+        expect(_painterSelectedComponentId(tester), isNull);
+        expect(_painterSelectedPlacementKey(tester), isNull);
+        expect(_readProjectState(tester), same(state));
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'BB-16 projection reconciliation remains stable across rebuilds',
+      (tester) async {
+        await mount(tester, _componentNavigatorState());
+        await _selectPlacement(tester, 'R1');
+        final next = _inlineProjectState(
+          components: _navigatorComponents,
+          placements: [],
+        );
+        _replaceProjectState(tester, next);
+        await tester.pumpAndSettle();
+        expect(_painterSelectedPlacementKey(tester), isNull);
+        await tester.pump();
+        expect(_readProjectState(tester), same(next));
+        expect(next.events, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  });
   group('P0 measurement target selection', () {
     const c2Placement = ComponentVisualPlacementFact(
       componentId: 'C2',
@@ -7141,8 +7338,9 @@ void main() {
     }
 
     Future<void> selectC2(WidgetTester tester) async {
+      await _tapWidgetByKey(tester, const Key('board_canvas_rail_placements_tool'));
+      await _showNavigatorCategories(tester);
       for (final key in [
-        const Key('board_canvas_rail_placements_tool'),
         const Key('board_canvas_component_category_capacitors'),
         const Key('board_canvas_component_row_C2'),
       ]) {
@@ -16294,6 +16492,7 @@ void main() {
       final captured = requestFields(writer.requests.single);
       // Use bounded rendered navigator actions while the operation is pending.
       await tap(tester, 'board_canvas_rail_placements_tool');
+      await _showNavigatorCategories(tester);
       await tap(tester, 'board_canvas_component_category_integrated_circuits');
       await tap(tester, 'board_canvas_component_row_cmp_u1');
       await tap(tester, 'board_canvas_component_view_placement');
@@ -16399,6 +16598,7 @@ void main() {
           'Salvestamine ebaõnnestus: Bad state: P0 old status');
 
       await tap(tester, 'board_canvas_rail_placements_tool');
+      await _showNavigatorCategories(tester);
       await tap(tester, 'board_canvas_component_category_resistors');
       await tap(tester, 'board_canvas_component_row_R6');
       await tap(tester, 'board_canvas_component_place_action');
@@ -17055,6 +17255,9 @@ void main() {
   });
 
   test('board canvas source keeps read-only data-path boundaries', () {
+    final selectionSource = File(
+      'lib/features/board_canvas/logic/canvas_selection_routing.dart',
+    ).readAsStringSync();
     final hostSource = File(
       'lib/features/board_canvas/screens/board_canvas_screen.dart',
     ).readAsStringSync();
@@ -17395,20 +17598,25 @@ void main() {
     expect(hostSource, contains('board_canvas_tap_layer'));
     expect(hostSource, contains('onPlacementSelected'));
     expect(hostSource, contains('renderedPlacementContains('));
-    expect(hostSource, contains('abstract class CanvasSelection'));
+    expect(selectionSource, contains('abstract class CanvasSelection'));
     expect(
-      hostSource,
+      selectionSource,
       contains('class EmptyCanvasSelection extends CanvasSelection'),
     );
     expect(
-      hostSource,
+      selectionSource,
       contains('class ComponentPlacementSelection extends CanvasSelection'),
     );
-    expect(hostSource, contains('CanvasSelection _canvasSelection'));
-    expect(hostSource, contains('String? get _selectedPlacementKey'));
-    expect(hostSource, contains('final String placementKey;'));
-    expect(hostSource, contains('final String componentId;'));
-    expect(hostSource, contains('final Offset? canvasAnchor;'));
+    expect(hostSource, contains('CanvasSelection get _canvasSelection'));
+    expect(selectionSource, contains('String? get placementKey'));
+    expect(selectionSource, contains('final String placementKey;'));
+    expect(selectionSource, contains('final String componentId;'));
+    expect(selectionSource, contains('final Offset? canvasAnchor;'));
+    expect(hostSource, isNot(contains('_coerceSelection(')));
+    expect(hostSource, contains('ref.listenManual<ProjectState?>'));
+    for (final forbidden in ['BoardCanvasScreen', 'projectStateProvider', 'setState(', 'ChangeNotifier']) {
+      expect(selectionSource, isNot(contains(forbidden)));
+    }
     expect(hostSource, isNot(contains('screenAnchor')));
     expect(hostSource, isNot(contains('PinSelection')));
     expect(hostSource, isNot(contains('ContactSelection')));

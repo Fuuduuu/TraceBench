@@ -30,7 +30,9 @@ composes provisional/confirmed photo rendering without promoting visual evidence
 Pure measurement/placement libraries and the Wizard same-library part retain
 their existing ownership. `ComponentNavigator` is a normal imported library;
 the host adapts public facts and selected IDs and retains all transient state
-and placement actions. The instrument bar replaces shared outer chrome only on
+and placement actions. Pure routing decisions live in `canvas_selection_routing.dart`;
+the host applies them and derives Navigator category through the existing classifier.
+The instrument bar replaces shared outer chrome only on
 the primary route; secondary pages still use the router's `WorkbenchShell`.
 
 ## Responsibility zones
@@ -38,7 +40,7 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
 | 1. Screen and freshness | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_buildScaffold`, `ProjectionStaleBanner` | Watches project state, composes branches and inserts freshness directly below the instrument bar. |
-| 2. Selection/preview | `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Volatile selection/hover/clear behavior. |
+| 2. Selection/preview | `CanvasRoutingState`, `_applyRouting`, `_selectionInputs`, `_onSelectionProjectChanged`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Host stores the routing value, supplies visible placement/component identities, applies candidate-selection effects and synchronizes Navigator category. Pure selection types/reconciliation and intent-to-mode decisions belong to the imported routing module; provider listeners and event callbacks apply changes outside build. |
 | 3. Navigator/filter | `ComponentCategory`, `ComponentNavigator`, `componentCategoryFor`, `componentPrimaryLabel`, `componentNavigatorPlacementId`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host category/filter/selection/preview state; public fact-list/selected-ID adapter and intent callbacks. Classification and Navigator presentation belong to the imported library. |
 | 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel`, `InspectorMeasurementSummaryTile`, `InspectorVisualTraceSummaryTile` | Constructs the child from one resolved placement; builds provenance children using imported Inspector presentation widgets and supplies private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Components composition/lifetime | `ComponentIdentityHolder`, `_componentIdentityHolder.dispose()`, `_rightPanelSelectedMetadataComponent`, `_AddComponentTemplateListPanel`, `ComponentIdentityPanel`, `placementSectionBuilder` | Creates/disposes one screen-lived holder, resolves a nullable edit target, retains the Add frame/scroll and supplies Placement children; the module owns create/edit state and writes. |
@@ -173,6 +175,7 @@ No line-number anchors are maintained.
 | `photo_workbench_panel.dart` | child workflow | Additional import, point draft, explicit ensure/confirm and session handoff. |
 | `photo_event_writer.dart`, `photo_import_service.dart` | injected seams | Delegated canonical/file workflow types. |
 | `aligned_photo_layer.dart`, `photo_alignment_transform.dart` | read/render/value seams | Primary asset loading, matrix renderer, typed points and solution data. |
+| `canvas_selection_routing.dart` | pure routing decisions | Selection types, immutable routing state, reconciliation, accepted P0 target policy, filtering and context-mode transitions. No Session/writer/provider ownership. |
 | `measurement_projection.dart`, `placement_geometry.dart` | pure helpers | Counts/badges/caution and geometry/hit tests. |
 | `wizard_intake_overlay.part.dart` | same-library part | Wizard rendering declarations. |
 | `component_candidate_editor.dart`, `component_candidate_draft.dart`, `component_candidate_draft_store.dart` | imported feature UI/value/local-file owners | Shared candidate controls/surface/controller, identity/geometry document and guarded local sidecar store. Host owns lifecycle and retry; none creates a canonical component/Placement. |

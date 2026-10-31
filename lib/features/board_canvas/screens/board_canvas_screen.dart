@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import '../geometry/placement_geometry.dart';
 import '../logic/measurement_projection.dart';
+import '../logic/canvas_selection_routing.dart';
 import '../rendering/aligned_photo_layer.dart';
 import '../theme/board_canvas_palette.dart';
 import '../widgets/board_canvas_inspector_panel.dart';
@@ -58,42 +59,6 @@ const EdgeInsets _kCompactControlTilePadding =
 const EdgeInsets _kCompactControlChildrenPadding =
     EdgeInsets.fromLTRB(8, 0, 8, 6);
 
-enum _WorkbenchContextPanelMode {
-  hidden,
-  inspector,
-  placements,
-  measure,
-  addComponentTemplates,
-  safetyEvidence,
-  photos,
-}
-
-abstract class CanvasSelection {
-  const CanvasSelection();
-}
-
-class EmptyCanvasSelection extends CanvasSelection {
-  const EmptyCanvasSelection();
-}
-
-class ComponentSelection extends CanvasSelection {
-  const ComponentSelection({required this.componentId});
-
-  final String componentId;
-}
-
-class ComponentPlacementSelection extends CanvasSelection {
-  const ComponentPlacementSelection({
-    required this.placementKey,
-    required this.componentId,
-    this.canvasAnchor,
-  });
-
-  final String placementKey;
-  final String componentId;
-  final Offset? canvasAnchor;
-}
-
 class BoardCanvasScreen extends ConsumerStatefulWidget {
   const BoardCanvasScreen({
     super.key,
@@ -119,7 +84,12 @@ class BoardCanvasScreen extends ConsumerStatefulWidget {
 }
 
 class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
-  CanvasSelection _canvasSelection = const EmptyCanvasSelection();
+  CanvasRoutingState _routing = const CanvasRoutingState();
+  CanvasSelection get _canvasSelection => _routing.selection;
+  CanvasContextMode get _contextPanelMode => _routing.mode;
+  set _contextPanelMode(CanvasContextMode mode) {
+    _routing = _routing.withMode(mode);
+  }
   ComponentCategory? _componentNavigatorCategory;
   Set<String> _previewPlacementKeys = const <String>{};
   bool _hideUnmeasuredComponents = false;
@@ -132,8 +102,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   final Set<String> _visibleMeasurementValueBadgeComponentIds = <String>{};
   final ScrollController _addComponentContextScrollController =
       ScrollController();
-  _WorkbenchContextPanelMode _contextPanelMode =
-      _WorkbenchContextPanelMode.hidden;
   String? _alignmentProjectIdentity;
   String? _activeAlignmentId;
   bool _alignmentLayerVisible = true;
@@ -347,6 +315,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   void initState() {
     super.initState();
     _placementHolder.addListener(_onPlacementChanged);
+    ref.listenManual<ProjectState?>(projectStateProvider, _onSelectionProjectChanged);
   }
 
   void _onPlacementChanged() => setState(() {});
@@ -500,26 +469,70 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     setState(() => _boardPointCompleter = null);
   }
 
-  String? get _selectedPlacementKey {
-    final selection = _canvasSelection;
-    return selection is ComponentPlacementSelection
-        ? selection.placementKey
-        : null;
+  String? get _selectedComponentId => _canvasSelection.componentId;
+
+  void _applyRouting(CanvasRoutingState next) {
+    final inputs = _selectionInputs(ref.read(projectStateProvider));
+    next = next.reconcile(inputs.placements, inputs.components);
+    _routing = next;
+    if (next.clearsCandidateSelection &&
+        _candidateEditor.selectedDraftKey != null) {
+      _candidateEditor.select(null);
+    }
+    final id = next.selection.componentId;
+    if (id != null) {
+      for (final component
+          in ref.read(projectStateProvider)?.knownFacts.components ??
+              <ComponentFact>[]) {
+        if (component.componentId == id) {
+          _componentNavigatorCategory = componentCategoryFor(component);
+          break;
+        }
+      }
+    }
   }
 
-  String? get _selectedComponentId {
-    final selection = _canvasSelection;
-    if (selection is ComponentSelection) {
-      return selection.componentId;
+  ({Map<String, String> placements, Set<String> components}) _selectionInputs(
+    ProjectState? project,
+  ) {
+    final facts = project?.knownFacts;
+    final components = facts?.components ?? <ComponentFact>[];
+    final counts = measurementCountsByComponents(
+      measurements: facts?.measurements ?? <MeasurementFact>[],
+      componentIds: components
+          .map((component) => component.componentId)
+          .toSet(),
+    );
+    final visible = {
+      for (final component in components)
+        if (!_hideUnmeasuredComponents ||
+            (counts[component.componentId] ?? 0) > 0)
+          component.componentId,
+    };
+    return (
+      components: visible,
+      placements: {
+        for (final placement
+            in facts?.componentVisualPlacements ??
+                <ComponentVisualPlacementFact>[])
+          if (placement.coordinateSpace == 'board_normalized' &&
+              visible.contains(placement.componentId))
+            componentNavigatorPlacementId(placement): placement.componentId,
+      },
+    );
+  }
+
+  void _onSelectionProjectChanged(ProjectState? previous, ProjectState? next) {
+    if (!mounted) return;
+    final inputs = _selectionInputs(next);
+    final reconciled = _routing.reconcile(inputs.placements, inputs.components);
+    if (!identical(reconciled, _routing)) {
+      setState(() => _applyRouting(reconciled));
     }
-    if (selection is ComponentPlacementSelection) {
-      return selection.componentId;
-    }
-    return null;
   }
 
   void _setCanvasSelection(CanvasSelection selection) {
-    _canvasSelection = selection;
+    _applyRouting(_routing.withSelection(selection));
   }
 
   void _clearCanvasSelection() {
@@ -541,27 +554,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
     });
   }
 
-  void _toggleHideUnmeasuredComponents(
-    Map<String, int> measurementCountsByComponentId,
-    Map<String, ComponentFact> componentsById,
-  ) {
+  void _toggleHideUnmeasuredComponents() {
     setState(() {
-      final nextValue = !_hideUnmeasuredComponents;
-      if (nextValue) {
-        final selectedComponentId = _selectedComponentId;
-        if (selectedComponentId != null &&
-            (measurementCountsByComponentId[selectedComponentId] ?? 0) == 0) {
-          final selectedComponent = componentsById[selectedComponentId];
-          _clearCanvasSelection();
-          _componentNavigatorCategory = selectedComponent == null
-              ? null
-              : componentCategoryFor(selectedComponent);
-          _contextPanelMode = _WorkbenchContextPanelMode.placements;
-          _inspectorVisible = true;
-          _canvasFocusMode = false;
-        }
-      }
-      _hideUnmeasuredComponents = nextValue;
+      _hideUnmeasuredComponents = !_hideUnmeasuredComponents;
+      final inputs = _selectionInputs(ref.read(projectStateProvider));
+      _applyRouting(_routing.afterFilter(inputs.placements, inputs.components));
       _previewPlacementKeys = const <String>{};
     });
   }
@@ -569,7 +566,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   void _beginUnplacedComponentPlacement(ComponentFact component) {
     setState(() {
       _candidateAuthoring = false;
-      _contextPanelMode = _WorkbenchContextPanelMode.addComponentTemplates;
+      _contextPanelMode = CanvasContextMode.addComponentTemplates;
       _inspectorVisible = true;
       _canvasFocusMode = false;
       _placementHolder.beginUnplaced(componentPrimaryLabel(component));
@@ -880,7 +877,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
         )
         .toList(growable: false);
 
-    final selectedKey = _coerceSelection(visibleEntries);
+    final selectedKey = _routing.reconcile(
+      {for (final entry in visibleEntries) entry.key: entry.placement.componentId},
+      visibleComponentIds,
+    ).selection.placementKey;
     _PlacementEntry? selectedEntry;
     if (selectedKey != null) {
       for (final entry in visibleEntries) {
@@ -964,7 +964,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               builder: (context, constraints) {
                 final useWorkbenchShell = constraints.maxWidth >= 900;
                 final photosShown =
-                    _contextPanelMode == _WorkbenchContextPanelMode.photos &&
+                    _contextPanelMode == CanvasContextMode.photos &&
                         _inspectorVisible &&
                         !_canvasFocusMode;
                 if (!photosShown) {
@@ -985,13 +985,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   onSelected: (value) {
                     setState(() {
                       _selectComponentPlacementByKey(value, visibleEntries);
-                      if (_contextPanelMode !=
-                              _WorkbenchContextPanelMode.measure &&
-                          _contextPanelMode !=
-                              _WorkbenchContextPanelMode.photos) {
-                        _contextPanelMode =
-                            _WorkbenchContextPanelMode.inspector;
-                      }
+                      _applyRouting(_routing.selectFromDropdown(_canvasSelection));
                       _inspectorVisible = true;
                     });
                   },
@@ -1013,12 +1007,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   wizardIntake: projectState.wizardIntake,
                   candidateEditor: _candidateEditor,
                   candidateNotice: _contextPanelMode ==
-                              _WorkbenchContextPanelMode.photos ||
+                              CanvasContextMode.photos ||
                           _contextPanelMode ==
-                              _WorkbenchContextPanelMode.measure ||
+                              CanvasContextMode.measure ||
                           (!_candidateAuthoring &&
                               _contextPanelMode ==
-                                  _WorkbenchContextPanelMode
+                                  CanvasContextMode
                                       .addComponentTemplates)
                       ? null
                       : _candidateLoadError != null
@@ -1028,20 +1022,18 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                               : null,
                   candidateEditorEnabled: !_candidateLoading &&
                       _candidateLoadError == null &&
-                      _contextPanelMode != _WorkbenchContextPanelMode.photos &&
-                      _contextPanelMode != _WorkbenchContextPanelMode.measure &&
+                      _contextPanelMode != CanvasContextMode.photos &&
+                      _contextPanelMode != CanvasContextMode.measure &&
                       !(_contextPanelMode ==
-                              _WorkbenchContextPanelMode
+                              CanvasContextMode
                                   .addComponentTemplates &&
                           !_candidateAuthoring),
                   candidateAllowAdd: _candidateAuthoring &&
                       _contextPanelMode ==
-                          _WorkbenchContextPanelMode.addComponentTemplates,
+                          CanvasContextMode.addComponentTemplates,
                   onCandidateSelected: () => setState(() {
                     _candidateAuthoring = true;
-                    _clearCanvasSelection();
-                    _contextPanelMode =
-                        _WorkbenchContextPanelMode.addComponentTemplates;
+                    _applyRouting(_routing.selectCandidate());
                     _inspectorVisible = true;
                   }),
                   onCandidateEditCompleted: _candidateEditCompleted,
@@ -1061,10 +1053,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   selectedComponentId: _selectedComponentId,
                   previewKeys: _previewPlacementKeys,
                   hideUnmeasured: _hideUnmeasuredComponents,
-                  onToggleHideUnmeasured: () => _toggleHideUnmeasuredComponents(
-                    measurementCountByComponent,
-                    componentsById,
-                  ),
+                  onToggleHideUnmeasured: _toggleHideUnmeasuredComponents,
                   measurementCountsByComponentId: measurementCountByComponent,
                   measurementValueBadgesByComponentId:
                       measurementValueBadgesByComponent,
@@ -1089,40 +1078,23 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       : null,
                   onPlacementSelected: (selection) {
                     setState(() {
-                      _setCanvasSelection(selection);
-                      if (_contextPanelMode !=
-                              _WorkbenchContextPanelMode.measure &&
-                          _contextPanelMode !=
-                              _WorkbenchContextPanelMode.placements &&
-                          _contextPanelMode !=
-                              _WorkbenchContextPanelMode.photos) {
-                        _contextPanelMode =
-                            _WorkbenchContextPanelMode.inspector;
-                      }
+                      _applyRouting(_routing.selectOnCanvas(selection));
                       _inspectorVisible = true;
                     });
                   },
                   onCanvasTapEmpty: () {
                     if (_candidateAuthoring &&
                         _contextPanelMode ==
-                            _WorkbenchContextPanelMode.addComponentTemplates) {
+                            CanvasContextMode.addComponentTemplates) {
                       return;
                     }
                     setState(() {
-                      _clearCanvasSelection();
-                      if (_contextPanelMode !=
-                              _WorkbenchContextPanelMode.measure &&
-                          _contextPanelMode !=
-                              _WorkbenchContextPanelMode.placements &&
-                          _contextPanelMode !=
-                              _WorkbenchContextPanelMode.photos) {
-                        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
-                      }
+                      _applyRouting(_routing.clearOnCanvas());
                     });
                   },
                   showAddComponentTemplateGhost: !_candidateAuthoring &&
                       _contextPanelMode ==
-                          _WorkbenchContextPanelMode.addComponentTemplates &&
+                          CanvasContextMode.addComponentTemplates &&
                       _placementHolder.ghostDraft.templateId != null,
                   addComponentTemplateGhostTopContactMarkers:
                       _placementHolder.ghostDraft.topContactMarkers,
@@ -1200,7 +1172,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             onPressed: () {
                               setState(() {
                                 _contextPanelMode =
-                                    _WorkbenchContextPanelMode.photos;
+                                    CanvasContextMode.photos;
                                 _inspectorVisible = true;
                                 _canvasFocusMode = false;
                               });
@@ -1225,8 +1197,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       _inspectorVisible = true;
                       if (selectedKey == null &&
                           _contextPanelMode ==
-                              _WorkbenchContextPanelMode.inspector) {
-                        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
+                              CanvasContextMode.inspector) {
+                        _contextPanelMode = CanvasContextMode.hidden;
                       }
                     });
                   },
@@ -1235,13 +1207,13 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                 if (useWorkbenchShell) {
                   Widget? contextPanel;
                   switch (_contextPanelMode) {
-                    case _WorkbenchContextPanelMode.hidden:
+                    case CanvasContextMode.hidden:
                       contextPanel = null;
                       break;
-                    case _WorkbenchContextPanelMode.inspector:
+                    case CanvasContextMode.inspector:
                       contextPanel = metadata;
                       break;
-                    case _WorkbenchContextPanelMode.placements:
+                    case CanvasContextMode.placements:
                       contextPanel = ComponentNavigator(
                         components: knownFacts.components,
                         placements: allEntries
@@ -1304,7 +1276,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         onPreviewKeysChanged: _setPreviewPlacementKeys,
                       );
                       break;
-                    case _WorkbenchContextPanelMode.measure:
+                    case CanvasContextMode.measure:
                       contextPanel = IntegratedMeasurePanel(
                         projectState: projectState,
                         selectedComponentId: selectedEntry?.placement.componentId,
@@ -1377,7 +1349,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         },
                       );
                       break;
-                    case _WorkbenchContextPanelMode.addComponentTemplates:
+                    case CanvasContextMode.addComponentTemplates:
                       final metadataEditComponent =
                           _rightPanelSelectedMetadataComponent(
                         projectState,
@@ -1435,12 +1407,12 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                               ),
                             );
                       break;
-                    case _WorkbenchContextPanelMode.safetyEvidence:
+                    case CanvasContextMode.safetyEvidence:
                       contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
                         initiallyExpanded: true,
                       );
                       break;
-                    case _WorkbenchContextPanelMode.photos:
+                    case CanvasContextMode.photos:
                       contextPanel = photoPanel;
                       break;
                   }
@@ -1453,7 +1425,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   final contextPanelSlot = contextPanel == null
                       ? null
                       : _contextPanelMode ==
-                              _WorkbenchContextPanelMode.addComponentTemplates
+                              CanvasContextMode.addComponentTemplates
                           ? Scrollbar(
                               controller: _addComponentContextScrollController,
                               child: SingleChildScrollView(
@@ -1473,24 +1445,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Mõõtmine',
                     modeKey: 'measure',
                     selected:
-                        _contextPanelMode == _WorkbenchContextPanelMode.measure,
+                        _contextPanelMode == CanvasContextMode.measure,
                     onPressed: () {
                       setState(() {
-                        final selection = _canvasSelection;
-                        if (selection is ComponentSelection) {
-                          final matchingEntries = visibleEntries
-                              .where((entry) =>
-                                  entry.placement.componentId ==
-                                  selection.componentId)
-                              .toList(growable: false);
-                          if (matchingEntries.length == 1) {
-                            _selectComponentPlacement(matchingEntries.single);
-                          }
-                        } else if (selection is EmptyCanvasSelection &&
-                            visibleEntries.isNotEmpty) {
-                          _selectComponentPlacement(visibleEntries.first);
-                        }
-                        _contextPanelMode = _WorkbenchContextPanelMode.measure;
+                        _applyRouting(_routing.enterMode(CanvasContextMode.measure,
+                          {for (final entry in visibleEntries) entry.key: entry.placement.componentId}));
                         _inspectorVisible = true;
                         _canvasFocusMode = false;
                       });
@@ -1503,13 +1462,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Komponendid',
                     modeKey: 'placements',
                     selected: _contextPanelMode ==
-                        _WorkbenchContextPanelMode.placements,
+                        CanvasContextMode.placements,
                     onPressed: () {
                       setState(() {
-                        _clearCanvasSelection();
-                        _componentNavigatorCategory = null;
-                        _contextPanelMode =
-                            _WorkbenchContextPanelMode.placements;
+                        _applyRouting(_routing.enterMode(CanvasContextMode.placements, {}));
+                        if (_selectedComponentId == null) _componentNavigatorCategory = null;
                         _inspectorVisible = true;
                       });
                     },
@@ -1523,7 +1480,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     semanticLabel: 'Visuaalse paigutuse Lisa',
                     modeKey: 'add_component',
                     selected: _contextPanelMode ==
-                        _WorkbenchContextPanelMode.addComponentTemplates,
+                        CanvasContextMode.addComponentTemplates,
                     onPressed: () {
                       final placementContextEntry = selectedEntry;
                       setState(() {
@@ -1535,7 +1492,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                           _clearCanvasSelection();
                         }
                         _contextPanelMode =
-                            _WorkbenchContextPanelMode.addComponentTemplates;
+                            CanvasContextMode.addComponentTemplates;
                         _inspectorVisible = true;
                       });
                     },
@@ -1548,12 +1505,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Ohutus',
                     modeKey: 'safety',
                     selected: _contextPanelMode ==
-                        _WorkbenchContextPanelMode.safetyEvidence,
+                        CanvasContextMode.safetyEvidence,
                     onPressed: () {
                       setState(() {
-                        _clearCanvasSelection();
-                        _contextPanelMode =
-                            _WorkbenchContextPanelMode.safetyEvidence;
+                        _applyRouting(_routing.enterMode(CanvasContextMode.safetyEvidence, {}));
                         _inspectorVisible = true;
                       });
                     },
@@ -1565,11 +1520,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Fotod',
                     modeKey: 'photos',
                     selected:
-                        _contextPanelMode == _WorkbenchContextPanelMode.photos,
+                        _contextPanelMode == CanvasContextMode.photos,
                     onPressed: () {
                       setState(() {
-                        _clearCanvasSelection();
-                        _contextPanelMode = _WorkbenchContextPanelMode.photos;
+                        _applyRouting(_routing.enterMode(CanvasContextMode.photos, {}));
                         _inspectorVisible = true;
                         _canvasFocusMode = false;
                       });
@@ -1582,11 +1536,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Inspektor',
                     modeKey: 'inspector',
                     selected: _contextPanelMode ==
-                        _WorkbenchContextPanelMode.inspector,
+                        CanvasContextMode.inspector,
                     onPressed: () {
                       setState(() {
                         _contextPanelMode =
-                            _WorkbenchContextPanelMode.inspector;
+                            CanvasContextMode.inspector;
                         _inspectorVisible = true;
                       });
                     },
@@ -1671,7 +1625,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       Expanded(
                         flex: 2,
                         child: _contextPanelMode ==
-                                _WorkbenchContextPanelMode.photos
+                                CanvasContextMode.photos
                             ? photoPanel
                             : metadata,
                       ),
@@ -1751,7 +1705,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
           return;
         }
         setState(() {
-          _contextPanelMode = _WorkbenchContextPanelMode.photos;
+          _contextPanelMode = CanvasContextMode.photos;
           _inspectorVisible = true;
           _canvasFocusMode = false;
         });
@@ -1792,29 +1746,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
       return false;
     }
     return pinId.startsWith('$componentId.');
-  }
-
-  String? _coerceSelection(List<_PlacementEntry> entries) {
-    if (entries.isEmpty) {
-      if (_selectedPlacementKey != null) {
-        _clearCanvasSelection();
-        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
-      }
-      return null;
-    }
-
-    final current = _selectedPlacementKey;
-    if (current != null && entries.any((entry) => entry.key == current)) {
-      return current;
-    }
-
-    if (_selectedPlacementKey != null) {
-      if (_contextPanelMode == _WorkbenchContextPanelMode.inspector) {
-        _contextPanelMode = _WorkbenchContextPanelMode.hidden;
-      }
-      _clearCanvasSelection();
-    }
-    return null;
   }
 
   Widget _buildScaffold(

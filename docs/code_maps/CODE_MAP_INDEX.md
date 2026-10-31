@@ -11,6 +11,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/app/app.dart` | `docs/code_maps/lib/app/app.dart.md` | production | `MAINTAINED` |
 | `lib/app/router.dart` | `docs/code_maps/lib/app/router.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/geometry/placement_geometry.dart` | `docs/code_maps/lib/features/board_canvas/geometry/placement_geometry.dart.md` | production | `MAINTAINED` |
+| `lib/features/board_canvas/logic/canvas_selection_routing.dart` | `docs/code_maps/lib/features/board_canvas/logic/canvas_selection_routing.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/logic/measurement_projection.dart` | `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/logic/measurement_projection.part.dart` | `docs/code_maps/lib/features/board_canvas/logic/measurement_projection.part.dart.md` | production | `RETIRED` |
 | `lib/features/board_canvas/rendering/aligned_photo_layer.dart` | `docs/code_maps/lib/features/board_canvas/rendering/aligned_photo_layer.dart.md` | production | `MAINTAINED` |

@@ -3,6 +3,8 @@
 Current: `NEEDS_USER_DECISION`
 Next: `SHARED_VOCABULARY_EXTRACTION`
 
+Workflow defects and deferred features: [Workflow findings register](WORKFLOW_FINDINGS.md).
+
 Verified implementation baseline: `db1003f401424d98c09a9ab3609129fd0a892a43`.
 The next entry is planned technical modularization work, not an armed implementation
 pass. The completed documentation consolidation is historical, not active

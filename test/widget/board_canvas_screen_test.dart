@@ -7077,6 +7077,212 @@ void main() {
     expect(state.events, isEmpty);
   });
 
+  group('P0 measurement target selection', () {
+    const c2Placement = ComponentVisualPlacementFact(
+      componentId: 'C2',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'top',
+      centerX: 0.6,
+      centerY: 0.4,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.04,
+      sourceEventId: 'evt_measure_c2_a',
+      status: 'user_confirmed_visual',
+    );
+    const secondC2Placement = ComponentVisualPlacementFact(
+      componentId: 'C2',
+      coordinateSpace: 'board_normalized',
+      boardSide: 'bottom',
+      centerX: 0.7,
+      centerY: 0.6,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.04,
+      sourceEventId: 'evt_measure_c2_b',
+      status: 'user_confirmed_visual',
+    );
+    const nonBoardC2Placement = ComponentVisualPlacementFact(
+      componentId: 'C2',
+      coordinateSpace: 'photo_normalized',
+      boardSide: 'top',
+      centerX: 0.5,
+      centerY: 0.5,
+      rotationDeg: 0,
+      width: 0.08,
+      height: 0.04,
+      sourceEventId: 'evt_measure_c2_photo',
+      status: 'user_confirmed_visual',
+    );
+    final save = find.byKey(const Key('board_canvas_measure_save_button'));
+
+    Future<ProjectState> mount(
+      WidgetTester tester,
+      _FakeSaveMeasurementWriter writer,
+      List<ComponentVisualPlacementFact> c2Placements,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1400, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final directory =
+          Directory.systemTemp.createTempSync('tracebench-measure-target-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final state = _inlineProjectState(
+        components: const [
+          ComponentFact(componentId: 'R1', designator: 'R1', type: 'resistor'),
+          ComponentFact(componentId: 'C2', designator: 'C2', type: 'capacitor'),
+        ],
+        placements: [_navigatorPlacements.first, ...c2Placements],
+        projectDirectory: directory.path,
+      );
+      await tester
+          .pumpWidget(_harness(projectState: state, measurementWriter: writer));
+      await tester.pumpAndSettle();
+      return state;
+    }
+
+    Future<void> selectC2(WidgetTester tester) async {
+      for (final key in [
+        const Key('board_canvas_rail_placements_tool'),
+        const Key('board_canvas_component_category_capacitors'),
+        const Key('board_canvas_component_row_C2'),
+      ]) {
+        await _tapWidgetByKey(tester, key);
+        await tester.pumpAndSettle();
+      }
+      expect(_painterSelectedComponentId(tester), 'C2');
+      expect(_painterSelectedPlacementKey(tester), isNull);
+    }
+
+    Future<void> openMeasure(
+        WidgetTester tester, ProjectState state,
+        _FakeSaveMeasurementWriter writer) async {
+      await _tapWidgetByKey(
+          tester, const Key('board_canvas_measure_sheet_button'));
+      await tester.pumpAndSettle();
+      expect(_readProjectState(tester), same(state));
+      expect(state.events, isEmpty);
+      expect(writer.requests, isEmpty);
+    }
+
+    Future<void> saveReading(
+        WidgetTester tester, _FakeSaveMeasurementWriter writer,
+        String intendedComponentId) async {
+      // Follow the rendered input, so the regression observes a wrong writer
+      // request rather than failing early because the expected row is absent.
+      final input = find.byWidgetPredicate((widget) {
+        final key = widget.key;
+        return widget is TextFormField &&
+            key is ValueKey<String> &&
+            key.value.startsWith('board_canvas_measure_row_value_input_');
+      });
+      expect(input, findsOneWidget);
+      await tester.ensureVisible(input);
+      await tester.enterText(input, '2.34');
+      await tester.pumpAndSettle();
+      expect(tester.widget<OutlinedButton>(save).onPressed, isNotNull);
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(writer.requests, hasLength(1));
+      expect(writer.requests.single.componentId, intendedComponentId);
+      expect(writer.requests.single.targetKey, intendedComponentId);
+      expect(writer.requests.single.targetKind, 'component');
+      final target = _readProjectState(tester)
+          .events.single.payload['target'] as Map<String, dynamic>;
+      expect(target['component_id'], intendedComponentId);
+      expect(tester.takeException(), isNull);
+    }
+
+    testWidgets('Navigator C2 saves against C2 instead of first visible R1',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = await mount(tester, writer, [c2Placement]);
+      await selectC2(tester);
+      await openMeasure(tester, state, writer);
+      await saveReading(tester, writer, 'C2');
+      expect(_painterSelectedComponentId(tester), 'C2');
+      expect(_painterSelectedPlacementKey(tester), 'C2|evt_measure_c2_a');
+    });
+
+    testWidgets('one eligible C2 placement ignores a non-Board placement',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state =
+          await mount(tester, writer, [c2Placement, nonBoardC2Placement]);
+      await selectC2(tester);
+      await openMeasure(tester, state, writer);
+      expect(_painterSelectedPlacementKey(tester), 'C2|evt_measure_c2_a');
+      await saveReading(tester, writer, 'C2');
+    });
+
+    for (final placements in <List<ComponentVisualPlacementFact>>[
+      [],
+      [nonBoardC2Placement],
+      [c2Placement, secondC2Placement],
+    ]) {
+      testWidgets(
+          'C2 with ${placements.length} placements and no unique eligible target blocks save',
+          (tester) async {
+        final writer = _FakeSaveMeasurementWriter();
+        final state = await mount(tester, writer, placements);
+        await selectC2(tester);
+        await openMeasure(tester, state, writer);
+        expect(_painterSelectedComponentId(tester), 'C2');
+        expect(_painterSelectedPlacementKey(tester), isNull);
+        expect(tester.widget<OutlinedButton>(save).onPressed, isNull);
+        expect(
+          tester
+              .widget<Text>(
+                  find.byKey(const Key('board_canvas_measure_save_guard')))
+              .data,
+          'Vali mõõtmise Koht plaadil.',
+        );
+        await tester.ensureVisible(save);
+        await tester.tap(save);
+        await tester.pumpAndSettle();
+        expect(writer.requests, isEmpty);
+        expect(_readProjectState(tester), same(state));
+        expect(state.events, isEmpty);
+        expect(tester.takeException(), isNull);
+
+        if (placements.length == 2) {
+          await selectC2(tester);
+          await _tapWidgetByKey(tester,
+              const Key('board_canvas_component_placement_C2|evt_measure_c2_b'));
+          await openMeasure(tester, state, writer);
+          expect(_painterSelectedPlacementKey(tester), 'C2|evt_measure_c2_b');
+          await saveReading(tester, writer, 'C2');
+        }
+      });
+    }
+
+    testWidgets('an explicit placement is preserved when entering measurement',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state =
+          await mount(tester, writer, [c2Placement, secondC2Placement]);
+      await selectC2(tester);
+      await _tapWidgetByKey(tester,
+          const Key('board_canvas_component_placement_C2|evt_measure_c2_b'));
+      expect(_painterSelectedPlacementKey(tester), 'C2|evt_measure_c2_b');
+      await openMeasure(tester, state, writer);
+      expect(_painterSelectedPlacementKey(tester), 'C2|evt_measure_c2_b');
+      await saveReading(tester, writer, 'C2');
+    });
+
+    testWidgets('empty selection retains the first-visible R1 fallback',
+        (tester) async {
+      final writer = _FakeSaveMeasurementWriter();
+      final state = await mount(tester, writer, [c2Placement]);
+      expect(_painterSelectedComponentId(tester), isNull);
+      expect(_painterSelectedPlacementKey(tester), isNull);
+      await openMeasure(tester, state, writer);
+      expect(_painterSelectedComponentId(tester), 'R1');
+      expect(_painterSelectedPlacementKey(tester), 'R1|evt_nav_r1');
+      await saveReading(tester, writer, 'R1');
+    });
+  });
+
   group('M0 Measurement characterization', () {
     final panel =
         find.byKey(const Key('board_canvas_integrated_measure_panel'));

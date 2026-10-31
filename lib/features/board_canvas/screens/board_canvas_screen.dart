@@ -1476,7 +1476,17 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         _contextPanelMode == _WorkbenchContextPanelMode.measure,
                     onPressed: () {
                       setState(() {
-                        if (_selectedPlacementKey == null &&
+                        final selection = _canvasSelection;
+                        if (selection is ComponentSelection) {
+                          final matchingEntries = visibleEntries
+                              .where((entry) =>
+                                  entry.placement.componentId ==
+                                  selection.componentId)
+                              .toList(growable: false);
+                          if (matchingEntries.length == 1) {
+                            _selectComponentPlacement(matchingEntries.single);
+                          }
+                        } else if (selection is EmptyCanvasSelection &&
                             visibleEntries.isNotEmpty) {
                           _selectComponentPlacement(visibleEntries.first);
                         }

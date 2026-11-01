@@ -18427,6 +18427,71 @@ void _componentCandidateEditorIntegrationTests() {
     fail('Local draft I/O did not complete.');
   }
 
+  for (final cancel in [false, true]) {
+    testWidgets(
+        cancel
+            ? 'candidate cancelled drag never persists a real sidecar'
+            : 'BB-02 panel-opening wobble never persists a real sidecar',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 1000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final directory =
+          Directory.systemTemp.createTempSync('candidate-pointer-transaction-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final events = File('${directory.path}/events.jsonl')
+        ..writeAsStringSync('untouched canonical history\n');
+      final intake = _wizardIntake(visualCandidates: const [
+        WizardVisualCandidate(
+            draftKey: 19,
+            position: WizardPoint(x: .3, y: .4),
+            shape: WizardVisualCandidateShape.rectangle,
+            sizeScale: 1.8,
+            rotationRadians: math.pi / 6),
+      ]);
+      final state = _inlineProjectState(
+          components: const [],
+          placements: const [],
+          projectDirectory: directory.path,
+          wizardIntake: intake);
+      final store = _RealCandidateStoreProbe();
+      await tester
+          .pumpWidget(_harness(projectState: state, candidateDraftStore: store));
+      await settleRealDraft(tester, store);
+      await tester.pumpAndSettle();
+      final before = editor(tester).document;
+      final frameBefore = _sharedCandidatePainter(tester).referenceRect;
+      final gesture =
+          await tester.startGesture(globalPoint(tester, const Offset(.3, .4)));
+      await tester.pumpAndSettle();
+      final frameAfter = _sharedCandidatePainter(tester).referenceRect;
+      expect(frameAfter, isNot(frameBefore),
+          reason: 'This must exercise the actual context-panel reflow.');
+      await gesture.moveBy(cancel ? const Offset(60, 30) : const Offset(2, 1));
+      await tester.pump();
+      if (cancel) {
+        await gesture.cancel();
+      } else {
+        await gesture.up();
+      }
+      await settleRealDraft(tester, store);
+      await tester.pumpAndSettle();
+      final after = editor(tester).document.candidates.single.position;
+      debugPrint('Candidate pointer evidence: cancel=$cancel, '
+          'before=${before.candidates.single.position}, after=$after, '
+          'frame=$frameBefore -> $frameAfter');
+      expect(after, const Offset(.3, .4));
+      expect(editor(tester).document, same(before));
+      expect(
+          File('${directory.path}/.tracebench_local/component_candidates.json')
+              .existsSync(),
+          isFalse);
+      expect(events.readAsStringSync(), 'untouched canonical history\n');
+      expect(_readProjectState(tester), same(state));
+      expect(state.events, isEmpty);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets(
       'candidate editor Canvas edits survive real sidecar reopen with zero canonical writes',
       (tester) async {

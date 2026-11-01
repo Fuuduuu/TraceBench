@@ -25,6 +25,7 @@ Statuses are `MAINTAINED`, `REVIEW_REQUIRED`, and `RETIRED` as defined by
 | `lib/features/board_canvas/widgets/integrated_measure_panel.dart` | `docs/code_maps/lib/features/board_canvas/widgets/integrated_measure_panel.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_canvas/widgets/placement_template_preview.dart` | `docs/code_maps/lib/features/board_canvas/widgets/placement_template_preview.dart.md` | production | `MAINTAINED` |
 | `lib/features/board_graph/screens/board_graph_screen.dart` | `docs/code_maps/lib/features/board_graph/screens/board_graph_screen.dart.md` | production | `MAINTAINED` |
+| `lib/features/component_candidates/widgets/component_candidate_editor.dart` | `docs/code_maps/lib/features/component_candidates/widgets/component_candidate_editor.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/add_component_screen.dart` | `docs/code_maps/lib/features/components/screens/add_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/components/screens/edit_component_screen.dart` | `docs/code_maps/lib/features/components/screens/edit_component_screen.dart.md` | production | `MAINTAINED` |
 | `lib/features/home/screens/benchbeep_home_screen.dart` | `docs/code_maps/lib/features/home/screens/benchbeep_home_screen.dart.md` | production | `MAINTAINED` |

@@ -1,12 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
 import '../../../shared/geometry/wizard_candidate_geometry.dart';
 import '../../../shared/models/wizard_intake.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../project/widgets/wizard_compact_widgets.dart';
 import '../models/component_candidate_draft.dart';
+import '../logic/candidate_drag_session.dart';
 
 /// UI-local authoring only. Callers own creation, project loading and storage.
 class ComponentCandidateEditorController extends ChangeNotifier {
@@ -199,9 +201,9 @@ class ComponentCandidateEditor extends StatefulWidget {
 }
 
 class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
-  int? _pointer;
+  CandidateDragSession? _drag;
+  ComponentCandidateDocument? _dragDocument;
   int? _downKey;
-  bool _moved = false;
   ComponentCandidateEditorController get editor => widget.controller;
   ValueKey<String> keyFor(String suffix) =>
       ValueKey('${widget.keyPrefix}-$suffix');
@@ -212,6 +214,46 @@ class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
     if (!identical(before, editor.document)) widget.onEditCompleted?.call();
   }
 
+  bool get _currentDrag =>
+      _drag != null &&
+      widget.enabled &&
+      editor.selectedDraftKey == _drag!.draftKey &&
+      identical(editor.document, _dragDocument);
+
+  void _discardDrag(ComponentCandidateEditorController controller) {
+    controller.isDragging = false;
+    _drag = null;
+    _dragDocument = null;
+  }
+
+  @override
+  void didUpdateWidget(ComponentCandidateEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_drag != null &&
+        (oldWidget.controller != editor ||
+            !widget.enabled ||
+            widget.controls)) {
+      _discardDrag(oldWidget.controller);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_drag != null) _discardDrag(editor);
+    super.dispose();
+  }
+
+  void _endDrag(PointerEvent event, {bool cancelled = false}) {
+    final drag = _drag;
+    if (drag == null || event.pointer != drag.pointerId) return;
+    final target = drag.positionToCommit(
+        pointerId: event.pointer, cancelled: cancelled || !_currentDrag);
+    setState(() => _discardDrag(editor));
+    if (target != null) edit(() => editor.moveSelected(target));
+    // Restore Wizard scrolling without turning selection into an edit.
+    editor.select(editor.selectedDraftKey);
+  }
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: editor,
@@ -220,8 +262,16 @@ class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
 
   Widget _surface() {
     final frame = widget.referenceRect!;
+    final drag = _currentDrag ? _drag : null;
     final painter = ComponentCandidatePainter(
-      candidates: editor.document.candidates,
+      candidates: drag == null || drag.position == drag.initialPosition
+          ? editor.document.candidates
+          : [
+              for (final candidate in editor.document.candidates)
+                candidate.draftKey == drag.draftKey
+                    ? candidate.copyWith(position: drag.position)
+                    : candidate,
+            ],
       selectedDraftKey: editor.selectedDraftKey,
       referenceRect: frame,
       interactive: widget.enabled,
@@ -236,12 +286,21 @@ class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
         onPointerDown: !widget.enabled
             ? null
             : (event) {
-                if (_pointer != null) return;
+                if (_drag != null) return;
                 final key = editor.hitTest(event.localPosition, frame);
                 _downKey = key;
                 if (key == null) return;
-                _pointer = event.pointer;
-                _moved = false;
+                final candidate = editor.document.candidates
+                    .firstWhere((candidate) => candidate.draftKey == key);
+                _drag = CandidateDragSession(
+                  pointerId: event.pointer,
+                  draftKey: key,
+                  normalizedPosition: candidate.position,
+                  globalPosition: event.position,
+                  // Reuse Flutter's tap/drag slop in global logical pixels.
+                  dragThreshold: kTouchSlop,
+                );
+                _dragDocument = editor.document;
                 editor.isDragging = true;
                 editor.select(key);
                 widget.onSelectionChanged?.call();
@@ -249,33 +308,32 @@ class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
         onPointerMove: !widget.enabled
             ? null
             : (event) {
-                if (event.pointer != _pointer) return;
-                final point = event.localPosition;
-                if (frame.width <= 0 ||
-                    frame.height <= 0 ||
-                    !frame.contains(point)) {
+                final drag = _drag;
+                if (drag == null || event.pointer != drag.pointerId) return;
+                if (!_currentDrag) {
+                  setState(() => _discardDrag(editor));
+                  editor.select(editor.selectedDraftKey);
                   return;
                 }
-                editor.moveSelected(Offset(
-                  ((point.dx - frame.left) / frame.width).clamp(0.0, 1.0),
-                  ((point.dy - frame.top) / frame.height).clamp(0.0, 1.0),
-                ));
-                _moved = true;
+                final box = context.findRenderObject();
+                if (box is! RenderBox || !box.attached) return;
+                final point = box.globalToLocal(event.position);
+                // Preserve the Wizard's last-in-frame drag behavior.
+                if (!frame.contains(point)) return;
+                // Use the same current transform for both points. A reflow or
+                // zoom changes scale, never the pointer displacement's origin.
+                final delta =
+                    point - box.globalToLocal(drag.referencePointerPosition);
+                final next = drag.move(
+                  pointerId: event.pointer,
+                  globalPosition: event.position,
+                  referenceDelta: delta,
+                  referenceSize: frame.size,
+                );
+                if (!identical(next, drag)) setState(() => _drag = next);
               },
-        onPointerUp: (event) {
-          if (event.pointer != _pointer) return;
-          _pointer = null;
-          editor.isDragging = false;
-          editor.select(editor.selectedDraftKey);
-          if (_moved) widget.onEditCompleted?.call();
-        },
-        onPointerCancel: (event) {
-          if (event.pointer != _pointer) return;
-          _pointer = null;
-          editor.isDragging = false;
-          editor.select(editor.selectedDraftKey);
-          if (_moved) widget.onEditCompleted?.call();
-        },
+        onPointerUp: _endDrag,
+        onPointerCancel: (event) => _endDrag(event, cancelled: true),
         child: GestureDetector(
           key: widget.inputKey ?? keyFor('canvas'),
           // The painter only intercepts candidates (or the reference in Add).
@@ -284,9 +342,11 @@ class _ComponentCandidateEditorState extends State<ComponentCandidateEditor> {
           onTapUp: !widget.enabled
               ? null
               : (event) {
+                  // Candidate selection already happened on pointer-down.
+                  // Reflow must not reinterpret its pointer-up as an Add tap.
+                  if (_downKey != null || _drag != null) return;
                   if (!frame.contains(event.localPosition)) return;
-                  final key =
-                      _downKey ?? editor.hitTest(event.localPosition, frame);
+                  final key = editor.hitTest(event.localPosition, frame);
                   if (key != null) {
                     editor.select(key);
                     widget.onSelectionChanged?.call();

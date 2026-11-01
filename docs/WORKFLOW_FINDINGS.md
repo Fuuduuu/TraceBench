@@ -30,12 +30,12 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 ## BB-02 — Candidate may move when its context panel opens during pointer-down
 
 - Priority: **P1**
-- Responsible module: [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) pointer handling and [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) context-panel/layout integration.
+- Responsible module: [CandidateDragSession](../lib/features/component_candidates/logic/candidate_drag_session.dart) pure transaction decisions and [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) render-transform/preview adapter; Canvas retains panel and sidecar lifecycle.
 - Finding type: defect.
-- Reproduction/evidence: Audit BB-02; pointer-down opens candidate context and the candidate may move during that transition.
-- Status: **OPEN** — audit-reported; no fix in this patch.
-- Regression test: No dedicated finding regression linked yet.
-- Fix commit: Not recorded.
+- Reproduction/evidence: Audit BB-02; the human supplied a real Windows VM-pointer reproduction with a 163–176 logical-pixel jump and local draft write. Targeted RED tests reproduce changed normalized position and persistence after a two-pixel move across the actual context-panel reflow; GREEN retains the original document and sidecar. Runtime re-verification remains a separate evidence gate.
+- Status: **IN_PROGRESS** — displacement-based, thresholded preview/commit interaction implemented; pending independent acceptance and commit.
+- Regression test: [Standalone session tests](../test/unit/candidate_drag_session_test.dart), [editor pointer transaction tests](../test/widget/component_candidate_editor_test.dart), and [Canvas tests](../test/widget/board_canvas_screen_test.dart): `BB-02 panel-opening wobble never persists a real sidecar` and `candidate cancelled drag never persists a real sidecar`. Covers reflow, click/wobble, valid drag, scale, ownership, cancellation and interrupted end.
+- Fix commit: Not yet available; the interaction extraction is uncommitted.
 
 ## BB-03 — Candidate-to-confirmed-component workflow absent
 
@@ -93,9 +93,9 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Responsible module: [Canvas selection routing](../lib/features/board_canvas/logic/canvas_selection_routing.dart) exclusivity decisions; [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) applies candidate-controller effects without changing candidate documents.
 - Finding type: defect.
 - Reproduction/evidence: Audit BB-08; candidate and placement selection may remain active simultaneously.
-- Status: **IN_PROGRESS** — selection exclusivity implemented and regression-tested; pending independent acceptance and commit.
+- Status: **FIXED** — independently accepted Canvas Selection & Mode Routing extraction committed at `8887d65`.
 - Regression test: [Canvas integration tests](../test/widget/board_canvas_screen_test.dart), `BB-08 canonical and candidate selection are mutually exclusive`; [standalone routing tests](../test/unit/canvas_selection_routing_test.dart) cover both intent directions.
-- Fix commit: Not yet available; the extraction is uncommitted.
+- Fix commit: `8887d652dbbccfdff64387653548f6d34b6d48dd`.
 
 ## BB-09 — Navigator does not consistently follow Canvas selection
 
@@ -103,9 +103,9 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Responsible module: [Canvas selection routing](../lib/features/board_canvas/logic/canvas_selection_routing.dart) Navigator-entry policy and [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) selected-component/category adapter; Navigator presentation remains separate.
 - Finding type: UX issue.
 - Reproduction/evidence: Audit BB-09; Canvas selection is not consistently reflected in Navigator context.
-- Status: **IN_PROGRESS** — Navigator follows Canvas category/selection and retains selection on entry; pending independent acceptance and commit.
+- Status: **FIXED** — independently accepted Canvas Selection & Mode Routing extraction committed at `8887d65`.
 - Regression test: [Canvas integration tests](../test/widget/board_canvas_screen_test.dart), `BB-09 Navigator follows Canvas selection across categories` and `BB-09 opening Navigator retains the exact Canvas placement`; [standalone routing tests](../test/unit/canvas_selection_routing_test.dart) pin selection preservation.
-- Fix commit: Not yet available; the extraction is uncommitted.
+- Fix commit: `8887d652dbbccfdff64387653548f6d34b6d48dd`.
 
 ## BB-10 — Canonical placement target can be lost
 
@@ -123,9 +123,9 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Responsible module: [Canvas selection routing](../lib/features/board_canvas/logic/canvas_selection_routing.dart) `afterFilter`; [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) retains filter visibility, preview and widget composition.
 - Finding type: UX issue.
 - Reproduction/evidence: Audit BB-11; changing the hide-unmeasured filter unexpectedly switches the active mode.
-- Status: **IN_PROGRESS** — filtering preserves mode while invalidating a hidden target; pending independent acceptance and commit.
+- Status: **FIXED** — independently accepted Canvas Selection & Mode Routing extraction committed at `8887d65`.
 - Regression test: [Canvas integration tests](../test/widget/board_canvas_screen_test.dart), `BB-11 filtering a measurement target keeps mode and blocks saving`; [standalone routing tests](../test/unit/canvas_selection_routing_test.dart) cover every context mode.
-- Fix commit: Not yet available; the extraction is uncommitted.
+- Fix commit: `8887d652dbbccfdff64387653548f6d34b6d48dd`.
 
 ## BB-12 — Passive component categorized as unknown
 
@@ -150,12 +150,12 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 ## BB-14 — Candidate drag center snaps to pointer
 
 - Priority: **P3**
-- Responsible module: [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) drag/center interaction.
+- Responsible module: [CandidateDragSession](../lib/features/component_candidates/logic/candidate_drag_session.dart) center translation and [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) current-transform displacement adapter.
 - Finding type: defect.
 - Reproduction/evidence: Audit BB-14; dragging a candidate snaps its center to the pointer.
-- Status: **OPEN** — audit-reported; no fix in this patch.
-- Regression test: No dedicated finding regression linked yet.
-- Fix commit: Not recorded.
+- Status: **IN_PROGRESS** — dragging preserves the original grab offset; pending independent acceptance and commit.
+- Regression test: [Editor tests](../test/widget/component_candidate_editor_test.dart), `BB-14 drag retains the grab offset and commits once on up`, scaled-surface and changed-origin cases; [standalone session tests](../test/unit/candidate_drag_session_test.dart) verify center translation without snapping.
+- Fix commit: Not yet available; the interaction extraction is uncommitted.
 
 ## BB-15 — Outdated UI tooltips and test descriptions
 
@@ -173,6 +173,6 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Responsible module: [Canvas selection routing](../lib/features/board_canvas/logic/canvas_selection_routing.dart) pure `reconcile`; [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) applies decisions in project-provider listeners and user callbacks.
 - Finding type: architecture debt.
 - Reproduction/evidence: Audit BB-16; `_coerceSelection` mutates selection/context state when called during build.
-- Status: **IN_PROGRESS** — `_coerceSelection` removed; selection reconciliation no longer mutates host state during build. Other pre-existing build-time lifecycle work is outside this finding. Pending independent acceptance and commit.
+- Status: **FIXED** — independently accepted Canvas Selection & Mode Routing extraction committed at `8887d65`. Other pre-existing build-time lifecycle work remains outside BB-16.
 - Regression test: [Standalone routing tests](../test/unit/canvas_selection_routing_test.dart), `pure reconciliation`; [Canvas tests](../test/widget/board_canvas_screen_test.dart), `BB-16 user intent rejects a non-Board placement before build`, `BB-16 projection reconciliation remains stable across rebuilds` and source-owner guard requiring pure selection logic and no `_coerceSelection`.
-- Fix commit: Not yet available; the extraction is uncommitted.
+- Fix commit: `8887d652dbbccfdff64387653548f6d34b6d48dd`.

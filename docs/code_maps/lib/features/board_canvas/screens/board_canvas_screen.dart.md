@@ -154,7 +154,10 @@ No line-number anchors are maintained.
     and original-intake fingerprint. A changed context reseeds the editor, bumps
     epoch and loads the matching local sidecar. Late load/save results require
     mounted/current epoch and generation; load errors block editing with retry.
-22. [D] Shared editor completion marks the draft dirty; the host drains guarded
+22. [D] Shared editor completion marks only a changed, completed edit dirty.
+    Click/wobble/cancel stay preview-only and do not request a sidecar save.
+    Pointer policy is delegated to CandidateDragSession through the shared editor;
+    the host retains lifecycle unchanged. The host drains guarded
     store saves, tracks revision and retries visible failures without losing the
     current local draft. No directory means session-only editing. Original intake,
     canonical components/placements and Session history are not rewritten.

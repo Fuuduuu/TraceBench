@@ -8,7 +8,7 @@
 
 ## File purpose
 
-Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 273 declarations: 250 `testWidgets` and 23 `test`.
+Owns Board Canvas widget, routed layout, painter, pure-helper, writer-boundary and responsive evidence. The file has 274 declarations: 251 `testWidgets` and 23 `test`.
 Existing explicit groups cover import, alignment, placement geometry, Wizard overlays, `M0 Measurement characterization`, `Components C0 characterization`, `Placement P0 characterization` and `Inspector I0 characterization`.
 I0 adds eight declarations generating twelve cases; P0 adds eleven declarations generating twelve cases. Declaration counts are not executed-test totals.
 Selection-routing extraction adds the `selection routing module integration` group
@@ -17,6 +17,8 @@ and retargets moved-type guards to `selectionSource`. Navigator setup now uses
 from its reachable empty-selection overview. Existing P0/C0/M0/I0 request, result,
 lifetime and Session assertions remain intact. Accepted P0 target selection
 remains covered by `P0 measurement target selection`.
+Candidate interaction adds two generated real-sidecar cases for context-panel
+reflow/wobble and cancelled dragging; source/Wizard/Session assertions are retained.
 
 ## Responsibility zones
 
@@ -24,7 +26,7 @@ remains covered by `P0 measurement target selection`.
 | --- | --- | --- |
 | 1. Fixtures/session | `_inlineProjectState`, `_wizardIntake`, `_componentNavigatorState`, `SeededProjectSession`, `_harness`, `_routerHarness`, `_readProjectState`, `_replaceProjectState` | Direct/routed state, dependency injection and generation-valid replacement. |
 | 2. Single-shell layout/freshness | `single shell measures routed canvas area`, `single shell responsive chrome preserves tools and status`, `single shell keeps $freshness banner below the bar with long identity`, `routed Board Canvas stays rich across former shell cutovers` | Area, responsive controls, no duplicate shell, banner placement and project identity. |
-| 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels`, `_showNavigatorCategories`, `selection routing module integration` | Drill-down, typed selection, order, preview, counts/filtering and BB-08/09/11/16 integration: mutual exclusion, selected-category synchronization, mode-preserving filtering and project-listener reconciliation. |
+| 3. Navigator/selection/filter | `_selectPlacement`, `_hoverWidgetByKey`, `_painterPreviewKeys`, `_painterDimmedKeys`, `_canvasSemanticsLabels`, `_showNavigatorCategories`, `selection routing module integration`, `BB-02 panel-opening wobble never persists a real sidecar`, `candidate cancelled drag never persists a real sidecar` | Drill-down, typed selection, order, preview, counts/filtering and BB-08/09/11/16 integration: mutual exclusion, selected-category synchronization, mode-preserving filtering and project-listener reconciliation. |
 | 4. Measurement | `_FakeSaveMeasurementWriter`, `_measurementRecordedEventJson`, `M0 Measurement characterization`, `measurementValueBadgesByComponents`, `measurementValueBadgeText`, `measurementValidityNeedsCaution`, `openAdvancedDetails`, `advancedDetailsState`, `M1 pre-move advanced details preserve empty children`, `M1 pre-move advanced details preserve both READ provenance tiles`, `M1 pre-move advanced details keep traces before measurements`, `M1 pre-move component-only selection cannot authorize a save` | Draft/target/save/session and pure read contracts; four provenance/order/empty/no-placement cases characterize the extracted Measurement workflow through the host. |
 | 5. Component create/edit | `_FakeAddComponentWriter`, `_FakeEditComponentWriter`, `_componentCreatedEventJson`, `_componentUpdatedEventJson`, `Components C0 characterization`, `mountComponents`, `createDraft`, `editDraft` | Guards/requests/results plus C0 screen-lived drafts/status, pending/retry, current repeat-save asymmetry, session safety, selection, Placement isolation and rendered create/Placement/edit order. |
 | 6. Placement draft/save | `_FakePlacementWriter`, `_placementWriterEventJson`, `_tapCanvasAtNormalized`, `Add Component idempotent Salvesta leaves duplicate state unchanged`, `Placement P0 characterization`, `mountPlacement`, `requestFields`, `addDraft`, `inspectorDraft`, `ghostPosition`, `expectUnchangedFacts`, `expectOperationId` | Module-owned template/ghost/editor workflow through the host, normalized bounds and explicit/duplicate saves; P0 pending/re-entry, panel/screen completion, generation/composition, failure/retry/unlock, current repeat-save, focus/935/936 lifetime, captured-target selection, Add-entry reseeding and independent Add/Inspector drafts. |

@@ -52,7 +52,9 @@ source; deleted private candidate painter/adapter anchors are not retained.
    The Wizard passes the origin-zero fitted reference rectangle to
    `ComponentCandidateEditor.surface` and its screen-lived controller to both
    surface and controls. Candidate hit testing, body/path/rotation and gestures
-   live in the shared editor and its geometry helper, not private Wizard adapters.
+   use the shared editor and geometry helper, not private Wizard adapters. The
+   editor delegates pure pointer transactions to CandidateDragSession; held drag
+   previews do not replace the Wizard document until a valid changed pointer-up.
 4. `build` selects overall compact below `1050`, outer padding below `600`,
    and page scroll; Step 3/4 workspaces stack below `780`. Step 1 support
    stacks below `820`, headings/actions below `560`, and review values below

@@ -123,7 +123,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
   bool _candidateLoading = false;
   bool _candidateSaving = false;
   bool _candidateDirty = false;
-  bool _candidateAuthoring = true;
   String? _candidateLoadError;
   String? _candidateSaveError;
 
@@ -303,7 +302,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
               _addComponentContextScrollController.jumpTo(0);
             }
             setState(() {
-              _candidateAuthoring = false;
+              _contextPanelMode = CanvasContextMode.addComponentTemplates;
             });
           },
           icon: const Icon(Icons.add_box_outlined),
@@ -565,7 +564,6 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
 
   void _beginUnplacedComponentPlacement(ComponentFact component) {
     setState(() {
-      _candidateAuthoring = false;
       _contextPanelMode = CanvasContextMode.addComponentTemplates;
       _inspectorVisible = true;
       _canvasFocusMode = false;
@@ -999,6 +997,8 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     });
                   },
                 );
+                final candidateControlsVisible =
+                    useWorkbenchShell && _inspectorVisible && !_canvasFocusMode;
                 final canvas = _CanvasPanel(
                   key: ValueKey(
                       'board_canvas_candidate_context_$_candidateEpoch'),
@@ -1006,14 +1006,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   projectDirectory: projectState.projectDirectory,
                   wizardIntake: projectState.wizardIntake,
                   candidateEditor: _candidateEditor,
-                  candidateNotice: _contextPanelMode ==
-                              CanvasContextMode.photos ||
-                          _contextPanelMode ==
-                              CanvasContextMode.measure ||
-                          (!_candidateAuthoring &&
-                              _contextPanelMode ==
-                                  CanvasContextMode
-                                      .addComponentTemplates)
+                  candidateNotice: !_routing.candidatesInteractive
                       ? null
                       : _candidateLoadError != null
                           ? 'Kohaliku mustandi laadimine peatatud · Ava redaktor'
@@ -1022,17 +1015,11 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                               : null,
                   candidateEditorEnabled: !_candidateLoading &&
                       _candidateLoadError == null &&
-                      _contextPanelMode != CanvasContextMode.photos &&
-                      _contextPanelMode != CanvasContextMode.measure &&
-                      !(_contextPanelMode ==
-                              CanvasContextMode
-                                  .addComponentTemplates &&
-                          !_candidateAuthoring),
-                  candidateAllowAdd: _candidateAuthoring &&
-                      _contextPanelMode ==
-                          CanvasContextMode.addComponentTemplates,
+                      _routing.candidatesInteractive,
+                  candidateAllowAdd:
+                      _routing.candidateAddEnabled(candidateControlsVisible),
+                  candidateHitsFirst: _routing.candidateHitsFirst,
                   onCandidateSelected: () => setState(() {
-                    _candidateAuthoring = true;
                     _applyRouting(_routing.selectCandidate());
                     _inspectorVisible = true;
                   }),
@@ -1083,17 +1070,14 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     });
                   },
                   onCanvasTapEmpty: () {
-                    if (_candidateAuthoring &&
-                        _contextPanelMode ==
-                            CanvasContextMode.addComponentTemplates) {
+                    if (_routing.mode == CanvasContextMode.candidateAuthoring) {
                       return;
                     }
                     setState(() {
                       _applyRouting(_routing.clearOnCanvas());
                     });
                   },
-                  showAddComponentTemplateGhost: !_candidateAuthoring &&
-                      _contextPanelMode ==
+                  showAddComponentTemplateGhost: _contextPanelMode ==
                           CanvasContextMode.addComponentTemplates &&
                       _placementHolder.ghostDraft.templateId != null,
                   addComponentTemplateGhostTopContactMarkers:
@@ -1204,6 +1188,68 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                   },
                 );
 
+                final componentNavigator = ComponentNavigator(
+                  components: knownFacts.components,
+                  placements: allEntries
+                      .map((entry) => entry.placement)
+                      .toList(growable: false),
+                  canvasPlacements: visibleEntries
+                      .map((entry) => entry.placement)
+                      .toList(growable: false),
+                  visibleComponentIds: visibleComponentIds,
+                  hideUnmeasured: _hideUnmeasuredComponents,
+                  measurementCountsByComponentId:
+                      measurementCountByComponent,
+                  selectedCategory: _componentNavigatorCategory,
+                  selectedComponentId: _selectedComponentId,
+                  selectedPlacementId: switch (_canvasSelection) {
+                    ComponentPlacementSelection(:final placementKey) =>
+                      placementKey,
+                    _ => null,
+                  },
+                  onCategorySelected: (category) {
+                    setState(() {
+                      _clearCanvasSelection();
+                      _componentNavigatorCategory = category;
+                      _previewPlacementKeys = const <String>{};
+                    });
+                  },
+                  onBackToCategories: () {
+                    setState(() {
+                      _clearCanvasSelection();
+                      _componentNavigatorCategory = null;
+                      _previewPlacementKeys = const <String>{};
+                    });
+                  },
+                  onBackToCategory: () {
+                    setState(() {
+                      _clearCanvasSelection();
+                      _previewPlacementKeys = const <String>{};
+                    });
+                  },
+                  onComponentSelected: (component) {
+                    setState(() {
+                      _selectComponent(component);
+                      _previewPlacementKeys = const <String>{};
+                    });
+                  },
+                  onPlacementSelected: (placementId) {
+                    setState(() {
+                      _selectComponentPlacementByKey(
+                          placementId, allEntries);
+                      _previewPlacementKeys = const <String>{};
+                    });
+                  },
+                  onPlaceComponent: () {
+                    final component =
+                        componentsById[_selectedComponentId];
+                    if (component != null) {
+                      _beginUnplacedComponentPlacement(component);
+                    }
+                  },
+                  onPreviewKeysChanged: _setPreviewPlacementKeys,
+                );
+
                 if (useWorkbenchShell) {
                   Widget? contextPanel;
                   switch (_contextPanelMode) {
@@ -1214,67 +1260,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       contextPanel = metadata;
                       break;
                     case CanvasContextMode.placements:
-                      contextPanel = ComponentNavigator(
-                        components: knownFacts.components,
-                        placements: allEntries
-                            .map((entry) => entry.placement)
-                            .toList(growable: false),
-                        canvasPlacements: visibleEntries
-                            .map((entry) => entry.placement)
-                            .toList(growable: false),
-                        visibleComponentIds: visibleComponentIds,
-                        hideUnmeasured: _hideUnmeasuredComponents,
-                        measurementCountsByComponentId:
-                            measurementCountByComponent,
-                        selectedCategory: _componentNavigatorCategory,
-                        selectedComponentId: _selectedComponentId,
-                        selectedPlacementId: switch (_canvasSelection) {
-                          ComponentPlacementSelection(:final placementKey) =>
-                            placementKey,
-                          _ => null,
-                        },
-                        onCategorySelected: (category) {
-                          setState(() {
-                            _clearCanvasSelection();
-                            _componentNavigatorCategory = category;
-                            _previewPlacementKeys = const <String>{};
-                          });
-                        },
-                        onBackToCategories: () {
-                          setState(() {
-                            _clearCanvasSelection();
-                            _componentNavigatorCategory = null;
-                            _previewPlacementKeys = const <String>{};
-                          });
-                        },
-                        onBackToCategory: () {
-                          setState(() {
-                            _clearCanvasSelection();
-                            _previewPlacementKeys = const <String>{};
-                          });
-                        },
-                        onComponentSelected: (component) {
-                          setState(() {
-                            _selectComponent(component);
-                            _previewPlacementKeys = const <String>{};
-                          });
-                        },
-                        onPlacementSelected: (placementId) {
-                          setState(() {
-                            _selectComponentPlacementByKey(
-                                placementId, allEntries);
-                            _previewPlacementKeys = const <String>{};
-                          });
-                        },
-                        onPlaceComponent: () {
-                          final component =
-                              componentsById[_selectedComponentId];
-                          if (component != null) {
-                            _beginUnplacedComponentPlacement(component);
-                          }
-                        },
-                        onPreviewKeysChanged: _setPreviewPlacementKeys,
-                      );
+                      contextPanel = componentNavigator;
                       break;
                     case CanvasContextMode.measure:
                       contextPanel = IntegratedMeasurePanel(
@@ -1349,6 +1335,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         },
                       );
                       break;
+                    case CanvasContextMode.candidateAuthoring:
+                      contextPanel = _candidateContextPanel(projectState);
+                      break;
                     case CanvasContextMode.addComponentTemplates:
                       final metadataEditComponent =
                           _rightPanelSelectedMetadataComponent(
@@ -1357,55 +1346,53 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                             addComponentTemplatePlacementContextEntry
                                 ?.placement.componentId,
                       );
-                      contextPanel = _candidateAuthoring
-                          ? _candidateContextPanel(projectState)
-                          : _AddComponentTemplateListPanel(
-                              projectState: projectState,
-                              metadataEditComponent: metadataEditComponent,
-                              componentIdentityHolder: _componentIdentityHolder,
-                              hasSelectedTemplate:
-                                  selectedAddComponentTemplate != null,
-                              placementSectionBuilder: (context) =>
-                                  buildBoardCanvasPlacementChildren(
-                                context,
-                                holder: _placementHolder,
-                                projectState: projectState,
-                                resolveSaveValues: (draft) =>
-                                    _resolvedPlacementSaveValues(
-                                        placementSaveTarget, draft),
-                                placementSeed:
-                                    addComponentTemplatePlacementContextEntry ==
-                                            null
+                      contextPanel = _AddComponentTemplateListPanel(
+                          projectState: projectState,
+                          metadataEditComponent: metadataEditComponent,
+                          componentIdentityHolder: _componentIdentityHolder,
+                          hasSelectedTemplate:
+                              selectedAddComponentTemplate != null,
+                          placementSectionBuilder: (context) =>
+                              buildBoardCanvasPlacementChildren(
+                            context,
+                            holder: _placementHolder,
+                            projectState: projectState,
+                            resolveSaveValues: (draft) =>
+                                _resolvedPlacementSaveValues(
+                                    placementSaveTarget, draft),
+                            placementSeed:
+                                addComponentTemplatePlacementContextEntry ==
+                                        null
+                                    ? null
+                                    : _placementSeedFor(
+                                        addComponentTemplatePlacementContextEntry),
+                            templates: starterPlacementTemplates
+                                .map(_placementTemplateValues)
+                                .toList(growable: false),
+                            chooserBuilder: _buildPlacementTemplateChooser,
+                            selectedSummaryBuilder:
+                                _buildPlacementSelectedSummary,
+                            templatePreviewBuilder:
+                                _buildPlacementTemplatePreview,
+                            draftPreviewBuilder:
+                                _buildPlacementDraftPreview,
+                            saveContextLabel:
+                                addComponentTemplatePlacementContextEntry
+                                        ?.selectorLabel ??
+                                    (placementSaveTarget == null
                                         ? null
-                                        : _placementSeedFor(
-                                            addComponentTemplatePlacementContextEntry),
-                                templates: starterPlacementTemplates
-                                    .map(_placementTemplateValues)
-                                    .toList(growable: false),
-                                chooserBuilder: _buildPlacementTemplateChooser,
-                                selectedSummaryBuilder:
-                                    _buildPlacementSelectedSummary,
-                                templatePreviewBuilder:
-                                    _buildPlacementTemplatePreview,
-                                draftPreviewBuilder:
-                                    _buildPlacementDraftPreview,
-                                saveContextLabel:
-                                    addComponentTemplatePlacementContextEntry
-                                            ?.selectorLabel ??
-                                        (placementSaveTarget == null
-                                            ? null
-                                            : componentPrimaryLabel(
-                                                componentsById[
-                                                        placementSaveTarget
-                                                            .componentId] ??
-                                                    ComponentFact(
-                                                      componentId:
-                                                          placementSaveTarget
-                                                              .componentId,
-                                                    ),
-                                              )),
-                              ),
-                            );
+                                        : componentPrimaryLabel(
+                                            componentsById[
+                                                    placementSaveTarget
+                                                        .componentId] ??
+                                                ComponentFact(
+                                                  componentId:
+                                                      placementSaveTarget
+                                                          .componentId,
+                                                ),
+                                          )),
+                          ),
+                        );
                       break;
                     case CanvasContextMode.safetyEvidence:
                       contextPanel = const _BoardCanvasSafetyEvidenceDisclosure(
@@ -1424,8 +1411,7 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                       contextPanel != null;
                   final contextPanelSlot = contextPanel == null
                       ? null
-                      : _contextPanelMode ==
-                              CanvasContextMode.addComponentTemplates
+                      : _routing.inAddWorkflow
                           ? Scrollbar(
                               controller: _addComponentContextScrollController,
                               child: SingleChildScrollView(
@@ -1479,20 +1465,18 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                     label: 'Lisa',
                     semanticLabel: 'Visuaalse paigutuse Lisa',
                     modeKey: 'add_component',
-                    selected: _contextPanelMode ==
-                        CanvasContextMode.addComponentTemplates,
+                    selected: _routing.inAddWorkflow,
                     onPressed: () {
                       final placementContextEntry = selectedEntry;
                       setState(() {
-                        _candidateAuthoring = true;
                         if (placementContextEntry != null) {
                           _placementHolder.seedAddFromPlacement(
                               _placementSeedFor(placementContextEntry));
                         } else if (_canvasSelection is ComponentSelection) {
                           _clearCanvasSelection();
                         }
-                        _contextPanelMode =
-                            CanvasContextMode.addComponentTemplates;
+                        _applyRouting(_routing.enterMode(
+                            CanvasContextMode.candidateAuthoring, {}));
                         _inspectorVisible = true;
                       });
                     },
@@ -1539,8 +1523,10 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         CanvasContextMode.inspector,
                     onPressed: () {
                       setState(() {
-                        _contextPanelMode =
-                            CanvasContextMode.inspector;
+                        _applyRouting(_routing.enterMode(
+                            CanvasContextMode.inspector,
+                            {for (final entry in visibleEntries)
+                              entry.key: entry.placement.componentId}));
                         _inspectorVisible = true;
                       });
                     },
@@ -1627,7 +1613,9 @@ class _BoardCanvasScreenState extends ConsumerState<BoardCanvasScreen> {
                         child: _contextPanelMode ==
                                 CanvasContextMode.photos
                             ? photoPanel
-                            : metadata,
+                            : _contextPanelMode == CanvasContextMode.placements
+                                ? componentNavigator
+                                : metadata,
                       ),
                     ],
                   ],
@@ -2885,6 +2873,7 @@ class _CanvasPanel extends StatefulWidget {
     this.candidateNotice,
     required this.candidateEditorEnabled,
     required this.candidateAllowAdd,
+    required this.candidateHitsFirst,
     required this.onCandidateSelected,
     required this.onCandidateEditCompleted,
     required this.wizardIntakeWarning,
@@ -2930,6 +2919,7 @@ class _CanvasPanel extends StatefulWidget {
   final String? candidateNotice;
   final bool candidateEditorEnabled;
   final bool candidateAllowAdd;
+  final bool candidateHitsFirst;
   final VoidCallback onCandidateSelected;
   final VoidCallback onCandidateEditCompleted;
   final String? wizardIntakeWarning;
@@ -3107,6 +3097,8 @@ class _CanvasPanelState extends State<_CanvasPanel> {
             referenceFrameAspectRatio:
                 wizardIntake.referenceFrameAspectRatio ?? 1.0,
           );
+    final candidateReferenceRect = wizardFitTransform?.normalizedCanvasRect ??
+        _candidateReferenceRect(canvasSize);
     final wizardPhotoFile = _wizardPhotoFile();
     final alignmentPreviewSolution = widget.alignmentPreview?.solution;
     final canRenderConfirmedAlignment =
@@ -3201,13 +3193,15 @@ class _CanvasPanelState extends State<_CanvasPanel> {
                 child: ComponentCandidateEditor.surface(
                   controller: widget.candidateEditor,
                   keyPrefix: 'board_canvas_candidate',
-                  referenceRect: wizardFitTransform?.normalizedCanvasRect ??
-                      _candidateReferenceRect(canvasSize),
+                  referenceRect: candidateReferenceRect,
                   enabled: widget.candidateEditorEnabled &&
                       !widget.alignmentBoardPointCaptureActive,
                   allowAdd: widget.candidateAllowAdd,
                   canInteractAt: (point) =>
-                      widget.candidateAllowAdd ||
+                      (widget.candidateHitsFirst &&
+                          widget.candidateEditor
+                              .hitTest(point, candidateReferenceRect) !=
+                              null) ||
                       !widget.entries.any((entry) => renderedPlacementContains(
                           placement: entry.placement,
                           component: entry.component,

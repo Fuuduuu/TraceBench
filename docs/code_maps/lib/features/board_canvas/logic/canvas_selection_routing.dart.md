@@ -18,12 +18,14 @@ on counting getters or returned properties from one cohesive adapter.
 
 | Zone | Stable symbol anchors | Responsibility |
 | --- | --- | --- |
-| 1. Selection and mode vocabulary | `CanvasContextMode`, `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `canvasAnchor` | Retains empty/component/exact-placement distinctions, public IDs and optional Canvas anchor. |
+| 1. Selection and mode vocabulary | `CanvasContextMode`, `CanvasSelection`, `EmptyCanvasSelection`, `ComponentSelection`, `ComponentPlacementSelection`, `canvasAnchor` | Retains empty/component/exact-placement distinctions, public IDs and optional Canvas anchor; candidateAuthoring is distinct from canonical addComponentTemplates. |
 | 2. Immutable reconciliation | `CanvasRoutingState`, `reconcile` | Validates exact key/component identity against caller-supplied visible inputs; retains known unplaced components and returns a new value for invalid selections without mutating input. |
 | 3. Filter transition | `afterFilter` | Clears an ineligible selection while preserving the current context mode. |
-| 4. Measurement and mode entry | `enterMode` | Preserves exact placement, resolves only a unique matching component placement, leaves zero/multiple component matches unresolved, and retains the accepted empty-selection first-visible fallback. Navigator entry preserves selection; Photos/Safety retain their selection-clearing policy. |
-| 5. Canvas/dropdown/empty intents | `selectOnCanvas`, `selectFromDropdown`, `clearOnCanvas`, `_keepsCanvasMode` | Applies the existing context-specific Inspector/hidden policy without moving widget or project lifecycle here. |
-| 6. Candidate exclusivity seam | `selectCandidate`, `clearsCandidateSelection`, `withSelection`, `withMode` | Candidate intent clears canonical selection and opens Add. A canonical selection tells the host to clear candidate-controller selection; no controller is called here. |
+| 4. Measurement/Inspector and mode entry | `enterMode` | Preserves exact placement/anchor in both modes; resolves only a unique matching component placement and leaves zero/multiple component matches unresolved. Only Measurement retains the accepted empty-selection first-visible fallback; Inspector has none. Navigator entry preserves selection; Photos/Safety retain their selection-clearing policy. |
+| 5. Canvas/dropdown/empty intents | `selectOnCanvas`, `selectFromDropdown`, `clearOnCanvas`, `_keepsCanvasMode` | Retains Measurement target on empty/inert clicks; explicit confirmed-placement clicks preserve Measurement/Navigator mode or open Inspector. Dropdown choices also retain Navigator rather than replacing it with Inspector. Other context-specific clear/hide behavior is retained. |
+| 6. Candidate exclusivity seam | `selectCandidate`, `clearsCandidateSelection`, `withSelection`, `withMode` | Allowed candidate intent clears canonical selection and enters visual authoring; inert-mode candidate intent returns unchanged. Canonical selection tells the host to clear candidate-controller selection; no controller is called here. |
+
+| 7. Authoring policy | `inAddWorkflow`, `candidatesInteractive`, `candidateAddEnabled`, `candidateHitsFirst` | Derives the shared Add-tool state, candidate interaction gate and creation permission from one mode plus caller-owned control visibility; candidate hit priority applies only in visual authoring. No hidden authoring flag. |
 
 ## State and data flow
 
@@ -35,13 +37,25 @@ on counting getters or returned properties from one cohesive adapter.
 3. [D] `reconcile` returns the original routing value when valid. Invalid
    placement selection retains the earlier Inspector/empty-inventory hiding rule;
    `afterFilter` intentionally preserves mode while clearing the hidden target.
-4. [D] `enterMode` applies the accepted measurement target policy using map
-   order only for empty selection. Zero/multiple matching placements remain
-   component-only, so the host supplies no resolved Measurement placement.
+4. [D] `enterMode` resolves a unique component placement for Measurement or
+   Inspector. Only Measurement uses map order for empty-selection fallback;
+   Inspector never does. Zero/multiple matches retain component-only identity.
 5. [D] The host applies returned values in user callbacks and project-provider
    listeners. During build, reconciliation is a pure read of the returned key.
 6. [D] Candidate and Navigator side effects stay in the host adapter. The
    module never creates a candidate, edits geometry or confirms a component.
+7. [D] Candidate creation requires candidateAuthoring plus visible controls.
+   Measurement, Photos and canonical template mode keep candidates inert.
+   Focus/compact visibility is a host input, not a second mode state.
+8. [D] clearOnCanvas returns the same value in Measurement so its resolved
+   target/draft survive empty or inert-candidate taps. selectOnCanvas still
+   applies an intentional confirmed-placement choice.
+9. [D] selectFromDropdown shares the retained Measure/Placements/Photos mode
+   policy with Canvas placement selection. A compact placement choice preserves
+   an already-open Navigator; Lisa/default selection still opens Inspector.
+10. [D] candidateHitsFirst is true only for candidateAuthoring. The host supplies
+    this value to hit gating; confirmed placements win overlaps in every other
+    mode without changing drag geometry or candidate storage.
 
 ## Direct dependencies
 
@@ -79,7 +93,7 @@ canonical confirmation, candidate edit or persistence operation.
   without BoardCanvasScreen. It covers independent intent/mode cases, target
   resolution, exact anchor retention, reconciliation purity and invalidation.
 - `test/widget/board_canvas_screen_test.dart` verifies host application through
-  `selection routing module integration`, the accepted P0 target cases and
+  `Canvas interaction routing BB-04/05/06`, `selection routing module integration`, the accepted P0 target cases and
   existing writer/Session/Placement/Components/Inspector characterization.
 - Host source-owner guards require the extracted library and no `_coerceSelection`.
 

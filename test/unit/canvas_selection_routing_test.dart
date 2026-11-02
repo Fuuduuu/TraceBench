@@ -8,6 +8,19 @@ void main() {
   const exact = ComponentPlacementSelection(
       placementKey: 'c2b', componentId: 'C2', canvasAnchor: Offset(7, 9));
 
+  test(
+    'BB-04 empty and inert candidate clicks retain exact measurement intent',
+    () {
+      const state = CanvasRoutingState(
+        selection: exact,
+        mode: CanvasContextMode.measure,
+      );
+      final next = state.clearOnCanvas();
+      expect(next.selection, same(exact));
+      expect(next.mode, CanvasContextMode.measure);
+    },
+  );
+
   group('measurement routing preserves accepted P0 policy', () {
     test('explicit placement and its anchor survive', () {
       final next = const CanvasRoutingState(selection: exact)
@@ -45,6 +58,33 @@ void main() {
           const CanvasRoutingState()
               .enterMode(CanvasContextMode.measure, {}).selection,
           isA<EmptyCanvasSelection>());
+    });
+  });
+
+  group('P1 Inspector target resolution', () {
+    test('one matching placement resolves the selected component only', () {
+      final next = const CanvasRoutingState(selection: c2)
+          .enterMode(CanvasContextMode.inspector, {'r1': 'R1', 'c2a': 'C2'});
+      expect(next.selection.componentId, 'C2');
+      expect(next.selection.placementKey, 'c2a');
+    });
+    for (final matches in [{'r1': 'R1'}, placements]) {
+      test('zero or multiple matches keep component-only identity: $matches', () {
+        final next = const CanvasRoutingState(selection: c2)
+            .enterMode(CanvasContextMode.inspector, matches);
+        expect(next.selection, same(c2));
+        expect(next.selection.placementKey, isNull);
+      });
+    }
+    test('empty Inspector selection never uses the Measurement fallback', () {
+      final next = const CanvasRoutingState()
+          .enterMode(CanvasContextMode.inspector, placements);
+      expect(next.selection, isA<EmptyCanvasSelection>());
+    });
+    test('exact placement and anchor are retained by identity', () {
+      final next = const CanvasRoutingState(selection: exact)
+          .enterMode(CanvasContextMode.inspector, placements);
+      expect(next.selection, same(exact));
     });
   });
 
@@ -112,7 +152,8 @@ void main() {
     test('empty Canvas click respects $mode', () {
       final next =
           CanvasRoutingState(selection: exact, mode: mode).clearOnCanvas();
-      expect(next.selection, isA<EmptyCanvasSelection>());
+      expect(next.selection, mode == CanvasContextMode.measure
+          ? same(exact) : isA<EmptyCanvasSelection>());
       expect(
           next.mode,
           [
@@ -123,6 +164,41 @@ void main() {
               ? mode
               : CanvasContextMode.hidden);
     });
+  }
+
+  for (final mode in CanvasContextMode.values) {
+    test(
+      'authoring and candidate policy follows $mode with visible and hidden controls',
+      () {
+        final state = CanvasRoutingState(selection: exact, mode: mode);
+        expect(
+          state.inAddWorkflow,
+          [
+            CanvasContextMode.candidateAuthoring,
+            CanvasContextMode.addComponentTemplates,
+          ].contains(mode),
+        );
+        expect(state.candidateHitsFirst, mode == CanvasContextMode.candidateAuthoring);
+        expect(state.candidateAddEnabled(false), isFalse);
+        expect(
+          state.candidateAddEnabled(true),
+          mode == CanvasContextMode.candidateAuthoring,
+        );
+        final blocked = [
+          CanvasContextMode.measure,
+          CanvasContextMode.photos,
+          CanvasContextMode.addComponentTemplates,
+        ].contains(mode);
+        expect(state.candidatesInteractive, !blocked);
+        final selected = state.selectCandidate();
+        if (blocked) {
+          expect(selected, same(state));
+        } else {
+          expect(selected.mode, CanvasContextMode.candidateAuthoring);
+          expect(selected.selection, isA<EmptyCanvasSelection>());
+        }
+      },
+    );
   }
 
   test('Navigator entry preserves selection instead of resetting it (BB-09)',
@@ -137,7 +213,7 @@ void main() {
       () {
     final next = const CanvasRoutingState(selection: exact).selectCandidate();
     expect(next.selection, isA<EmptyCanvasSelection>());
-    expect(next.mode, CanvasContextMode.addComponentTemplates);
+    expect(next.mode, CanvasContextMode.candidateAuthoring);
     expect(next.clearsCandidateSelection, isFalse);
     expect(next.withSelection(c2).clearsCandidateSelection, isTrue);
   });
@@ -153,14 +229,22 @@ void main() {
       expect(next.mode, mode);
     });
   }
-  test('dropdown selection retains Measurement, otherwise opens Inspector', () {
+  test('compact selection menu retains an open Component Navigator', () {
+    const state = CanvasRoutingState(
+        selection: c2, mode: CanvasContextMode.placements);
+    final selected = state.selectFromDropdown(exact);
+    expect(selected.mode, CanvasContextMode.placements);
+    expect(selected.selection, same(exact));
+  });
+
+  test('dropdown selection retains Measurement; default opens Inspector', () {
     expect(
         const CanvasRoutingState(mode: CanvasContextMode.measure)
             .selectFromDropdown(exact)
             .mode,
         CanvasContextMode.measure);
     expect(
-        const CanvasRoutingState(mode: CanvasContextMode.placements)
+        const CanvasRoutingState(mode: CanvasContextMode.hidden)
             .selectFromDropdown(exact)
             .mode,
         CanvasContextMode.inspector);

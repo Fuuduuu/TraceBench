@@ -32,6 +32,8 @@ their existing ownership. `ComponentNavigator` is a normal imported library;
 the host adapts public facts and selected IDs and retains all transient state
 and placement actions. Pure routing decisions live in `canvas_selection_routing.dart`;
 the host applies them and derives Navigator category through the existing classifier.
+CanvasRoutingState also owns the single candidate-authoring mode; the host supplies
+actual control visibility and candidate/placement hit precedence.
 The instrument bar replaces shared outer chrome only on
 the primary route; secondary pages still use the router's `WorkbenchShell`.
 
@@ -41,11 +43,11 @@ the primary route; secondary pages still use the router's `WorkbenchShell`.
 | --- | --- | --- |
 | 1. Screen and freshness | `BoardCanvasScreen`, `_BoardCanvasScreenState`, `_buildScaffold`, `ProjectionStaleBanner` | Watches project state, composes branches and inserts freshness directly below the instrument bar. |
 | 2. Selection/preview | `CanvasRoutingState`, `_applyRouting`, `_selectionInputs`, `_onSelectionProjectChanged`, `_setCanvasSelection`, `_setPreviewPlacementKeys` | Host stores the routing value, supplies visible placement/component identities, applies candidate-selection effects and synchronizes Navigator category. Pure selection types/reconciliation and intent-to-mode decisions belong to the imported routing module; provider listeners and event callbacks apply changes outside build. |
-| 3. Navigator/filter | `ComponentCategory`, `ComponentNavigator`, `componentCategoryFor`, `componentPrimaryLabel`, `componentNavigatorPlacementId`, `_toggleHideUnmeasuredComponents`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host category/filter/selection/preview state; public fact-list/selected-ID adapter and intent callbacks. Classification and Navigator presentation belong to the imported library. |
+| 3. Navigator/filter | `ComponentCategory`, `ComponentNavigator`, `componentCategoryFor`, `componentPrimaryLabel`, `componentNavigatorPlacementId`, `_toggleHideUnmeasuredComponents`, `componentNavigator`, `measurementCountsByComponents`, `measurementValueBadgesByComponents` | Host category/filter/selection/preview state; public fact-list/selected-ID adapter and intent callbacks. The same adapter is reused in wide and compact layouts while Placements mode is active; category/back/component/placement intents retain Navigator. Classification and Navigator presentation belong to the imported library. |
 | 4. Measurement composition | `IntegratedMeasurePanel`, `selectedComponentId: selectedEntry?.placement.componentId`, `selectedComponent: selectedEntry?.component`, `advancedDetailsBuilder`, `footprintPreviewBuilder`, `_FootprintPreviewPainter`, `_componentPreviewSemanticsLabel`, `InspectorMeasurementSummaryTile`, `InspectorVisualTraceSummaryTile` | Constructs the child from one resolved placement; builds provenance children using imported Inspector presentation widgets and supplies private footprint rendering. The imported module owns Measurement State/writer/session workflow. |
 | 5. Components composition/lifetime | `ComponentIdentityHolder`, `_componentIdentityHolder.dispose()`, `_rightPanelSelectedMetadataComponent`, `_AddComponentTemplateListPanel`, `ComponentIdentityPanel`, `placementSectionBuilder` | Creates/disposes one screen-lived holder, resolves a nullable edit target, retains the Add frame/scroll and supplies Placement children; the module owns create/edit state and writes. |
 | 6. Placement composition/lifetime | `BoardCanvasPlacementHolder`, `_placementHolder`, `_onPlacementChanged`, `_PlacementSaveTarget`, `_placementSaveTarget`, `_placementSeedFor`, `_resolvedPlacementSaveValues`, `buildBoardCanvasPlacementChildren`, `buildBoardCanvasPlacementEditor` | Creates/listens/disposes one screen-lived holder; retains selection/eligibility, immutable seeding, current-snapshot center conversion and thin catalogue/preview value adapters. The imported preview library owns catalogue/presentation/painter; the Placement workflow module owns drafts, controls, guards and writer/Session workflow. |
-| 7. Interaction/Wizard/candidates | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile`, `_reconcileCandidateDraft`, `_loadCandidateDraft`, `_saveCandidateDraft`, `_candidateContextPanel`, `ComponentCandidateEditor.surface` | Intake fit/photo/contour composition, Canvas gestures and shared candidate-editor integration. Host owns context/generation/epoch/revision/load/save lifetime; editor owns candidate input/paint and store owns local sidecar writes. |
+| 7. Interaction/Wizard/candidates | `hasWizardIntakePresentation`, `_CanvasPanelState`, `_selectPlacementAt`, `_fitCanvasView`, `_scheduleWizardInitialFit`, `_wizardPhotoFile`, `_reconcileCandidateDraft`, `_loadCandidateDraft`, `_saveCandidateDraft`, `_candidateContextPanel`, `ComponentCandidateEditor.surface`, `candidateControlsVisible`, `candidateReferenceRect`, `candidateHitsFirst` | Intake fit/photo/contour composition, Canvas gestures and shared candidate-editor integration. Host owns context/generation/epoch/revision/load/save lifetime; editor owns candidate input/paint and store owns local sidecar writes. |
 | 8. General rendering/geometry | `_WizardIntakeFitTransform`, `_WizardIntakePhotoLayer`, `_WizardIntakePainter`, `_BoardBackgroundPainter`, `_BoardPlacementPainter`, `footprintVisualKind`, `renderedPlacementContains` | Delegated Wizard/pure geometry plus host Board painters and semantics. |
 | 9. Inspector composition/evidence | `BoardCanvasInspectorPanel`, `placement: selectedEntry?.placement`, `component: selectedEntry?.component`, `template: selectedEntry?.template`, `placementDraftSection`, `_BoardCanvasSafetyEvidenceDisclosure` | Resolves Inspector inputs from one selected entry, passes the module-built Placement editor slot and keeps safety disclosure; the imported library declares summaries/readiness without evidence promotion. |
 | 10. Photo workflow/primary asset | `_buildPhotoWorkbenchPanel`, `PhotoWorkbenchPanel`, `photoEventItemsFromEvents`, `_reconcilePrimaryPhotoAsset`, `_loadPrimaryPhotoAsset` | Import/align child seam, sole Wizard primary asset load and guarded result callbacks. |
@@ -77,6 +79,9 @@ No line-number anchors are maintained.
   tools. Global destinations are transient; shared outer navigation is absent.
 - Rich context starts hidden. Focus hides local rail/context and restores mode;
   the instrument bar and bottom renderer/status surfaces remain.
+- An already-open Komponendid view retains ComponentNavigator below Canvas in
+  compact layout. The existing compact selector preserves Placements mode;
+  returning to wide layout retains selection/category and the Navigator.
 - Compact and zero-component Fotod entry use the same delegated photo panel.
 - A stale/unknown banner remains immediately below the bar and nonblocking.
 
@@ -161,11 +166,22 @@ No line-number anchors are maintained.
     store saves, tracks revision and retries visible failures without losing the
     current local draft. No directory means session-only editing. Original intake,
     canonical components/placements and Session history are not rewritten.
-23. [D] Add initially offers candidate authoring. The explicit identity/Placement
-    control and Navigator Paiguta action select the existing separate canonical
+23. [D] Add initially offers candidate authoring. One routing mode distinguishes
+    this from canonical templates; the redundant host authoring flag is absent.
+    candidateControlsVisible gates empty-space add on the actual wide, non-focus,
+    visible panel. Existing candidate selection/drag remain available when hidden.
+    Candidate hits win over placements only in visual Lisa; confirmed-placement
+    hits pass through to Inspector there. Outside visual Lisa, confirmed hits
+    outrank candidates. Only eligible empty authoring space creates a local draft.
+    Empty/inert clicks in Measurement retain its exact current target/draft.
+    The explicit identity/Placement control and Navigator Paiguta action select the existing separate canonical
     workflow. Its retained template ghost is not the candidate editor. The editor
     surface uses the Wizard fit rectangle or non-Wizard fallback; canonical hit
     gating, alignment capture and placement painting remain host-owned.
+24. [D] Inspector entry uses enterMode with visible eligible placements and
+    _applyRouting. A component-only selection resolves only one matching board
+    placement; zero/multiple matches remain unresolved, without first-visible
+    fallback. Exact placement/anchor and Navigator category remain intact.
 
 ## Direct dependencies
 

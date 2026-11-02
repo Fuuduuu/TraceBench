@@ -53,6 +53,37 @@ matching draft. Without a local directory, edits remain session-only. Invalid
 draft load blocks editing with retry; save failure retains the current draft
 and shows retry. Original Wizard intake is preserved.
 
+CanvasRoutingState is the sole interaction-mode owner. Lisa candidate authoring
+is distinct from the existing canonical Components/Placement controls. In visual
+Lisa, hits prefer an existing candidate, then a confirmed placement (select and
+open Inspector), then eligible empty space (add one local candidate). Selection
+alone changes neither the local draft file nor canonical facts.
+Outside visual Lisa, confirmed placements take precedence over overlapping
+candidates. Non-overlapping candidates remain selectable in their existing
+interactive modes; a confirmed-placement drag does not edit or persist a draft.
+
+An open Komponendid panel keeps the same ComponentNavigator in wide and compact
+layouts. Category/back controls, component choice and Vaata canvasel stay in
+Navigator; the compact placement selector also retains that mode. Canvas picks
+synchronize its selected component/category. This does not add a compact entry
+control or change Lisa's explicit placement-to-Inspector behavior.
+
+Opening Inspector from a component-only selection resolves exactly one eligible
+confirmed board placement for that same component. Zero or multiple matches keep
+the component context unresolved; Inspector never chooses the first visible
+placement. Existing exact placement/anchor selections are retained.
+
+Empty-space and inert-candidate clicks in Mõõtmine retain the current target and
+typed draft. Clicking another eligible confirmed placement intentionally changes
+the target. The accepted first-visible fallback on empty-selection Measurement
+entry remains unchanged; it is not proof of technician intent.
+
+Candidate creation requires visible Lisa authoring controls. Focus and compact
+layouts disable empty-space add while preserving existing candidate selection
+and dragging; restoring the visible authoring panel re-enables add. Compact
+candidate editing controls/retry remain a separate UX gap. The existing mouse
+wobble/tap-cancellation behavior is not changed by this routing correction.
+
 Candidate editing remains noncanonical. `Komponendi identiteet ja paigutus`
 switches to the existing separate Components/Placement workflow; Navigator's
 `Paiguta canvasele` enters that workflow. Its retained template ghost is a

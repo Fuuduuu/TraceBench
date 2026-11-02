@@ -1535,6 +1535,9 @@ FootprintTemplate _geometryTemplateWithPinCount(
 }
 
 void main() {
+  _routingP0P1CorrectionTests();
+  _componentNavigationBlockerTests();
+  _canvasInteractionRoutingTests();
   _componentCandidateEditorIntegrationTests();
   _sharedCandidateOverlayGeometryTests();
   _sharedCandidateOverlayMatrixTests();
@@ -7719,7 +7722,7 @@ void main() {
     }
 
     testWidgets(
-        'empty Canvas selection keeps Measure mounted with component guard',
+        'empty click retains Measure target; explicit filter guards an ineligible target',
         (tester) async {
       final writer = _FakeSaveMeasurementWriter();
       final state = await mountMeasure(tester, writer);
@@ -7728,6 +7731,14 @@ void main() {
       await _tapCanvasAtNormalized(tester, x: 0.95, y: 0.95);
       await tester.pumpAndSettle();
 
+      expect(tester.element(panel), same(mountedPanel));
+      expect(_painterSelectedComponentId(tester), 'cmp_r101');
+      expect(find.text('Select a component on Canvas.'), findsNothing);
+      expect(saveButton(tester).onPressed, isNotNull);
+      // BB-04 retains the empty-click target. Explicitly hiding all eligible
+      // components still exercises the existing M0 no-target save guard.
+      await _tapWidgetByKey(tester, const Key('board_canvas_hide_unmeasured_toggle'));
+      await tester.pumpAndSettle();
       expect(tester.element(panel), same(mountedPanel));
       expect(find.text('Select a component on Canvas.'), findsOneWidget);
       expect(copy(tester, 'board_canvas_measure_save_guard'),
@@ -18340,6 +18351,7 @@ ComponentCandidatePainter _sharedCandidatePainter(WidgetTester tester) => tester
 
 class _RealCandidateStoreProbe extends ComponentCandidateDraftStore {
   bool finished = true;
+  int saveCalls = 0;
   Future<ComponentCandidateDraftSnapshot>? operation;
   @override
   Future<ComponentCandidateDraftSnapshot> load(
@@ -18348,9 +18360,11 @@ class _RealCandidateStoreProbe extends ComponentCandidateDraftStore {
   @override
   Future<ComponentCandidateDraftSnapshot> save(
           String directory, ComponentCandidateDocument document,
-          {required String? expectedRevision}) =>
-      operation = track(() =>
-          super.save(directory, document, expectedRevision: expectedRevision));
+          {required String? expectedRevision}) {
+    saveCalls++;
+    return operation = track(() =>
+        super.save(directory, document, expectedRevision: expectedRevision));
+  }
   Future<ComponentCandidateDraftSnapshot> track(
       Future<ComponentCandidateDraftSnapshot> Function() action) async {
     finished = false;
@@ -18664,4 +18678,919 @@ Future<void> _openCanonicalPlacementAdd(WidgetTester tester) async {
       tester, const Key('board_canvas_rail_add_component_tool'));
   await _tapWidgetByKey(
       tester, const Key('board_canvas_canonical_placement_mode'));
+}
+
+
+void _canvasInteractionRoutingTests() {
+  group('Canvas interaction routing BB-04/05/06', () {
+    ComponentCandidateEditor surface(WidgetTester tester) =>
+        tester.widget<ComponentCandidateEditor>(
+          find.byWidgetPredicate(
+            (widget) => widget is ComponentCandidateEditor && !widget.controls,
+          ),
+        );
+
+    Offset candidatePoint(WidgetTester tester, Offset normalized) {
+      final frame = _sharedCandidatePainter(tester).referenceRect;
+      final box = tester.renderObject<RenderBox>(
+        find.byKey(const ValueKey('board_canvas_candidate-painter')),
+      );
+      return box.localToGlobal(
+        Offset(
+          frame.left + frame.width * normalized.dx,
+          frame.top + frame.height * normalized.dy,
+        ),
+      );
+    }
+
+    Offset placementPoint(WidgetTester tester, Offset normalized) {
+      final box = tester.renderObject<RenderBox>(
+        find.byKey(const Key('board_canvas_painter')),
+      );
+      return box.localToGlobal(
+        Offset(box.size.width * normalized.dx, box.size.height * normalized.dy),
+      );
+    }
+
+    Future<void> click(
+      WidgetTester tester,
+      Offset point,
+      PointerDeviceKind kind,
+    ) async {
+      final gesture = await tester.startGesture(point, kind: kind);
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> settleStore(
+      WidgetTester tester,
+      _RealCandidateStoreProbe store,
+    ) async {
+      for (var attempt = 0; attempt < 100; attempt++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 5)),
+        );
+        await tester.pump();
+        if (store.finished) {
+          await tester.pumpAndSettle();
+          return;
+        }
+      }
+      fail('Candidate store did not settle.');
+    }
+
+    Future<
+      ({
+        ProjectState state,
+        File sidecar,
+        File events,
+        _RealCandidateStoreProbe store,
+        _FakeSaveMeasurementWriter writer,
+      })
+    >
+    mount(WidgetTester tester, {bool overlap = false}) async {
+      await tester.binding.setSurfaceSize(const Size(1440, 1000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final directory = Directory.systemTemp.createTempSync('canvas-routing-');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final events = File('${directory.path}/events.jsonl')
+        ..writeAsStringSync('unchanged canonical events\n');
+      final state = _inlineProjectState(
+        components: _navigatorComponents.take(2).toList(),
+        placements: overlap
+            ? const [
+                ComponentVisualPlacementFact(
+                  componentId: 'R1',
+                  coordinateSpace: 'board_normalized',
+                  boardSide: 'top',
+                  centerX: .5,
+                  centerY: .5,
+                  width: .06,
+                  height: .03,
+                  rotationDeg: 0,
+                  sourceEventId: 'evt_overlap',
+                  status: 'user_confirmed_visual',
+                ),
+              ]
+            : _navigatorPlacements.take(2).toList(),
+        projectDirectory: directory.path,
+        wizardIntake: _wizardIntake(
+          contourPoints: const [
+            WizardPoint(x: 0, y: 0),
+            WizardPoint(x: 1, y: 0),
+            WizardPoint(x: 1, y: 1),
+            WizardPoint(x: 0, y: 1),
+          ],
+          visualCandidates: [
+            WizardVisualCandidate(
+              draftKey: 7,
+              position: WizardPoint(
+                x: overlap ? .5 : .55,
+                y: overlap ? .5 : .55,
+              ),
+              shape: WizardVisualCandidateShape.rectangle,
+              sizeScale: 1.5,
+              rotationRadians: 0,
+            ),
+          ],
+        ),
+      );
+      final writer = _FakeSaveMeasurementWriter();
+      final store = _RealCandidateStoreProbe();
+      await tester.pumpWidget(
+        _harness(
+          projectState: state,
+          measurementWriter: writer,
+          candidateDraftStore: store,
+        ),
+      );
+      await settleStore(tester, store);
+      return (
+        state: state,
+        store: store,
+        writer: writer,
+        events: events,
+        sidecar: File(
+          '${directory.path}/.tracebench_local/component_candidates.json',
+        ),
+      );
+    }
+
+    void expectNoWrites(
+      WidgetTester tester,
+      ({
+        ProjectState state,
+        File sidecar,
+        File events,
+        _RealCandidateStoreProbe store,
+        _FakeSaveMeasurementWriter writer,
+      })
+      fixture,
+    ) {
+      expect(fixture.sidecar.existsSync(), isFalse);
+      expect(fixture.events.readAsStringSync(), 'unchanged canonical events\n');
+      expect(fixture.writer.requests, isEmpty);
+      expect(_readProjectState(tester), same(fixture.state));
+    }
+
+    for (final kind in [PointerDeviceKind.mouse, PointerDeviceKind.touch]) {
+      testWidgets(
+        'BB-04 $kind empty and inert candidate preserve measurement draft and target',
+        (tester) async {
+          final fixture = await mount(tester);
+          await click(
+            tester,
+            placementPoint(tester, const Offset(.12, .18)),
+            kind,
+          );
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_measure_sheet_button'),
+          );
+          final input = find.byKey(
+            const Key('board_canvas_measure_row_value_input_R1'),
+          );
+          await tester.ensureVisible(input);
+          await tester.enterText(input, '1.23');
+          await tester.pumpAndSettle();
+          for (final point in [
+            const Offset(.75, .75),
+            const Offset(.55, .55),
+          ]) {
+            await click(tester, candidatePoint(tester, point), kind);
+            expect(_painterSelectedPlacementKey(tester), 'R1|evt_nav_r1');
+            expect(
+              tester
+                  .widget<EditableText>(
+                    find.descendant(
+                      of: input,
+                      matching: find.byType(EditableText),
+                    ),
+                  )
+                  .controller
+                  .text,
+              '1.23',
+            );
+            expect(surface(tester).controller.selectedDraftKey, isNull);
+          }
+          await click(
+            tester,
+            placementPoint(tester, const Offset(.24, .24)),
+            kind,
+          );
+          expect(_painterSelectedPlacementKey(tester), 'R2|evt_nav_r2');
+          expect(
+            tester
+                .widget<OutlinedButton>(
+                  find.byKey(const Key('board_canvas_measure_save_button')),
+                )
+                .onPressed,
+            isNull,
+          );
+          final inputR2 = find.byKey(
+            const Key('board_canvas_measure_row_value_input_R2'),
+          );
+          await tester.ensureVisible(inputR2);
+          await tester.enterText(inputR2, '4.56');
+          await tester.pumpAndSettle();
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_measure_save_button'),
+          );
+          await tester.pumpAndSettle();
+          expect(fixture.writer.requests, hasLength(1));
+          expect(fixture.writer.requests.single.componentId, 'R2');
+          expect(fixture.writer.requests.single.targetKey, 'R2');
+          expect(fixture.writer.requests.single.value, 4.56);
+          expect(fixture.sidecar.existsSync(), isFalse);
+          expect(
+            fixture.events.readAsStringSync(),
+            'unchanged canonical events\n',
+          );
+          expect(tester.takeException(), isNull);
+        },
+      );
+
+      testWidgets(
+        'BB-05 $kind Lisa placement opens Inspector without authoring',
+        (tester) async {
+          final fixture = await mount(tester);
+          final before = surface(tester).controller.document;
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_add_component_tool'),
+          );
+          await click(
+            tester,
+            placementPoint(tester, const Offset(.12, .18)),
+            kind,
+          );
+          await settleStore(tester, fixture.store);
+          expect(_painterSelectedPlacementKey(tester), 'R1|evt_nav_r1');
+          expect(
+            find.byKey(const Key('board_canvas_rail_inspector_active')),
+            findsOneWidget,
+          );
+          expect(surface(tester).controller.document, same(before));
+          expect(surface(tester).controller.selectedDraftKey, isNull);
+          expectNoWrites(tester, fixture);
+        },
+      );
+
+      testWidgets(
+        'BB-05 $kind candidate wins overlap and empty Lisa click adds once',
+        (tester) async {
+          final fixture = await mount(tester, overlap: true);
+          await _selectPlacement(tester, 'R1');
+          expect(_painterSelectedPlacementKey(tester), 'R1|evt_overlap');
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_add_component_tool'),
+          );
+          final before = surface(tester).controller.document;
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.5, .5)),
+            kind,
+          );
+          await settleStore(tester, fixture.store);
+          expect(surface(tester).controller.selectedDraftKey, 7);
+          expect(_painterSelectedPlacementKey(tester), isNull);
+          expect(surface(tester).controller.document, same(before));
+          expectNoWrites(tester, fixture);
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.75, .75)),
+            kind,
+          );
+          await settleStore(tester, fixture.store);
+          expect(
+            surface(
+              tester,
+            ).controller.document.candidates.map((c) => c.draftKey),
+            [7, 8],
+          );
+          expect(fixture.sidecar.existsSync(), isTrue);
+          expect(fixture.writer.requests, isEmpty);
+          expect(_readProjectState(tester), same(fixture.state));
+          expect(
+            fixture.events.readAsStringSync(),
+            'unchanged canonical events\n',
+          );
+        },
+      );
+    }
+
+    for (final hidden in ['focus', 'compact']) {
+      testWidgets(
+        'BB-06 $hidden hides Add but preserves candidate selection and drag',
+        (tester) async {
+          final fixture = await mount(tester);
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_add_component_tool'),
+          );
+          if (hidden == 'focus') {
+            await _tapWidgetByKey(
+              tester,
+              const Key('board_canvas_focus_toggle_button'),
+            );
+          } else {
+            await tester.binding.setSurfaceSize(const Size(800, 1000));
+            await tester.pumpAndSettle();
+          }
+          expect(
+            find.byWidgetPredicate(
+              (widget) => widget is ComponentCandidateEditor && widget.controls,
+            ),
+            findsNothing,
+          );
+          final before = surface(tester).controller.document;
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.75, .75)),
+            PointerDeviceKind.touch,
+          );
+          await settleStore(tester, fixture.store);
+          expect(surface(tester).controller.document, same(before));
+          expectNoWrites(tester, fixture);
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.55, .55)),
+            PointerDeviceKind.touch,
+          );
+          expect(surface(tester).controller.selectedDraftKey, 7);
+          expect(surface(tester).allowAdd, isFalse);
+          expect(
+            find.byWidgetPredicate(
+              (widget) => widget is ComponentCandidateEditor && widget.controls,
+            ),
+            findsNothing,
+          );
+          final start = candidatePoint(tester, const Offset(.55, .55));
+          final drag = await tester.startGesture(start);
+          await drag.moveBy(const Offset(36, 24));
+          await tester.pump();
+          await drag.up();
+          await settleStore(tester, fixture.store);
+          final moved = surface(tester).controller.document;
+          expect(
+            moved.candidates.single.position,
+            isNot(const Offset(.55, .55)),
+          );
+          expect(moved.candidates.length, 1);
+          final bytes = fixture.sidecar.readAsBytesSync();
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.8, .8)),
+            PointerDeviceKind.touch,
+          );
+          await settleStore(tester, fixture.store);
+          expect(surface(tester).controller.document, same(moved));
+          expect(fixture.sidecar.readAsBytesSync(), bytes);
+          if (hidden == 'focus') {
+            await _tapWidgetByKey(
+              tester,
+              const Key('board_canvas_focus_restore_button'),
+            );
+          } else {
+            await tester.binding.setSurfaceSize(const Size(1440, 1000));
+            await tester.pumpAndSettle();
+          }
+          expect(surface(tester).allowAdd, isTrue);
+          await click(
+            tester,
+            candidatePoint(tester, const Offset(.8, .8)),
+            PointerDeviceKind.touch,
+          );
+          await settleStore(tester, fixture.store);
+          expect(surface(tester).controller.document.candidates.length, 2);
+          expect(fixture.writer.requests, isEmpty);
+          expect(_readProjectState(tester), same(fixture.state));
+          expect(
+            fixture.events.readAsStringSync(),
+            'unchanged canonical events\n',
+          );
+        },
+      );
+    }
+  });
+}
+
+
+void _componentNavigationBlockerTests() {
+  group('component navigation smoke blocker', () {
+    Future<void> click(WidgetTester tester, String key) async {
+      final finder = find.byKey(Key(key));
+      expect(finder, findsOneWidget, reason: '$key must remain reachable');
+      await tester.ensureVisible(finder);
+      final mouse = await tester.startGesture(
+        tester.getCenter(finder),
+        kind: PointerDeviceKind.mouse,
+      );
+      await mouse.up();
+      await tester.pumpAndSettle();
+    }
+
+    void expectNavigator(WidgetTester tester, {String? componentId}) {
+      expect(find.byType(ComponentNavigator), findsOneWidget);
+      expect(find.text('Placement inspector (read-only)'), findsNothing);
+      final navigator = tester.widget<ComponentNavigator>(
+        find.byType(ComponentNavigator),
+      );
+      expect(navigator.selectedComponentId, componentId);
+      expect(_painterSelectedComponentId(tester), componentId);
+    }
+
+    for (final compact in [false, true]) {
+      testWidgets(
+        'confirmed SMP001 and C2 navigation stays usable with compact=$compact',
+        (tester) async {
+          await tester.binding.setSurfaceSize(const Size(1440, 1000));
+          addTearDown(() => tester.binding.setSurfaceSize(null));
+          final store = _ControlledCandidateStore();
+          final writer = _FakeSaveMeasurementWriter();
+          final state = _inlineProjectState(
+            projectDirectory: r'C:\disposable-widget-navigation',
+            components: const [
+              ComponentFact(
+                componentId: 'SMP001',
+                designator: 'SMP001',
+                type: 'unknown_component',
+              ),
+              ComponentFact(
+                componentId: 'S3',
+                designator: 'S3',
+                type: 'unknown_component',
+              ),
+              ComponentFact(componentId: 'C2', designator: 'C2', type: 'ic'),
+            ],
+            placements: const [
+              ComponentVisualPlacementFact(
+                componentId: 'SMP001',
+                coordinateSpace: 'board_normalized',
+                boardSide: 'top',
+                centerX: .25,
+                centerY: .3,
+                width: .1,
+                height: .1,
+                rotationDeg: 0,
+                sourceEventId: 'nav_smp',
+                status: 'user_confirmed_visual',
+              ),
+              ComponentVisualPlacementFact(
+                componentId: 'S3',
+                coordinateSpace: 'board_normalized',
+                boardSide: 'top',
+                centerX: .45,
+                centerY: .7,
+                width: .1,
+                height: .1,
+                rotationDeg: 0,
+                sourceEventId: 'nav_s3',
+                status: 'user_confirmed_visual',
+              ),
+              ComponentVisualPlacementFact(
+                componentId: 'C2',
+                coordinateSpace: 'board_normalized',
+                boardSide: 'top',
+                centerX: .65,
+                centerY: .35,
+                width: .1,
+                height: .1,
+                rotationDeg: 0,
+                sourceEventId: 'nav_c2',
+                status: 'user_confirmed_visual',
+              ),
+            ],
+            wizardIntake: _wizardIntake(
+              contourPoints: const [
+                WizardPoint(x: 0, y: 0),
+                WizardPoint(x: 1, y: 0),
+                WizardPoint(x: 1, y: 1),
+                WizardPoint(x: 0, y: 1),
+              ],
+              visualCandidates: const [
+                WizardVisualCandidate(
+                  draftKey: 7,
+                  position: WizardPoint(x: .85, y: .85),
+                  shape: WizardVisualCandidateShape.rectangle,
+                  sizeScale: 1,
+                  rotationRadians: 0,
+                ),
+              ],
+            ),
+          );
+          await tester.pumpWidget(
+            _harness(
+              projectState: state,
+              candidateDraftStore: store,
+              measurementWriter: writer,
+            ),
+          );
+          await tester.pumpAndSettle();
+          final surface = tester.widget<ComponentCandidateEditor>(
+            find.byWidgetPredicate(
+              (widget) =>
+                  widget is ComponentCandidateEditor && !widget.controls,
+            ),
+          );
+          final draft = surface.controller.document;
+          await click(tester, 'board_canvas_rail_placements_tool');
+          await click(tester, 'board_canvas_component_category_other_unknown');
+          await click(tester, 'board_canvas_component_row_SMP001');
+          expectNavigator(tester, componentId: 'SMP001');
+          if (compact) {
+            await tester.binding.setSurfaceSize(const Size(800, 1000));
+            await tester.pumpAndSettle();
+            expectNavigator(tester, componentId: 'SMP001');
+          }
+          await click(tester, 'board_canvas_component_view_placement');
+          expectNavigator(tester, componentId: 'SMP001');
+          expect(_painterSelectedPlacementKey(tester), 'SMP001|nav_smp');
+          if (compact) {
+            await click(tester, 'board_canvas_placement_selector_disclosure');
+            await click(tester, 'placement_selector_C2|nav_c2');
+            expectNavigator(tester, componentId: 'C2');
+            expect(_painterSelectedPlacementKey(tester), 'C2|nav_c2');
+            await click(tester, 'placement_selector_SMP001|nav_smp');
+            expectNavigator(tester, componentId: 'SMP001');
+            await click(tester, 'board_canvas_placement_selector_disclosure');
+          }
+          await click(tester, 'board_canvas_component_inspector_back');
+          expectNavigator(tester);
+          await click(tester, 'board_canvas_component_row_S3');
+          expectNavigator(tester, componentId: 'S3');
+          await click(tester, 'board_canvas_component_inspector_back');
+          await click(tester, 'board_canvas_component_category_back');
+          await click(
+            tester,
+            'board_canvas_component_category_integrated_circuits',
+          );
+          await click(tester, 'board_canvas_component_row_C2');
+          expectNavigator(tester, componentId: 'C2');
+          await click(tester, 'board_canvas_component_inspector_back');
+          await click(tester, 'board_canvas_component_category_back');
+          final box = tester.renderObject<RenderBox>(
+            find.byKey(const Key('board_canvas_painter')),
+          );
+          final mouse = await tester.startGesture(
+            box.localToGlobal(
+              Offset(box.size.width * .25, box.size.height * .3),
+            ),
+            kind: PointerDeviceKind.mouse,
+          );
+          await mouse.up();
+          await tester.pumpAndSettle();
+          expectNavigator(tester, componentId: 'SMP001');
+          expect(
+            tester
+                .widget<ComponentNavigator>(find.byType(ComponentNavigator))
+                .selectedCategory,
+            ComponentCategory.otherUnknown,
+          );
+          if (compact) {
+            await tester.binding.setSurfaceSize(const Size(1440, 1000));
+            await tester.pumpAndSettle();
+            expectNavigator(tester, componentId: 'SMP001');
+          }
+          await click(tester, 'board_canvas_rail_add_component_tool');
+          final addBox = tester.renderObject<RenderBox>(
+            find.byKey(const Key('board_canvas_painter')),
+          );
+          final placement = await tester.startGesture(
+            addBox.localToGlobal(
+              Offset(addBox.size.width * .65, addBox.size.height * .35),
+            ),
+            kind: PointerDeviceKind.mouse,
+          );
+          await placement.up();
+          await tester.pumpAndSettle();
+          expect(find.byType(ComponentNavigator), findsNothing);
+          expect(find.text('Placement inspector (read-only)'), findsOneWidget);
+          expect(_painterSelectedPlacementKey(tester), 'C2|nav_c2');
+          await click(tester, 'board_canvas_rail_placements_tool');
+          expectNavigator(tester, componentId: 'C2');
+          await click(tester, 'board_canvas_component_inspector_back');
+          await click(tester, 'board_canvas_component_category_back');
+          await click(tester, 'board_canvas_component_category_other_unknown');
+          await click(tester, 'board_canvas_component_row_SMP001');
+          expectNavigator(tester, componentId: 'SMP001');
+          expect(surface.controller.document, same(draft));
+          expect(surface.controller.selectedDraftKey, isNull);
+          expect(store.saves, isEmpty);
+          expect(writer.requests, isEmpty);
+          expect(_readProjectState(tester), same(state));
+          expect(state.events, isEmpty);
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  });
+}
+
+
+void _routingP0P1CorrectionTests() {
+  group('routing P0 P1 correction', () {
+    ComponentCandidateEditor surface(WidgetTester tester) =>
+        tester.widget<ComponentCandidateEditor>(
+          find.byWidgetPredicate(
+            (widget) => widget is ComponentCandidateEditor && !widget.controls,
+          ),
+        );
+
+    Offset placementCenter(WidgetTester tester) {
+      final box = tester.renderObject<RenderBox>(
+        find.byKey(const Key('board_canvas_painter')),
+      );
+      return box.localToGlobal(Offset(box.size.width / 2, box.size.height / 2));
+    }
+
+    Future<void> settle(
+      WidgetTester tester,
+      _RealCandidateStoreProbe store,
+    ) async {
+      for (var i = 0; i < 100; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 5)),
+        );
+        await tester.pump();
+        if (store.finished) {
+          await tester.pumpAndSettle();
+          return;
+        }
+      }
+      fail('Candidate store did not settle.');
+    }
+
+    for (final kind in [PointerDeviceKind.mouse, PointerDeviceKind.touch]) {
+      for (final mode in [
+        'placements',
+        'inspector',
+        'hidden',
+        'safety',
+        'measure',
+        'photos',
+        'canonical',
+      ]) {
+        testWidgets(
+          'P0 $kind overlap outside Lisa in $mode never edits a candidate',
+          (tester) async {
+            await tester.binding.setSurfaceSize(const Size(1440, 1000));
+            addTearDown(() => tester.binding.setSurfaceSize(null));
+            final directory = Directory.systemTemp.createTempSync(
+              'routing-overlap-',
+            );
+            addTearDown(() => directory.deleteSync(recursive: true));
+            final events = File('${directory.path}/events.jsonl')
+              ..writeAsStringSync('canonical sentinel\n');
+            final state = _inlineProjectState(
+              components: const [
+                ComponentFact(
+                  componentId: 'R1',
+                  designator: 'R1',
+                  type: 'resistor',
+                ),
+              ],
+              placements: const [
+                ComponentVisualPlacementFact(
+                  componentId: 'R1',
+                  coordinateSpace: 'board_normalized',
+                  boardSide: 'top',
+                  centerX: .5,
+                  centerY: .5,
+                  width: .06,
+                  height: .03,
+                  rotationDeg: 0,
+                  sourceEventId: 'overlap_confirmed',
+                  status: 'user_confirmed_visual',
+                ),
+              ],
+              projectDirectory: directory.path,
+              wizardIntake: _wizardIntake(
+                contourPoints: const [
+                  WizardPoint(x: 0, y: 0),
+                  WizardPoint(x: 1, y: 0),
+                  WizardPoint(x: 1, y: 1),
+                  WizardPoint(x: 0, y: 1),
+                ],
+                visualCandidates: const [
+                  WizardVisualCandidate(
+                    draftKey: 7,
+                    position: WizardPoint(x: .5, y: .5),
+                    shape: WizardVisualCandidateShape.rectangle,
+                    sizeScale: 1.5,
+                    rotationRadians: 0,
+                  ),
+                  WizardVisualCandidate(
+                    draftKey: 8,
+                    position: WizardPoint(x: .75, y: .75),
+                    shape: WizardVisualCandidateShape.circle,
+                    sizeScale: 1,
+                    rotationRadians: 0,
+                  ),
+                ],
+              ),
+            );
+            final store = _RealCandidateStoreProbe();
+            final writer = _FakeSaveMeasurementWriter();
+            await tester.pumpWidget(
+              _harness(
+                projectState: state,
+                candidateDraftStore: store,
+                measurementWriter: writer,
+              ),
+            );
+            await settle(tester, store);
+            final tool = <String, String>{
+              'placements': 'board_canvas_rail_placements_tool',
+              'inspector': 'board_canvas_rail_inspector_tool',
+              'safety': 'board_canvas_rail_safety_evidence_tool',
+              'measure': 'board_canvas_measure_sheet_button',
+              'photos': 'board_canvas_rail_photos_tool',
+            }[mode];
+            if (tool != null) {
+              await _tapWidgetByKey(tester, Key(tool));
+              await tester.pumpAndSettle();
+            } else if (mode == 'canonical') {
+              await _openCanonicalPlacementAdd(tester);
+              await tester.pumpAndSettle();
+            }
+            final document = surface(tester).controller.document;
+            final beforeSelection = _painterSelectedPlacementKey(tester);
+            // A real drag must be routed to Canvas, never to the overlapping draft.
+            final drag = await tester.startGesture(
+              placementCenter(tester),
+              kind: kind,
+            );
+            await drag.moveBy(const Offset(36, 24));
+            await tester.pump();
+            await drag.up();
+            await settle(tester, store);
+            expect(surface(tester).controller.document, same(document));
+            expect(surface(tester).controller.selectedDraftKey, isNull);
+            expect(_painterSelectedPlacementKey(tester), beforeSelection);
+            final tap = await tester.startGesture(
+              placementCenter(tester),
+              kind: kind,
+            );
+            await tap.up();
+            await settle(tester, store);
+            expect(
+              _painterSelectedPlacementKey(tester),
+              'R1|overlap_confirmed',
+            );
+            expect(surface(tester).controller.document, same(document));
+            expect(surface(tester).controller.selectedDraftKey, isNull);
+            expect(
+              find.byKey(const Key('board_canvas_rail_add_component_active')),
+              findsNothing,
+            );
+            if (mode == 'placements') {
+              expect(find.byType(ComponentNavigator), findsOneWidget);
+            }
+            expect(
+              File(
+                '${directory.path}/.tracebench_local/component_candidates.json',
+              ).existsSync(),
+              isFalse,
+            );
+            expect(events.readAsStringSync(), 'canonical sentinel\n');
+            expect(store.saveCalls, 0);
+            if ([
+              'placements',
+              'inspector',
+              'hidden',
+              'safety',
+            ].contains(mode)) {
+              final frame = _sharedCandidatePainter(tester).referenceRect;
+              final box = tester.renderObject<RenderBox>(
+                find.byKey(const ValueKey('board_canvas_candidate-painter')),
+              );
+              final isolated = await tester.startGesture(
+                box.localToGlobal(
+                  Offset(
+                    frame.left + .75 * frame.width,
+                    frame.top + .75 * frame.height,
+                  ),
+                ),
+                kind: kind,
+              );
+              await isolated.up();
+              await settle(tester, store);
+              expect(surface(tester).controller.selectedDraftKey, 8);
+              expect(_painterSelectedPlacementKey(tester), isNull);
+              expect(surface(tester).controller.document, same(document));
+              expect(store.saveCalls, 0);
+            }
+            expect(writer.requests, isEmpty);
+            expect(_readProjectState(tester), same(state));
+            expect(state.events, isEmpty);
+            expect(tester.takeException(), isNull);
+          },
+        );
+      }
+    }
+
+    for (final count in [0, 1, 2]) {
+      testWidgets(
+        'P1 Inspector resolves only an unambiguous C2 placement: $count eligible',
+        (tester) async {
+          await tester.binding.setSurfaceSize(const Size(1440, 1000));
+          addTearDown(() => tester.binding.setSurfaceSize(null));
+          final state = _inlineProjectState(
+            components: const [
+              ComponentFact(componentId: 'R1', type: 'resistor'),
+              ComponentFact(componentId: 'C2', type: 'ic'),
+            ],
+            placements: [
+              _navigatorPlacements.first,
+              const ComponentVisualPlacementFact(
+                componentId: 'C2',
+                coordinateSpace: 'photo_normalized',
+                boardSide: 'top',
+                centerX: .5,
+                centerY: .5,
+                width: .1,
+                height: .1,
+                rotationDeg: 0,
+                sourceEventId: 'not_eligible',
+                status: 'user_confirmed_visual',
+              ),
+              for (var i = 0; i < count; i++)
+                ComponentVisualPlacementFact(
+                  componentId: 'C2',
+                  coordinateSpace: 'board_normalized',
+                  boardSide: 'top',
+                  centerX: .6 + i * .1,
+                  centerY: .4,
+                  width: .1,
+                  height: .1,
+                  rotationDeg: 0,
+                  sourceEventId: 'c2_$i',
+                  status: 'user_confirmed_visual',
+                ),
+            ],
+          );
+          final store = _ControlledCandidateStore();
+          final writer = _FakeSaveMeasurementWriter();
+          await tester.pumpWidget(
+            _harness(
+              projectState: state,
+              candidateDraftStore: store,
+              measurementWriter: writer,
+            ),
+          );
+          await tester.pumpAndSettle();
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_placements_tool'),
+          );
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_component_category_integrated_circuits'),
+          );
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_component_row_C2'),
+          );
+          expect(_painterSelectedComponentId(tester), 'C2');
+          expect(_painterSelectedPlacementKey(tester), isNull);
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_inspector_tool'),
+          );
+          await tester.pumpAndSettle();
+          expect(_painterSelectedComponentId(tester), 'C2');
+          expect(
+            _painterSelectedPlacementKey(tester),
+            count == 1 ? 'C2|c2_0' : isNull,
+          );
+          if (count == 1) {
+            expect(find.text('Component ID: C2'), findsOneWidget);
+          }
+          await _tapWidgetByKey(
+            tester,
+            const Key('board_canvas_rail_placements_tool'),
+          );
+          final navigator = tester.widget<ComponentNavigator>(
+            find.byType(ComponentNavigator),
+          );
+          expect(
+            navigator.selectedCategory,
+            ComponentCategory.integratedCircuits,
+          );
+          expect(navigator.selectedComponentId, 'C2');
+          expect(
+            navigator.selectedPlacementId,
+            count == 1 ? 'C2|c2_0' : isNull,
+          );
+          expect(writer.requests, isEmpty);
+          expect(store.saves, isEmpty);
+          expect(_readProjectState(tester), same(state));
+          expect(state.events, isEmpty);
+        },
+      );
+    }
+  });
 }

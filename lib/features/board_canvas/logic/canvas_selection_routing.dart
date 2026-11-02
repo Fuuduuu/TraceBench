@@ -5,6 +5,7 @@ enum CanvasContextMode {
   inspector,
   placements,
   measure,
+  candidateAuthoring,
   addComponentTemplates,
   safetyEvidence,
   photos,
@@ -49,6 +50,20 @@ class CanvasRoutingState {
   final CanvasSelection selection;
   final CanvasContextMode mode;
 
+  bool get inAddWorkflow =>
+      mode == CanvasContextMode.candidateAuthoring ||
+      mode == CanvasContextMode.addComponentTemplates;
+
+  bool get candidateHitsFirst => mode == CanvasContextMode.candidateAuthoring;
+
+  bool get candidatesInteractive =>
+      mode != CanvasContextMode.measure &&
+      mode != CanvasContextMode.photos &&
+      mode != CanvasContextMode.addComponentTemplates;
+
+  bool candidateAddEnabled(bool controlsVisible) =>
+      mode == CanvasContextMode.candidateAuthoring && controlsVisible;
+
   bool get clearsCandidateSelection => selection is! EmptyCanvasSelection;
 
   CanvasRoutingState withSelection(CanvasSelection next) =>
@@ -84,7 +99,8 @@ class CanvasRoutingState {
   CanvasRoutingState enterMode(
       CanvasContextMode next, Map<String, String> placements) {
     var target = selection;
-    if (next == CanvasContextMode.measure) {
+    if (next == CanvasContextMode.measure ||
+        next == CanvasContextMode.inspector) {
       if (target is ComponentSelection) {
         final matches = placements.entries
             .where((entry) => entry.value == target.componentId)
@@ -94,7 +110,9 @@ class CanvasRoutingState {
               placementKey: matches.single.key,
               componentId: matches.single.value);
         }
-      } else if (target is EmptyCanvasSelection && placements.isNotEmpty) {
+      } else if (next == CanvasContextMode.measure &&
+          target is EmptyCanvasSelection &&
+          placements.isNotEmpty) {
         // Accepted legacy fallback: absence of explicit selection is not proof
         // that the first visible placement is the technician's intended target.
         final first = placements.entries.first;
@@ -116,16 +134,17 @@ class CanvasRoutingState {
           CanvasSelection next) =>
       CanvasRoutingState(
           selection: next,
-          mode: mode == CanvasContextMode.measure ||
-                  mode == CanvasContextMode.photos
-              ? mode
-              : CanvasContextMode.inspector);
+          mode: _keepsCanvasMode ? mode : CanvasContextMode.inspector);
 
-  CanvasRoutingState clearOnCanvas() => CanvasRoutingState(
-      mode: _keepsCanvasMode ? mode : CanvasContextMode.hidden);
+  CanvasRoutingState clearOnCanvas() => mode == CanvasContextMode.measure
+      ? this
+      : CanvasRoutingState(
+          mode: _keepsCanvasMode ? mode : CanvasContextMode.hidden,
+        );
 
-  CanvasRoutingState selectCandidate() =>
-      const CanvasRoutingState(mode: CanvasContextMode.addComponentTemplates);
+  CanvasRoutingState selectCandidate() => candidatesInteractive
+      ? const CanvasRoutingState(mode: CanvasContextMode.candidateAuthoring)
+      : this;
 
   bool get _keepsCanvasMode =>
       mode == CanvasContextMode.measure ||

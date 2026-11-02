@@ -1,6 +1,6 @@
 # BenchBeep workflow findings
 
-Updated: 2026-10-31. Baseline: `357ea6ed33a561aadcad9aaf741d38d83e52fcc8`.
+Updated: 2026-11-02. Accepted implementation baseline: `b188be3aeb186eb20c2cf879a8e1f453c32853ae`.
 
 This register preserves all 16 findings from the independent Claude End-to-End
 Workflow Architecture Audit, as supplied by the human on 2026-10-31. No verified
@@ -32,10 +32,10 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Priority: **P1**
 - Responsible module: [CandidateDragSession](../lib/features/component_candidates/logic/candidate_drag_session.dart) pure transaction decisions and [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) render-transform/preview adapter; Canvas retains panel and sidecar lifecycle.
 - Finding type: defect.
-- Reproduction/evidence: Audit BB-02; the human supplied a real Windows VM-pointer reproduction with a 163–176 logical-pixel jump and local draft write. Targeted RED tests reproduce changed normalized position and persistence after a two-pixel move across the actual context-panel reflow; GREEN retains the original document and sidecar. Runtime re-verification remains a separate evidence gate.
-- Status: **IN_PROGRESS** — displacement-based, thresholded preview/commit interaction implemented; pending independent acceptance and commit.
+- Reproduction/evidence: Audit BB-02; the human supplied a real Windows VM-pointer reproduction with a 163–176 logical-pixel jump and local draft write. Targeted RED tests reproduce changed normalized position and persistence after a two-pixel move across the actual context-panel reflow; GREEN retains the original document and sidecar. The interaction extraction was subsequently accepted and committed at `b188be3`; the current routing patch has its own human-smoke gate.
+- Status: **FIXED** — independently accepted Candidate Interaction extraction committed at `b188be3`.
 - Regression test: [Standalone session tests](../test/unit/candidate_drag_session_test.dart), [editor pointer transaction tests](../test/widget/component_candidate_editor_test.dart), and [Canvas tests](../test/widget/board_canvas_screen_test.dart): `BB-02 panel-opening wobble never persists a real sidecar` and `candidate cancelled drag never persists a real sidecar`. Covers reflow, click/wobble, valid drag, scale, ownership, cancellation and interrupted end.
-- Fix commit: Not yet available; the interaction extraction is uncommitted.
+- Fix commit: `b188be3aeb186eb20c2cf879a8e1f453c32853ae`.
 
 ## BB-03 — Candidate-to-confirmed-component workflow absent
 
@@ -50,32 +50,32 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 ## BB-04 — Candidate click in Measurement clears target
 
 - Priority: **P2**
-- Responsible module: [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) candidate selection and measurement-target composition, with [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) interaction callbacks.
+- Responsible module: [CanvasRoutingState](../lib/features/board_canvas/logic/canvas_selection_routing.dart) empty-click/Measurement policy and [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) hit routing; Measurement retains its writer/draft ownership.
 - Finding type: defect.
-- Reproduction/evidence: Audit BB-04; clicking a candidate while Measurement is active clears the measurement target.
-- Status: **OPEN** — audit-reported; no fix in this patch.
-- Regression test: No dedicated finding regression linked yet; BB-01's Navigator-entry regressions do not establish coverage of candidate clicks.
-- Fix commit: Not recorded.
+- Reproduction/evidence: Audit BB-04; mouse and touch RED cases clear an explicit Measurement target after an empty click. The patch preserves target and typed draft for empty/inert-candidate clicks; an intentional different-placement click still changes target.
+- Status: **IN_PROGRESS** — routing correction implemented; pending independent acceptance and commit.
+- Regression test: Standalone routing test `BB-04 empty and inert candidate clicks retain exact measurement intent`; [Canvas tests](../test/widget/board_canvas_screen_test.dart), group `Canvas interaction routing BB-04/05/06`, mouse/touch target-and-draft cases also verify the explicit R2 save request.
+- Fix commit: Not yet available; this routing patch is uncommitted.
 
 ## BB-05 — Placement click in Lisa may create a candidate
 
 - Priority: **P2**
-- Responsible module: [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) Lisa-mode interaction routing and [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) add gestures.
+- Responsible module: [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) candidate/confirmed-placement hit precedence, with mode decisions in [CanvasRoutingState](../lib/features/board_canvas/logic/canvas_selection_routing.dart).
 - Finding type: defect.
-- Reproduction/evidence: Audit BB-05; clicking an existing placement in Lisa may create a candidate instead of only selecting the placement.
-- Status: **OPEN** — audit-reported; no fix in this patch.
-- Regression test: No dedicated finding regression linked yet.
-- Fix commit: Not recorded.
+- Reproduction/evidence: Audit BB-05; mouse and touch RED cases lose the confirmed-placement selection in Lisa. Inside visual Lisa only, candidate hits take precedence, then existing confirmed placements open Inspector; only eligible empty authoring space adds a candidate. Outside visual Lisa, confirmed placements retain priority over overlapping candidates, including a zero-sidecar-write drag.
+- Status: **IN_PROGRESS** — routing correction implemented; pending independent acceptance and commit.
+- Regression test: [Canvas tests](../test/widget/board_canvas_screen_test.dart), group `Canvas interaction routing BB-04/05/06`: mouse/touch placement/no-sidecar-write, overlapping candidate/exclusive selection and one empty-space addition through the real local store.
+- Fix commit: Not yet available; this routing patch is uncommitted.
 
 ## BB-06 — Invisible add behavior in compact/focus modes
 
 - Priority: **P2**
-- Responsible module: [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) responsive/focus composition and candidate-authoring state.
+- Responsible module: [CanvasRoutingState](../lib/features/board_canvas/logic/canvas_selection_routing.dart) authoring policy and [Board Canvas](../lib/features/board_canvas/screens/board_canvas_screen.dart) actual responsive/focus visibility.
 - Finding type: UX issue.
-- Reproduction/evidence: Audit BB-06; add behavior is reported invisible in compact/focus modes.
-- Status: **OPEN** — audit-reported; no fix in this patch.
-- Regression test: No dedicated finding regression linked yet.
-- Fix commit: Not recorded.
+- Reproduction/evidence: Audit BB-06; RED focus/compact cases create and persist a candidate despite hidden controls. Candidate creation now requires visible Lisa authoring controls; existing candidate selection/drag remain available and restoring controls re-enables add.
+- Status: **IN_PROGRESS** — routing correction implemented; pending independent acceptance and commit.
+- Regression test: [Canvas tests](../test/widget/board_canvas_screen_test.dart), `BB-06 $hidden hides Add but preserves candidate selection and drag`; standalone routing policy cases cover every mode with visible/hidden controls. Compact editing controls/retry remain a separate unresolved UX gap.
+- Fix commit: Not yet available; this routing patch is uncommitted.
 
 ## BB-07 — Empty Component Navigator lacks guidance
 
@@ -153,9 +153,9 @@ patch remains `IN_PROGRESS`. Unlinked regression coverage is not claimed absent.
 - Responsible module: [CandidateDragSession](../lib/features/component_candidates/logic/candidate_drag_session.dart) center translation and [ComponentCandidateEditor](../lib/features/component_candidates/widgets/component_candidate_editor.dart) current-transform displacement adapter.
 - Finding type: defect.
 - Reproduction/evidence: Audit BB-14; dragging a candidate snaps its center to the pointer.
-- Status: **IN_PROGRESS** — dragging preserves the original grab offset; pending independent acceptance and commit.
+- Status: **FIXED** — independently accepted grab-offset correction committed at `b188be3`.
 - Regression test: [Editor tests](../test/widget/component_candidate_editor_test.dart), `BB-14 drag retains the grab offset and commits once on up`, scaled-surface and changed-origin cases; [standalone session tests](../test/unit/candidate_drag_session_test.dart) verify center translation without snapping.
-- Fix commit: Not yet available; the interaction extraction is uncommitted.
+- Fix commit: `b188be3aeb186eb20c2cf879a8e1f453c32853ae`.
 
 ## BB-15 — Outdated UI tooltips and test descriptions
 

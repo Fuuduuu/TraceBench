@@ -1,6 +1,11 @@
 # ARCHITECTURE.md
 
-Sprint 0 architecture:
+Current implementation ownership and diagrams live in
+[ARCHITECTURE_BOUNDARIES.md](ARCHITECTURE_BOUNDARIES.md). That document is the
+current architecture entry point; the text below preserves historical Sprint 0
+scope and must not be read as today's implemented feature inventory.
+
+Historical Sprint 0 architecture:
 
 - local-first
 - append-only `events.jsonl`

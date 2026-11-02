@@ -1,124 +1,105 @@
 # CODEX_TOOLING_POLICY.md
 
-## Purpose
+## Purpose and default
 
-Record TraceBench Codex/agent tooling posture so each pass can decide which external automation to allow, while defaulting to safe local-only execution.
+Record TraceBench's local-first agent tooling posture. AGENTS and the latest
+explicit human task define authority; availability of a tool is not permission
+to expand paths, alter data or bypass a stopped runtime session.
 
-## Current status
-
-The repository has now introduced repo-local guidance assets:
-
-- `AGENTS.md`
-- `.agents/skills/tracebench-*`
-- `docs/CODEX_TOOLING_POLICY.md`
-- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md`
-
-No external plugins, MCP servers, or dependency/tool installers are enabled in this pass.
+Unrelated external tools remain default-off. This document records one approved
+Dart/Flutter MCP exception, not general permission to install plugins, upload
+projects, enable integrations or change future tooling policy.
 
 ## Current repo-skill inventory
 
-This policy and the actual `.agents/skills/**` paths own the current inventory.
-`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` preserves the superseded
-eight-role architecture as historical rationale; its catalogue and batch plan
-are not current instructions.
+Exactly three loader-qualified repository skills remain:
 
-Exactly three loader-qualified repo-local skills remain active:
+- `tracebench-prompt-authoring`
+- `tracebench-scope-lock`
+- `tracebench-audit-reconciliation`
 
-- `tracebench-prompt-authoring`;
-- `tracebench-scope-lock`; and
-- `tracebench-audit-reconciliation`.
+The actual `.agents/skills/**` files and this policy own the current inventory.
+`docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` retains superseded eight-role
+rationale, not an active catalogue or batch programme. Removed adapter skills
+remain in Git history; no replacement catalogue/automatic loader is scheduled.
+Skills provide judgment only and cannot grant writes, staging or protected scope.
 
-The stale frontmatter-less `tracebench-docs-closeout`,
-`tracebench-flutter-widget-pass`, `tracebench-safe-staging`, and
-`tracebench-v2-event-boundary` files were removed from the active skill path.
-Their useful invariants remain in canonical owners and their former bytes remain
-in Git history. `tracebench-code-map-lifecycle` was never created and is not
-scheduled. No eight-role catalogue programme is active.
+## Approved Dart / Flutter MCP exception
 
-A skill owns reusable judgment and workflow technique only: it cannot authorize
-or expand writes, routes, staging, protected surfaces, or pass allowlists.
-Generic or personal extraction requires a separate human decision.
+The human explicitly authorized the official Dart/Flutter MCP connection for
+Codex and Claude Code. Configuration is user-level (including client project
+entries), not a repository dependency or an addition to pubspec. This records
+that existing authorization; it does not modify either client's configuration.
 
-Tools and validators may later own proven deterministic checks, but this
-policy and architecture decision add no automatic loader, lint, hook, CI,
-installer, or validator behavior.
+Verified local setup:
 
-External tooling remains default-off.
+- Project build/test SDK: `C:\dev\flutter-tracebench`, Flutter 3.44.9 / Dart 3.12.2.
+- Codex MCP executable: `C:\dev\flutter\bin\cache\dart-sdk\bin\dart.exe`,
+  configured with `--flutter-sdk C:\dev\flutter`.
+- That separate SDK is Flutter 3.47.7 / Dart 3.13.5. Previous official MCP
+  initialization identified server 1.2.2. The SDKs can differ.
+- Claude Code's user configuration contains a Dart server entry for this project.
+  A configured entry is not a claim of an active live application connection.
 
-## Default policy
+The approved uses are targeted analysis/code intelligence and explicitly scoped,
+controlled Windows runtime inspection. Runtime work uses a short-path disposable
+export containing the intended source version and disposable test projects.
+Do not test against, write to or upload real user projects without specific
+human authorization. VM evaluation is not blanket permission to mutate data.
+Synthetic pointer evidence never substitutes for human visual acceptance.
 
-- Internet is OFF by default for Codex implementation passes unless explicitly approved.
-- External plugin/MCP write actions are OFF by default.
-- No downloads/installs/updates unless a pass explicitly authorizes them.
-- No dependency/package changes in this tooling-policy/docs layer pass.
-- No secret access.
-- No project upload/share outside the local repo unless explicitly authorized.
+A task can forbid runtime launch/input despite the configured connection. A
+human stop (including physical Escape during Computer Use) must be respected;
+do not bypass it through VM input. This docs-only sync launches no app or runtime
+inspection and changes no MCP settings.
 
-## Approved now
+### Existing enabled and restricted surfaces
 
-- `AGENTS.md` as repo-level guidance.
-- The three current `.agents/skills/tracebench-*` workflow skills listed above.
-- `docs/CODEX_TOOLING_POLICY.md` as policy ledger.
-- `docs/spec/TRACEBENCH_REPO_SKILLS_ARCHITECTURE.md` as superseded historical
-  rationale only.
+The verified Codex allowlist contains `roots`, `analyze_files`, `lsp`, `dtd`,
+`vm_service`, `widget_inspector`, `get_runtime_errors`, `list_devices`,
+`launch_app`, `list_running_apps`, `get_app_logs` and `stop_app`.
+Analysis, app launch/stop and VM operations retain their actual client approval
+settings and task bounds; not every enabled operation is read-only.
 
-## Future optional MCP/plugin candidates
+Write-capable/convenience surfaces are disabled in that configuration:
+`pub`, `dart_fix`, `dart_format`, `create_project`, `run_tests`, `hot_restart`,
+`hot_reload`, `flutter_driver_command`, `flutter_driver_user_journey_test`,
+`pub_dev_search`, `read_package_uris` and `rip_grep_packages`.
+Do not re-enable them through task improvisation. In particular, do not add
+driver dependencies or restart a running Windows app to make a test possible.
+Explicit CLI tests remain available under the project SDK; see [README](../README.md).
 
-- **Dart/Flutter MCP**
-  - Best for analyzer, tests, formatting, widget/runtime insight.
-  - Allowed only in future technical-code passes after explicit user confirmation.
-- **Context7 MCP / OpenAI Docs MCP**
-  - Best for current developer documentation and reference recall.
-  - Read-only documentation usage only.
-- **Playwright MCP / Playwright Interactive Skill**
-  - Best for browser/web UI smoke.
-  - Use only when web/browser target is explicitly scoped.
-- **Figma MCP**
-  - Best for design-context reads (components/variables/layout) during UX redesign work.
-  - Read-only unless a design-write pass is explicitly scoped.
-- **Codex Security**
-  - Use only in an explicit security review pass.
-- **GitHub MCP**
-  - Read-only issue/PR metadata only unless explicitly scoped.
+Do not assume Codex's tool restrictions automatically configure another client.
+The same human/data/scope boundaries apply in Claude Code; its actual client
+settings remain separately owned and are not rewritten by this document.
 
-## Disallowed by default
+## Default policy outside that exception
 
-- auto-installing `npm`/`pip`/`pub` packages
-- broad plugin bundles that include write integrations
-- Figma write/canvas mutation
-- GitHub write actions
-- browser automation against external services unless scoped
-- any tool that reads secrets or environment credentials
-- any tool that modifies global Codex/user settings
-
-## Pass-specific approval matrix
-
-| Pass type | External MCP/plugin default |
-|---|---|
-| Docs-only / governance | OFF |
-| Flutter UI pass | Optional Dart/Flutter MCP after explicit user approval |
-| Security review | Optional Codex Security after explicit user approval |
-| Web smoke pass | Optional Playwright only if web target is within scope |
-| UX redesign reading pass | Optional read-only Figma MCP after explicit user approval |
-
-## Recommended installation order
-
-1. Keep this docs-only layer and stable guidance in place.
-2. Enable explicit read-focused candidate MCP only after the next pass confirms scope and safety.
-3. Gate every enablement behind a PASS_ID and post-audit.
-4. Enable write-capable tooling only in dedicated, explicitly scoped passes.
-
-## Security notes
-
-- No credentials or tokens are required for this pass.
-- All plugin/MCP actions are disallowed unless this policy is explicitly updated and a matching pass routes them in.
+- Internet remains off for implementation unless explicitly authorized.
+- Unrelated MCP/plugin actions remain off; no automatic npm/pip/pub installs,
+  downloads, upgrades, connection setup or dependency changes.
+- No secret/credential access, project upload/share, external messaging or
+  modification of global user/client settings.
 - Never stage or include unknown binary artifacts from plugin output.
+- Write-capable GitHub/Figma/browser integrations and broad plugin bundles
+  require separate explicit authority; the Dart exception does not enable them.
+- Human ownership of staging/commit/push and protected data gates is unchanged.
 
-## TraceBench-specific combinations
+Optional documentation, browser, design or security integrations remain future
+candidates, enabled only by a separately authorized task. Their appearance in a
+client tool list does not override this default.
 
-Activate only independently triggered current repo skills. Exact staging stays
-human-owned under `AGENTS.md`, the active allowlist, live Git state, and the
-accepted audit set; no skill grants staging authority. Flutter/code-map work and
-V2/protected work route through their canonical repo owners instead of deleted
-adapter skills. Optional external tooling still requires the separate
-pass-specific approval above.
+## Task routing and configuration changes
+
+| Task | Approved tooling posture |
+| --- | --- |
+| Documentation sync | Local files/Git and appropriate existing validators; no runtime launch or installs. |
+| Flutter implementation | Project SDK CLI; approved Dart analysis only within task bounds. |
+| Windows smoke | Approved runtime inspection only when explicitly requested, with disposable source/project and human acceptance kept distinct. |
+| Other external integrations | Default-off; require separate human authorization. |
+
+The already-approved Dart connection does not require a new PASS_ID for every
+analysis/runtime use. Apply the current explicit task and risk-based governance;
+do not invent a scope-lock or audit-recording child just to reuse the connection.
+New tools, permission broadening or actual configuration changes are not approved
+by this recorded exception. No automatic installation/enablement order exists.

@@ -1,68 +1,80 @@
 # Active task boundary and protected scope
 
 Current: `NEEDS_USER_DECISION`
-Next: `SHARED_VOCABULARY_EXTRACTION`
+Next: `NEEDS_USER_DECISION`
 
 ## Authorization state
 
-No runtime implementation pass is currently reserved by this document. The
-documentation consolidation at `49c65b9` is completed and supplies no continuing
-authorization. Accepted implementation now includes projection refresh,
-ComponentCandidateEditor, standalone Navigator and Placement template/preview
-extraction through `db1003f401424d98c09a9ab3609129fd0a892a43`.
+Accepted runtime baseline: `33cf477b6661d077b16b814965b1ac02bf953cb0`.
+No further runtime implementation is reserved. The latest explicit human request
+authorizes one bounded documentation sync; it does not select the next module,
+create a PASS_ID or arm an implementation child.
 
-The latest human request permits one bounded docs-only reality sync of the seven
-named active documents and verified corrections in eight existing Code Maps.
-It creates no new scope-lock programme, audit artifact, runtime authorization or
-automatic child. Human approval is required before staging or committing.
+The completed consolidation and older reservations are historical. Current
+accepted source includes shared vocabulary, safe projection refresh, shared
+candidate editing/local persistence, Navigator/Placement-preview extraction,
+selection/mode routing, candidate drag decisions and interaction corrections.
 
-The Next entry is planned technical modularization only: a small shared-vocabulary
-extraction for component types, labels/normalization and measurement units. This
-documentation sync authorizes no implementation of that work.
+## Exact documentation boundary
 
-Candidate-to-canonical confirmation is a deferred product feature and
-needs a new explicit protected task and a persistent geometry compatibility
-decision; an old draft, archive or queue entry cannot authorize it.
+Only these existing files may change in this sync:
+
+- `docs/CURRENT_STATE.md`
+- `docs/PASS_QUEUE.md`
+- `docs/ACTIVE_SCOPE_LOCK.md`
+- `docs/WORKFLOW_FINDINGS.md`
+- `docs/ARCHITECTURE_BOUNDARIES.md`
+- `docs/ARCHITECTURE.md`
+- `docs/PROJECT_MEMORY.md`
+- `docs/CODEX_TOOLING_POLICY.md`
+- `README.md`
+
+ARCHITECTURE_BOUNDARIES is the current implementation ownership summary;
+ARCHITECTURE retains Sprint 0 history. Diagrams describe committed source, not
+new functionality. Code Maps, AGENTS/CLAUDE, runtime/tests, schemas, assets,
+fixtures, specifications and audit/archive material remain unchanged. No new files.
 
 ## Protected boundaries
 
-- POHIKIRI and human-confirmation requirements remain unchanged.
-- No Dart, Python, runtime, test, generated code, tool, asset, dependency, schema,
-  fixture, user-project or sidecar edit is authorized by this sync.
-- Existing event envelopes/payloads, V1/V2 semantics, canonical writers,
-  ProjectSession guards, materializer algorithms, persisted placement coordinates,
-  evidence lifecycle and Project ZIP implementation remain fixed.
-- Editable candidate drafts are noncanonical. Their local sidecar is not an
-  event, confirmed component/placement, evidence promotion or new ZIP path.
-- Future new/changed writer, canonical data, migration, persistence compatibility
-  or ZIP contracts still require explicit protected scope, regression/recovery
-  evidence and independent review. Existing accepted contracts may be reused
-  unchanged under a compact, explicit human task.
+- POHIKIRI and human confirmation remain authoritative. Rendering, selection and
+  local candidate drafts do not create canonical truth.
+- Event envelopes/payloads, writers, Session generation/dedup, materialization,
+  evidence/repair semantics, persisted placement geometry and Project ZIP are frozen.
+- Candidate sidecars are noncanonical, excluded from ZIP and distinct from
+  original Wizard intake. Candidate-to-canonical confirmation/migration is deferred.
+- Future new/changed canonical, writer, migration, persistence-compatibility or ZIP
+  contracts require explicit protected scope and relevant independent review.
+- The tooling-policy edit records the approved user-level Dart MCP exception and
+  replaces the previous per-use PASS_ID/post-audit gate and approval matrix with
+  documented task-bounded reuse rules. It authorizes no actual configuration
+  change, install, real-project write or unrelated external tool. No Flutter
+  suite/build, app launch or Computer Use here.
 - No staging, commit, push, reset, stash, clean or destructive cleanup.
 
 ## Foreign material and history
 
-Preserve byte-for-byte and exclude from any proposed staging set:
+Preserve byte-for-byte and exclude from the documentation commit set:
 
 - `docs/AUDIT_INDEX.md`
 - `docs/audit/TRACEBENCH_COMPONENT_CANDIDATE_EDITOR_V1_SCOPE_LOCK_PASS.md`
+- `windows/flutter/generated_plugin_registrant.cc`
+- `windows/flutter/generated_plugin_registrant.h`
+- `windows/flutter/generated_plugins.cmake`
 
-The uncommitted editor scope draft is not authority for the already committed
-editor or future confirmation work. Accepted implementation is established by
-Git and current source. Preserve all previous audit artifacts/verdicts and
-archives; this correction does not rewrite accepted history.
-
-Historical reservations:
+The old editor draft is not authority for accepted implementation or future
+confirmation work. Historical reservations remain in the
 [complete committed scope snapshot](archive/ACTIVE_SCOPE_LOCK_HISTORY_2026-10-29.md),
-captured at `69e5bd4` before consolidation.
+captured at `69e5bd4`; existing audit artifacts/verdicts are not rewritten.
 
 ## Validation and next work
 
-Verify committed-source evidence, exact docs-only material, frozen source and
-foreign drafts, changed links/paths and map anchors, consistent Current/Next
-pointers and both Git whitespace checks. Do not run Flutter suites for this
-text-only correction. Keep validation output outside the repository.
+Check the exact nine-document diff, source/commit claims, finding statuses,
+Current/Next agreement, local Markdown links, Mermaid syntax where permitted
+local tooling exists, Git whitespace and frozen-file hashes. Run applicable
+Python documentation validation in scratch; keep generated outputs out of this
+checkout. Preflight PASS is not test or review acceptance.
 
-After independent review and exact human commit, the route remains
-NEEDS_USER_DECISION. CURRENT_STATE owns priorities; PASS_QUEUE sequences them.
-No further implementation or preparatory pass is armed.
+After one independent read-only review and an exact human-authorized commit,
+Current/Next remain NEEDS_USER_DECISION. CURRENT_STATE owns priorities and
+PASS_QUEUE sequence. No additional review, audit-recording or implementation
+programme is automatically created.

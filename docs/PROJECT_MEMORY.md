@@ -63,7 +63,16 @@ Detailed semantic invariants and canonical-owner routing live in `docs/TRUTH_IND
 
 These meanings remain separate; one event must not silently promote into another semantic category.
 
-The `board_outline_confirmed` Python schema/validator/materializer foundation is implemented. Its canonical writer and Project ZIP behavior reuse the existing generic validation and regeneration boundaries. No wizard, Board Canvas authoring flow, candidate persistence, or Dart/Flutter activation is implied; those remain separately scoped future work.
+The `board_outline_confirmed` Python schema/validator/materializer foundation is implemented. Its canonical writer and Project ZIP behavior reuse the existing generic validation and regeneration boundaries. This does not imply a Wizard or Canvas canonical board-outline confirmation flow.
+
+Visual authoring is separately implemented through `33cf477`: Wizard Step 4 and
+Canvas share ComponentCandidateEditor and WizardCandidateGeometry; Canvas keeps
+local drafts in `.tracebench_local/component_candidates.json`. Selection, dragging,
+sizing and rotation do not confirm canonical component identity or placement.
+Wizard creation retains original intake; Canvas edits do not rewrite it. Existing
+Components/Placement writers remain a separate explicit canonical workflow.
+Candidate-to-canonical confirmation and persistent geometry compatibility remain
+deferred. Current implementation ownership: [Architecture boundaries](ARCHITECTURE_BOUNDARIES.md).
 
 ## Local-first and Project ZIP non-negotiables
 

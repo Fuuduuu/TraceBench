@@ -5,8 +5,14 @@
 - Workspace: `C:\dev\TraceBench`; repository: `Fuuduuu/TraceBench`; branch: `main`.
 - BenchBeep is the technician-facing product; TraceBench is the platform and
   BoardFact the fact subsystem.
-- Read `docs/POHIKIRI.md` fully. It owns the product/human-confirmation boundary
-  and is not changed by workflow simplification.
+- Read `docs/POHIKIRI.md` fully. It is the immutable primary product and manual
+  workflow charter, including the human-confirmation boundary.
+- `docs/POHIKIRI_AI.md` preserves the former charter and governs future AI work.
+  For AI tasks, read it after the five-owner entry sequence below. Read both
+  charters, with the primary product charter taking precedence on conflicts.
+- Neither charter is a running backlog, implementation status or authorization
+  to change protected contracts. This human-approved separation grants no
+  permission for further changes to either charter.
 
 ## Compact entry and authority
 

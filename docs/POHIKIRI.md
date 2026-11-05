@@ -1,107 +1,223 @@
-# PÕHIKIRI — TraceBench / BenchBeep
+# PÕHIKIRI — BENCHBEEP
 
-**Mis see fail on:** äpi muutumatu põhikiri — üks tõeallikas skoobi kohta.
-**Staatus:** tracked canonical product charter / first-read scope anchor; see ei ole scratch.
-Loe see **täielikult läbi enne iga tegevust**. Ükski ettepanek, muudatus ega kood
-ei tohi minna vastuollu selle failiga. Kui soov läheb vastuollu — **peatu ja küsi
-inimeselt**, ära laienda skoopi vaikimisi.
+## 1. Staatus ja eesmärk
 
-**See fail ei kasva.** Lubatud on ainult väikesed täpsustused, kui sisu jääb
-kompaktseks. Jooksvad detailid ja seis kuuluvad operatiivdokumentidesse
-(`CURRENT_STATE.md`, `PASS_QUEUE.md`, `ACTIVE_SCOPE_LOCK.md`), mitte siia.
+See dokument on BenchBeepi muutumatu peamine toote- ja töövoopõhikiri.
 
----
+See määrab, milline peab rakendus olema ja kuidas tehnik seda kasutab.
 
-## 1. Põhivisioon
+Põhikirja loetakse enne iga arendus-, disaini- või arhitektuuriülesannet.
 
-Visual-first repair workbench, kus AI aitab ideest, fotodest ja tehniku tegevusest
-teha selge visuaalse töövoo — kuid **AI ei kirjuta ise kinnitatud tõde**. AI on
-abiline: suunab ja aitab PCB-plaadi skeemi koostada. AI üksi ei otsusta. **Lõplik
-tõde selgub alles tehniku kinnitusel.** AI omapäi ei tee midagi — **kõik tegevused
-kutsub esile inimene**.
+Põhikirja ei muudeta arendamise käigus selleks, et olemasolevat koodi õigustada. Sisuline muutmine nõuab inimese eraldi selgesõnalist otsust.
 
-## 2. Aluspõhimõtted
+BenchBeep on **local-first, visual-first elektroonikaplaatide remonditöölaud**.
 
-- Inimene on sensor; AI on graafimootor ja abiline.
-- Ainult inimese kinnitatud info muutub äpi faktiks / sündmuseks (canonical event/fact).
-- AI pakub, korrastab ja näitab ebakindlust — inimene kinnitab.
-- AI võib pakkuda, juhendada ja korrastada; ainult inimese kinnitatud info muutub canonical truth'iks.
-- Äpp ei tee „invisible magic" otsuseid; iga fakt on jälgitav inimtegevuseni.
+Esimene kohustuslik tootetulemus on terviklik ja usaldusväärne käsitsi kasutatav töövoog:
 
-## 3. Õige mudel (töövoo tõde)
+**Loo projekt → ava plaat → märgi komponent → määra ja kinnita komponent → mõõda → salvesta → ava projekt uuesti.**
 
-See ei ole „AI otsustab ise", ega ka „ehitame Flutteri ekraane ja inimene mõtleb
-kõik käsitsi välja". Õige mudel on ahel:
+Rakendus peab töötama ilma AI-ta.
 
-1. **Inimene / tehnik annab:** probleemikirjelduse, foto (AI juhendamisel),
-   mõõtmised, tähelepanekud, kahjustatud raja või piirkonna märke (nt HDMI, 12V liin, 5V liin).
-2. **AI → visuaalne skeem:** ei märgi komponente ise, vaid paigutab iga komponendi
-   asukohale markeri töölauale. Hiljem võib pakkuda ja küsida: „Kas see on transistor?".
-3. **Inimene:** klõpsab markeril ja valib õige komponendi või kuju valikmenüüst;
-   kui ei tea või pole valikute seas — „Tundmatu".
-4. **AI võib pakkuda tõenäosust:** „Arvestades mõõtmisi olen 80% kindel, et tegu on
-   takistiga." ja vajadusel nõu anda: „Alusta sellest, kui kaugele jõuab elekter laadimispesast."
-5. **Inimene** vaatab, sisestab/parandab, kinnitab või lükkab tagasi.
-6. Ainult **kinnitatud info** → äpi fakt / sündmus.
-7. Äpp **visualiseerib, juhendab, seob ja mäletab** töö käiku.
+AI lisatakse hiljem sama töövoo abiliseks vastavalt eraldi AI põhikirjale.
 
-## 4. Töövoog (detailid)
+## 2. Põhiprintsiibid
 
-**Start:** äpp käivitub stardilehega: „Loo projekt nullist" · „Jätka viimase
-projektiga" · „Lae projekt zip-ist või kaustast" · „Seadista telefon piltide tegemiseks".
+1. Tehnik töötab ühe visuaalse töölaua kaudu.
+2. Füüsiline PCB-plaat on kasutajaliidese keskmes.
+3. Üks füüsiline komponent peab olema kasutajale üks arusaadav visuaalne objekt.
+4. Ühel komponendil peab olema üks sidus redigeerimiskogemus.
+5. Ühes redigeerimiskontekstis on üks peamine **Salvesta** tegevus.
+6. Komponentide identiteet, paigutus ja mõõtmised võivad sisemiselt olla eri andmemudelid ja sündmused.
+7. Sisemine keerukus ei tohi sundida tehnikut läbima mitut omavahel sidumata vormi.
+8. Kasutaja ei pea tundma kanoonilisi sündmusi, Sessionit, materializer'it ega muid tehnilisi mõisteid.
+9. Tegevused peavad olema arusaadavad, jälgitavad ja vajadusel taastatavad.
+10. Lihtsus ei tohi tulla andmete õigsuse ega tõenduspiiride arvelt.
 
-**„Loo projekt nullist"** küsib järjest:
-1. Kontuur — AI joonistab pildi järgi / joonistad ise / vali template.
-2. Komponentide asetus — AI märgib pildilt / märgin ise.
-3. Kirjelda lühidalt probleemi.
+## 3. Projekti loomine
 
-**Kinnitus:** kui kontuur ja markerid on paigas, käib inimene need läbi ja kinnitab
-kuju (kui tuvastatav) ja pin-ide asetuse; saab määrata suuruse ja komponenti pöörata.
+Rakendus võimaldab:
 
-**Pildistamine:** foto tehakse telefoniga; PCB-plaadil on markerid, mille järgi AI
-hindab ligilähedast suurust. AI loeb pildilt komponentide asetuse ja märgib markerid
-canvasele; inimene saab markereid liigutada, kustutada ja lisada enne kinnitust.
-Telefonile käib väike abiprogramm, mis juhendab pilte tegema.
+- Luua uue projekti.
+- Jätkata olemasoleva projektiga.
+- Avada projekti kohalikust kaustast.
+- Importida toetatud projekti ZIP-kujul.
 
-**Mõõtmised ja rajad:** AI tuvastab, mis suunas rajad jooksevad, ja joonistab
-ühendused vastavalt — **rada ei tohi joosta linnulennult** ühest pin-ist teise.
-Värvikoodid: 5V punane, 12V sinine, maandus must jne. Värvid valib AI automaatselt;
-inimene saab neid seadetest muuta.
+Projekti loomisel määrab tehnik projekti põhiandmed ja probleemi kirjelduse.
 
-**AI mälu:** AI kogub infot nt MD-faili ja märgib sinna iga muudatuse. Jooksvalt
-igat muudatust kirja panna pole mõistlik — selleks on nupp „Värskenda AI mälu".
+Foto ja visuaalne kontuur aitavad luua plaadi tööpinna. Foto ei tohi olla projekti loomise kohustuslik tingimus.
 
-## 5. Äpi keskne pind — visuaalne töölaud
+Tehnik saab kontuuri ja komponendimarkereid käsitsi koostada. Viisardis loodud markerid säilivad töölauda avades.
 
-- **Vasakul:** tööriistad / režiimid.
-- **Keskel:** dominantne plaat / board canvas / workbench.
-- **Paremal:** kontekst — mõõtmised, komponent, ohutus, kandidaadid, ajalugu.
+Viisardist töölauale liikudes peab säilima sama projekti kontekst, foto, kontuur, markerite asukohad, mõõtmed ja pöördenurgad.
 
-## 6. AI EI tee
+Kui taustafoto on saadaval, peab kasutaja seda alguses nägema; selle peitmine on teadlik kasutajategevus.
 
-1. ei kinnita fakte ilma inimeseta;
-2. ei tee automaatset fault diagnosis't tõena;
-3. ei tee pildi põhjal net'i;
-4. ei tee pildi põhjal elektrilist identiteeti;
-5. ei kirjuta canonical events'i ilma confirmita;
-6. ei muuda reference-pilti tõendiks;
-7. ei tee „invisible magic" otsuseid.
+Viisard ei tohi luua teist, töölauaga ühildumatut komponentide süsteemi.
 
-## 7. AI teeb
+## 4. Üks visuaalne töölaud
 
-1. teeb kasutaja ideest visuaali;
-2. teeb pildist kandidaadid;
-3. loob alternatiivseid UI / workflow pilte;
-4. korrastab remondilogi;
-5. seob mõõtmised komponentide ja piltidega;
-6. leiab vastuolusid;
-7. näitab ebakindlust;
-8. teeb järgmise-sammu ettepanekuid;
-9. genereerib remondikaardi / töökaardi / kokkuvõtte;
-10. aitab muuta segase visuaalse info struktureerituks.
+Töölaua põhijaotus:
 
-## 8. Muutumatuse reegel
+- Vasakul tööriistad ja peamised tegevused.
+- Keskel PCB-plaat, komponendid ja visuaalne töö.
+- Paremal valitud objekti kontekst, redigeerimine ja mõõtmised.
 
-See põhikiri on skoobi ankur. Enne igat tegevust loetakse see läbi. Kui midagi
-läheb sellega vastuollu, peatu ja küsi inimeselt. Fail ei kasva; sisulised
-muudatused vajavad inimese selget otsust.
+Töölaud peab juhendama kasutajat loomulikult järgmise tegevuseni.
+
+Komponendi valimine avab selle komponendi konteksti.
+
+Komponendi loomiseks, muutmiseks või mõõtmiseks ei pea kasutaja käsitsi vahetama mitut omavahel sidumata töövoogu.
+
+Fotod, ohutusinfo ja lisatööriistad jäävad ligipääsetavaks, kuid ei tohi varjutada igapäevast põhitööd.
+
+## 5. Komponendi elutsükkel
+
+Põhitöövoog:
+
+**Marker → kuju ja identiteet → korrigeerimine → inimese kinnitus → kinnitatud komponent.**
+
+Tehnik saab:
+
+- Lisada komponendimarkeri plaadile.
+- Valida olemasoleva markeri.
+- Määrata komponendi tähise, tüübi ja kuju.
+- Kasutada valikut „Tundmatu”.
+- Muuta suurust, asukohta ja pöördenurka.
+- Kinnitada komponendi identiteedi ja paigutuse.
+- Muuta hiljem sama kinnitatud komponenti.
+
+Visuaalne kandidaat ei ole enne kinnitamist kanooniline komponent.
+
+Kinnitatud komponendi andmed ja paigutus säilitatakse olemasolevate kaitstud andmelepingute kaudu.
+
+Komponendi kinnitamine ei tohi luua teist sõltumatut visuaalset koopiat ega paigutada objekti mujale.
+
+Komponendi võib luua ka ilma teadaoleva asukohata, näiteks komponentide nimekirjast. Selline komponent jääb paigutamata kuni tehnik määrab selle asukoha.
+
+## 6. Komponendi redigeerimine
+
+Komponendi redigeerimine peab toimuma ühes sidusas kontekstis.
+
+Kasutajale esitatakse ainult vajalikud väljad:
+
+- Tähis ja nimi.
+- Tüüp.
+- Kuju või jalajälg.
+- Asukoht ja plaadi pool.
+- Mõõtmed.
+- Pöördenurk.
+- Vajadusel viigud ja muud asjakohased andmed.
+
+Redigeeritakse sama komponenti, mida plaadil kuvatakse.
+
+Ei tohi tekkida eraldi suur keskne ghost-kujutis, mille asukoht või suurus erineb tegelikult salvestatavast objektist.
+
+Eelvaade peab vastama kinnitatavale tulemusele.
+
+Komponendi muutmise põhitegevused on **Salvesta** ja **Tühista**.
+
+Üks Salvesta võib sisemiselt kasutada mitut olemasolevat writer'it, kuid ainult inimese kinnitatud muudatuste jaoks.
+
+Mitme sündmuse vajadusel peab töövoog säilitama õiged sihtmärgid, toimingute järjekorra ja taastatava osalise õnnestumise.
+
+Muutmata andmeid ei salvestata põhjuseta uuesti.
+
+Salvestamine ei tohi vaikimisi muuta olemasoleva komponendi geomeetriat, tüüpi ega identiteeti.
+
+## 7. Mõõtmine
+
+Pärast komponendi kinnitamist saab tehnik selle valida ja kohe mõõtmise juurde liikuda.
+
+Mõõtmise põhiline kasutajateekond on:
+
+**Koht → Väärtus → Ühik → Salvesta.**
+
+Tehnik saab valida mõõtmise sihtmärgi, režiimi, vajadusel viigud või mõõtepunktid, ning sisestada tulemuse.
+
+Mõõtmise sihtmärk peab jääma täpselt selleks, mille tehnik valis.
+
+Mõõtmise režiimi avamine ei tohi vaikimisi asendada valitud komponenti teisega.
+
+Kinnitatud mõõtmine salvestatakse õige komponendi ja mõõtekonteksti juurde.
+
+Mõõtmise tulemus peab olema hiljem leitav ja kasutajale arusaadavalt kuvatav.
+
+## 8. Andmete õigsus ja ohutus
+
+`events.jsonl` on append-only kanooniline sündmusajalugu.
+
+`known_facts.json` on sellest loodud materialiseeritud projektsioon.
+
+Ainult inimese selgesõnaliselt kinnitatud teave muutub kanooniliseks faktiks.
+
+Visuaalne marker, foto, eelvaade, viide, AI ettepanek ega joonistatud rada ei ole automaatselt tõendatud elektriline fakt.
+
+Visual/Layout Graph ja Electrical Net Graph jäävad eraldi.
+
+Olemasolevad writer'i, Sessioni, skeemi, materializer'i, tõendus-, geomeetria- ja ZIP-ühilduvuse lepingud on kaitstud.
+
+Kanoonilise salvestamise viga ei tohi näidata kasutajale eduka salvestamisena.
+
+Ebakindla tulemuse korral peab rakendus kasutama ohutut taastamist ja vältima juhuslikke duplikaatsündmusi.
+
+Ükski kasutajaliidese lihtsustamine ei tohi neid kaitseid eemaldada.
+
+## 9. Modulaarne arhitektuur
+
+BenchBeep koosneb eraldi vastutusega moodulitest, kuid kasutaja jaoks peab see olema üks rakendus.
+
+Moodulid võivad vastutada:
+
+- Projekti loomise eest.
+- Plaadi visuaalse esituse ja interaktsiooni eest.
+- Komponendikandidaatide eest.
+- Komponentide identiteedi eest.
+- Kinnitatud paigutuste eest.
+- Mõõtmiste eest.
+- Fotode ja joondamise eest.
+- Andmete salvestamise ning taastamise eest.
+
+Moodulite eraldamine peab vähendama sõltuvusi ja parandama tegelikku korduskasutust.
+
+Ei ehitata paralleelseid redaktoreid, dubleeritud writereid ega suuri keskseid mega-controllereid.
+
+Vana funktsionaalsus asendatakse kontrollitult, mitte ei jäeta uut lahendust segama.
+
+Koodiridade arv ei ole iseseisev arhitektuurieesmärk.
+
+## 10. Esimese valmisversiooni vastuvõtt
+
+Käsitsi töövoog loetakse valmis alles siis, kui inimene saab päris rakenduses:
+
+1. Luua uue projekti.
+2. Määrata või vahele jätta foto.
+3. Koostada plaadi kontuuri.
+4. Märkida komponendi asukoha.
+5. Määrata komponendi identiteedi ja kuju.
+6. Kinnitada komponendi ilma visuaalse asukoha kadumiseta.
+7. Valida kinnitatud komponendi ja salvestada mõõtmise.
+8. Sulgeda ja avada projekti uuesti.
+9. Näha samu kinnitatud komponente, paigutusi ja mõõtmisi.
+10. Läbida protsessi ilma terminali, käsitsi JSON-failide muutmise, dubleeritud redaktorite või AI abita.
+
+Kogu protsess peab olema arusaadav ka kasutajale, kes ei tunne rakenduse sisemist arhitektuuri.
+
+## 11. AI arenduse piir
+
+AI ei ole esimese käsitsi töövoo valmimise eeltingimus.
+
+Kui käsitsi töövoog on valmis ja vastu võetud, võib AI lisada samasse süsteemi ettepanekuid, fotoanalüüsi, markerite tuvastamist, mõõtmisjuhiseid, radade visuaalset tõlgendamist ja remondidokumentatsiooni.
+
+AI ei loo eraldi paralleelset töövoogu ega kinnita ise kanoonilisi fakte.
+
+AI ülesannete täpne visioon ja piirangud asuvad dokumendis `docs/POHIKIRI_AI.md`.
+
+## 12. Muutumatuse reegel
+
+See põhikiri on toote ja kasutajateekonna kõrgeim ankur.
+
+Kõik tulevased tööd peavad selle nõuetega kooskõlas olema.
+
+Kui rakenduse olemasolev kood ja põhikiri on vastuolus, parandatakse rakendust, mitte põhikirja.
+
+Sisuline põhikirjamuudatus vajab inimese selgesõnalist otsust.
